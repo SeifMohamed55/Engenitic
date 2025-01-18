@@ -1,0 +1,189 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\startupconfigurations\\authenticationserviceconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\startupconfigurations\\authenticationserviceconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\migrations\\20250114195437_editingrolesinappuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\migrations\\20250114195437_editingrolesinappuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\startupconfigurations\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\startupconfigurations\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\repositories\\appusersrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\repositories\\appusersrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\models\\dtos\\appuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\models\\dtos\\appuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|l:\\seif\\fcai\\graduation project\\graduationproject\\graduationproject\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\repositories\\repository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20250114195437_EditingRolesInAppUser.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Migrations\\20250114195437_EditingRolesInAppUser.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Migrations\\20250114195437_EditingRolesInAppUser.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Migrations\\20250114195437_EditingRolesInAppUser.cs",
+              "RelativeToolTip": "GraduationProject\\Migrations\\20250114195437_EditingRolesInAppUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-15T21:24:08.308Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\appsettings.json",
+              "RelativeDocumentMoniker": "GraduationProject\\appsettings.json",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\appsettings.json",
+              "RelativeToolTip": "GraduationProject\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-15T21:23:12.293Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Program.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Program.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Program.cs",
+              "RelativeToolTip": "GraduationProject\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-15T21:22:53.604Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "JwtOptions.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\StartupConfigurations\\JwtOptions.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\StartupConfigurations\\JwtOptions.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\StartupConfigurations\\JwtOptions.cs",
+              "RelativeToolTip": "GraduationProject\\StartupConfigurations\\JwtOptions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-15T16:22:55.881Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AuthenticationServiceConfiguration.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\StartupConfigurations\\AuthenticationServiceConfiguration.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\StartupConfigurations\\AuthenticationServiceConfiguration.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\StartupConfigurations\\AuthenticationServiceConfiguration.cs",
+              "RelativeToolTip": "GraduationProject\\StartupConfigurations\\AuthenticationServiceConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-15T16:21:44.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "JwtTokenService.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Services\\JwtTokenService.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Services\\JwtTokenService.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Services\\JwtTokenService.cs",
+              "RelativeToolTip": "GraduationProject\\Services\\JwtTokenService.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAIwDYAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-15T16:21:37.987Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Repository.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Repositories\\Repository.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Repositories\\Repository.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Repositories\\Repository.cs",
+              "RelativeToolTip": "GraduationProject\\Repositories\\Repository.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAcwBEAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-14T21:25:29.821Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AppUser.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Models\\AppUser.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Models\\AppUser.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Models\\AppUser.cs",
+              "RelativeToolTip": "GraduationProject\\Models\\AppUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-14T21:13:54.118Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AppUserDTO.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Models\\DTOs\\AppUserDTO.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Models\\DTOs\\AppUserDTO.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Models\\DTOs\\AppUserDTO.cs",
+              "RelativeToolTip": "GraduationProject\\Models\\DTOs\\AppUserDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-14T21:13:49.409Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AppUsersRepository.cs",
+              "DocumentMoniker": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Repositories\\AppUsersRepository.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Repositories\\AppUsersRepository.cs",
+              "ToolTip": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\Repositories\\AppUsersRepository.cs",
+              "RelativeToolTip": "GraduationProject\\Repositories\\AppUsersRepository.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwDYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-14T20:47:27.36Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

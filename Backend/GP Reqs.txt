@@ -1,0 +1,34 @@
+Public sector: home, about, AI tools, login, signup
+
+- Models Are free for usage
+	- VQA (image with question) a tab (python)
+	- Grammar Correction (Text) (python)
+	- Speech Recognition (pre-trained)
+	
+Courses are sorted in profile by a boolean (finished)
+	- in profile
+	
+
+Courses Page
+	- courses are previewed as pages
+	
+- Login, Register (user), Admin (Dashboard), Instructors (Must have a certificate that admin must approve)
+
+- Instructor Only see his own courses (and add)
+	- Statistics: on each course
+	- editing on each course
+
+
+- Instructors Requirements: (ID, Certificate, Cv, Phone Number)
+
+- Student must be logged to access courses.
+	Courses
+		- CourseDetails -> enroll
+		- Progress: number of videos (with number of quizes) then a big quiz on each course
+		
+
+Course identification: title with instructor
+
+
+
+ConnectionStrings__POSTGRES_GRAD= Server=127.0.0.1;Port=5432;Database=engenetic;User Id=GraduationAdmin;Password=seif;Pooling=true;MinPoolSize=0;MaxPoolSize=100;
