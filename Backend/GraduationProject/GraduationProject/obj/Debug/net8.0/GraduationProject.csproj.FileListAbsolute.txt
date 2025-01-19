@@ -1,0 +1,552 @@
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\appsettings.Development.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\appsettings.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.staticwebassets.endpoints.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.exe
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.deps.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.runtimeconfig.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.pdb
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.OpenApi.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.csproj.AssemblyReference.cache
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.GeneratedMSBuildEditorConfig.editorconfig
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.AssemblyInfoInputs.cache
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.AssemblyInfo.cs
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.csproj.CoreCompileInputs.cache
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.MvcApplicationPartsAssemblyInfo.cs
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.MvcApplicationPartsAssemblyInfo.cache
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\scopedcss\bundle\GraduationProject.styles.css
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.build.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.development.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.GraduationProject.Microsoft.AspNetCore.StaticWebAssets.props
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.GraduationProject.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.build.GraduationProject.props
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.GraduationProject.props
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.GraduationProject.props
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.pack.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\Graduati.DD91A7C0.Up2Date
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\refint\GraduationProject.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.pdb
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.genruntimeconfig.cache
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\obj\Debug\net8.0\ref\GraduationProject.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.staticwebassets.runtime.json
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Google.Apis.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Google.Apis.Auth.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Google.Apis.Core.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Humanizer.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\MailKit.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Facebook.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authorization.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.Forms.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.Web.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Metadata.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Razor.Language.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Build.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Build.Framework.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.AnalyzerUtilities.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Features.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Elfie.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Features.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Razor.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Scripting.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.DiaSymReader.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.DotNet.Scaffolding.Shared.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Json.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.JSInterop.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.NET.StringTools.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\dotnet-aspnet-codegenerator-design.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\MimeKit.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Mono.TextTemplating.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Newtonsoft.Json.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Npgsql.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Common.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Configuration.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.DependencyResolver.Core.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Frameworks.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.LibraryModel.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Packaging.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.ProjectModel.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Protocol.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Versioning.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.CodeDom.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.Convention.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.Hosting.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.Runtime.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.TypedParts.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Management.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Reflection.MetadataLoadContext.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\af\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ar\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\az\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\bg\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\bn-BD\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\da\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\el\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fa\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fi-FI\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr-BE\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\he\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\hr\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\hu\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\hy\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\id\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\is\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko-KR\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ku\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\lv\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ms-MY\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\mt\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\nb\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\nb-NO\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\nl\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ro\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sk\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sl\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sr\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sr-Latn\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sv\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\th-TH\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\uk\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\uz-Cyrl-UZ\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\uz-Latn-UZ\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\vi\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-CN\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Humanizer.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Formats.Asn1.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.IO.Pipelines.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Text.Encodings.Web.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Text.Json.dll
+L:\Seif\FCAI\4- Year Four\First Semester\PL3\Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\appsettings.Development.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\appsettings.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.staticwebassets.endpoints.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.staticwebassets.runtime.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.exe
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.deps.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.runtimeconfig.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\GraduationProject.pdb
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Google.Apis.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Google.Apis.Auth.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Google.Apis.Core.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Humanizer.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\MailKit.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Facebook.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Authorization.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.Forms.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Components.Web.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Metadata.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.AspNetCore.Razor.Language.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Build.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Build.Framework.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.AnalyzerUtilities.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Features.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Elfie.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Features.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Razor.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Scripting.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.DiaSymReader.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.DotNet.Scaffolding.Shared.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Json.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.JSInterop.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.NET.StringTools.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.OpenApi.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\dotnet-aspnet-codegenerator-design.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\MimeKit.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Mono.TextTemplating.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Newtonsoft.Json.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Npgsql.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Common.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Configuration.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.DependencyResolver.Core.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Frameworks.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.LibraryModel.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Packaging.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.ProjectModel.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Protocol.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\NuGet.Versioning.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.CodeDom.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.Convention.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.Hosting.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.Runtime.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Composition.TypedParts.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Management.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Reflection.MetadataLoadContext.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\af\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ar\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\az\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\bg\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\bn-BD\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\da\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\el\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fa\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fi-FI\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr-BE\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\he\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\hr\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\hu\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\hy\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\id\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\is\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko-KR\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ku\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\lv\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ms-MY\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\mt\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\nb\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\nb-NO\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\nl\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ro\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sk\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sl\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sr\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sr-Latn\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\sv\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\th-TH\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\uk\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\uz-Cyrl-UZ\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\uz-Latn-UZ\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\vi\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-CN\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Humanizer.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Features.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.csproj.AssemblyReference.cache
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.GeneratedMSBuildEditorConfig.editorconfig
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.AssemblyInfoInputs.cache
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.AssemblyInfo.cs
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.csproj.CoreCompileInputs.cache
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.MvcApplicationPartsAssemblyInfo.cs
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.MvcApplicationPartsAssemblyInfo.cache
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\scopedcss\bundle\GraduationProject.styles.css
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.build.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.development.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.GraduationProject.Microsoft.AspNetCore.StaticWebAssets.props
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.GraduationProject.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.build.GraduationProject.props
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.GraduationProject.props
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.GraduationProject.props
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.pack.json
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\Graduati.DD91A7C0.Up2Date
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\refint\GraduationProject.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.pdb
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.genruntimeconfig.cache
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\obj\Debug\net8.0\ref\GraduationProject.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Drawing.Common.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Security.Permissions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\System.Windows.Extensions.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
+L:\Seif\FCAI\Graduation Project\GraduationProject\GraduationProject\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll

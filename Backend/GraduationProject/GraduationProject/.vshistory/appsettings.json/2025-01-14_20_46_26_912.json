@@ -1,0 +1,15 @@
+{
+  "Jwt": {
+    "Issuer": "https://localhost:7209",
+    "Audience": "https://localhost:7209",
+    "AccessTokenValidityMinutes": "1",
+    "RefreshTokenValidityDays": "7"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
