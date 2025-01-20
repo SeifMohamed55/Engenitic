@@ -1,1 +1,21 @@
-<p>register works!</p>
+<main class="grid grid-cols-2 gap-32 items-start w-full">
+    <form class="flex justify-between items-start flex-col h-full" [formGroup]="registerForm" (ngSubmit)="registerSubmit()" >
+        <input type="file" accept="image/*" class="mb-3 font-regular" formControlName="image">
+        <input type="email" class="engenitic-input my-3" placeholder="  Email ..." formControlName="email">
+        <input type="text" class="engenitic-input my-3" placeholder="  User Name ..." formControlName="userName">
+        <input type="password" class="engenitic-input my-3" placeholder="  Password ..." formControlName="password">
+        <input type="password" class="engenitic-input my-3" placeholder="  Repassword ..." formControlName="repassword">
+        <input type="tel" class="engenitic-input my-3" placeholder="  Phone Number ..." formControlName="phone">
+        <div>
+            <span class="font-regular text-normal pe-5">choose user type please : </span>
+            <select class="my-3 border border-black rounded p-2 font-regular" formControlName="userType">
+                <option value="student">student</option>
+                <option value="instructor">instructor</option>
+            </select>
+        </div>
+        <button type="submit" class="engenitic-button">submit</button>
+    </form>
+    <figure>
+        <img src="./assets/images/register-pic.svg" alt="register picture">
+    </figure>
+</main>
