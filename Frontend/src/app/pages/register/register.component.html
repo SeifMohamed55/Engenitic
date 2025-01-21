@@ -1,11 +1,79 @@
 <main class="grid grid-cols-2 gap-32 items-start w-full">
     <form class="flex justify-between items-start flex-col h-full" [formGroup]="registerForm" (ngSubmit)="registerSubmit()" >
-        <input type="file" accept="image/*" class="mb-3 font-regular" formControlName="image">
-        <input type="email" class="engenitic-input my-3" placeholder="  Email ..." formControlName="email">
-        <input type="text" class="engenitic-input my-3" placeholder="  User Name ..." formControlName="userName">
-        <input type="password" class="engenitic-input my-3" placeholder="  Password ..." formControlName="password">
-        <input type="password" class="engenitic-input my-3" placeholder="  Confirm Password ..." formControlName="password">
-        <input type="tel" class="engenitic-input my-3" placeholder="  Phone Number ..." formControlName="phone">
+        <div>
+            <input type="file" accept="image/*" (change)="onFileChange($event)" class="mb-3 custom-file-input font-display lowercase" formControlName="image"><span class="font-regular font-normal ps-3">(optional)</span>
+        </div>
+        <div *ngIf="fileValidationError">
+            <p class="text-normal font-regular text-red-500"> {{ fileValidationError }} </p>
+        </div>
+        <input #email type="email" class="engenitic-input my-3" placeholder="  Email ..." formControlName="email">
+        <div *ngIf="registerForm.get('email')?.errors && (registerForm.get('email')?.touched || email.value.length > 0)">
+            <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('email')?.getError('email')"> invalid email </p>
+            <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('email')?.getError('required')"> email field is required </p>
+        </div>
+        <input #userName  type="text" class="engenitic-input my-3" placeholder="  User Name ..." formControlName="userName">
+        <div *ngIf="registerForm.get('userName')?.errors && (registerForm.get('userName')?.touched || userName.value.length > 0)">
+            <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('userName')?.getError('required')"> user name field is required </p>
+        </div>
+        <input #password  type="password" class="engenitic-input my-3" placeholder="  Password ..." formControlName="password">
+        <div *ngIf="registerForm.get('password')?.errors && (registerForm.get('password')?.touched || password.value.length > 0)">
+            <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('password')?.getError('required')"> password field is required </p>
+            <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('password')?.getError('minlength')"> password field must be more than 5</p>
+        </div>
+        <input #repassword type="password" class="engenitic-input my-3" placeholder=" Confirm Password ..." formControlName="repassword">
+        <div *ngIf="registerForm.get('repassword')?.errors && (registerForm.get('repassword')?.touched || repassword.value.length > 0)">
+            <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('repassword')?.getError('passwordMiss')" > passwords don't match ! </p>
+        </div>
+        <div class="grid grid-cols-4 my-3" formGroupName="phoneGroup">
+            <input #countryCode type="text" id="country-code" class="engenitic-input me-5" placeholder=" +20  (optional) " formControlName="countryCode">
+            <input #phoneNumber type="tel" class="engenitic-input col-span-3" placeholder="  Phone Number ...   (optional)" formControlName="phone">
+        </div>
+        <div *ngIf="(registerForm.get('phone')?.errors || registerForm.get('countryCode')?.errors ) && ((registerForm.get('countryCode')?.touched || registerForm.get('phone')?.touched)  || (countryCode.value.length > 0 || phoneNumber.value.length > 0))">
+            <input
+    #countryCode
+    type="text"
+    id="country-code"
+    class="engenitic-input me-5"
+    placeholder="+20 (optional)"
+    formControlName="countryCode"
+  >
+  <input
+    #phoneNumber
+    type="tel"
+    class="engenitic-input col-span-3"
+    placeholder="Phone Number ... (optional)"
+    formControlName="phone"
+  >
+</div>
+
+<!-- Error Messages -->
+<div
+    *ngIf="registerForm.get('phoneGroup')?.errors && (registerForm.get('phoneGroup')?.touched || countryCode.value.length > 0 || phoneNumber.value.length > 0)">
+    <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="registerForm.get('phoneGroup')?.hasError('phoneNumberMissing')"
+    >
+        Phone number is required if you filled the country code field.
+    </p>
+    <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="registerForm.get('phoneGroup')?.hasError('countryCodeMissing')"
+    >
+        Country code is required if you filled the phone number field.
+    </p>
+    <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="registerForm.get('phoneGroup')?.hasError('countryCodeInvalid')"
+    >
+        Country code must start with '+' and followed by a number.
+    </p>
+    <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="registerForm.get('phoneGroup')?.hasError('phoneNumberInvalid')"
+    >
+        Phone number is invalid.
+    </p>
+        </div>
         <div>
             <span class="font-regular text-normal pe-5">choose user type please : </span>
             <select class="my-3 border border-black rounded p-2 font-regular" formControlName="userType">
