@@ -5,23 +5,31 @@ namespace GraduationProject.Controllers.RequestModels
     public class RegisterCustomRequest
     {
         [Required]
-        public string FirstName { get; set; } = null!;
-        [Required]
-        public string LastName { get; set; } = null!;
+        public string Username { get; set; } = null!;
 
         [Required]
         [EmailAddress]
-        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "The email address is not valid.")]
         public string Email { get; set; } = null!;
 
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(5)]
         public string Password { get; set; } = null!;
 
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(5)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
-        public required string Address { get; set; }
+
+        [Required]
+        public string Role { get; set; } = null!;
+
+
+        [Phone]
+        public string? PhoneNumber { get; set; }
+
+        public string? imageURL { get; set; }
+
     }
 }

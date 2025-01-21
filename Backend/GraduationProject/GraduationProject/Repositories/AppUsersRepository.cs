@@ -46,7 +46,7 @@ namespace GraduationProject.Repositories
                 return true;
 
             }
-            catch (Exception e)
+            catch (Exception )
             {
             }
             return false;
@@ -60,7 +60,7 @@ namespace GraduationProject.Repositories
                 await AddAsync(appUser);
                 return true;
             } 
-            catch (Exception e)
+            catch (Exception )
             {
                 return false;
             }

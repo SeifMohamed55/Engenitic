@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "emaM3VToZ0JvbsnNDRx8x2wITcCO+zZtSO/+UqU0Uug=",
+  "Hash": "NCN4cZby5QTA9DikMLP/ZbhXZVpmc0+fZtQsUMcFw88=",
   "Source": "GraduationProject",
   "BasePath": "_content/GraduationProject",
   "Mode": "Default",
@@ -1311,10 +1311,10 @@
       "OriginalItemSpec": "C:\\Users\\seife\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\8.0.11\\staticwebassets\\V5\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
     {
-      "Identity": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css",
+      "Identity": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css",
       "SourceId": "GraduationProject",
       "SourceType": "Computed",
-      "ContentRoot": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/GraduationProject",
       "RelativePath": "GraduationProject#[.{fingerprint}]?.styles.css",
       "AssetKind": "All",
@@ -1329,7 +1329,7 @@
       "Integrity": "yJzMRujk3CbSbBe5hogvoEpcGbz0ThnTl058XcI1svI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css"
+      "OriginalItemSpec": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css"
     }
   ],
   "Endpoints": [
@@ -1409,7 +1409,7 @@
     },
     {
       "Route": "GraduationProject.02jfxhbwsz.styles.css",
-      "AssetFile": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css",
+      "AssetFile": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1434,7 +1434,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 01 Dec 2024 16:32:07 GMT"
+          "Value": "Tue, 21 Jan 2025 20:54:25 GMT"
         },
         {
           "Name": "Link",
@@ -1458,7 +1458,7 @@
     },
     {
       "Route": "GraduationProject.styles.css",
-      "AssetFile": "L:\\Seif\\FCAI\\Graduation Project\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css",
+      "AssetFile": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\obj\\Debug\\net8.0\\scopedcss\\bundle\\GraduationProject.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1483,7 +1483,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 01 Dec 2024 16:32:07 GMT"
+          "Value": "Tue, 21 Jan 2025 20:54:25 GMT"
         },
         {
           "Name": "Link",

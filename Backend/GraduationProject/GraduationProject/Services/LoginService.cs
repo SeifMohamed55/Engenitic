@@ -12,16 +12,19 @@ using GraduationProject.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json.Linq;
 using GraduationProject.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace SpringBootCloneApp.Services
 {
-    public interface ILoginService
+    public interface ILoginRegisterService
     {
         Task<IResult> ExternalLogin(string provider, AuthenticatedPayload payload , HttpContext httpContext);
         Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext);
         IResult Logout(HttpContext httpContext);
+
+        Task<bool> Register(RegisterCustomRequest model);
     }
-    public class LoginService : ILoginService
+    public class LoginRegisterService : ILoginRegisterService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IJwtTokenService _tokenService;
@@ -29,7 +32,7 @@ namespace SpringBootCloneApp.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly JwtOptions _jwtOptions;
         private readonly ICachingService _cachingService;
-        public LoginService(
+        public LoginRegisterService(
             UserManager<AppUser> userManager,
             IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
@@ -46,6 +49,58 @@ namespace SpringBootCloneApp.Services
             _signInManager = signInManager;
             _cachingService = cachingService;
         }
+
+
+        public async Task<bool> Register(RegisterCustomRequest model)
+        {
+            
+
+            return await Task.Run(() => true);
+        }
+        
+        public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
+        {
+            var user = await _context.Users
+               .Include(x => x.Roles)
+               .FirstOrDefaultAsync(x => x.Email == model.Email);
+
+            if (user == null)
+                return Results.NotFound("Either Email or password does not exist");
+
+            var result = await _signInManager
+                .PasswordSignInAsync(user.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+
+            if (result.IsLockedOut)
+                return Results.BadRequest("LockedOut");
+
+            if (result.Succeeded)
+            {
+                var accessToken = _tokenService.GenerateSymmetricJwtToken(user);
+                var refreshToken = _tokenService.GenerateRefreshToken();
+
+                _cachingService.AddRefreshTokenCachedData(accessToken, refreshToken);
+
+
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true ,
+                    SameSite = SameSiteMode.Strict,
+                };
+
+                httpContext.Response.Cookies.Append("refreshToken", refreshToken.Value, cookieOptions);
+
+
+                return Results.Ok(new RefreshTokenResponse()
+                {
+                    AccessToken = accessToken,
+                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f")
+                });
+            }
+            return Results.NotFound("Either Email or Password is incorrect!");
+        }
+
+
         public async Task<IResult> ExternalLogin(string provider, AuthenticatedPayload payload, HttpContext httpContext)
         {
             var userInDatabase = await _context.Users
@@ -58,7 +113,6 @@ namespace SpringBootCloneApp.Services
                 AppUser client = new AppUser()
                 {
                     Email = payload.Email,
-                    Address = "",
                     UserName = payload.GivenName + " " + payload.FamilyName
                 };
 
@@ -145,47 +199,6 @@ namespace SpringBootCloneApp.Services
             return Results.Content(htmlContent, "text/html");
         }
 
-        public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
-        {
-            var user = await _context.Users
-               .Include(x => x.Roles)
-               .FirstOrDefaultAsync(x => x.Email == model.Email);
-
-            if (user == null)
-                return Results.NotFound("Either Email or password does not exist");
-
-            var result = await _signInManager
-                .PasswordSignInAsync(user.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
-
-            if (result.IsLockedOut)
-                return Results.BadRequest("LockedOut");
-
-            if (result.Succeeded)
-            {
-                var accessToken = _tokenService.GenerateSymmetricJwtToken(user);
-                var refreshToken = _tokenService.GenerateRefreshToken();
-
-                _cachingService.AddRefreshTokenCachedData(accessToken, refreshToken);
-
-
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true ,
-                    SameSite = SameSiteMode.Strict,
-                };
-
-                httpContext.Response.Cookies.Append("refreshToken", refreshToken.Value, cookieOptions);
-
-
-                return Results.Ok(new RefreshTokenResponse()
-                {
-                    AccessToken = accessToken,
-                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f")
-                });
-            }
-            return Results.NotFound("Either Email or Password is incorrect!");
-        }
 
         public IResult Logout(HttpContext httpContext)
         {
@@ -205,5 +218,6 @@ namespace SpringBootCloneApp.Services
             //httpContext.Response.Cookies.Delete("refreshToken");
             return Results.NoContent();
         }
+
     }
 }

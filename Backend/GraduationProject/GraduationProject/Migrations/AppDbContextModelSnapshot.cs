@@ -32,22 +32,12 @@ namespace GraduationProject.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<bool>("Banned")
                         .HasColumnType("boolean");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -75,12 +65,15 @@ namespace GraduationProject.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("PhoneRegionCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -93,6 +86,9 @@ namespace GraduationProject.Migrations
                         .HasMaxLength(80)
                         .IsUnicode(true)
                         .HasColumnType("character varying(80)");
+
+                    b.Property<string>("imageURL")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

@@ -2,17 +2,20 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Configuration;
 
-public class AppDbContext : IdentityDbContext<AppUser, Role, int>
+public class AppDbContext : IdentityDbContext<AppUser, Role, int, IdentityUserClaim<int>, IdentityUserRole<int>, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }
+
+    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<AppUser>().ToTable("Users");
         modelBuilder.Entity<Role>().ToTable("Roles");
         modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
@@ -20,7 +23,6 @@ public class AppDbContext : IdentityDbContext<AppUser, Role, int>
         modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
         modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
         modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
-
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
     }

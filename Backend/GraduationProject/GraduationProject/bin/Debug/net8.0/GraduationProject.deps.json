@@ -30,7 +30,8 @@
           "MimeKit": "4.8.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.11",
           "Swashbuckle.AspNetCore": "7.1.0",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "libphonenumber-csharp": "8.13.53"
         },
         "runtime": {
           "GraduationProject.dll": {}
@@ -616,6 +617,14 @@
         "resources": {
           "lib/net6.0/zh-Hant/Humanizer.resources.dll": {
             "locale": "zh-Hant"
+          }
+        }
+      },
+      "libphonenumber-csharp/8.13.53": {
+        "runtime": {
+          "lib/net8.0/PhoneNumbers.dll": {
+            "assemblyVersion": "8.13.53.0",
+            "fileVersion": "8.13.53.0"
           }
         }
       },
@@ -2497,6 +2506,13 @@
       "sha512": "sha512-VIXB7HCUC34OoaGnO3HJVtSv2/wljPhjV7eKH4+TFPgQdJj2lvHNKY41Dtg0Bphu7X5UaXFR4zrYYyo+GNOjbA==",
       "path": "humanizer.core.zh-hant/2.14.1",
       "hashPath": "humanizer.core.zh-hant.2.14.1.nupkg.sha512"
+    },
+    "libphonenumber-csharp/8.13.53": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/9aAcuq5k4f3gSawlybYj2l93udci4I/1JkuULzlGrjfWSZMKI2L3sBjUPBmYevKOLwax6MeRPojWn1HFYEbGQ==",
+      "path": "libphonenumber-csharp/8.13.53",
+      "hashPath": "libphonenumber-csharp.8.13.53.nupkg.sha512"
     },
     "MailKit/4.8.0": {
       "type": "package",
