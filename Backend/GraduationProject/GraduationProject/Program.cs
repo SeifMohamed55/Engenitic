@@ -3,6 +3,7 @@ using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Configuration;
+using GraduationProject.Services;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,10 @@ builder.Services.AddIdentity<AppUser, Role>()
     .AddRoles<Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
+builder.Services.AddScoped<ICachingService, CachingService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddJwtAuthentication(builder.Configuration);

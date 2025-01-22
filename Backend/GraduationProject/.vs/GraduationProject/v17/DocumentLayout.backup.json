@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\migrations\\20250122191948_addingrefreshtokentable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\migrations\\20250122191948_addingrefreshtokentable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\data\\configuration\\appuserconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\data\\configuration\\appuserconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\services\\loginservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\services\\loginservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,8 +26,60 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20250122191948_AddingRefreshTokenTable.cs",
+              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Migrations\\20250122191948_AddingRefreshTokenTable.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Migrations\\20250122191948_AddingRefreshTokenTable.cs",
+              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Migrations\\20250122191948_AddingRefreshTokenTable.cs",
+              "RelativeToolTip": "GraduationProject\\Migrations\\20250122191948_AddingRefreshTokenTable.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-22T19:19:48.933Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppUserConfiguration.cs",
+              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Data\\Configuration\\AppUserConfiguration.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Data\\Configuration\\AppUserConfiguration.cs",
+              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Data\\Configuration\\AppUserConfiguration.cs",
+              "RelativeToolTip": "GraduationProject\\Data\\Configuration\\AppUserConfiguration.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAB8AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-22T18:29:06.584Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "JwtTokenService.cs",
+              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Services\\JwtTokenService.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Services\\JwtTokenService.cs",
+              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Services\\JwtTokenService.cs",
+              "RelativeToolTip": "GraduationProject\\Services\\JwtTokenService.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAcwEMAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-22T18:03:47.165Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LoginService.cs",
+              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Services\\LoginService.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Services\\LoginService.cs",
+              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Services\\LoginService.cs",
+              "RelativeToolTip": "GraduationProject\\Services\\LoginService.cs",
+              "ViewState": "AgIAANcAAAAAAAAAAAAUwPEAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-22T16:38:25.855Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
@@ -27,32 +87,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AuthenticationController.cs",
-              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Controllers\\AuthenticationController.cs",
-              "RelativeDocumentMoniker": "GraduationProject\\Controllers\\AuthenticationController.cs",
-              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Controllers\\AuthenticationController.cs",
-              "RelativeToolTip": "GraduationProject\\Controllers\\AuthenticationController.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAIwHcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-21T21:06:45.439Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "GraduationProject\\Data\\AppDbContext.cs",
-              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "GraduationProject\\Data\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-21T20:53:57.041Z",
-              "EditorCaption": ""
             }
           ]
         }

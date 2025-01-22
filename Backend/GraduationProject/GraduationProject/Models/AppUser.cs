@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Identity;
 
 public class AppUser : IdentityUser<int>
 {
-    public bool Banned { get; set; }
-
     [ProtectedPersonalData]
     public override string Email { get; set; } = null!;
     public string? PhoneRegionCode { get; set; }
     public string? imageURL { get; set; }
+    public bool Banned { get; set; }
+
+    public int RefreshTokenId { get; set; }
+    public RefreshToken RefreshToken { get; set; } = null!;
 
     public ICollection<Role> Roles { get; set; } = new List<Role>();
 
@@ -19,5 +21,7 @@ public class AppUser : IdentityUser<int>
         Id = dto.Id;
         Email = dto.Email;
         PhoneNumber = dto.PhoneNumber;
+        PhoneRegionCode = dto.RegionCode;
+        imageURL = dto.imageURL;
     }
 }

@@ -1,20 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Ganss.Xss;
 using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Controllers.RequestModels;
 using GraduationProject.Models;
+using GraduationProject.Models.DTOs;
 using GraduationProject.StartupConfigurations;
-using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using GraduationProject.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Newtonsoft.Json.Linq;
-using GraduationProject.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace SpringBootCloneApp.Services
+namespace GraduationProject.Services
 {
     public interface ILoginRegisterService
     {
@@ -22,7 +16,7 @@ namespace SpringBootCloneApp.Services
         Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext);
         IResult Logout(HttpContext httpContext);
 
-        Task<bool> Register(RegisterCustomRequest model);
+        Task<IResult> Register(RegisterCustomRequest model);
     }
     public class LoginRegisterService : ILoginRegisterService
     {
@@ -32,13 +26,15 @@ namespace SpringBootCloneApp.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly JwtOptions _jwtOptions;
         private readonly ICachingService _cachingService;
+        private readonly RoleManager<Role> _roleManager;
         public LoginRegisterService(
             UserManager<AppUser> userManager,
             IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
             SignInManager<AppUser> signInManager,
             AppDbContext context,
-            ICachingService cachingService
+            ICachingService cachingService,
+            RoleManager<Role> roleManager
             )
 
         {
@@ -48,21 +44,84 @@ namespace SpringBootCloneApp.Services
             _context = context;
             _signInManager = signInManager;
             _cachingService = cachingService;
+            _roleManager = roleManager;
         }
 
-
-        public async Task<bool> Register(RegisterCustomRequest model)
+        public async Task<IResult> Register(RegisterCustomRequest model)
         {
-            
+            model.Role = model.Role.ToLower();
+            if (model.Role != "instructor" || model.Role != "student")
+                return Results.BadRequest();
 
-            return await Task.Run(() => true);
+            if (model.Password != model.ConfirmPassword)
+            {
+                return Results.BadRequest("Passwords do not match");
+            }
+
+            string? RegionCode = null;
+            if (model.PhoneNumber != null)
+            {
+                (string, string)? phoneDetails = Utilities.IsValidPhoneNumber(model.PhoneNumber);
+                if (phoneDetails.HasValue)
+                {
+                    model.PhoneNumber = phoneDetails.Value.Item1;
+                    RegionCode = phoneDetails.Value.Item2;
+                }
+                else
+                {
+                    return Results.BadRequest("Invalid phone number");
+                }
+            }
+
+            var userRole = await _roleManager.FindByNameAsync(model.Role);
+            if (userRole == null || userRole.NormalizedName == "ADMIN" || userRole.Id == 1)
+                return Results.BadRequest();
+
+            HtmlSanitizer sanitizer = new HtmlSanitizer();
+            model.Username = sanitizer.Sanitize(model.Username);
+            model.Email = sanitizer.Sanitize(model.Email);
+            model.PhoneNumber = sanitizer.Sanitize(model.PhoneNumber ?? "");
+            model.imageURL = "images/default.jpg";
+
+            var user = new AppUser()
+            {
+                Email = model.Email,
+                UserName = model.Username,
+                PhoneNumber = model.PhoneNumber,
+                Banned = false,
+                PhoneRegionCode = RegionCode,
+                imageURL = model.imageURL,
+
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                result = await _userManager.AddToRoleAsync(user, model.Role);
+
+                if (result.Succeeded)
+                    return Results.Ok(new
+                    {
+                        result = "User created successfully",
+                        user = new AppUserDTO()
+                        {
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber ?? "",
+                            Id = user.Id,
+                            imageURL = user.imageURL,
+                            RegionCode = user.PhoneRegionCode
+                        }
+                    });
+            }
+
+            return Results.BadRequest(result.Errors);
         }
+
         
         public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
         {
-            var user = await _context.Users
-               .Include(x => x.Roles)
-               .FirstOrDefaultAsync(x => x.Email == model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
                 return Results.NotFound("Either Email or password does not exist");
@@ -88,7 +147,7 @@ namespace SpringBootCloneApp.Services
                     SameSite = SameSiteMode.Strict,
                 };
 
-                httpContext.Response.Cookies.Append("refreshToken", refreshToken.Value, cookieOptions);
+                httpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
 
 
                 return Results.Ok(new RefreshTokenResponse()
@@ -174,7 +233,7 @@ namespace SpringBootCloneApp.Services
                 SameSite = SameSiteMode.Strict
             };
 
-            httpContext.Response.Cookies.Append("refreshToken", refreshToken.Value, cookieOptions);
+            httpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
 
             var htmlContent = $@"
                 <html>

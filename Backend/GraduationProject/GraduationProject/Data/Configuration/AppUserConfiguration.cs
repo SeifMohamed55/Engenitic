@@ -14,7 +14,6 @@ namespace GraduationProject.Data.Configuration
 
             builder.Property(u => u.PhoneRegionCode).HasMaxLength(5);
 
-            builder.HasIndex(u => u.Email).IsUnique();
             builder.Property(u => u.Email)
                 .HasMaxLength(100)
                 .IsRequired();
@@ -29,6 +28,10 @@ namespace GraduationProject.Data.Configuration
             builder.HasMany(x => x.Roles)
                 .WithMany(x => x.Users)
                 .UsingEntity<IdentityUserRole<int>>();
+
+            builder.HasOne(x => x.RefreshToken)
+                .WithOne(x => x.AppUser)
+                .HasForeignKey<AppUser>(x => x.RefreshTokenId);
         }
     }
 }

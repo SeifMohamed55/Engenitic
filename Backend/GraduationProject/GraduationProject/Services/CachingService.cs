@@ -32,7 +32,7 @@ namespace GraduationProject.Services
 
         public void AddRefreshTokenCachedData(string accessToken, RefreshToken refreshToken)
         {
-            var cachedRefreshToken = refreshToken.Value;
+            var cachedRefreshToken = refreshToken.Token;
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
             {
