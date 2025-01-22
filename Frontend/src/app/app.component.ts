@@ -10,5 +10,16 @@ import { FooterComponent } from "./layouts/footer/footer.component";
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'engenitics';
+  
+  
+  handleArrow(event : Event) : void{
+    const arrowUp = event.target as HTMLButtonElement;
+    arrowUp.addEventListener('click', ()=>{
+      window.scrollTo({
+        behavior : 'smooth',
+        top : 0
+      });
+    });
+  };
+
 }
