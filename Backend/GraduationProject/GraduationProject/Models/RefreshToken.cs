@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 namespace GraduationProject.Models;
 
-public partial class RefreshToken 
+public class RefreshToken 
 {
+    public int Id { get; set; }
 
     public DateTimeOffset ExpiryDate { get; set; }
-    public string Value { get; set; } = null!;
+    public string Token { get; set; } = null!;
     public virtual string LoginProvider { get; set; } = default!;
 
-    public string Name { get; set; } = null!;
+    public AppUser AppUser { get; set; } = null!;
 
 }

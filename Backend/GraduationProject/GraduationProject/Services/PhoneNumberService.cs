@@ -1,10 +1,10 @@
 ﻿using PhoneNumbers;
 
-namespace GraduationProject
+namespace GraduationProject.Services
 {
-    public class Utilities
+    public class PhoneNumberService
     {
-        public static (string,string)? IsValidPhoneNumber(string phoneNumber)
+        public static (string, string)? IsValidPhoneNumber(string phoneNumber)
         {
             var phoneNumberUtil = PhoneNumberUtil.GetInstance();
             try

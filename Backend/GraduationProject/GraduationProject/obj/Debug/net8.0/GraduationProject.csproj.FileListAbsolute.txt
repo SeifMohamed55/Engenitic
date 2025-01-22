@@ -830,3 +830,6 @@ I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\obj\Debug\net8.0
 I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.pdb
 I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\obj\Debug\net8.0\GraduationProject.genruntimeconfig.cache
 I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\obj\Debug\net8.0\ref\GraduationProject.dll
+I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\bin\Debug\net8.0\AngleSharp.dll
+I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\bin\Debug\net8.0\AngleSharp.Css.dll
+I:\Github\Engenitic\Backend\GraduationProject\GraduationProject\bin\Debug\net8.0\HtmlSanitizer.dll

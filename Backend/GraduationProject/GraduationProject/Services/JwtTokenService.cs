@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SpringBootCloneApp.Services
+namespace GraduationProject.Services
 {
     public interface IJwtTokenService
     {
@@ -38,7 +38,7 @@ namespace SpringBootCloneApp.Services
 
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -64,9 +64,8 @@ namespace SpringBootCloneApp.Services
              var refreshToken = new RefreshToken()
              {
                  ExpiryDate = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
-                 Value = Guid.NewGuid().ToString("N"),
-                 Name = "local",
-                 LoginProvider = "localhost",
+                 Token = Guid.NewGuid().ToString("N"),
+                 LoginProvider = _jwtOptions.Issuer,       
              };
 
             return refreshToken;
