@@ -16,7 +16,8 @@ namespace GraduationProject.Data.Configuration
                 .HasMaxLength(120);
 
             builder.Property(u => u.Token)
-                .HasMaxLength(250);
+                .IsRequired()
+                .HasMaxLength(32);
 
         }
     }

@@ -32,9 +32,9 @@ namespace GraduationProject.Controllers
 
 
         [HttpPost("logout")]
-        public IResult Revoke()
+        public async Task<IResult> Revoke()
         {
-            return _loginService.Logout(HttpContext);
+            return await _loginService.Logout(HttpContext);
         }
 
 

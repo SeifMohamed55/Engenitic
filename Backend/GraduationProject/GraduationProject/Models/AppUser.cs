@@ -11,17 +11,17 @@ public class AppUser : IdentityUser<int>
     public string? imageURL { get; set; }
     public bool Banned { get; set; }
 
-    public int RefreshTokenId { get; set; }
-    public RefreshToken RefreshToken { get; set; } = null!;
+    public int? RefreshTokenId { get; set; }
+    public RefreshToken? RefreshToken { get; set; } = null!;
 
     public ICollection<Role> Roles { get; set; } = new List<Role>();
 
-    public void UpdateFromDTO(AppUserDTO dto)
+    public void UpdateFromDTO(AppUserDto dto)
     {
         Id = dto.Id;
         Email = dto.Email;
         PhoneNumber = dto.PhoneNumber;
-        PhoneRegionCode = dto.RegionCode;
-        imageURL = dto.imageURL;
+        PhoneRegionCode = dto.PhoneRegionCode;
+        imageURL = dto.ImageURL;
     }
 }
