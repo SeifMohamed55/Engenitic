@@ -8,7 +8,7 @@
 
 @layer utilities {
     .engenitic-button {
-        @apply px-6 py-2 border-2 shadow-xl border-black rounded-3xl font-display uppercase ;
+        @apply px-6 py-2 border-2 shadow-xl border-black rounded-3xl font-display uppercase  text-center;
     }
     .engenitic-input {
         @apply w-full border-[1.5px] border-black rounded py-2 font-display px-2
