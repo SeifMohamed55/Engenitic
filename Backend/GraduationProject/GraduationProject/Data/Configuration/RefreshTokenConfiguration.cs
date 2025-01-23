@@ -9,7 +9,8 @@ namespace GraduationProject.Data.Configuration
         void IEntityTypeConfiguration<RefreshToken>.Configure(EntityTypeBuilder<RefreshToken> builder)
         {
             builder.ToTable("RefreshTokens");
-            builder.HasKey(u => u.Id);
+            
+            builder.HasKey(x=> x.Id);
 
             builder.Property(u => u.LoginProvider)
                  .IsRequired()
@@ -18,6 +19,7 @@ namespace GraduationProject.Data.Configuration
             builder.Property(u => u.Token)
                 .IsRequired()
                 .HasMaxLength(32);
+
 
         }
     }

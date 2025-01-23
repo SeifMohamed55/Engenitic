@@ -332,9 +332,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "banned": {
-            "type": "boolean"
-          },
           "email": {
             "type": "string",
             "nullable": true
@@ -346,6 +343,21 @@
           "imageURL": {
             "type": "string",
             "nullable": true
+          },
+          "banned": {
+            "type": "boolean"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshTokenId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "refreshToken": {
+            "$ref": "#/components/schemas/RefreshToken"
           },
           "roles": {
             "type": "array",
@@ -374,6 +386,31 @@
             "minLength": 1,
             "type": "string",
             "format": "password"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "loginProvider": {
+            "type": "string",
+            "nullable": true
+          },
+          "appUser": {
+            "$ref": "#/components/schemas/AppUser"
           }
         },
         "additionalProperties": false

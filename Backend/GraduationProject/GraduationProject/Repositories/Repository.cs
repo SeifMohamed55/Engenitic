@@ -15,22 +15,22 @@ namespace GraduationProject.Repositories
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly AppDbContext _context;
-        protected readonly DbSet<T> _appUsers;
+        protected readonly DbSet<T> _dbSet;
 
         public Repository(AppDbContext context)
         {
             _context = context;
-            _appUsers = _context.Set<T>();
+            _dbSet = _context.Set<T>();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _appUsers.ToListAsync();
+            return await _dbSet.ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            return await _appUsers.FindAsync(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task<bool> Exists(int id)
@@ -42,13 +42,13 @@ namespace GraduationProject.Repositories
 
         public async Task AddAsync(T entity)
         {
-            await _appUsers.AddAsync(entity);
+            await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(T entity)
         {
-            _appUsers.Update(entity);
+            _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -59,7 +59,7 @@ namespace GraduationProject.Repositories
                 var entity = await GetByIdAsync(id);
                 if (entity != null)
                 {
-                    _appUsers.Remove(entity);
+                    _dbSet.Remove(entity);
                     await _context.SaveChangesAsync();
                     return true;
                 }

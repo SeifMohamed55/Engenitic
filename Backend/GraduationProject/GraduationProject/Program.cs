@@ -6,6 +6,7 @@ using NuGet.Configuration;
 using GraduationProject.Services;
 using System;
 using GraduationProject.Repositories;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,15 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddDbContextPool<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD")));
 
-builder.Services.AddIdentity<AppUser, Role>()
+builder.Services.AddIdentity<AppUser, Role>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 5;
+    options.User.RequireUniqueEmail = true;
+})
     .AddRoles<Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();

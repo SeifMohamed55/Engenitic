@@ -5,24 +5,33 @@
 namespace GraduationProject.Migrations
 {
     /// <inheritdoc />
-    public partial class RemovingEmailIndex : Migration
+    public partial class MakingNormalizedEmailUnique : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_Users_Email",
+                name: "EmailIndex",
                 table: "Users");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "Users",
+                column: "NormalizedEmail",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "EmailIndex",
+                table: "Users");
+
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
+                name: "EmailIndex",
                 table: "Users",
-                column: "Email",
-                unique: true);
+                column: "NormalizedEmail");
         }
     }
 }

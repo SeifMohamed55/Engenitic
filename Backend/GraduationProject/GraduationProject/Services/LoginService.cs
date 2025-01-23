@@ -8,6 +8,7 @@ using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace GraduationProject.Services
@@ -52,8 +53,11 @@ namespace GraduationProject.Services
 
         public async Task<IResult> Register(RegisterCustomRequest model)
         {
+            if(await _userManager.FindByEmailAsync(model.Email) != null)
+                return Results.BadRequest("Email already exists");
+
             model.Role = model.Role.ToLower();
-            if (model.Role != "instructor" || model.Role != "student")
+            if (model.Role != "instructor" && model.Role != "student")
                 return Results.BadRequest();
 
             if (model.Password != model.ConfirmPassword)
@@ -89,11 +93,12 @@ namespace GraduationProject.Services
             var user = new AppUser()
             {
                 Email = model.Email,
-                UserName = model.Username,
+                UserName = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Banned = false,
                 PhoneRegionCode = RegionCode,
                 imageURL = model.imageURL,
+                FullName = model.Username
 
             };
 
@@ -113,7 +118,8 @@ namespace GraduationProject.Services
                             PhoneNumber = user.PhoneNumber ?? "",
                             Id = user.Id,
                             ImageURL = user.imageURL,
-                            PhoneRegionCode = user.PhoneRegionCode
+                            PhoneRegionCode = user.PhoneRegionCode,
+                            UserName = user.FullName
                         }
                     });
             }
@@ -127,7 +133,7 @@ namespace GraduationProject.Services
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
-                return Results.NotFound("Either Email or password does not exist");
+                return Results.NotFound("Email does not exist");
 
             var result = await _signInManager
                 .PasswordSignInAsync(user.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
@@ -138,8 +144,8 @@ namespace GraduationProject.Services
             if (result.Succeeded)
             {
                 var accessToken = _tokenService.GenerateSymmetricJwtToken(user);
-                RefreshToken refreshToken = _tokenService.GenerateRefreshToken();
-                
+                RefreshToken refreshToken = _tokenService.GenerateRefreshToken(user);
+
                 var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
                 if(res == false)
                     return Results.BadRequest("Couldn't SignIn");
@@ -157,10 +163,11 @@ namespace GraduationProject.Services
                 return Results.Ok(new RefreshTokenResponse()
                 {
                     AccessToken = accessToken,
-                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f")
+                    ValidTo = DateTime.UtcNow.AddMinutes(
+                        double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f", CultureInfo.InvariantCulture)
                 });
             }
-            return Results.NotFound("Either Email or Password is incorrect!");
+            return Results.NotFound("Password is incorrect!");
         }
 
 

@@ -10,6 +10,7 @@ public class AppUser : IdentityUser<int>
     public string? PhoneRegionCode { get; set; }
     public string? imageURL { get; set; }
     public bool Banned { get; set; }
+    public string FullName { get; set; } = null!;
 
     public int? RefreshTokenId { get; set; }
     public RefreshToken? RefreshToken { get; set; } = null!;
@@ -23,5 +24,6 @@ public class AppUser : IdentityUser<int>
         PhoneNumber = dto.PhoneNumber;
         PhoneRegionCode = dto.PhoneRegionCode;
         imageURL = dto.ImageURL;
+        FullName = dto.UserName;
     }
 }
