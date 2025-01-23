@@ -1,14 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\",
+  "WorkspaceRootPath": "D:\\studying\\fourth year\\graduating project\\Engenitic\\Backend\\GraduationProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|i:\\github\\engenitic\\backend\\graduationproject\\graduationproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|d:\\studying\\fourth year\\graduating project\\engenitic\\backend\\graduationproject\\graduationproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0364316-3611-4F6C-B68E-ACEF9C171633}|GraduationProject\\GraduationProject.csproj|solutionrelative:graduationproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,27 +27,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AuthenticationController.cs",
-              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Controllers\\AuthenticationController.cs",
-              "RelativeDocumentMoniker": "GraduationProject\\Controllers\\AuthenticationController.cs",
-              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Controllers\\AuthenticationController.cs",
-              "RelativeToolTip": "GraduationProject\\Controllers\\AuthenticationController.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAIwHcAAAAAAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\studying\\fourth year\\graduating project\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Program.cs",
+              "RelativeDocumentMoniker": "GraduationProject\\Program.cs",
+              "ToolTip": "D:\\studying\\fourth year\\graduating project\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Program.cs",
+              "RelativeToolTip": "GraduationProject\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-21T21:06:45.439Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "GraduationProject\\Data\\AppDbContext.cs",
-              "ToolTip": "I:\\Github\\Engenitic\\Backend\\GraduationProject\\GraduationProject\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "GraduationProject\\Data\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-21T20:53:57.041Z",
+              "WhenOpened": "2025-01-23T16:11:05.613Z",
               "EditorCaption": ""
             }
           ]
