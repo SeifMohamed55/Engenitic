@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250122192447_MakingTokenRequired")]
-    partial class MakingTokenRequired
+    [Migration("20250122230123_MakingNormalizedEmailUnique")]
+    partial class MakingNormalizedEmailUnique
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,12 @@ namespace GraduationProject.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(true)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -78,7 +84,7 @@ namespace GraduationProject.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)");
 
-                    b.Property<int>("RefreshTokenId")
+                    b.Property<int?>("RefreshTokenId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
@@ -89,9 +95,9 @@ namespace GraduationProject.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(80)
+                        .HasMaxLength(120)
                         .IsUnicode(true)
-                        .HasColumnType("character varying(80)");
+                        .HasColumnType("character varying(120)");
 
                     b.Property<string>("imageURL")
                         .HasColumnType("text");
@@ -99,6 +105,7 @@ namespace GraduationProject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
+                        .IsUnique()
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
@@ -274,9 +281,7 @@ namespace GraduationProject.Migrations
                 {
                     b.HasOne("GraduationProject.Models.RefreshToken", "RefreshToken")
                         .WithOne("AppUser")
-                        .HasForeignKey("AppUser", "RefreshTokenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUser", "RefreshTokenId");
 
                     b.Navigation("RefreshToken");
                 });

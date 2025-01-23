@@ -5,7 +5,7 @@
 namespace GraduationProject.Migrations
 {
     /// <inheritdoc />
-    public partial class MakingTokenIdNullable : Migration
+    public partial class RefreshTokenOndeleteSetNull : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,20 +14,13 @@ namespace GraduationProject.Migrations
                 name: "FK_Users_RefreshTokens_RefreshTokenId",
                 table: "Users");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "RefreshTokenId",
-                table: "Users",
-                type: "integer",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "integer");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_Users_RefreshTokens_RefreshTokenId",
                 table: "Users",
                 column: "RefreshTokenId",
                 principalTable: "RefreshTokens",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
@@ -37,23 +30,12 @@ namespace GraduationProject.Migrations
                 name: "FK_Users_RefreshTokens_RefreshTokenId",
                 table: "Users");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "RefreshTokenId",
-                table: "Users",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "integer",
-                oldNullable: true);
-
             migrationBuilder.AddForeignKey(
                 name: "FK_Users_RefreshTokens_RefreshTokenId",
                 table: "Users",
                 column: "RefreshTokenId",
                 principalTable: "RefreshTokens",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
     }
 }

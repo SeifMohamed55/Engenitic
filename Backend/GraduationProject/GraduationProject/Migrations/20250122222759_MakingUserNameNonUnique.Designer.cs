@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250122204634_MakingTokenIdNullable")]
-    partial class MakingTokenIdNullable
+    [Migration("20250122222759_MakingUserNameNonUnique")]
+    partial class MakingUserNameNonUnique
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,10 +99,10 @@ namespace GraduationProject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
+                        .IsUnique()
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
-                        .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
                     b.HasIndex("RefreshTokenId")

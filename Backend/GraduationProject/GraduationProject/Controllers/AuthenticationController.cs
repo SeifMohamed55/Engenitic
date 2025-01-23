@@ -39,7 +39,7 @@ namespace GraduationProject.Controllers
 
 
         [HttpPost("register")]
-        public async Task<IResult> Register(RegisterCustomRequest model, [FromForm] IFormFile file)
+        public async Task<IResult> Register(RegisterCustomRequest model/*, [FromForm] IFormFile file*/)
         {
 
             if (!ModelState.IsValid)

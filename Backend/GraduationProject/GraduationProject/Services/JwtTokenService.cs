@@ -14,7 +14,7 @@ namespace GraduationProject.Services
 {
     public interface IJwtTokenService
     {
-        RefreshToken GenerateRefreshToken();
+        RefreshToken GenerateRefreshToken(AppUser appUser);
         string GenerateSymmetricJwtToken(AppUser client);
         long? ExtractIdFromExpiredToken(string token);
 
@@ -59,13 +59,14 @@ namespace GraduationProject.Services
             return strToken;
         }
 
-        public RefreshToken GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken(AppUser appUser)
         {
              var refreshToken = new RefreshToken()
              {
                  ExpiryDate = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
                  Token = Guid.NewGuid().ToString("N"),
-                 LoginProvider = _jwtOptions.Issuer,       
+                 LoginProvider = _jwtOptions.Issuer,
+                 Id = appUser.RefreshTokenId ?? 0
              };
 
             return refreshToken;

@@ -11,8 +11,9 @@ namespace GraduationProject.Repositories
     public interface IUserRepository : IRepository<AppUser>
     {
         Task<AppUserDto?> GetUserByEmail(string email);
-        Task<bool> DeleteRefreshToken(int id);
         Task<bool> UpdateRefreshToken(AppUser appUser, RefreshToken token);
+        Task<bool> DeleteRefreshToken(int id);
+        Task<bool> DeleteRefreshToken(AppUser appUser);
     }
 
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
@@ -24,7 +25,7 @@ namespace GraduationProject.Repositories
 
         public async Task<IEnumerable<AppUserDto>> GetUsers()
         {
-            return await _appUsers
+            return await _dbSet
                 .Include(x=> x.Roles)
                 .Include(x=> x.RefreshToken)
                 .Select(x=> new AppUserDto
@@ -34,25 +35,21 @@ namespace GraduationProject.Repositories
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode =  x.PhoneRegionCode,
                     ImageURL = x.imageURL,
-                    Roles = x.Roles.Select(x=> x.Name.ToLower())
                 }).ToListAsync();
         }
 
         public async Task<AppUserDto?> GetAppUser(int id)
         {
-            return await _appUsers
+            return await _dbSet 
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
                 .Select(x => new AppUserDto
                 {
                     Id = x.Id,
-                    RefreshToken = x.RefreshToken.Token,
-                    ExpiryDate = x.RefreshToken.ExpiryDate,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
                     ImageURL = x.imageURL,
-                    Roles = x.Roles.Select(x => x.Name.ToLower())
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
 
@@ -86,19 +83,16 @@ namespace GraduationProject.Repositories
 
         public async Task<AppUserDto?> GetUserByEmail(string email)
         {
-            return await _appUsers
+            return await _dbSet
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
                 .Select(x => new AppUserDto
                 {
                     Id = x.Id,
-                    RefreshToken = x.RefreshToken.Token,
-                    ExpiryDate = x.RefreshToken.ExpiryDate,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
                     ImageURL = x.imageURL,
-                    Roles = x.Roles.Select(x => x.Name.ToLower())
                 }).FirstOrDefaultAsync(x => x.Email == email);
         }
 
@@ -110,7 +104,7 @@ namespace GraduationProject.Repositories
                 await UpdateAsync(appUser);
                 return true;
             }
-            catch (Exception )
+            catch (Exception)
             {
 
             }
@@ -122,7 +116,7 @@ namespace GraduationProject.Repositories
         {
             try
             {
-                var user = await _appUsers.FirstOrDefaultAsync(x => x.Id == id);
+                var user = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
                 if (user == null)
                 {
                     return false;
@@ -138,5 +132,23 @@ namespace GraduationProject.Repositories
             return false;
 
         }
+
+        public async Task<bool> DeleteRefreshToken(AppUser appUser)
+        {
+            try
+            {
+                appUser.RefreshToken = null;
+                await UpdateAsync(appUser);
+                return true;
+            }
+            catch (Exception)
+            {
+
+            }
+            return false;
+
+        }
+
+
     }
 }

@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250122191948_AddingRefreshTokenTable")]
-    partial class AddingRefreshTokenTable
+    [Migration("20250122224646_MakingNormalizedEmailNonUnique")]
+    partial class MakingNormalizedEmailNonUnique
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,7 @@ namespace GraduationProject.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)");
 
-                    b.Property<int>("RefreshTokenId")
+                    b.Property<int?>("RefreshTokenId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
@@ -129,8 +129,8 @@ namespace GraduationProject.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
 
@@ -274,9 +274,7 @@ namespace GraduationProject.Migrations
                 {
                     b.HasOne("GraduationProject.Models.RefreshToken", "RefreshToken")
                         .WithOne("AppUser")
-                        .HasForeignKey("AppUser", "RefreshTokenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUser", "RefreshTokenId");
 
                     b.Navigation("RefreshToken");
                 });
