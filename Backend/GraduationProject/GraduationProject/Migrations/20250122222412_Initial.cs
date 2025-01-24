@@ -13,6 +13,21 @@ namespace GraduationProject.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Token = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    LoginProvider = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -33,10 +48,11 @@ namespace GraduationProject.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Banned = table.Column<bool>(type: "boolean", nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PhoneRegionCode = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
                     imageURL = table.Column<string>(type: "text", nullable: true),
+                    Banned = table.Column<bool>(type: "boolean", nullable: false),
+                    RefreshTokenId = table.Column<int>(type: "integer", nullable: true),
                     UserName = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -54,6 +70,11 @@ namespace GraduationProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_RefreshTokens_RefreshTokenId",
+                        column: x => x.RefreshTokenId,
+                        principalTable: "RefreshTokens",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -191,12 +212,13 @@ namespace GraduationProject.Migrations
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "Users",
-                column: "NormalizedEmail");
+                column: "NormalizedEmail",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
+                name: "IX_Users_RefreshTokenId",
                 table: "Users",
-                column: "Email",
+                column: "RefreshTokenId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -229,6 +251,9 @@ namespace GraduationProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
         }
     }
 }

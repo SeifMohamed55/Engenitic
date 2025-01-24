@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250122224236_MakingUserNameUnique")]
+    partial class MakingUserNameUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,12 +49,6 @@ namespace GraduationProject.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -92,9 +89,9 @@ namespace GraduationProject.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(120)
+                        .HasMaxLength(80)
                         .IsUnicode(true)
-                        .HasColumnType("character varying(120)");
+                        .HasColumnType("character varying(80)");
 
                     b.Property<string>("imageURL")
                         .HasColumnType("text");
@@ -123,11 +120,6 @@ namespace GraduationProject.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("EncryptedToken")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
-
                     b.Property<DateTimeOffset>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -135,6 +127,11 @@ namespace GraduationProject.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
 
@@ -278,8 +275,7 @@ namespace GraduationProject.Migrations
                 {
                     b.HasOne("GraduationProject.Models.RefreshToken", "RefreshToken")
                         .WithOne("AppUser")
-                        .HasForeignKey("AppUser", "RefreshTokenId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("AppUser", "RefreshTokenId");
 
                     b.Navigation("RefreshToken");
                 });

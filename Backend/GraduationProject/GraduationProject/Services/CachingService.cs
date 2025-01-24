@@ -1,52 +1,48 @@
-﻿using GraduationProject.Models;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+using GraduationProject.Models;
+using Microsoft.Extensions.Options;
+using GraduationProject.StartupConfigurations;
 
 namespace GraduationProject.Services
 {
-    public interface ICachingService
+    public interface ITokenBlacklistService
     {
-        string? GetRefreshToken(string accessToken);
-        void AddRefreshTokenCachedData(string accessToken, RefreshToken refreshToken);
-        void RemoveCachedRefreshToken(string accessToken);
+        bool IsTokenBlacklisted(string accessToken);
+        bool BlacklistToken(string accessToken);
     }
 
-    public class CachingService : ICachingService
+
+    public class TokenBlacklistService : ITokenBlacklistService
     {
-        private readonly IMemoryCache _cache;
+        private readonly IMemoryCache _memoryCache;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public CachingService(IMemoryCache cache)
+        public TokenBlacklistService(IMemoryCache memoryCache, IJwtTokenService jwtTokenService)
         {
-            _cache = cache;
-
+            _memoryCache = memoryCache;
+            _jwtTokenService = jwtTokenService;
         }
 
-        public string? GetRefreshToken(string accessToken)
+        public bool IsTokenBlacklisted(string accessToken)
         {
-            if (_cache.TryGetValue(accessToken, out string? refreshToken))
-                return refreshToken;
-
-            return null;
-
-
+            return _memoryCache.TryGetValue(accessToken, out _);
         }
 
-        public void AddRefreshTokenCachedData(string accessToken, RefreshToken refreshToken)
+        public bool BlacklistToken(string accessToken)
         {
-            var cachedRefreshToken = refreshToken.Value;
-
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
+            try
             {
-                AbsoluteExpiration = refreshToken.ExpiryDate
+                var exp = _jwtTokenService.GetAccessTokenExpiration(accessToken);
+                _memoryCache.Set(accessToken, true, exp);
+                return true;
 
-            };
-
-            _cache.Set(accessToken, cachedRefreshToken, cacheEntryOptions);
-
-        }
-
-        public void RemoveCachedRefreshToken(string accessToken)
-        {
-            _cache.Remove(accessToken);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
     }
+
+
 }
