@@ -144,7 +144,7 @@ namespace GraduationProject.Services
             if (result.Succeeded)
             {
                 var accessToken = _tokenService.GenerateJwtToken(user);
-                (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
+                RefreshToken refreshToken = _tokenService.GenerateRefreshToken(user);
 
                 var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
                 if(res == false)
@@ -157,7 +157,7 @@ namespace GraduationProject.Services
                     SameSite = SameSiteMode.Strict,
                 };
 
-                httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
+                httpContext.Response.Cookies.Append("refreshToken", refreshToken.EncryptedToken, cookieOptions);
 
 
                 return Results.Ok(new RefreshTokenResponse()

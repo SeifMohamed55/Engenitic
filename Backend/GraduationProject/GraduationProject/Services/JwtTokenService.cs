@@ -14,7 +14,7 @@ namespace GraduationProject.Services
 {
     public interface IJwtTokenService
     {
-        (RefreshToken,string) GenerateRefreshToken(AppUser appUser);
+        RefreshToken GenerateRefreshToken(AppUser appUser);
         string GenerateJwtToken(AppUser client);
         long? ExtractIdFromExpiredToken(string token);
 
@@ -23,10 +23,12 @@ namespace GraduationProject.Services
     public class JwtTokenService : IJwtTokenService
     {
         private readonly JwtOptions _jwtOptions;
+        private readonly IAesEncryptionService _aesService;
 
-        public JwtTokenService(IOptions<JwtOptions> options)
+        public JwtTokenService(IOptions<JwtOptions> options, IAesEncryptionService aesService)
         {
             _jwtOptions = options.Value;
+            _aesService = aesService;
         }
 
         public string GenerateJwtToken(AppUser user)
@@ -59,19 +61,19 @@ namespace GraduationProject.Services
             return strToken;
         }
 
-        public (RefreshToken,string) GenerateRefreshToken(AppUser appUser)
+        public RefreshToken GenerateRefreshToken(AppUser appUser)
         {
-            string rawToken = Guid.NewGuid().ToString();
+            var encryptedToken = _aesService.Encrypt(Guid.NewGuid().ToString());
             var refreshToken = new RefreshToken()
              {
                  ExpiryDate = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
                  Id = appUser.RefreshTokenId ?? 0,
                  LoginProvider = _jwtOptions.Issuer,
-                 EncryptedToken = null
+                 EncryptedToken = encryptedToken
 
-             };
+            };
 
-            return (refreshToken, rawToken);
+            return refreshToken;
              
         }
 

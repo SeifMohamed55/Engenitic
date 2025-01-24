@@ -31,13 +31,15 @@ builder.Services.AddIdentity<AppUser, Role>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+builder.Services.AddSingleton<IAesEncryptionService, AesEncryptionService>();
 
 builder.Services.AddScoped<AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
 
 
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddMemoryCache();

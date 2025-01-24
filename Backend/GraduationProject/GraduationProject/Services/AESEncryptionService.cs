@@ -6,7 +6,13 @@
     using System.Security.Cryptography;
     using System.Text;
 
-    public class AesEncryptionService
+
+    public interface IAesEncryptionService
+    {
+        string Encrypt(string plaintext);
+        string Decrypt(string encryptedBase64);
+    }   
+    public class AesEncryptionService : IAesEncryptionService
     {
         private readonly byte[] _key;
         private readonly byte[] _iv;
@@ -16,13 +22,10 @@
             _key = Convert.FromBase64String(options.Value.RefreshTokenKey);
             _iv = Convert.FromBase64String(options.Value.IV);
         }
-        public string Encrypt(string plaintext, string base64Key, string base64IV)
+        public string Encrypt(string plaintext)
         {
-            // Decode the Base64 Key and IV
-            byte[] key = Convert.FromBase64String(base64Key);
-            byte[] iv = Convert.FromBase64String(base64IV);
 
-            if (key.Length != 32 || iv.Length != 16)
+            if (_key.Length != 32 || _iv.Length != 16)
             {
                 throw new ArgumentException("Invalid Key or IV length. Key must be 32 bytes and IV must be 16 bytes.");
             }
@@ -30,8 +33,8 @@
             // Create an AES instance
             using (Aes aes = Aes.Create())
             {
-                aes.Key = key;
-                aes.IV = iv;
+                aes.Key = _key;
+                aes.IV = _iv;
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
 
@@ -58,14 +61,11 @@
             }
         }
 
-        public string DecryptData(string encryptedBase64, string base64Key, string base64IV)
+        public string Decrypt(string encryptedBase64)
         {
-            // Decode the Base64 Key and IV
-            byte[] key = Convert.FromBase64String(base64Key);
-            byte[] iv = Convert.FromBase64String(base64IV);
 
             // Validate key and IV lengths
-            if (key.Length != 32 || iv.Length != 16)
+            if (_key.Length != 32 || _iv.Length != 16)
             {
                 throw new ArgumentException("Invalid Key or IV length. Key must be 32 bytes and IV must be 16 bytes.");
             }
@@ -76,8 +76,8 @@
             // Create an AES instance
             using (Aes aes = Aes.Create())
             {
-                aes.Key = key;
-                aes.IV = iv;
+                aes.Key = _key;
+                aes.IV = _iv;
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
 
@@ -86,7 +86,7 @@
 
                 // Perform decryption
                 byte[] decryptedBytes;
-                using (var ms = new System.IO.MemoryStream())
+                using (var ms = new MemoryStream())
                 {
                     using (var cryptoStream = new CryptoStream(ms, decryptor, CryptoStreamMode.Write))
                     {
