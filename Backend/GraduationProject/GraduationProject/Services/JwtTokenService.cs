@@ -10,12 +10,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SpringBootCloneApp.Services
+namespace GraduationProject.Services
 {
     public interface IJwtTokenService
     {
-        RefreshToken GenerateRefreshToken();
-        string GenerateSymmetricJwtToken(AppUser client);
+        (RefreshToken,string) GenerateRefreshToken(AppUser appUser);
+        string GenerateJwtToken(AppUser client);
         long? ExtractIdFromExpiredToken(string token);
 
     }
@@ -29,7 +29,7 @@ namespace SpringBootCloneApp.Services
             _jwtOptions = options.Value;
         }
 
-        public string GenerateSymmetricJwtToken(AppUser user)
+        public string GenerateJwtToken(AppUser user)
         {
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
@@ -38,7 +38,7 @@ namespace SpringBootCloneApp.Services
 
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -59,21 +59,23 @@ namespace SpringBootCloneApp.Services
             return strToken;
         }
 
-        public RefreshToken GenerateRefreshToken()
+        public (RefreshToken,string) GenerateRefreshToken(AppUser appUser)
         {
-             var refreshToken = new RefreshToken()
+            string rawToken = Guid.NewGuid().ToString();
+            var refreshToken = new RefreshToken()
              {
                  ExpiryDate = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
-                 Value = Guid.NewGuid().ToString("N"),
-                 Name = "local",
-                 LoginProvider = "localhost",
+                 Id = appUser.RefreshTokenId ?? 0,
+                 LoginProvider = _jwtOptions.Issuer,
+                 EncryptedToken = null
+
              };
 
-            return refreshToken;
+            return (refreshToken, rawToken);
              
         }
 
-        public  ClaimsPrincipal GetSymmetricPrincipalFromExpiredToken(string token)
+        private  ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
 
@@ -103,7 +105,7 @@ namespace SpringBootCloneApp.Services
 
         public long? ExtractIdFromExpiredToken(string token)
         {
-            var principal =  GetSymmetricPrincipalFromExpiredToken(token);
+            var principal = GetPrincipalFromExpiredToken(token);
             var idClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             long id;
             if (idClaim?.Value != null)

@@ -7,6 +7,9 @@
         public required string Audience { get; set; } // consumer api
         public required string AccessTokenValidityMinutes { get; set; }
         public required string RefreshTokenValidityDays { get; set; }
+        public required string RefreshTokenKey { get; set; }
+        public required string IV { get; set; }
+
 
     }
 }
