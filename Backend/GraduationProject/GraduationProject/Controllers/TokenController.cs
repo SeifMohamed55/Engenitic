@@ -13,28 +13,23 @@ namespace GraduationProject.Controllers
     [Route("api/[controller]")]
     public class TokenController : ControllerBase
     {
-        private readonly AppDbContext _context;
         private readonly IJwtTokenService _tokenService;
         private readonly JwtOptions _jwtOptions;
         private readonly AppUsersRepository _appUsersRepository;
         private readonly IAesEncryptionService _aesEncryptionService;
         public TokenController
-            (AppDbContext context,
-            IJwtTokenService tokenService,
+            (IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
             AppUsersRepository appUsersRepository,
             IAesEncryptionService aesEncryptionService)
         {
-            _context = context;
             _tokenService = tokenService;
             _jwtOptions = options.Value;
             _appUsersRepository = appUsersRepository;
             _aesEncryptionService = aesEncryptionService;
         }
 
-        // needs WORK
         [HttpPost("refresh")]
-        //[SkipJwtTokenMiddleware]
         public async Task<IActionResult> Refresh()
         {
 
@@ -42,6 +37,9 @@ namespace GraduationProject.Controllers
 
             if (oldAccessToken == null)
                 return BadRequest("No Token Provided");
+
+            if(_tokenService.IsTokenValid(oldAccessToken))
+                return BadRequest("Token is valid");
 
             var extractedId =  _tokenService.ExtractIdFromExpiredToken(oldAccessToken);
 

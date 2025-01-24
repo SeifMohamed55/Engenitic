@@ -25,11 +25,11 @@ namespace GraduationProject.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IJwtTokenService _tokenService;
-        private readonly AppDbContext _context;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly JwtOptions _jwtOptions;
         private readonly RoleManager<Role> _roleManager;
         private readonly AppUsersRepository _appUserRepo;
+        private readonly ITokenBlacklistService _tokenBlacklistService;
 
         public LoginRegisterService(
             UserManager<AppUser> userManager,
@@ -38,17 +38,18 @@ namespace GraduationProject.Services
             SignInManager<AppUser> signInManager,
             AppDbContext context,
             RoleManager<Role> roleManager,
-            AppUsersRepository appUsersRepository
+            AppUsersRepository appUsersRepository,
+            ITokenBlacklistService tokenBlacklistService
             )
 
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _jwtOptions = options.Value;
-            _context = context;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _appUserRepo = appUsersRepository;
+            _tokenBlacklistService = tokenBlacklistService;
         }
 
         public async Task<IResult> Register(RegisterCustomRequest model)
@@ -130,6 +131,7 @@ namespace GraduationProject.Services
         
         public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
         {
+
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -191,9 +193,14 @@ namespace GraduationProject.Services
 
                 var cookieOptions = new CookieOptions
                 {
-                    Expires = DateTime.Now.AddDays(-1)
+                    Expires = DateTime.Now.AddDays(-1), // Set the cookie to expire in the past
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
                 };
+
                 httpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+
                 return Results.Ok();
             }
             else

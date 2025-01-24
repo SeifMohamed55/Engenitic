@@ -18,21 +18,24 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddDbContextPool<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD")));
 
-builder.Services.AddIdentity<AppUser, Role>(options =>
-{
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 5;
-    options.User.RequireUniqueEmail = true;
-})
+builder.Services
+    .AddIdentity<AppUser, Role>(options =>
+    {
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 5;
+        options.User.RequireUniqueEmail = true;
+    })
     .AddRoles<Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IAesEncryptionService, AesEncryptionService>();
 
@@ -41,8 +44,6 @@ builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
 
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
-
-builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
 

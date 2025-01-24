@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace GraduationProject.Repositories
 {
 
-
     public interface IUserRepository : IRepository<AppUser>
     {
         Task<AppUserDto?> GetUserByEmail(string email);

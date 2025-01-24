@@ -1,14 +1,11 @@
 ﻿using GraduationProject.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Mono.TextTemplating;
 using GraduationProject.StartupConfigurations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
+using NuGet.Common;
 
 namespace GraduationProject.Services
 {
@@ -17,24 +14,33 @@ namespace GraduationProject.Services
         RefreshToken GenerateRefreshToken(AppUser appUser);
         string GenerateJwtToken(AppUser client);
         int? ExtractIdFromExpiredToken(string token);
+        bool IsTokenValid(string token);
+        string? ExtractJwtTokenFromContext(HttpContext context);
+        DateTimeOffset GetAccessTokenExpiration(string accessToken);
 
     }
 
     public class JwtTokenService : IJwtTokenService
     {
-        private readonly JwtOptions _jwtOptions;
         private readonly IAesEncryptionService _aesService;
+        private readonly TokenValidationParameters _tokenValidationParameters;
+        private readonly byte[] _jwtKey;
+        private readonly JwtOptions _jwtOptions;
 
-        public JwtTokenService(IOptions<JwtOptions> options, IAesEncryptionService aesService)
+        public JwtTokenService(IOptions<JwtOptions> options,
+            IAesEncryptionService aesService,
+            IOptions<TokenValidationParameters> tokenValidationParameters)
         {
-            _jwtOptions = options.Value;
+            _jwtKey = Encoding.UTF8.GetBytes(options.Value.Key);
             _aesService = aesService;
+            _tokenValidationParameters = tokenValidationParameters.Value;
+            _jwtOptions = options.Value;
         }
 
         public string GenerateJwtToken(AppUser user)
         {
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+            var key = new SymmetricSecurityKey(_jwtKey);
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
 
@@ -77,7 +83,7 @@ namespace GraduationProject.Services
              
         }
 
-        private  ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
 
@@ -105,6 +111,51 @@ namespace GraduationProject.Services
             return principal;
         }
 
+
+
+        public bool IsTokenValid(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                // Validate the token using the injected TokenValidationParameters
+                tokenHandler.ValidateToken(token, _tokenValidationParameters, out var validatedToken);
+                return true; // Token is valid
+            }
+            catch (Exception)
+            {
+                return false; // Token validation failed
+            }
+        }
+
+        // in caching
+        public DateTimeOffset GetAccessTokenExpiration(string accessToken)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(accessToken, _tokenValidationParameters, out securityToken);
+
+            var jwtToken = securityToken as JwtSecurityToken;
+            if (jwtToken == null)
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            var expClaim = principal.Claims.FirstOrDefault(c => c.Type == "exp");
+            if (expClaim != null && long.TryParse(expClaim.Value, out var expUnix))
+            {
+                // Convert Unix timestamp to DateTimeOffset
+                return DateTimeOffset.FromUnixTimeSeconds(expUnix);
+            }
+            else
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+        }
+
+
         public int? ExtractIdFromExpiredToken(string token)
         {
             var principal = GetPrincipalFromExpiredToken(token);
@@ -117,6 +168,11 @@ namespace GraduationProject.Services
                     return id;
             }
             return null;
+        }
+
+        public string? ExtractJwtTokenFromContext(HttpContext context)
+        {
+            return context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         }
 
 
