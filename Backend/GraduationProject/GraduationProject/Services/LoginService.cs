@@ -182,7 +182,8 @@ namespace GraduationProject.Services
             if (accessToken is null)
                 return Results.BadRequest();
 
-        
+            _tokenBlacklistService.BlacklistToken(accessToken);
+
             string? id = httpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
             if(int.TryParse(id, out int userId))
             {
