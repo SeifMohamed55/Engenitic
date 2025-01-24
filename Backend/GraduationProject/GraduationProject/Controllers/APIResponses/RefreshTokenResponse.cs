@@ -2,7 +2,7 @@
 
 namespace GraduationProject.Controllers.APIResponses
 {
-    public class RefreshTokenResponse
+    public class AccessTokenResponse
     {
         public string AccessToken { get; set; } = null!;
 

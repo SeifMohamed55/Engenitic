@@ -160,7 +160,7 @@ namespace GraduationProject.Services
                 httpContext.Response.Cookies.Append("refreshToken", refreshToken.EncryptedToken, cookieOptions);
 
 
-                return Results.Ok(new RefreshTokenResponse()
+                return Results.Ok(new AccessTokenResponse()
                 {
                     AccessToken = accessToken,
                     ValidTo = DateTime.UtcNow.AddMinutes(

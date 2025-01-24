@@ -16,7 +16,7 @@ namespace GraduationProject.Services
     {
         RefreshToken GenerateRefreshToken(AppUser appUser);
         string GenerateJwtToken(AppUser client);
-        long? ExtractIdFromExpiredToken(string token);
+        int? ExtractIdFromExpiredToken(string token);
 
     }
 
@@ -66,7 +66,7 @@ namespace GraduationProject.Services
             var encryptedToken = _aesService.Encrypt(Guid.NewGuid().ToString());
             var refreshToken = new RefreshToken()
              {
-                 ExpiryDate = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
+                 ExpiryDate = DateTimeOffset.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
                  Id = appUser.RefreshTokenId ?? 0,
                  LoginProvider = _jwtOptions.Issuer,
                  EncryptedToken = encryptedToken
@@ -105,14 +105,14 @@ namespace GraduationProject.Services
             return principal;
         }
 
-        public long? ExtractIdFromExpiredToken(string token)
+        public int? ExtractIdFromExpiredToken(string token)
         {
             var principal = GetPrincipalFromExpiredToken(token);
             var idClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            long id;
+            int id;
             if (idClaim?.Value != null)
             {
-              var res = long.TryParse(idClaim.Value, out id);
+              var res = int.TryParse(idClaim.Value, out id);
                 if (res)
                     return id;
             }

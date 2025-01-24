@@ -54,6 +54,15 @@ namespace GraduationProject.Repositories
         }
 
 
+        public async Task<AppUser?> GetUserWithTokenAndRoles(int id)
+        {
+            return await _dbSet
+                .Include(x => x.Roles)
+                .Include(x => x.RefreshToken)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+
         public async Task<bool> UpdateUser(AppUserDto dto)
         {
             var user  = await GetByIdAsync(dto.Id);
