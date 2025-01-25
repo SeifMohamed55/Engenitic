@@ -14,71 +14,41 @@ export class CoursesComponent {
   
   paginagingNum : number = 5;
 
-  end : number = this.paginagingNum;
+  idxx : number = 0;
 
-  start : number = 0;
+  links : number[] = Array.from({length : Math.min(this.paginagingNum, this.totalNumCourses - this.idxx + 1) }, (_, i) => this.idxx + i + 1);
 
-  links : number[] = Array.from({length : this.end - this.start }, (_, i) => i + this.start + 1);
-  
 
-  diff : number = 0;
+  handleLinks(value : number, idx : number) : void {
+    this.idxx = value;
+
+    const calc = Math.floor(this.paginagingNum / 2);
+
+    let temp : number = 0;
+
+    if (value - calc <= 0){
+      temp =  - (value-1);
+    }
+    else if (this.totalNumCourses - calc < value){
+      temp =  - (this.paginagingNum - (this.totalNumCourses - value ) - 1);
+    }
+    else {
+      temp = 0 - calc;
+    }
+
+    this.links  = Array.from({length : this.paginagingNum }, (_, i ) => {
+      return  this.idxx + i + temp; 
+    });
+
+  }
+
 
   leftArrow() : void{
-    while(this.start !== 0){
-      this.handleLinks(0);
-    }
+    this.handleLinks(1, 0);
   };
 
   rightArrow() : void{
-    while(this.end !== this.totalNumCourses){
-      this.handleLinks(this.links.length - 1);
-    }
+    this.handleLinks(this.totalNumCourses, this.paginagingNum - 1);
   };
 
-  handleLinks(idx : number) : void{
-
-    console.log(idx + 1)
-
-    //if it is the last index and the end is more than the total and the start is lower than total as well 
-    if( idx + 1 === this.paginagingNum  &&  this.end + this.paginagingNum > this.totalNumCourses && this.start + this.paginagingNum < this.totalNumCourses){
-      this.start += this.paginagingNum;
-      this.diff = this.end + this.paginagingNum - this.totalNumCourses;
-      this.end = this.totalNumCourses;
-      this.links.splice(0);
-      this.links = Array.from({length : this.end - this.start}, (_, i) => i + this.start + 1);
-      console.log(this.links);
-    }
-
-    else if (idx === 0  && this.start + this.paginagingNum >= this.totalNumCourses){
-      console.log(this.diff);
-      this.end += this.diff - this.paginagingNum;
-      this.start -= this.paginagingNum;
-      this.links.splice(0);
-      this.links = Array.from({length : this.paginagingNum}, (_, i) => i + this.start + 1);
-      console.log(this.links);
-    }
-
-    // if it is the last index but the start is bigger than the total
-    else if( this.end - (idx + 1 + this.start) === 0  && this.start + this.paginagingNum >= this.totalNumCourses) {
-      console.log("this case is fired");
-      return ;
-    }
-
-    else if(idx + this.start  === this.start && this.start !== 0) {
-      this.end -= this.paginagingNum;
-      this.start -= this.paginagingNum;
-      this.links.splice(0);
-      this.links = Array.from({length : this.paginagingNum}, (_, i) => i + this.start + 1);
-      console.log(this.links);
-    } 
-
-    else if(idx + this.start + 1 === this.end){
-      this.end += this.paginagingNum;
-      this.start += this.paginagingNum;
-      this.links.splice(0);
-      this.links = Array.from({length : this.paginagingNum}, (_, i) => i + this.start + 1);
-      console.log(this.links);
-    }
-    console.log(`the start is :  ${this.start} , and the end is : ${this.end}, and the paginaging number is : ${this.paginagingNum}`);
-  }
 }
