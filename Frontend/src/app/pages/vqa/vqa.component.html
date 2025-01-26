@@ -1,1 +1,14 @@
-<p>vqa works!</p>
+<main>
+    <form class="flex justify-center items-center">
+        <div class="grid grid-cols-2 gap-20">
+            <div class="flex justify-between items-start flex-col">
+                <input type="file" (change)="onFileChange($event)" accept="image/*" class="mb-3 custom-file-input font-display lowercase">
+                <input type="text" class="engenitic-input" placeholder="  type your question here ...">
+                <button type="submit" class="engenitic-button">submit</button>
+            </div>
+            <div>
+                <textarea class="engenitic-input" rows="12" cols="60" placeholder="    your answer will be here ."></textarea>
+            </div>
+        </div>
+    </form>
+</main>
