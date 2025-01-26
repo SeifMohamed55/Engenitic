@@ -1,1 +1,20 @@
-<p>grammar-help works!</p>
+<main>
+    <form  class="grid grid-cols-2 gap-20" [formGroup]="grammarForm" (ngSubmit)="handleSubmit()">
+        <div>
+            <textarea #sentence class="engenitic-input my-5" rows="12" cols="60" formControlName="sentence" placeholder="   Type Your Sentence Here ....."></textarea>
+            <div class="mb-3" *ngIf="grammarForm.get('sentence')?.errors && (grammarForm.get('sentence')?.touched || sentence.value.length > 0)">
+                <p class="text-normal font-regular text-red-500" *ngIf="grammarForm.get('sentence')?.getError('required')">you must enter a sentence before submitting !</p>
+            </div>
+            <button [disabled]="disableButton" class="engenitic-button" type="submit">
+                <ngx-spinner
+                    bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#ffffff" type = "fire" [fullScreen] = "false"
+                >
+                </ngx-spinner>
+                submit
+            </button>
+        </div>
+        <div>
+            <textarea class="engenitic-input my-5" rows="12" cols="70" disabled placeholder="   Your Corrected Sentence Is Here ."></textarea>
+        </div>
+    </form>
+</main>
