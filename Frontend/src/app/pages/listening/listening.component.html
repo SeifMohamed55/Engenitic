@@ -1,1 +1,15 @@
-<p>listening works!</p>
+<main class="flex justify-center items-center">
+    <form class="grid grid-cols-2 gap-20" [formGroup]="listeningForm" (ngSubmit)="handleSubmit()">
+        <div class="flex justify-between flex-col">
+            <textarea #sentence rows="12" cols="60" class="engenitic-input mb-5" placeholder="   Type Your Sentence Here ...." formControlName="sentence"></textarea>
+            <div class="mb-4" *ngIf="listeningForm.get('sentence')?.errors && (listeningForm.get('sentence')?.touched || sentence.value.length > 0)">
+                <p class="text-normal font-regular text-red-500" *ngIf="listeningForm.get('sentence')?.getError('required')">the sentence field is required</p>
+            </div>
+            <button type="submit" [disabled]="isDisabled" class="engenitic-button w-fit">submit</button>
+        </div>
+        <div>
+            <label for="listening-audio" class="font-regular text-normal">listening audio</label>
+            <audio id="listening-audio" controls src="" class="engenitic-input mt-6" ></audio>
+        </div>
+    </form>
+</main>
