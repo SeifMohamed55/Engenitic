@@ -7,6 +7,7 @@ using GraduationProject.Services;
 using System;
 using GraduationProject.Repositories;
 using Microsoft.Extensions.Options;
+using GraduationProject.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<TokenBlacklistMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

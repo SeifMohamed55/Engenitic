@@ -31,6 +31,7 @@ namespace GraduationProject.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
+            // add latest true accesstoken to database and check it
 
             string? oldAccessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 

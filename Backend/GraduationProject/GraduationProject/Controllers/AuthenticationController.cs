@@ -31,7 +31,7 @@ namespace GraduationProject.Controllers
 
 
 
-        [HttpPost("logout")]
+        [HttpPost("logout")]      
         public async Task<IResult> Revoke()
         {
             return await _loginService.Logout(HttpContext);

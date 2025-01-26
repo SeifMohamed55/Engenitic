@@ -140,7 +140,7 @@ namespace GraduationProject.Services
                 return Results.NotFound("Email does not exist");
 
             var result = await _signInManager
-                .PasswordSignInAsync(user.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+                .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
 
             if (result.IsLockedOut)
                 return Results.BadRequest("LockedOut");
@@ -149,12 +149,14 @@ namespace GraduationProject.Services
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-                user.Roles = roles.Select(x=> new Role(){ Name = x}).ToList();
-                var accessToken = _tokenService.GenerateJwtToken(user);
                 (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
                 var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
-                if(res == false)
+
+                user.Roles = roles.Select(x => new Role() { Name = x }).ToList();
+                var accessToken = _tokenService.GenerateJwtToken(user);
+
+                if (res == false)
                     return Results.BadRequest("Couldn't SignIn");
 
                 var cookieOptions = new CookieOptions
@@ -188,6 +190,8 @@ namespace GraduationProject.Services
             string? accessToken = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (accessToken is null)
                 return Results.BadRequest("Jwt Token not found");
+
+            // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
 
             _tokenBlacklistService.BlacklistToken(accessToken);
 

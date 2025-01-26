@@ -127,11 +127,17 @@ namespace GraduationProject.Services
 
         public bool IsAccessTokenValid(string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
             try
             {
-                // Validate the token using the injected TokenValidationParameters
-                tokenHandler.ValidateToken(token, _tokenValidationParameters, out var validatedToken);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken securityToken;
+                tokenHandler.ValidateToken(token, _tokenValidationParameters, out securityToken);
+
+                var jwtToken = securityToken as JwtSecurityToken;
+                if (jwtToken == null)
+                {
+                    throw new SecurityTokenException("Invalid token");
+                }
                 return true; // Token is valid
             }
             catch (Exception)
