@@ -5,6 +5,7 @@ namespace GraduationProject.Controllers.RequestModels
     public class RegisterCustomRequest
     {
         [Required]
+        [MaxLength(100)]
         public string Username { get; set; } = null!;
 
         [Required]
@@ -28,6 +29,9 @@ namespace GraduationProject.Controllers.RequestModels
 
         [Phone]
         public string? PhoneNumber { get; set; }
+
+        [RegularExpression(@"^\+\d{1,4}$", ErrorMessage = "The country code must start with a '+' followed by 1 to 4 digits.")]
+        public string? PhoneRegion { get; set; }
 
         public string? imageURL { get; set; }
 

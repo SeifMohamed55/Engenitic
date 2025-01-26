@@ -37,7 +37,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
-builder.Services.AddSingleton<IAesEncryptionService, AesEncryptionService>();
+builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
 builder.Services.AddScoped<AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();

@@ -4,11 +4,12 @@ namespace GraduationProject.Services
 {
     public class PhoneNumberService
     {
-        public static (string, string)? IsValidPhoneNumber(string phoneNumber)
+        public static (string, string)? IsValidPhoneNumber(string phoneNumber, string countryCode)
         {
             var phoneNumberUtil = PhoneNumberUtil.GetInstance();
             try
             {
+                phoneNumber = string.Concat(countryCode, " ", phoneNumber);
                 // Parse the phone number
                 var parsedNumber = phoneNumberUtil.Parse(phoneNumber, null);
 

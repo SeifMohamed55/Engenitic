@@ -5,34 +5,36 @@ using GraduationProject.StartupConfigurations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using NuGet.Common;
+using System.Security.Cryptography;
+
 
 namespace GraduationProject.Services
 {
     public interface IJwtTokenService
     {
-        RefreshToken GenerateRefreshToken(AppUser appUser);
+        (RefreshToken, string) GenerateRefreshToken(AppUser appUser);
         string GenerateJwtToken(AppUser client);
         int? ExtractIdFromExpiredToken(string token);
-        bool IsTokenValid(string token);
+        bool IsAccessTokenValid(string token);
         string? ExtractJwtTokenFromContext(HttpContext context);
         DateTimeOffset GetAccessTokenExpiration(string accessToken);
 
+        bool VerifyRefreshHmac(string raw, string hashed);
     }
 
     public class JwtTokenService : IJwtTokenService
     {
-        private readonly IAesEncryptionService _aesService;
+        private readonly IEncryptionService _encryptionService;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly byte[] _jwtKey;
         private readonly JwtOptions _jwtOptions;
 
         public JwtTokenService(IOptions<JwtOptions> options,
-            IAesEncryptionService aesService,
+            IEncryptionService encryptionService,
             IOptions<TokenValidationParameters> tokenValidationParameters)
         {
             _jwtKey = Encoding.UTF8.GetBytes(options.Value.Key);
-            _aesService = aesService;
+            _encryptionService = encryptionService;
             _tokenValidationParameters = tokenValidationParameters.Value;
             _jwtOptions = options.Value;
         }
@@ -67,20 +69,30 @@ namespace GraduationProject.Services
             return strToken;
         }
 
-        public RefreshToken GenerateRefreshToken(AppUser appUser)
+
+
+        private string GenerateSecureToken()
         {
-            var encryptedToken = _aesService.Encrypt(Guid.NewGuid().ToString());
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        public (RefreshToken, string) GenerateRefreshToken(AppUser appUser)
+        {
+            var rawToken = GenerateSecureToken();
+            var encryptedToken = _encryptionService.HashWithHMAC(rawToken);
             var refreshToken = new RefreshToken()
              {
                  ExpiryDate = DateTimeOffset.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
                  Id = appUser.RefreshTokenId ?? 0,
                  LoginProvider = _jwtOptions.Issuer,
                  EncryptedToken = encryptedToken
-
             };
-
-            return refreshToken;
-             
+            return (refreshToken, rawToken);  
         }
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
@@ -113,7 +125,7 @@ namespace GraduationProject.Services
 
 
 
-        public bool IsTokenValid(string token)
+        public bool IsAccessTokenValid(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             try
@@ -173,6 +185,11 @@ namespace GraduationProject.Services
         public string? ExtractJwtTokenFromContext(HttpContext context)
         {
             return context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        }
+
+        public bool VerifyRefreshHmac(string raw, string hashed)
+        {
+            return _encryptionService.VerifyHMAC(raw, hashed);
         }
 
 

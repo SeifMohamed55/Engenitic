@@ -7,22 +7,24 @@
     using System.Text;
 
 
-    public interface IAesEncryptionService
+    public interface IEncryptionService
     {
-        string Encrypt(string plaintext);
-        string Decrypt(string encryptedBase64);
+        string AesEncrypt(string plaintext);
+        string AesDecrypt(string encryptedBase64);
+        string HashWithHMAC(string input);
+        bool VerifyHMAC(string raw, string hash);
     }   
-    public class AesEncryptionService : IAesEncryptionService
+    public class EncryptionService : IEncryptionService
     {
         private readonly byte[] _key;
         private readonly byte[] _iv;
 
-        public AesEncryptionService(IOptions<JwtOptions> options)
+        public EncryptionService(IOptions<JwtOptions> options)
         {
             _key = Convert.FromBase64String(options.Value.RefreshTokenKey);
             _iv = Convert.FromBase64String(options.Value.IV);
         }
-        public string Encrypt(string plaintext)
+        public string AesEncrypt(string plaintext)
         {
 
             if (_key.Length != 32 || _iv.Length != 16)
@@ -61,7 +63,7 @@
             }
         }
 
-        public string Decrypt(string encryptedBase64)
+        public string AesDecrypt(string encryptedBase64)
         {
 
             // Validate key and IV lengths
@@ -99,6 +101,23 @@
                 // Convert decrypted bytes to string (UTF-8)
                 return Encoding.UTF8.GetString(decryptedBytes);
             }
+        }
+
+        public string HashWithHMAC(string input)
+        {
+            using (var hmac = new HMACSHA256(_key))
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+                byte[] hashBytes = hmac.ComputeHash(inputBytes);
+
+                return Convert.ToBase64String(hashBytes);
+            }
+        }
+
+        public bool VerifyHMAC(string raw, string hash)
+        {
+            string newHash = HashWithHMAC(raw);
+            return newHash == hash;
         }
 
     }

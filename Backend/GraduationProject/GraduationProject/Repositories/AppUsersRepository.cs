@@ -61,6 +61,12 @@ namespace GraduationProject.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<string?> GetUserRefreshToken(int id)
+        {
+            return (await _dbSet
+                .Include(x => x.RefreshToken)
+                .FirstOrDefaultAsync(x => x.Id == id))?.RefreshToken?.EncryptedToken;
+        }
 
         public async Task<bool> UpdateUser(AppUserDto dto)
         {

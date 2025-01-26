@@ -5,6 +5,7 @@ using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using GraduationProject.StartupConfigurations;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -59,7 +60,7 @@ namespace GraduationProject.Services
 
             model.Role = model.Role.ToLower();
             if (model.Role != "instructor" && model.Role != "student")
-                return Results.BadRequest();
+                return Results.BadRequest("Invalid Role!");
 
             if (model.Password != model.ConfirmPassword)
             {
@@ -67,9 +68,10 @@ namespace GraduationProject.Services
             }
 
             string? RegionCode = null;
-            if (model.PhoneNumber != null)
+            if (model.PhoneNumber != null && model.PhoneRegion != null)
             {
-                (string, string)? phoneDetails = PhoneNumberService.IsValidPhoneNumber(model.PhoneNumber);
+                (string, string)? phoneDetails = PhoneNumberService
+                                        .IsValidPhoneNumber(model.PhoneNumber, model.PhoneRegion);
                 if (phoneDetails.HasValue)
                 {
                     model.PhoneNumber = phoneDetails.Value.Item1;
@@ -145,8 +147,11 @@ namespace GraduationProject.Services
 
             if (result.Succeeded)
             {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                user.Roles = roles.Select(x=> new Role(){ Name = x}).ToList();
                 var accessToken = _tokenService.GenerateJwtToken(user);
-                RefreshToken refreshToken = _tokenService.GenerateRefreshToken(user);
+                (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
                 var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
                 if(res == false)
@@ -157,9 +162,10 @@ namespace GraduationProject.Services
                     HttpOnly = true,
                     Secure = true ,
                     SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
                 };
 
-                httpContext.Response.Cookies.Append("refreshToken", refreshToken.EncryptedToken, cookieOptions);
+                httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
 
                 return Results.Ok(new AccessTokenResponse()
@@ -175,39 +181,44 @@ namespace GraduationProject.Services
 
         public async Task<IResult> Logout(HttpContext httpContext)
         {
-            if (httpContext.Request.Cookies["refreshToken"] is null)
-                return Results.BadRequest(); 
+            string? refreshToken = httpContext.Request.Cookies["refreshToken"];
+            if (refreshToken == null)
+                return Results.BadRequest("RefreshToken is not found"); 
 
             string? accessToken = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (accessToken is null)
-                return Results.BadRequest();
+                return Results.BadRequest("Jwt Token not found");
 
             _tokenBlacklistService.BlacklistToken(accessToken);
 
-            string? id = httpContext.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-            if(int.TryParse(id, out int userId))
+            int? id = _tokenService.ExtractIdFromExpiredToken(accessToken); // allow expired token to signout
+
+            if (!id.HasValue)
+                return Results.BadRequest("Invalid AccessToken");
+
+            var dbRefreshToken = await _appUserRepo.GetUserRefreshToken(id.Value);
+            if (dbRefreshToken is null)
+                return Results.BadRequest("User is not Signed In");
+
+            if (!_tokenService.VerifyRefreshHmac(refreshToken, dbRefreshToken))
+                return Results.BadRequest("Invalid RefreshToken !");
+
+            var res = await _appUserRepo.DeleteRefreshToken(id.Value);
+
+            if(res == false)
+                return Results.BadRequest("User Does not exist");
+
+            var cookieOptions = new CookieOptions
             {
-                var res = await _appUserRepo.DeleteRefreshToken(userId);
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.Now.AddDays(-1)
+            };
 
-                if(res == false)
-                    return Results.BadRequest();
+            httpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
 
-                var cookieOptions = new CookieOptions
-                {
-                    Expires = DateTime.Now.AddDays(-1), // Set the cookie to expire in the past
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                };
-
-                httpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
-
-                return Results.Ok();
-            }
-            else
-            {
-                return Results.BadRequest();
-            }
+            return Results.Ok();
 
         }
 

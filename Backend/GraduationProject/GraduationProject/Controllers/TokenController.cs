@@ -3,9 +3,8 @@ using GraduationProject.Repositories;
 using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
+using System.Globalization;
 
 namespace GraduationProject.Controllers
 {
@@ -16,17 +15,17 @@ namespace GraduationProject.Controllers
         private readonly IJwtTokenService _tokenService;
         private readonly JwtOptions _jwtOptions;
         private readonly AppUsersRepository _appUsersRepository;
-        private readonly IAesEncryptionService _aesEncryptionService;
+        private readonly IEncryptionService _encryptionService;
         public TokenController
             (IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
             AppUsersRepository appUsersRepository,
-            IAesEncryptionService aesEncryptionService)
+            IEncryptionService encryptionService)
         {
             _tokenService = tokenService;
             _jwtOptions = options.Value;
             _appUsersRepository = appUsersRepository;
-            _aesEncryptionService = aesEncryptionService;
+            _encryptionService = encryptionService;
         }
 
         [HttpPost("refresh")]
@@ -38,7 +37,7 @@ namespace GraduationProject.Controllers
             if (oldAccessToken == null)
                 return BadRequest("No Token Provided");
 
-            if(_tokenService.IsTokenValid(oldAccessToken))
+            if(_tokenService.IsAccessTokenValid(oldAccessToken))
                 return BadRequest("Token is valid");
 
             var extractedId =  _tokenService.ExtractIdFromExpiredToken(oldAccessToken);
@@ -57,34 +56,24 @@ namespace GraduationProject.Controllers
 
             var dbRefreshToken = user.RefreshToken.EncryptedToken;
 
-            var encryptedCookieRefreshToken = HttpContext.Request.Cookies["refreshToken"];
-            if(encryptedCookieRefreshToken == null)
-                return BadRequest("No Token Provided");
+            var requestRefToken = HttpContext.Request.Cookies["refreshToken"];
+            if(requestRefToken == null)
+                return BadRequest("No Refresh Token Provided");
 
             try
             {
-                var oldRefreshToken = _aesEncryptionService.Decrypt(dbRefreshToken);
-                var cookieRefreshToken = _aesEncryptionService.Decrypt(encryptedCookieRefreshToken);
+                var isValid = _encryptionService.VerifyHMAC(requestRefToken, dbRefreshToken);
 
-                if (oldRefreshToken == null || cookieRefreshToken == null || oldRefreshToken != cookieRefreshToken)
+                if (!isValid)
                     return Unauthorized("Invalid user request You have to login!");
 
 
                 string newAccessToken =  _tokenService.GenerateJwtToken(user);
 
-
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                };
-                HttpContext.Response.Cookies.Append("refreshToken", user.RefreshToken.EncryptedToken, cookieOptions);
-
                 return Ok(new AccessTokenResponse
                 {
                     AccessToken = newAccessToken,
-                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f")
+                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f", CultureInfo.InvariantCulture)
                 });
             }
             catch(Exception )
