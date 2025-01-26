@@ -17,6 +17,7 @@ export const routes: Routes = [
         {path : '', redirectTo : '1', pathMatch : 'full'},
         {path : ':collection', component : CourseComponent },
     ]},
+    {path : 'course/:id' , component : CourseDetailsComponent},
     {path : "grammar", component : GrammarHelpComponent},
     {path : "Q&A", component : VqaComponent},
     {path : "listening", component : ListeningComponent},
