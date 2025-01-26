@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-vqa',
@@ -9,9 +9,13 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrl: './vqa.component.scss'
 })
 export class VqaComponent {
+  vqaForm : FormGroup = new FormGroup({
+    image : new FormControl('', [Validators.required]),
+    question : new FormControl('', [Validators.required])
+  });
 
-
-
+  isDisabled : boolean = false;
+  response : string = '';
   selectedFile: File | null = null; // Store the file externally
   fileValidationError: string | null = null;
 
@@ -59,5 +63,18 @@ export class VqaComponent {
     else {
       this.selectedFile = null; // Reset selected file
     }
-}
+  }
+
+  handleSubmit() : void{
+    this.isDisabled = true;
+    if(this.vqaForm.valid){
+      console.log(this.vqaForm.value);
+      this.isDisabled = false;
+    }
+    else {
+      console.error(`an error has occured : ${this.vqaForm.value}`);
+      this.vqaForm.markAllAsTouched();
+      this.isDisabled = false;
+    }
+  }
 }

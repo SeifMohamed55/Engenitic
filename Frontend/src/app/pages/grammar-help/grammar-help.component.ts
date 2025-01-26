@@ -12,7 +12,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
   animations: [] // Include this if animations are used
 })
 export class GrammarHelpComponent {
-  response!: string;
+  response : string = '';
   disableButton = false;
 
   grammarForm: FormGroup = new FormGroup({
