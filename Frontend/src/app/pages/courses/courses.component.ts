@@ -42,7 +42,6 @@ export class CoursesComponent {
 
   }
 
-
   leftArrow() : void{
     this.handleLinks(1, 0);
   };

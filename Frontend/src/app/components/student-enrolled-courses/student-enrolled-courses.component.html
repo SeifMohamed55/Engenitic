@@ -1,0 +1,46 @@
+<div class="flex flex-col justify-between">
+    <div class="grid grid-cols-5 py-10">
+        <figure class=" w-fit col-span-1">
+            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
+        </figure>
+        <article class="col-span-4 flex flex-col justify-between items-start">
+            <h3 class="text-secondary-header font-display">course title</h3>
+            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
+            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
+        </article>
+    </div>
+    <div class="grid grid-cols-5 py-10">
+        <figure class=" w-fit col-span-1">
+            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
+        </figure>
+        <article class="col-span-4 flex flex-col justify-between items-start">
+            <h3 class="text-secondary-header font-display">course title</h3>
+            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
+            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
+        </article>
+    </div>
+    <div class="grid grid-cols-5 py-10">
+        <figure class=" w-fit col-span-1">
+            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
+        </figure>
+        <article class="col-span-4 flex flex-col justify-between items-start">
+            <h3 class="text-secondary-header font-display">course title</h3>
+            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
+            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
+        </article>
+    </div>
+    <div class="grid grid-cols-5 py-10">
+        <figure class=" w-fit col-span-1">
+            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
+        </figure>
+        <article class="col-span-4 flex flex-col justify-between items-start">
+            <h3 class="text-secondary-header font-display">course title</h3>
+            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
+            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
+        </article>
+    </div>
+
+    <ng-template #finishedCourses>
+        <a routerLink="" class="engenitic-button">details</a>
+    </ng-template>
+</div>

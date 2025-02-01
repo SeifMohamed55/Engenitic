@@ -1,13 +1,51 @@
 <main>
     <form class="grid grid-cols-2 gap-20" [formGroup]="studentProfileForm" (ngSubmit)="handleSubmit()">
-        <input type="email" placeholder="  Email" class="engenitic-input" formControlName="email">
-        <input type="text" placeholder="  Username" class="engenitic-input" formControlName="userName">
+        <div>
+            <input #email type="email" placeholder="  Email" class="engenitic-input" formControlName="email">
+            <div *ngIf="studentProfileForm.get('email')?.errors || (studentProfileForm.get('email')?.touched && email.value.length > 0)">
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('email')?.getError('email')"> invalid email </p>
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('email')?.getError('required')"> email field is required </p>
+            </div>
+        </div>
+        <div>
+            <input #userName type="text" placeholder="  Username" class="engenitic-input" formControlName="userName">
+            <div *ngIf="studentProfileForm.get('userName')?.errors && (studentProfileForm.get('userName')?.touched || userName.value.length > 0)">
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('userName')?.getError('required')"> user name field is required </p>
+            </div>
+        </div>
         <div class="col-span-2 w-[300px] h-[300px] mx-auto flex justify-between items-center flex-col">
             <img [src]="selectedFile ? previewUrl :  './assets/images/no-user-pic.jpeg'" alt="profile picture" class="w[250px] h-[250px] object-contain">
-            <input placeholder="update picture" type="file" accept="image/*" (change)="onFileChange($event)" class="custom-file-input font-display lowercase ps-12" formControlName="image">
+            <input placeholder="update picture" type="file" accept="image/*" (change)="onFileChange($event)" class="custom-file-input font-display lowercase ms-12 my-4" formControlName="image">
+            <p class="text-normal font-regular text-red-500 my-4" *ngIf="fileValidationError"> {{ fileValidationError }}</p>
         </div>
-        <input type="password" placeholder="  Old Password" class="engenitic-input" formControlName="oldPassword">
-        <input type="password" placeholder="  New Password" class="engenitic-input" formControlName="newPassword">
+        <div>
+            <input #oldPassword type="password" placeholder="  Old Password" class="engenitic-input" formControlName="oldPassword">
+            <div *ngIf="studentProfileForm.get('oldPassword')?.errors && (studentProfileForm.get('oldPassword')?.touched || oldPassword.value.length > 0)">
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('oldPassword')?.getError('required')"> password field is required </p>
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('oldPassword')?.getError('minlength')"> password field must be more than 5</p>
+            </div>
+        </div>
+        <div>
+            <input #newPassword type="password" placeholder="  New Password" class="engenitic-input" formControlName="newPassword">
+            <div *ngIf="studentProfileForm.get('newPassword')?.errors && (studentProfileForm.get('newPassword')?.touched || newPassword.value.length > 0)">
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('newPassword')?.getError('required')"> password field is required </p>
+                <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('newPassword')?.getError('minlength')"> password field must be more than 5</p>
+            </div>
+        </div>
         <button type="submit" [disabled]='disapleButton' class="engenitic-button w-fit">update</button>
     </form>
+    <section>
+        <h2 class="py-4 text-header font-display text-center">enrolled courses</h2>
+        <div class="flex justify-center items-center">
+            <a (click)="leftArrow()"  routerLink="/profile/student/1"><i class="fa-solid fa-arrow-left-long text-lg"></i></a>
+            <ul class="font-display text-header flex px-6">
+                <li class="px-1" *ngFor="let link of links; index as idx">
+                    <a (click)="handleLinks(links[idx], idx)" [routerLink]="['/profile/student',link]" routerLinkActive="text-red-500">{{ link }}</a>
+                    <span *ngIf="idx !== links.length-1">,</span>
+                </li>
+            </ul>
+            <a (click)="rightArrow()"  [routerLink]="['/profile/student',totalNumCourses]"><i class="fa-solid fa-arrow-right-long text-lg"></i></a>
+        </div>
+        <router-outlet></router-outlet>
+    </section>
 </main>

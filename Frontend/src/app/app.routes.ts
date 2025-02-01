@@ -1,4 +1,4 @@
-import { CourseComponent } from './pages/course/course.component';
+import { CourseComponent } from './components/course/course.component';
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { CoursesComponent } from './pages/courses/courses.component';
@@ -13,6 +13,7 @@ import { UnothorizedComponent } from './pages/unothorized/unothorized.component'
 import { StudentComponent } from './pages/student/student.component';
 import { InstructorComponent } from './pages/instructor/instructor.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { StudentEnrolledCoursesComponent } from './components/student-enrolled-courses/student-enrolled-courses.component';
 
 export const routes: Routes = [
     {path : "" , redirectTo : "home" , pathMatch : "full"},
@@ -28,7 +29,10 @@ export const routes: Routes = [
     {path : "login", component : LoginComponent},
     {path : "register", component : RegisterComponent},
     {path : "profile" , children : [
-        {path : 'student', component : StudentComponent},
+        {path : 'student', component : StudentComponent, children : [
+            {path : '', redirectTo : '1', pathMatch : 'full'},
+            {path : ':collection' , component : StudentEnrolledCoursesComponent}
+        ]},
         {path : 'instructor', component : InstructorComponent},
         {path : 'admin', component : AdminComponent},
         {path : '**' , component : NotFoundComponent}
