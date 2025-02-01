@@ -1,4 +1,5 @@
 ﻿using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Models;
 using GraduationProject.Repositories;
 using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
@@ -32,14 +33,16 @@ namespace GraduationProject.Controllers
         public async Task<IActionResult> Refresh()
         {
             // add latest true accesstoken to database and check it
+            var requestRefToken = HttpContext.Request.Cookies["refreshToken"];
+            if (requestRefToken == null)
+                return BadRequest("No Refresh Token Provided");
 
             string? oldAccessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
             if (oldAccessToken == null)
-                return BadRequest("No Token Provided");
+                return BadRequest("No AccessToken Provided");
 
             if(_tokenService.IsAccessTokenValid(oldAccessToken))
-                return BadRequest("Token is valid");
+                return BadRequest("AccessToken is valid");
 
             var extractedId =  _tokenService.ExtractIdFromExpiredToken(oldAccessToken);
 
@@ -50,26 +53,24 @@ namespace GraduationProject.Controllers
 
             if (user == null || 
                 user.RefreshToken == null || 
-                user.RefreshToken.ExpiryDate.ToUniversalTime() <= DateTimeOffset.UtcNow
+                _tokenService.IsRefreshTokenExpired(user.RefreshToken) || // expired
+                oldAccessToken != user.RefreshToken.LatestJwtAccessToken
                 )
                     return BadRequest("Provided token is invalid Sign In again");
 
-
-            var dbRefreshToken = user.RefreshToken.EncryptedToken;
-
-            var requestRefToken = HttpContext.Request.Cookies["refreshToken"];
-            if(requestRefToken == null)
-                return BadRequest("No Refresh Token Provided");
-
             try
-            {
-                var isValid = _encryptionService.VerifyHMAC(requestRefToken, dbRefreshToken);
+            {   
+                var isValid = _encryptionService.VerifyHMAC(requestRefToken, user.RefreshToken.EncryptedToken);
 
                 if (!isValid)
                     return Unauthorized("Invalid user request You have to login!");
 
 
                 string newAccessToken =  _tokenService.GenerateJwtToken(user);
+                user.RefreshToken.LatestJwtAccessToken = newAccessToken;
+
+                await _appUsersRepository.UpdateAsync(user);
+
 
                 return Ok(new AccessTokenResponse
                 {
@@ -77,7 +78,7 @@ namespace GraduationProject.Controllers
                     ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f", CultureInfo.InvariantCulture)
                 });
             }
-            catch(Exception )
+            catch(Exception)
             {
                 return BadRequest("Token is invalid");
             }  

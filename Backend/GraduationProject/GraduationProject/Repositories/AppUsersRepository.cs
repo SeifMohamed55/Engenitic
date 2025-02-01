@@ -61,11 +61,19 @@ namespace GraduationProject.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<string?> GetUserRefreshToken(int id)
+        public async Task<AppUser?> GetUserWithTokenAndRoles(string email)
+        {
+            return await _dbSet
+                .Include(x => x.Roles)
+                .Include(x => x.RefreshToken)
+                .FirstOrDefaultAsync(x => x.Email == email);
+        }
+
+        public async Task<RefreshToken?> GetUserRefreshToken(int id)
         {
             return (await _dbSet
                 .Include(x => x.RefreshToken)
-                .FirstOrDefaultAsync(x => x.Id == id))?.RefreshToken?.EncryptedToken;
+                .FirstOrDefaultAsync(x => x.Id == id))?.RefreshToken;
         }
 
         public async Task<bool> UpdateUser(AppUserDto dto)
@@ -114,6 +122,10 @@ namespace GraduationProject.Repositories
         {
             try
             {
+                var entry = _dbSet.Entry(appUser).Context.ChangeTracker.Entries<RefreshToken>().FirstOrDefault();
+                if(entry != null)
+                    entry.State = EntityState.Detached;
+
                 appUser.RefreshToken = token;
                 await UpdateAsync(appUser);
                 return true;

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -134,10 +135,11 @@ namespace GraduationProject.Services
         public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
         {
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _appUserRepo.GetUserWithTokenAndRoles(model.Email);
 
             if (user == null)
                 return Results.NotFound("Email does not exist");
+
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
@@ -147,14 +149,14 @@ namespace GraduationProject.Services
 
             if (result.Succeeded)
             {
-                var roles = await _userManager.GetRolesAsync(user);
 
                 (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
-                var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
-
-                user.Roles = roles.Select(x => new Role() { Name = x }).ToList();
                 var accessToken = _tokenService.GenerateJwtToken(user);
+
+                refreshToken.LatestJwtAccessToken = accessToken;
+
+                var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
 
                 if (res == false)
                     return Results.BadRequest("Couldn't SignIn");
@@ -191,9 +193,6 @@ namespace GraduationProject.Services
             if (accessToken is null)
                 return Results.BadRequest("Jwt Token not found");
 
-            // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
-
-            _tokenBlacklistService.BlacklistToken(accessToken);
 
             int? id = _tokenService.ExtractIdFromExpiredToken(accessToken); // allow expired token to signout
 
@@ -204,9 +203,14 @@ namespace GraduationProject.Services
             if (dbRefreshToken is null)
                 return Results.BadRequest("User is not Signed In");
 
-            if (!_tokenService.VerifyRefreshHmac(refreshToken, dbRefreshToken))
+            if (!_tokenService.VerifyRefreshHmac(refreshToken, dbRefreshToken.EncryptedToken))
                 return Results.BadRequest("Invalid RefreshToken !");
 
+            if (accessToken != dbRefreshToken.LatestJwtAccessToken)
+                return Results.BadRequest("Latest AccessToken Doesn't match");
+
+            // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
+            _tokenBlacklistService.BlacklistToken(dbRefreshToken.LatestJwtAccessToken);
             var res = await _appUserRepo.DeleteRefreshToken(id.Value);
 
             if(res == false)
