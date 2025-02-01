@@ -10,7 +10,7 @@ public class RefreshToken
     public DateTimeOffset ExpiryDate { get; set; }
     public string EncryptedToken { get; set; } = null!;
     public virtual string LoginProvider { get; set; } = default!;
-
+    public string LatestJwtAccessToken { get; set; } = null!;
     public AppUser AppUser { get; set; } = null!;
 
 }
