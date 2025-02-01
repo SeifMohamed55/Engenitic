@@ -16,7 +16,7 @@ namespace GraduationProject.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             var token = ExtractTokenFromHeader(context);
-
+            
             if (!string.IsNullOrEmpty(token) && _tokenBlacklistService.IsTokenBlacklisted(token))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;

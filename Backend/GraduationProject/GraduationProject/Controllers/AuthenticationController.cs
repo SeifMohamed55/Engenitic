@@ -30,7 +30,7 @@ namespace GraduationProject.Controllers
         }
 
 
-
+        // not authorized endpoint
         [HttpPost("logout")]      
         public async Task<IResult> Revoke()
         {

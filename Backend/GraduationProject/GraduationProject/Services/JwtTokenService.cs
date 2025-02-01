@@ -13,11 +13,12 @@ namespace GraduationProject.Services
     public interface IJwtTokenService
     {
         (RefreshToken, string) GenerateRefreshToken(AppUser appUser);
-        string GenerateJwtToken(AppUser client);
+        string GenerateJwtToken(AppUser userWithTokenAndRoles);
         int? ExtractIdFromExpiredToken(string token);
         bool IsAccessTokenValid(string token);
         string? ExtractJwtTokenFromContext(HttpContext context);
         DateTimeOffset GetAccessTokenExpiration(string accessToken);
+        bool IsRefreshTokenExpired(RefreshToken refreshToken);
 
         bool VerifyRefreshHmac(string raw, string hashed);
     }
@@ -39,8 +40,15 @@ namespace GraduationProject.Services
             _jwtOptions = options.Value;
         }
 
+        // user included with roles and refreshToken
         public string GenerateJwtToken(AppUser user)
         {
+            if(user.RefreshToken != null)
+            {
+                bool jwtValid = IsAccessTokenValid(user.RefreshToken.LatestJwtAccessToken);
+                if (jwtValid)
+                    return user.RefreshToken.LatestJwtAccessToken;
+            }
 
             var key = new SymmetricSecurityKey(_jwtKey);
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -173,7 +181,6 @@ namespace GraduationProject.Services
             }
         }
 
-
         public int? ExtractIdFromExpiredToken(string token)
         {
             var principal = GetPrincipalFromExpiredToken(token);
@@ -198,6 +205,9 @@ namespace GraduationProject.Services
             return _encryptionService.VerifyHMAC(raw, hashed);
         }
 
-
+        public bool IsRefreshTokenExpired(RefreshToken refreshToken)
+        {
+            return refreshToken.ExpiryDate.ToUniversalTime() <= DateTimeOffset.UtcNow;
+        }
     }
 }
