@@ -1,0 +1,13 @@
+<main>
+    <form class="grid grid-cols-2 gap-20" [formGroup]="studentProfileForm" (ngSubmit)="handleSubmit()">
+        <input type="email" placeholder="  Email" class="engenitic-input" formControlName="email">
+        <input type="text" placeholder="  Username" class="engenitic-input" formControlName="userName">
+        <div class="col-span-2 w-[300px] h-[300px] mx-auto flex justify-between items-center flex-col">
+            <img [src]="selectedFile ? previewUrl :  './assets/images/no-user-pic.jpeg'" alt="profile picture" class="w[250px] h-[250px] object-contain">
+            <input placeholder="update picture" type="file" accept="image/*" (change)="onFileChange($event)" class="custom-file-input font-display lowercase ps-12" formControlName="image">
+        </div>
+        <input type="password" placeholder="  Old Password" class="engenitic-input" formControlName="oldPassword">
+        <input type="password" placeholder="  New Password" class="engenitic-input" formControlName="newPassword">
+        <button type="submit" [disabled]='disapleButton' class="engenitic-button w-fit">update</button>
+    </form>
+</main>

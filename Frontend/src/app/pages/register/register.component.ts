@@ -9,6 +9,8 @@ import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractContro
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
+
+  disableButton : boolean = false;
   selectedFile: File | null = null; // Store the file externally
   fileValidationError: string | null = null;
 
@@ -27,7 +29,6 @@ export class RegisterComponent {
       userName: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
       repassword: new FormControl('', [Validators.required, Validators.minLength(5)]),
-
       userType: new FormControl('student'),
     },
     {
@@ -72,6 +73,7 @@ export class RegisterComponent {
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
+    this.fileValidationError = null;
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -89,27 +91,11 @@ export class RegisterComponent {
     }
 
     if (this.selectedFile.size > maxSize) {
+      this.fileValidationError = 'image size must be less than 2MB';
       this.selectedFile = null;
       return ;
     }
-
-
-    const image = new Image();
-    const url = URL.createObjectURL(file);
-
-    image.onload = () => {
-      this.fileValidationError = null; // Valid image
-      URL.revokeObjectURL(url); // Free memory
-    };
-
-    image.onerror = () => {
-      this.fileValidationError = 'Invalid file. The file is not a valid image.';
-      this.selectedFile = null; // Reset selected file
-      URL.revokeObjectURL(url); // Free memory
-    };
-
-    image.src = url; // Validate the file as an image
-    }
+  }
     else {
       this.selectedFile = null; // Reset selected file
     }
@@ -117,12 +103,23 @@ export class RegisterComponent {
 
 
   registerSubmit(): void {
+    this.disableButton = true;
     if (this.registerForm.valid) {
-      const values = JSON.parse(JSON.stringify(this.registerForm.value));
-      values.image = this.selectedFile;
-      console.log(values);
+      const formData = new FormData();
+      formData.append('userName', this.registerForm.get('userName')?.value);
+      formData.append('email', this.registerForm.get('email')?.value);
+      formData.append('password', this.registerForm.get('password')?.value);
+      formData.append('repassword', this.registerForm.get('repassword')?.value);
+      formData.append('phoneNumber', this.registerForm.get('phoneGroup')?.get('phone')?.value);
+      formData.append('countryCode', this.registerForm.get('phoneGroup')?.get('countryCode')?.value);
+      formData.append('userType', this.registerForm.get('userType')?.value);
+      if(this.selectedFile){
+        formData.append('image', this.selectedFile);
+      }
+      formData.forEach(el => console.log(el));
     } else {
       this.registerForm.markAllAsTouched();
     }
+    this.disableButton = false;
   }
 }

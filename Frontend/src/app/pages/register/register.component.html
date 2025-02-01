@@ -1,7 +1,7 @@
 <main class="grid grid-cols-2 gap-32 items-start w-full">
     <form class="flex justify-between items-start flex-col h-full" [formGroup]="registerForm" (ngSubmit)="registerSubmit()" enctype="multipart/form-data" >
         <div>
-            <input type="file" accept="image/*" (change)="onFileChange($event)" class="mb-3 custom-file-input font-display lowercase" formControlName="image"><span class="font-regular font-normal ps-3">(optional)</span>
+            <input placeholder="select an image" type="file" accept="image/*" (change)="onFileChange($event)" class="mb-3 custom-file-input font-display lowercase" formControlName="image"><span class="font-regular font-normal ps-3">(optional)</span>
         </div>
         <div *ngIf="fileValidationError">
             <p class="text-normal font-regular text-red-500"> {{ fileValidationError }} </p>

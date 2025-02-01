@@ -9,16 +9,16 @@
     <li><a routerLink="/Q&A" class="font-display">Q & A</a></li>
     <li><a routerLink="/listening" class="font-display">listening</a></li>
     <div *ngIf="!registered;else user_info">
-      <li  class="flex justify-between items-center">
+      <span  class="flex justify-between items-center">
         <div class="me-6"><a routerLink="login" class="engenitic-button">log in</a></div>
         <div class="ms-6"><a routerLink="register" class="engenitic-button">register</a></div>
-      </li>
+      </span>
     </div>
     <ng-template #user_info>
-      <li class="flex justify-between items-center">
-        <div class="me-6 flex justify-between items-center"><img src="assets/images/profile-pic.jpg" alt="" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display">user name</p></div>
-        <div class="ms-6"><a routerLink="#" class="engenitic-button">log out</a></div>
-      </li>
+      <span class="flex justify-between items-center">
+        <a routerLink="/profile/student" (click)="handleProfile()" class="me-6 flex justify-between items-center"><img src="assets/images/profile-pic.jpg" alt="" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display">user name</p></a>
+        <div class="ms-6"><a (click)="handleLogout()" class="engenitic-button cursor-pointer">log out</a></div>
+      </span>
     </ng-template>
     <ng-template #reg_logo>
       <img src="assets/icons/logo-gradient 1.svg" alt="engenitics gradient logo" />
