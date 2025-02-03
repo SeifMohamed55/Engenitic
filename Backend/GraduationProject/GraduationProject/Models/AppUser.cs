@@ -8,7 +8,7 @@ public class AppUser : IdentityUser<int>
     [ProtectedPersonalData]
     public override string Email { get; set; } = null!;
     public string? PhoneRegionCode { get; set; }
-    public string? imageURL { get; set; }
+    public string ImageURL { get; set; }
     public bool Banned { get; set; }
     public string FullName { get; set; } = null!;
 
@@ -23,7 +23,7 @@ public class AppUser : IdentityUser<int>
         Email = dto.Email;
         PhoneNumber = dto.PhoneNumber;
         PhoneRegionCode = dto.PhoneRegionCode;
-        imageURL = dto.ImageURL;
+        ImageURL = dto.ImageURL;
         FullName = dto.UserName;
     }
 }

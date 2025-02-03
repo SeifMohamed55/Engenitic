@@ -9,6 +9,10 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="uploads\images\default.jpeg" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="HtmlSanitizer" Version="8.1.870" />

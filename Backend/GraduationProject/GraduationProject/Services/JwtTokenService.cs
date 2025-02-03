@@ -14,7 +14,7 @@ namespace GraduationProject.Services
     {
         (RefreshToken, string) GenerateRefreshToken(AppUser appUser);
         string GenerateJwtToken(AppUser userWithTokenAndRoles);
-        int? ExtractIdFromExpiredToken(string token);
+        int ExtractIdFromExpiredToken(string token);
         bool IsAccessTokenValid(string token);
         string? ExtractJwtTokenFromContext(HttpContext context);
         DateTimeOffset GetAccessTokenExpiration(string accessToken);
@@ -181,18 +181,16 @@ namespace GraduationProject.Services
             }
         }
 
-        public int? ExtractIdFromExpiredToken(string token)
+        public int ExtractIdFromExpiredToken(string token)
         {
             var principal = GetPrincipalFromExpiredToken(token);
-            var idClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            int id;
+            var idClaim = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
             if (idClaim?.Value != null)
             {
-              var res = int.TryParse(idClaim.Value, out id);
-                if (res)
+                if (int.TryParse(idClaim.Value, out int id))
                     return id;
             }
-            return null;
+            throw new SecurityTokenException("Invalid token structure");
         }
 
         public string? ExtractJwtTokenFromContext(HttpContext context)

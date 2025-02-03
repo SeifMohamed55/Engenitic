@@ -10,8 +10,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using System.Diagnostics;
 
 namespace GraduationProject.Services
 {
@@ -54,6 +60,61 @@ namespace GraduationProject.Services
             _tokenBlacklistService = tokenBlacklistService;
         }
 
+
+        private bool IsValidImageType(IFormFile? image)
+        {
+            if (image == null || image.Length == 0)
+                return false;
+            else
+            {
+                var allowedExtensions = new HashSet<string>
+                {
+                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff"
+                };
+
+
+                var provider = new FileExtensionContentTypeProvider();
+                if (!provider.TryGetContentType(image.FileName, out var contentType))
+                {
+                    return false;
+                }
+                var allowedMimeTypes = new HashSet<string>
+                {
+                    "image/jpeg", "image/png", "image/gif", "image/bmp",
+                    "image/webp", "image/tiff"
+                };
+
+                var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension) || !allowedMimeTypes.Contains(contentType))
+                {
+                    return false;
+                }
+
+                long maxFileSize = 2 * 1024 * 1024; // 2MB
+                if (image.Length > maxFileSize)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+
+        private string GetImageType(string fileExtension)
+        {
+           return fileExtension switch
+            {
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".bmp" => "image/bmp",
+                ".webp" => "image/webp",
+                _ => "application/octet-stream", // default MIME type if unknown
+            };
+        }
+
         public async Task<IResult> Register(RegisterCustomRequest model)
         {
             if(await _userManager.FindByEmailAsync(model.Email) != null)
@@ -92,7 +153,6 @@ namespace GraduationProject.Services
             model.Username = sanitizer.Sanitize(model.Username);
             model.Email = sanitizer.Sanitize(model.Email);
             model.PhoneNumber = sanitizer.Sanitize(model.PhoneNumber ?? "");
-            model.imageURL = "images/default.jpg";
 
             var user = new AppUser()
             {
@@ -101,7 +161,7 @@ namespace GraduationProject.Services
                 PhoneNumber = model.PhoneNumber,
                 Banned = false,
                 PhoneRegionCode = RegionCode,
-                imageURL = model.imageURL,
+                ImageURL = "default.jpeg",
                 FullName = model.Username
 
             };
@@ -113,19 +173,50 @@ namespace GraduationProject.Services
                 result = await _userManager.AddToRoleAsync(user, model.Role);
 
                 if (result.Succeeded)
-                    return Results.Ok(new
+                {
+                    try
                     {
-                        result = "User created successfully",
-                        user = new AppUserDto()
+                        if(IsValidImageType(model.Image))
                         {
-                            Email = user.Email,
-                            PhoneNumber = user.PhoneNumber ?? "",
-                            Id = user.Id,
-                            ImageURL = user.imageURL,
-                            PhoneRegionCode = user.PhoneRegionCode,
-                            UserName = user.FullName
+                            Debug.Assert(model.Image != null);
+
+                            var imageURL = "user_" + user.Id + ".jpeg";
+
+                            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
+                                                    "uploads", "images");
+                            if (!Directory.Exists(uploadsFolder))
+                            {
+                                Directory.CreateDirectory(uploadsFolder);
+                            }
+
+                            var filePath = Path.Combine(uploadsFolder, imageURL);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await model.Image.CopyToAsync(stream);
+                            }
+
+                            user.ImageURL = imageURL;
+                            await _appUserRepo.UpdateAsync(user);
                         }
-                    });
+
+                        return Results.Ok(new
+                        {
+                            result = "User created successfully",
+                            user = new AppUserDto()
+                            {
+                                Email = user.Email,
+                                PhoneNumber = user.PhoneNumber ?? "",
+                                Id = user.Id,
+                                PhoneRegionCode = user.PhoneRegionCode,
+                                UserName = user.FullName
+                            }
+                        });
+                    }
+                    catch (Exception)
+                    {
+                        return Results.BadRequest("Couldn't update user image");
+                    }
+                }
             }
 
             return Results.BadRequest(result.Errors);
@@ -136,10 +227,11 @@ namespace GraduationProject.Services
         {
 
             var user = await _appUserRepo.GetUserWithTokenAndRoles(model.Email);
-
             if (user == null)
                 return Results.NotFound("Email does not exist");
 
+            if(user.RefreshToken != null)
+                _tokenBlacklistService.BlacklistToken(user.RefreshToken.LatestJwtAccessToken);
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
@@ -171,13 +263,34 @@ namespace GraduationProject.Services
 
                 httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
+                string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
+                                                "uploads", "images", user.ImageURL);
 
-                return Results.Ok(new AccessTokenResponse()
+                try
                 {
-                    AccessToken = accessToken,
-                    ValidTo = DateTime.UtcNow.AddMinutes(
-                        double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f", CultureInfo.InvariantCulture)
-                });
+                    var imageBytes = File.ReadAllBytes(imagePath);
+                    var base64Image = Convert.ToBase64String(imageBytes);
+                    var fileExtension = Path.GetExtension(imagePath).ToLower();
+                    var imageSrc = $"data:{GetImageType(fileExtension)};base64,{base64Image}";
+
+                    return Results.Ok(new
+                    {
+                        User = new
+                        {
+                            Name = user.FullName,
+                            Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
+                            AccessToken = accessToken,
+                            ValidTo = DateTime.UtcNow.AddMinutes(
+                                double.Parse(_jwtOptions.AccessTokenValidityMinutes))
+                                        .ToString("f", CultureInfo.InvariantCulture),
+                            Image = imageSrc,
+                        }
+                    });
+                }
+                catch (Exception)
+                {
+                    Results.BadRequest("Directory Not Found");
+                }
             }
             return Results.NotFound("Password is incorrect!");
         }
@@ -229,6 +342,5 @@ namespace GraduationProject.Services
             return Results.Ok();
 
         }
-
     }
 }

@@ -19,7 +19,6 @@ namespace GraduationProject.Controllers
         }
 
         [HttpPost("login")]
-        //[SkipJwtTokenMiddleware]
         public async Task<IResult> Login(LoginCustomRequest model)
         {
             if (!ModelState.IsValid)

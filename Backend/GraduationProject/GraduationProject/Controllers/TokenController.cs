@@ -1,5 +1,4 @@
 ﻿using GraduationProject.Controllers.APIResponses;
-using GraduationProject.Models;
 using GraduationProject.Repositories;
 using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
@@ -44,12 +43,18 @@ namespace GraduationProject.Controllers
             if(_tokenService.IsAccessTokenValid(oldAccessToken))
                 return BadRequest("AccessToken is valid");
 
-            var extractedId =  _tokenService.ExtractIdFromExpiredToken(oldAccessToken);
-
-            if (!extractedId.HasValue)
+            int extractedId;
+            try
+            {
+                extractedId = _tokenService.ExtractIdFromExpiredToken(oldAccessToken);
+            }
+            catch (Exception)
+            {
                 return BadRequest("Provided token is invalid");
+            }
 
-            var user = await _appUsersRepository.GetUserWithTokenAndRoles(extractedId.Value);
+
+            var user = await _appUsersRepository.GetUserWithTokenAndRoles(extractedId);
 
             if (user == null || 
                 user.RefreshToken == null || 
@@ -81,7 +86,7 @@ namespace GraduationProject.Controllers
             catch(Exception)
             {
                 return BadRequest("Token is invalid");
-            }  
+            }
 
         }
         

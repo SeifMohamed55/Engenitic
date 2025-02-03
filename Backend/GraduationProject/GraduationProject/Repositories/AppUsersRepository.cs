@@ -33,7 +33,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode =  x.PhoneRegionCode,
-                    ImageURL = x.imageURL,
+                    ImageURL = x.ImageURL,
                 }).ToListAsync();
         }
 
@@ -48,7 +48,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = x.imageURL,
+                    ImageURL = x.ImageURL,
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
 
@@ -114,7 +114,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = x.imageURL,
+                    ImageURL = x.ImageURL,
                 }).FirstOrDefaultAsync(x => x.Email == email);
         }
 

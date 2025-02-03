@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace GraduationProject.Controllers.RequestModels
 {
@@ -33,7 +34,7 @@ namespace GraduationProject.Controllers.RequestModels
         [RegularExpression(@"^\+\d{1,4}$", ErrorMessage = "The country code must start with a '+' followed by 1 to 4 digits.")]
         public string? PhoneRegion { get; set; }
 
-        public string? imageURL { get; set; }
-
+        [FromForm]
+        public IFormFile? Image { get; set; }
     }
 }
