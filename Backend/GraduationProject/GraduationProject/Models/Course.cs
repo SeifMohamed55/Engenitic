@@ -3,6 +3,7 @@
     public class Course
     {
         public int Id { get; set; }
+        public bool hidden { get; set; }
         public string? Code { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;

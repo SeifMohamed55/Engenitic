@@ -11,12 +11,16 @@ namespace GraduationProject.Data.Configuration
             builder.ToTable("Courses");
             builder.HasKey(u => u.Id);
 
+            builder.HasIndex(u => u.Title);
             builder.Property(u => u.Title)
                 .HasMaxLength(100)
-                .IsUnicode();
+                .IsUnicode()
+                .HasColumnType("citext");
 
+            builder.HasIndex(x => x.Description);
             builder.Property(u => u.Description)
-                .IsUnicode();
+                .IsUnicode()
+                .HasColumnType("citext");
 
             builder.Property(u => u.Code)
                 .HasMaxLength(10);
