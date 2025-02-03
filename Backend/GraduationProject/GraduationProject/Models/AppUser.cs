@@ -16,6 +16,7 @@ public class AppUser : IdentityUser<int>
     public RefreshToken? RefreshToken { get; set; } = null!;
 
     public ICollection<Role> Roles { get; set; } = new List<Role>();
+    public ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public void UpdateFromDTO(AppUserDto dto)
     {
