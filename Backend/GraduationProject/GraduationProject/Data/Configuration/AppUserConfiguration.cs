@@ -14,7 +14,7 @@ namespace GraduationProject.Data.Configuration
 
             builder.Property(u => u.PhoneRegionCode).HasMaxLength(5);
 
-            builder.HasIndex(x=> x.NormalizedEmail).IsUnique();
+            builder.HasIndex(x => x.NormalizedEmail).IsUnique();
 
             builder.Property(u => u.Email)
                 .HasMaxLength(100)
@@ -43,4 +43,6 @@ namespace GraduationProject.Data.Configuration
 
         }
     }
+
+
 }
