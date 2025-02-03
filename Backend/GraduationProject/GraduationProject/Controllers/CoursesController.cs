@@ -1,9 +1,4 @@
-﻿using GraduationProject.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using GraduationProject.Services;
-using GraduationProject.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Controllers.ResponseModels;
 using GraduationProject.Repositories;
@@ -22,26 +17,19 @@ namespace GraduationProject.Controllers
         }
 
 
-/*
+
         [HttpGet("{index}")]
         public async Task<IActionResult> GetPageOfCourses(int index = 1)
         {
             if (index <= 0)
                 return BadRequest();
 
-            var courses = _context.Foods
-                .Include(x => x.FoodTags)
-                .Include(x => x.FoodOrigins)
-                .Where(x => x.Hidden == false)
-                .OrderBy(x=> x.Name)
-                .Select(x => new FoodDTO(x));
+            var courses = await _coursesRepo.GetPageOfCourses(index);
 
-            var paginatedList = await PaginatedList<CourseDTO>.CreateAsync(courses, index);
-
-            if (index > paginatedList.TotalPages)
+            if (index > courses.TotalPages)
                 return BadRequest();
-            
-            return Ok(new PaginatedResponse<CourseDTO>(paginatedList));
+
+            return Ok(new PaginatedResponse<CourseDTO>(courses));
 
         }
 
@@ -52,38 +40,27 @@ namespace GraduationProject.Controllers
             if (index <= 0)
                 return BadRequest();
 
-            var foods = _context.Foods
-                .Include(x => x.FoodTags)
-                .Include(x => x.FoodOrigins)
-                .Where(x => x.Hidden == false)
-                .Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()))
-                .OrderBy(x => x.Name)
-                .Select(x => new FoodDTO(x));
-            var paginatedList = await PaginatedList<FoodDTO>.CreateAsync(foods, index);
+            var courses = await _coursesRepo.GetPageOfCoursesBySearching(searchTerm, index);
 
-            if (paginatedList.TotalPages == 0)
+            if (courses.TotalPages == 0)
                 return NotFound();
 
-            if (index > paginatedList.TotalPages)
-                return BadRequest();
+            if (index > courses.TotalPages)
+                return BadRequest("Invalid Page Number");
 
-            return Ok(new PaginatedResponse<FoodDTO>(paginatedList));
+            return Ok(new PaginatedResponse<CourseDTO>(courses));
         }
-        
-        
-        [HttpGet("id/{courseId}")]
-        public async Task<IActionResult> getCourseById(int foodId)
-        {
-            var food = await _context.Foods
-                .Include(x => x.FoodTags)
-                .Include(x => x.FoodOrigins)
-                .Select(x => new FoodDTO(x))
-                .FirstOrDefaultAsync(x => x.Id == foodId);
 
-            if (food is null)
+
+        [HttpGet("id/{courseId}")]
+        public async Task<IActionResult> GetCourseById(int courseId)
+        {
+            var course = await _coursesRepo.GetById(courseId);
+
+            if (course == null)
                 return NotFound();
 
-            return Ok(food);
-        }*/
+            return Ok(course);
+        }
     }
 }
