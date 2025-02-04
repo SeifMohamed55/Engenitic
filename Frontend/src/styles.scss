@@ -13,6 +13,14 @@
     .engenitic-input {
         @apply w-full border-[1.5px] border-black rounded py-2 font-display px-2
     }
+    .danger-button {
+        background-color: rgb(236, 34, 31) ;
+        color: white;
+    }
+    .success-button {
+        background-color: RGB(20, 174, 92) ;
+        color: white;
+    }
 }
 
 .custom-file-input {
