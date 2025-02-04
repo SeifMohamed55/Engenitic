@@ -4,7 +4,7 @@
       <img src="assets/icons/logo-black.svg" alt="engenitics black logo" />
     </li>
     <li><a routerLink="/home" class="font-display capitalize">home</a></li>
-    <li><a routerLink="/courses" class="font-display">courses offered</a></li>
+    <li><a routerLink="/offered-courses" class="font-display">courses offered</a></li>
     <li><a routerLink="/grammar" class="font-display">grammar help</a></li>
     <li><a routerLink="/Q&A" class="font-display">Q & A</a></li>
     <li><a routerLink="/listening" class="font-display">listening</a></li>
@@ -16,8 +16,8 @@
     </div>
     <ng-template #user_info>
       <span class="flex justify-between items-center">
-        <a routerLink="/profile/student" (click)="handleProfile()" class="me-6 flex justify-between items-center"><img src="assets/images/profile-pic.jpg" alt="" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display">user name</p></a>
-        <div class="ms-6"><a (click)="handleLogout()" class="engenitic-button cursor-pointer">log out</a></div>
+        <a routerLink="/profile/student" (click)="handleProfile()" class="me-6 flex justify-between items-center"><img src="assets/images/profile-pic.jpg" alt="" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display"> {{ userName }} </p></a>
+        <div class="ms-6"><a (click)="handleLogout()" class="engenitic-button danger-button cursor-pointer">log out</a></div>
       </span>
     </ng-template>
     <ng-template #reg_logo>

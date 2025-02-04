@@ -29,6 +29,7 @@ export class NavbarComponent implements OnInit {
     this._Router.navigate(['/home']);
     this.registered = null;
   };
+  
   handleProfile():void {
 
   };

@@ -14,11 +14,14 @@ import { StudentComponent } from './pages/student/student.component';
 import { InstructorComponent } from './pages/instructor/instructor.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { StudentEnrolledCoursesComponent } from './components/student-enrolled-courses/student-enrolled-courses.component';
+import { InstructorMadeCoursesComponent } from './components/instructor-made-courses/instructor-made-courses.component';
+import { InstructorAddCourseComponent } from './pages/instructor-add-course/instructor-add-course.component';
+import { InstructorEditCourseComponent } from './pages/instructor-edit-course/instructor-edit-course.component';
 
 export const routes: Routes = [
     {path : "" , redirectTo : "home" , pathMatch : "full"},
     {path : "home", component : HomeComponent},
-    {path : "courses", component : CoursesComponent, children : [
+    {path : "offered-courses", component : CoursesComponent, children : [
         {path : '', redirectTo : '1', pathMatch : 'full'},
         {path : ':collection', component : CourseComponent },
     ]},
@@ -31,12 +34,24 @@ export const routes: Routes = [
     {path : "profile" , children : [
         {path : 'student', component : StudentComponent, children : [
             {path : '', redirectTo : '1', pathMatch : 'full'},
-            {path : ':collection' , component : StudentEnrolledCoursesComponent}
-        ]},
-        {path : 'instructor', component : InstructorComponent},
-        {path : 'admin', component : AdminComponent},
-        {path : '**' , component : NotFoundComponent}
-    ]},
-    {path : "unauthorized", component : UnothorizedComponent},
-    {path : "**", component: NotFoundComponent}
+            {path : ':collection' , component : StudentEnrolledCoursesComponent},
+            {path : '**' , component : NotFoundComponent}]
+        },
+        {path : 'instructor', component : InstructorComponent, children : [
+            {path : '', redirectTo : '1', pathMatch : 'full'},
+            {path : ':collection', component : InstructorMadeCoursesComponent},
+            {path : '**' , component : NotFoundComponent}
+        ]
+    },
+    {path : 'admin', component : AdminComponent},
+    {path : '**' , component : NotFoundComponent}
+]
+},
+{path : 'courses', children : [
+    {path : 'adding', component : InstructorAddCourseComponent},
+    {path : 'editing', component : InstructorEditCourseComponent},
+    {path : '**' , component : NotFoundComponent}
+]},
+{path : "unauthorized", component : UnothorizedComponent},
+{path : "**", component: NotFoundComponent}
 ];
