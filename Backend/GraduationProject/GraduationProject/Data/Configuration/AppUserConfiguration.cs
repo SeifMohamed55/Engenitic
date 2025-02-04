@@ -12,6 +12,8 @@ namespace GraduationProject.Data.Configuration
             builder.ToTable("Users");
             builder.HasKey(u => u.Id);
 
+            builder.Property(x=> x.ImageSrc).IsRequired();
+
             builder.Property(u => u.PhoneRegionCode).HasMaxLength(5);
 
             builder.HasIndex(x => x.NormalizedEmail).IsUnique();

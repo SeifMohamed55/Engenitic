@@ -40,7 +40,7 @@ builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
-builder.Services.AddScoped<AppUsersRepository>();
+builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
 
 

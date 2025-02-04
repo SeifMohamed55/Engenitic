@@ -1,33 +1,46 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GraduationProject.Models.DTOs;
+using GraduationProject.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace GraduationProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class AppUsersController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUserRepository _appUsersRepository;
 
-        public AppUsersController(AppDbContext context)
+        public UsersController(IUserRepository appUsersRepository)
         {
-            _context = context;
+            _appUsersRepository = appUsersRepository;
         }
 
-        // GET: api/AppUsers
-        [HttpGet]    
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return Ok(await _appUsersRepository.GetUsersDTO());
         }
 
-        // GET: api/AppUsers/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetAppUser(int id)
+        public async Task<ActionResult<AppUserDTO>> GetProfileData(int id)
         {
-            var appUser = await _context.Users.FindAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized("User ID not found.");
+            }
+
+            if (int.TryParse(userId, out int currentUserId) && id != currentUserId)
+            {
+                return Forbid();
+            }
+            var appUser = await _appUsersRepository.GetAppUserDTO(id);
 
             if (appUser == null)
             {
@@ -36,68 +49,21 @@ namespace GraduationProject.Controllers
 
             return appUser;
         }
+ 
 
-        // PUT: api/AppUsers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAppUser(int id, AppUser appUser)
-        {
-            if (id != appUser.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(appUser).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AppUserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/AppUsers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<AppUser>> PostAppUser(AppUser appUser)
-        {
-            _context.Users.Add(appUser);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAppUser", new { id = appUser.Id }, appUser);
-        }
-
-        // DELETE: api/AppUsers/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteAppUser(int id)
         {
-            var appUser = await _context.Users.FindAsync(id);
-            if (appUser == null)
+            var banned = await _appUsersRepository.BanAppUser(id);
+            if (banned)
             {
-                return NotFound();
+                return Ok();
             }
 
-            _context.Users.Remove(appUser);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return BadRequest();
         }
 
-        private bool AppUserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
     }
 }
