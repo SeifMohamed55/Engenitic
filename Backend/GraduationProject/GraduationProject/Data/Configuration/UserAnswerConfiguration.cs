@@ -22,6 +22,11 @@ namespace GraduationProject.Data.Configuration
                 .HasForeignKey(ua => ua.AnswerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(ua => ua.User)
+                .WithMany()
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
 

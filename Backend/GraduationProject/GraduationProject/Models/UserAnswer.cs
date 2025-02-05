@@ -16,8 +16,10 @@
     public class UserAnswer
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
         public bool IsCorrect { get; set; }
+
+        public int UserId { get; set; }
+        public AppUser User { get; set; } = null!;
 
         public int QuestionId { get; set; }
         public QuizQuestion Question { get; set; } = null!;
