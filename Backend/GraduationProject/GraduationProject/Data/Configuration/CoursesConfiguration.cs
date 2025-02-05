@@ -11,6 +11,9 @@ namespace GraduationProject.Data.Configuration
             builder.ToTable("Courses");
             builder.HasKey(u => u.Id);
 
+            builder.Property(u => u.CreatedAt)
+                .HasDefaultValueSql("now()");
+
             builder.HasIndex(u => u.Title);
             builder.Property(u => u.Title)
                 .HasMaxLength(100)
@@ -29,6 +32,11 @@ namespace GraduationProject.Data.Configuration
                 .WithMany(x=> x.Courses)
                 .HasForeignKey(x => x.InstructorId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(c => c.Quizes)
+                .WithOne(s => s.Course)
+                .HasForeignKey(s => s.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

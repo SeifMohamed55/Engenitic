@@ -25,6 +25,7 @@ public class AppDbContext : IdentityDbContext<AppUser, Role, int, IdentityUserCl
         modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
+
     }
 }
 

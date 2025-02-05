@@ -5,6 +5,8 @@ using GraduationProject.Repositories;
 
 namespace GraduationProject.Controllers
 {
+    // TODO: Add Stages(number of videos and quizes), Requirements and Tags
+
     [ApiController]
     [Route("api/[controller]")]
     public class CoursesController : ControllerBase
