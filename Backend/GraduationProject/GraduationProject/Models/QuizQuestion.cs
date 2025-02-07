@@ -10,8 +10,7 @@
         public int QuizId { get; set; } 
         public Quiz Quiz { get; set; } = null!;
 
-        public int AnswerId { get; set; }
-        public QuizAnswer Answer { get; set; } = null!;
+        public ICollection<QuizAnswer> Answers { get; set; } = null!;
     }
 
 

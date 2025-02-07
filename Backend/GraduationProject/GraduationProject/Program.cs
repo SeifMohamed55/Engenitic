@@ -2,12 +2,10 @@ using GraduationProject.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Configuration;
 using GraduationProject.Services;
-using System;
 using GraduationProject.Repositories;
-using Microsoft.Extensions.Options;
 using GraduationProject.Middlewares;
+using GraduationProject;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,3 +69,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    AppDbSeeder.Seed(dbContext);
+}

@@ -18,9 +18,10 @@ namespace GraduationProject.Data.Configuration
             builder.Property(u => u.CreatedAt)
                 .HasDefaultValueSql("now()");
 
-            builder.HasOne(x => x.Answer)
-                .WithOne()
-                .HasForeignKey<QuizQuestion>(x => x.AnswerId);
+            builder.HasMany(x=> x.Answers)
+                .WithOne(x => x.Question)
+                .HasForeignKey(x => x.QuestionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }
