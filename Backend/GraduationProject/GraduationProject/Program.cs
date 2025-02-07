@@ -68,11 +68,36 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+/*using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    *//*AppDbSeeder.Seed(dbContext);*//*
+    var quiz1InCourse1 = await dbContext.Quizzes
+        .Include(x => x.Questions)
+            .ThenInclude(q => q.Answers)
+        .Where(q => q.CourseId == 1 && q.Position == 1) 
+        .Select(x=> new
+        {
+            x.Id,
+            x.Title,
+            x.Position,
+            Questions = x.Questions
+            .Select(q => new
+            {
+                q.Id,
+                q.QuestionText,
+                Answers = q.Answers.Select(a => new
+                {
+                    a.Id,
+                    a.AnswerText,
+                    a.IsCorrect
+                })
+            })
+        }).FirstOrDefaultAsync();
+
+}*/
+
+
 app.Run();
 
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    AppDbSeeder.Seed(dbContext);
-}
