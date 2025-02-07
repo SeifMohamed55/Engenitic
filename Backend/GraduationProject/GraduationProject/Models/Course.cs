@@ -15,6 +15,7 @@
         public AppUser Instructor { get; set; } = null!;
 
         public ICollection<Quiz> Quizes { get; set; } = new List<Quiz>();
+        public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>();
     }
 
 

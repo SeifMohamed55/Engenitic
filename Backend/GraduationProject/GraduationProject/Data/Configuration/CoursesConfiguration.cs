@@ -28,15 +28,16 @@ namespace GraduationProject.Data.Configuration
             builder.Property(u => u.Code)
                 .HasMaxLength(10);
 
-            builder.HasOne(x => x.Instructor)
-                .WithMany(x=> x.Courses)
-                .HasForeignKey(x => x.InstructorId)
-                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(c => c.Quizes)
                 .WithOne(s => s.Course)
                 .HasForeignKey(s => s.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(c => c.Enrollments)
+                .WithOne(s => s.Course)
+                .HasForeignKey(s => s.CourseId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 

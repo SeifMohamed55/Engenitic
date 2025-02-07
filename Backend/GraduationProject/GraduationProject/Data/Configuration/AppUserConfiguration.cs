@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GraduationProject.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Reflection.Emit;
@@ -43,6 +44,15 @@ namespace GraduationProject.Data.Configuration
                 .HasForeignKey<AppUser>(x => x.RefreshTokenId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            builder.HasMany(x => x.Courses)
+                .WithOne(x => x.Instructor)
+                .HasForeignKey(x => x.InstructorId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(x => x.Enrollments)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

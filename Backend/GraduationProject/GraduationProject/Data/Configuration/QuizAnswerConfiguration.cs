@@ -9,16 +9,12 @@ namespace GraduationProject.Data.Configuration
         void IEntityTypeConfiguration<QuizAnswer>.Configure(EntityTypeBuilder<QuizAnswer> builder)
         {
             builder.ToTable("QuizAnswers");
-            builder.HasKey(u =>  u.QuestionId);
+            builder.HasKey(u =>  u.Id);
 
             builder.Property(u => u.AnswerText)
                 .HasMaxLength(500)
                 .IsUnicode();
 
-            builder.HasOne(x=> x.Question)
-                .WithOne(x => x.Answer)
-                .HasForeignKey<QuizAnswer>(x => x.QuestionId)
-                .OnDelete(DeleteBehavior.Cascade);
 
 
         }

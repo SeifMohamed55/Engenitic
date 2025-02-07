@@ -30,5 +30,4 @@ Courses Page
 Course identification: title with instructor
 
 
-
-ConnectionStrings__POSTGRES_GRAD= Server=127.0.0.1;Port=5432;Database=engenetic;User Id=GraduationAdmin;Password=seif;Pooling=true;MinPoolSize=0;MaxPoolSize=100;
+Cloudinaries For ProfPics or ImgBB (Only Public)
