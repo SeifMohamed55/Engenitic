@@ -2,6 +2,7 @@
 using GraduationProject.Models;
 using GraduationProject.Services;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 
 namespace GraduationProject.Repositories
 {
@@ -12,9 +13,13 @@ namespace GraduationProject.Repositories
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesWithHidden(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
+        Task<List<CourseDTO>> GetInstructorCourses(int id);
+        Task<List<CourseStatistics>> GetCourseStatistics(int courseId);
+
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
+
         public CoursesRepository(AppDbContext context) : base(context)
         {
         }
@@ -61,6 +66,25 @@ namespace GraduationProject.Repositories
             return await PaginatedList<CourseDTO>.CreateAsync(courses, index);
         }
 
+        public async Task<List<CourseDTO>> GetInstructorCourses(int instructorId)
+        {
+            return await _dbSet
+                .Where(x => x.InstructorId == instructorId)
+                .Select(x=> new CourseDTO(x))
+                .ToListAsync();
+        }
 
+        public async Task<List<CourseStatistics>> GetCourseStatistics(int courseId)
+        {
+            return await _dbSet.Include(x=> x.Enrollments)
+                .Where(x => x.Id == courseId)
+                .Select(x => new CourseStatistics()
+                {
+                    UserEmails = x.Enrollments.Select(e => e.User.Email),
+                    TotalEnrollments = x.Enrollments.Count,
+                    TotalCompleted = x.Enrollments.Count(e => e.IsCompleted == true),
+                })
+                .ToListAsync();
+        }
     }
 }

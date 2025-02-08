@@ -15,6 +15,8 @@ namespace GraduationProject.Data.Configuration
                 .HasMaxLength(500)
                 .IsUnicode();
 
+            builder.HasIndex(u => u.Position);
+
 
 
         }

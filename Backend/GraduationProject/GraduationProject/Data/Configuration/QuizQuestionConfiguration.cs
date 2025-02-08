@@ -14,12 +14,7 @@ namespace GraduationProject.Data.Configuration
             builder.Property(u => u.QuestionText)
                 .HasMaxLength(600)
                 .IsUnicode();
-
-            builder.Property(x => x.Position)
-                .HasDefaultValue(null)
-                .IsRequired();
             
-
             builder.Property(u => u.CreatedAt)
                 .HasDefaultValueSql("now()");
 

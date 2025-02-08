@@ -21,7 +21,7 @@ namespace GraduationProject.Repositories
         Task<bool> DeleteRefreshToken(int id);
         Task<bool> DeleteRefreshToken(AppUser appUser);
         Task UpdateUserImage(AppUser user, string image);
-
+        Task<bool> EnrollOnCourse(int userId, int courseId);
     }
 
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
@@ -204,6 +204,32 @@ namespace GraduationProject.Repositories
         {
             user.ImageSrc = image;
             await UpdateAsync(user);
+        }
+
+        public async Task<bool> EnrollOnCourse(int userId, int courseId)
+        {
+            var user = await GetByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            try
+            {
+                user.Enrollments.Add(new UserEnrollment
+                {
+                    UserId = userId,
+                    CourseId = courseId,
+                    IsCompleted = false,
+                    CurrentStage = 1
+                });
+                await UpdateAsync(user);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
     }
 }

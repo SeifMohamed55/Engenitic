@@ -1,6 +1,6 @@
 ﻿namespace GraduationProject.Models
 {
-    public class UserQuizAttempt // add enrollment
+    public class UserQuizAttempt 
     {
         public int Id { get; set; }
         public int UserScore { get; set; }
