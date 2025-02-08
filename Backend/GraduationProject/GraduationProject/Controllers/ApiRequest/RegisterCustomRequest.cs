@@ -34,7 +34,6 @@ namespace GraduationProject.Controllers.RequestModels
         [RegularExpression(@"^\+\d{1,4}$", ErrorMessage = "The country code must start with a '+' followed by 1 to 4 digits.")]
         public string? PhoneRegion { get; set; }
 
-        [FromForm]
         public IFormFile? Image { get; set; }
     }
 }

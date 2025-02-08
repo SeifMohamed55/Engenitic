@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GraduationProject.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Reflection.Emit;
@@ -12,9 +13,11 @@ namespace GraduationProject.Data.Configuration
             builder.ToTable("Users");
             builder.HasKey(u => u.Id);
 
+            builder.Property(x=> x.ImageSrc).IsRequired();
+
             builder.Property(u => u.PhoneRegionCode).HasMaxLength(5);
 
-            builder.HasIndex(x=> x.NormalizedEmail).IsUnique();
+            builder.HasIndex(x => x.NormalizedEmail).IsUnique();
 
             builder.Property(u => u.Email)
                 .HasMaxLength(100)
@@ -41,6 +44,17 @@ namespace GraduationProject.Data.Configuration
                 .HasForeignKey<AppUser>(x => x.RefreshTokenId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            builder.HasMany(x => x.Courses)
+                .WithOne(x => x.Instructor)
+                .HasForeignKey(x => x.InstructorId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(x => x.Enrollments)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
+
+
 }

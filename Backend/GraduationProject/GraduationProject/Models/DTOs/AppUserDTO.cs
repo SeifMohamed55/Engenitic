@@ -1,6 +1,6 @@
 ﻿namespace GraduationProject.Models.DTOs
 {
-     public class AppUserDto
+     public class AppUserDTO
         {
             public int Id { get; set; }
             public string Email { get; set; } = null!;

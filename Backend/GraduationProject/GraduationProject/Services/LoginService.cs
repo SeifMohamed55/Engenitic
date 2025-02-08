@@ -36,7 +36,7 @@ namespace GraduationProject.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly JwtOptions _jwtOptions;
         private readonly RoleManager<Role> _roleManager;
-        private readonly AppUsersRepository _appUserRepo;
+        private readonly IUserRepository _appUserRepo;
         private readonly ITokenBlacklistService _tokenBlacklistService;
 
         public LoginRegisterService(
@@ -46,7 +46,7 @@ namespace GraduationProject.Services
             SignInManager<AppUser> signInManager,
             AppDbContext context,
             RoleManager<Role> roleManager,
-            AppUsersRepository appUsersRepository,
+            IUserRepository appUsersRepository,
             ITokenBlacklistService tokenBlacklistService
             )
 
@@ -161,7 +161,7 @@ namespace GraduationProject.Services
                 PhoneNumber = model.PhoneNumber,
                 Banned = false,
                 PhoneRegionCode = RegionCode,
-                ImageURL = "default.jpeg",
+                ImageSrc = "default.jpeg",
                 FullName = model.Username
 
             };
@@ -195,14 +195,13 @@ namespace GraduationProject.Services
                                 await model.Image.CopyToAsync(stream);
                             }
 
-                            user.ImageURL = imageURL;
-                            await _appUserRepo.UpdateAsync(user);
+                            await _appUserRepo.UpdateUserImage(user, imageURL);
                         }
 
                         return Results.Ok(new
                         {
                             result = "User created successfully",
-                            user = new AppUserDto()
+                            user = new AppUserDTO()
                             {
                                 Email = user.Email,
                                 PhoneNumber = user.PhoneNumber ?? "",
@@ -264,7 +263,7 @@ namespace GraduationProject.Services
                 httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
                 string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                                "uploads", "images", user.ImageURL);
+                                                "uploads", "images", user.ImageSrc);
 
                 try
                 {

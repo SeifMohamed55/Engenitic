@@ -12,6 +12,11 @@ public class AppDbContext : IdentityDbContext<AppUser, Role, int, IdentityUserCl
     }
 
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+    public DbSet<Course> Courses { get; set; } = null!;
+    public DbSet<Quiz> Quizzes { get; set; } = null!;
+    public DbSet<QuizQuestion> QuizQuestions { get; set; } = null!;
+    public DbSet<QuizAnswer> QuizAnswers { get; set; } = null!;
+    public DbSet<UserEnrollment> UserEnrollments { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,6 +29,7 @@ public class AppDbContext : IdentityDbContext<AppUser, Role, int, IdentityUserCl
         modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
         modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
 
     }
 }

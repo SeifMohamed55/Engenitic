@@ -7,12 +7,21 @@ using Microsoft.EntityFrameworkCore;
 namespace GraduationProject.Repositories
 {
 
-    public interface IUserRepository : IRepository<AppUser>
+    public interface IUserRepository
     {
-        Task<AppUserDto?> GetUserByEmail(string email);
+        Task<IEnumerable<AppUserDTO>> GetUsersDTO();
+        Task<AppUserDTO?> GetAppUserDTO(int id);
+        Task<AppUser?> GetUserWithTokenAndRoles(int id);
+        Task<AppUser?> GetUserWithTokenAndRoles(string email);
+        Task<RefreshToken?> GetUserRefreshToken(int id);
+        Task<bool> UpdateUser(AppUserDTO dto);
+        Task<bool> BanAppUser(int id);
+        Task<AppUserDTO?> GetUserDTOByEmail(string email);
         Task<bool> UpdateRefreshToken(AppUser appUser, RefreshToken token);
         Task<bool> DeleteRefreshToken(int id);
         Task<bool> DeleteRefreshToken(AppUser appUser);
+        Task UpdateUserImage(AppUser user, string image);
+        Task<bool> EnrollOnCourse(int userId, int courseId);
     }
 
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
@@ -22,33 +31,33 @@ namespace GraduationProject.Repositories
         {
         }
 
-        public async Task<IEnumerable<AppUserDto>> GetUsers()
+        public async Task<IEnumerable<AppUserDTO>> GetUsersDTO()
         {
             return await _dbSet
                 .Include(x=> x.Roles)
                 .Include(x=> x.RefreshToken)
-                .Select(x=> new AppUserDto
+                .Select(x=> new AppUserDTO
                 {
                     Id = x.Id,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode =  x.PhoneRegionCode,
-                    ImageURL = x.ImageURL,
+                    ImageURL = x.ImageSrc,
                 }).ToListAsync();
         }
 
-        public async Task<AppUserDto?> GetAppUser(int id)
+        public async Task<AppUserDTO?> GetAppUserDTO(int id)
         {
             return await _dbSet 
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
-                .Select(x => new AppUserDto
+                .Select(x => new AppUserDTO
                 {
                     Id = x.Id,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = x.ImageURL,
+                    ImageURL = x.ImageSrc,
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
 
@@ -76,7 +85,7 @@ namespace GraduationProject.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id))?.RefreshToken;
         }
 
-        public async Task<bool> UpdateUser(AppUserDto dto)
+        public async Task<bool> UpdateUser(AppUserDTO dto)
         {
             var user  = await GetByIdAsync(dto.Id);
             if (user == null)
@@ -98,23 +107,39 @@ namespace GraduationProject.Repositories
         }
 
 
-        public async Task<bool> DeleteAppUser(int id)
+        public async Task<bool> BanAppUser(int id)
         {
-            return await DeleteAsync(id);
+            var user = await GetByIdAsync(id);
+            if(user == null)
+            {
+                return false;
+            }
+
+            user.Banned = true;
+            try
+            {
+                await UpdateAsync(user);
+                return true;
+            }
+            catch (Exception)
+            {
+            }
+
+            return false;
         }
 
-        public async Task<AppUserDto?> GetUserByEmail(string email)
+        public async Task<AppUserDTO?> GetUserDTOByEmail(string email)
         {
             return await _dbSet
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
-                .Select(x => new AppUserDto
+                .Select(x => new AppUserDTO
                 {
                     Id = x.Id,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = x.ImageURL,
+                    ImageURL = x.ImageSrc,
                 }).FirstOrDefaultAsync(x => x.Email == email);
         }
 
@@ -175,6 +200,36 @@ namespace GraduationProject.Repositories
 
         }
 
+        public async Task UpdateUserImage(AppUser user, string image)
+        {
+            user.ImageSrc = image;
+            await UpdateAsync(user);
+        }
 
+        public async Task<bool> EnrollOnCourse(int userId, int courseId)
+        {
+            var user = await GetByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            try
+            {
+                user.Enrollments.Add(new UserEnrollment
+                {
+                    UserId = userId,
+                    CourseId = courseId,
+                    IsCompleted = false,
+                    CurrentStage = 1
+                });
+                await UpdateAsync(user);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
     }
 }

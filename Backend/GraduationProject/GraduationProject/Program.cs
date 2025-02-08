@@ -2,12 +2,12 @@ using GraduationProject.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Configuration;
 using GraduationProject.Services;
-using System;
 using GraduationProject.Repositories;
-using Microsoft.Extensions.Options;
 using GraduationProject.Middlewares;
+using GraduationProject;
+using GraduationProject.Models.DTOs;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,8 @@ builder.Configuration.AddEnvironmentVariables();
 
 
 builder.Services.AddDbContextPool<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD")));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD"))
+               .EnableServiceProviderCaching());
 
 builder.Services
     .AddIdentity<AppUser, Role>(options =>
@@ -40,7 +41,7 @@ builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
-builder.Services.AddScoped<AppUsersRepository>();
+builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
 
 
@@ -70,4 +71,49 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+/*using (var scope = app.Services.CreateScope())
+{
+
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    //AppDbSeeder.Seed(dbContext);
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.Start();
+
+
+    var quiz3 = await dbContext.Quizzes
+                .Include(x => x.Questions)
+                    .ThenInclude(q => q.Answers)
+                .Where(q => q.CourseId == 1 && q.Position == 1)
+                .Select(q => new QuizDTO()
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Position = q.Position,
+                    Questions = q.Questions.OrderBy(x => x.Position).Select(qq => new QuestionDTO()
+                    {
+                        Id = qq.Id,
+                        QuestionText = qq.QuestionText,
+                        Position = qq.Position,
+                        Answers = qq.Answers.OrderBy(x => x.Position).Select(a => new AnswerDTO()
+                        {
+                            Id = a.Id,
+                            AnswerText = a.AnswerText,
+                            IsCorrect = a.IsCorrect,
+                            Position = a.Position
+                        }).ToList()
+                    }).ToList()
+                })
+                .AsSingleQuery()
+                .FirstOrDefaultAsync();
+
+    stopwatch.Stop();
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+
+
+}
+*/
+
 app.Run();
+
+

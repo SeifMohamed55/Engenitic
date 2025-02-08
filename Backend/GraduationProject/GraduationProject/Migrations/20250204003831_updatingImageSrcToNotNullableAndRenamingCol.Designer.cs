@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204003831_updatingImageSrcToNotNullableAndRenamingCol")]
+    partial class updatingImageSrcToNotNullableAndRenamingCol
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace GraduationProject.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "citext");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GraduationProject.Models.AppUser", b =>
+            modelBuilder.Entity("AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,11 +132,6 @@ namespace GraduationProject.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .IsUnicode(true)
@@ -164,108 +162,6 @@ namespace GraduationProject.Migrations
                     b.HasIndex("Title");
 
                     b.ToTable("Courses", (string)null);
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.Quiz", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("VideoUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("Position");
-
-                    b.ToTable("Quizes", (string)null);
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.QuizAnswer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AnswerText")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Position");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("QuizAnswers", (string)null);
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.QuizQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("QuestionText")
-                        .IsRequired()
-                        .HasMaxLength(600)
-                        .IsUnicode(true)
-                        .HasColumnType("character varying(600)");
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("QuizQuestions", (string)null);
                 });
 
             modelBuilder.Entity("GraduationProject.Models.RefreshToken", b =>
@@ -326,102 +222,6 @@ namespace GraduationProject.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("Roles", (string)null);
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserAnswer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserQuizAttemptId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserQuizAttemptId");
-
-                    b.ToTable("UserAnswers", (string)null);
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserEnrollment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CurrentStage")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("EnrolledAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserEnrollments", (string)null);
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserQuizAttempt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CompletedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserEnrollmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserScore")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.HasIndex("UserEnrollmentId");
-
-                    b.ToTable("UserQuizAttempts", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -527,11 +327,11 @@ namespace GraduationProject.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("GraduationProject.Models.AppUser", b =>
+            modelBuilder.Entity("AppUser", b =>
                 {
                     b.HasOne("GraduationProject.Models.RefreshToken", "RefreshToken")
                         .WithOne("AppUser")
-                        .HasForeignKey("GraduationProject.Models.AppUser", "RefreshTokenId")
+                        .HasForeignKey("AppUser", "RefreshTokenId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("RefreshToken");
@@ -539,109 +339,13 @@ namespace GraduationProject.Migrations
 
             modelBuilder.Entity("GraduationProject.Models.Course", b =>
                 {
-                    b.HasOne("GraduationProject.Models.AppUser", "Instructor")
+                    b.HasOne("AppUser", "Instructor")
                         .WithMany("Courses")
                         .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Instructor");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.Quiz", b =>
-                {
-                    b.HasOne("GraduationProject.Models.Course", "Course")
-                        .WithMany("Quizes")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.QuizAnswer", b =>
-                {
-                    b.HasOne("GraduationProject.Models.QuizQuestion", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.QuizQuestion", b =>
-                {
-                    b.HasOne("GraduationProject.Models.Quiz", "Quiz")
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserAnswer", b =>
-                {
-                    b.HasOne("GraduationProject.Models.QuizAnswer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GraduationProject.Models.QuizQuestion", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GraduationProject.Models.UserQuizAttempt", null)
-                        .WithMany("UserAnswers")
-                        .HasForeignKey("UserQuizAttemptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Answer");
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserEnrollment", b =>
-                {
-                    b.HasOne("GraduationProject.Models.Course", "Course")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("GraduationProject.Models.AppUser", "User")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserQuizAttempt", b =>
-                {
-                    b.HasOne("GraduationProject.Models.Quiz", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("GraduationProject.Models.UserEnrollment", "UserEnrollment")
-                        .WithMany("QuizAttempts")
-                        .HasForeignKey("UserEnrollmentId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-
-                    b.Navigation("UserEnrollment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -655,7 +359,7 @@ namespace GraduationProject.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("GraduationProject.Models.AppUser", null)
+                    b.HasOne("AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -664,7 +368,7 @@ namespace GraduationProject.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("GraduationProject.Models.AppUser", null)
+                    b.HasOne("AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -679,7 +383,7 @@ namespace GraduationProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GraduationProject.Models.AppUser", null)
+                    b.HasOne("AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -688,51 +392,22 @@ namespace GraduationProject.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("GraduationProject.Models.AppUser", null)
+                    b.HasOne("AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GraduationProject.Models.AppUser", b =>
+            modelBuilder.Entity("AppUser", b =>
                 {
                     b.Navigation("Courses");
-
-                    b.Navigation("Enrollments");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.Course", b =>
-                {
-                    b.Navigation("Enrollments");
-
-                    b.Navigation("Quizes");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.Quiz", b =>
-                {
-                    b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.QuizQuestion", b =>
-                {
-                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("GraduationProject.Models.RefreshToken", b =>
                 {
                     b.Navigation("AppUser")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserEnrollment", b =>
-                {
-                    b.Navigation("QuizAttempts");
-                });
-
-            modelBuilder.Entity("GraduationProject.Models.UserQuizAttempt", b =>
-                {
-                    b.Navigation("UserAnswers");
                 });
 #pragma warning restore 612, 618
         }
