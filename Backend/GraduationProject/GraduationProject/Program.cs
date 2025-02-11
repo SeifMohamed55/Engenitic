@@ -5,9 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using GraduationProject.Services;
 using GraduationProject.Repositories;
 using GraduationProject.Middlewares;
-using GraduationProject;
-using GraduationProject.Models.DTOs;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +50,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
@@ -66,6 +75,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -127,9 +137,8 @@ app.MapControllers();
         stopwatch.Stop();
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
-        stopwatch.Restart();*//*
+        stopwatch.Restart();
 }*/
-
 
 app.Run();
 
