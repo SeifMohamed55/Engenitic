@@ -1,7 +1,7 @@
 ﻿
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
-
+using GraduationProject.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Repositories
@@ -22,13 +22,17 @@ namespace GraduationProject.Repositories
         Task<bool> DeleteRefreshToken(AppUser appUser);
         Task UpdateUserImage(AppUser user, string image);
         Task<bool> EnrollOnCourse(int userId, int courseId);
+        Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId);
     }
 
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
     {
 
+        private readonly DbSet<UserEnrollment> _enrollments;
+
         public AppUsersRepository(AppDbContext context) : base(context)
         {
+            _enrollments = context.Set<UserEnrollment>();
         }
 
         public async Task<IEnumerable<AppUserDTO>> GetUsersDTO()
@@ -58,9 +62,19 @@ namespace GraduationProject.Repositories
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
                     ImageURL = x.ImageSrc,
+                    UserName = x.FullName
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
 
+        public async Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId)
+        {
+            var Enrollments = _enrollments
+                .Where(x=> x.UserId == userId)
+                .OrderBy(x=> x.CourseId)
+                .Select(e => new EnrollmentDTO(e));
+            return await PaginatedList<EnrollmentDTO>.CreateAsync(Enrollments, index);
+
+        }
 
         public async Task<AppUser?> GetUserWithTokenAndRoles(int id)
         {

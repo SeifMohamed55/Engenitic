@@ -43,6 +43,7 @@ builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
 builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -75,10 +76,24 @@ app.MapControllers();
 {
 
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var QuizRepo = scope.ServiceProvider.GetRequiredService<IQuizRepository>();
     //AppDbSeeder.Seed(dbContext);
+
     Stopwatch stopwatch = new Stopwatch();
     stopwatch.Start();
 
+    var quiz = await QuizRepo.GetQuizByCourseAndPosition(1, 1);
+
+    stopwatch.Stop();
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+    stopwatch.Restart();
+
+    var quiz2 = await QuizRepo.GetQuizByCourseAndPosition(1, 1);
+
+    stopwatch.Stop();
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
 
     var quiz3 = await dbContext.Quizzes
                 .Include(x => x.Questions)
@@ -109,10 +124,9 @@ app.MapControllers();
     stopwatch.Stop();
     Console.ForegroundColor = ConsoleColor.DarkRed;
     Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+    stopwatch.Restart();
+}*/
 
-
-}
-*/
 
 app.Run();
 

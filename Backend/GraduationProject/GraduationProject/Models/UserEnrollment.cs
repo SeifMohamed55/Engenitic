@@ -6,6 +6,7 @@
         public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
         public int CurrentStage { get; set; }
         public bool IsCompleted { get; set; }
+        public int TotalStages { get; set; }
 
         public int UserId { get; set; }
         public AppUser User { get; set; } = null!;
