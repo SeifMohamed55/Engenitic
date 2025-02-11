@@ -33,7 +33,7 @@ export class GrammarHelpComponent {
       this.grammarForm.markAllAsTouched();
       this.disableButton = false;
       this._ngxSpinnerService.hide();
-      console.error(`Error: ${this.grammarForm.value}`);
+      console.log(`Error: ${this.grammarForm.value}`);
     }
   }
 }
