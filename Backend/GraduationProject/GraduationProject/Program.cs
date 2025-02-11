@@ -43,6 +43,7 @@ builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
 builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -75,44 +76,60 @@ app.MapControllers();
 {
 
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var QuizRepo = scope.ServiceProvider.GetRequiredService<IQuizRepository>();
     //AppDbSeeder.Seed(dbContext);
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.Start();
 
+    dbContext.Roles.Add(new Role() { Name = "Superadmin"});
+    await dbContext.SaveChangesAsync();
+    *//*
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
 
-    var quiz3 = await dbContext.Quizzes
-                .Include(x => x.Questions)
-                    .ThenInclude(q => q.Answers)
-                .Where(q => q.CourseId == 1 && q.Position == 1)
-                .Select(q => new QuizDTO()
-                {
-                    Id = q.Id,
-                    Title = q.Title,
-                    Position = q.Position,
-                    Questions = q.Questions.OrderBy(x => x.Position).Select(qq => new QuestionDTO()
+        var quiz = await QuizRepo.GetQuizByCourseAndPosition(1, 1);
+
+        stopwatch.Stop();
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+        stopwatch.Restart();
+
+        var quiz2 = await QuizRepo.GetQuizByCourseAndPosition(1, 1);
+
+        stopwatch.Stop();
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+
+        var quiz3 = await dbContext.Quizzes
+                    .Include(x => x.Questions)
+                        .ThenInclude(q => q.Answers)
+                    .Where(q => q.CourseId == 1 && q.Position == 1)
+                    .Select(q => new QuizDTO()
                     {
-                        Id = qq.Id,
-                        QuestionText = qq.QuestionText,
-                        Position = qq.Position,
-                        Answers = qq.Answers.OrderBy(x => x.Position).Select(a => new AnswerDTO()
+                        Id = q.Id,
+                        Title = q.Title,
+                        Position = q.Position,
+                        Questions = q.Questions.OrderBy(x => x.Position).Select(qq => new QuestionDTO()
                         {
-                            Id = a.Id,
-                            AnswerText = a.AnswerText,
-                            IsCorrect = a.IsCorrect,
-                            Position = a.Position
+                            Id = qq.Id,
+                            QuestionText = qq.QuestionText,
+                            Position = qq.Position,
+                            Answers = qq.Answers.OrderBy(x => x.Position).Select(a => new AnswerDTO()
+                            {
+                                Id = a.Id,
+                                AnswerText = a.AnswerText,
+                                IsCorrect = a.IsCorrect,
+                                Position = a.Position
+                            }).ToList()
                         }).ToList()
-                    }).ToList()
-                })
-                .AsSingleQuery()
-                .FirstOrDefaultAsync();
+                    })
+                    .AsSingleQuery()
+                    .FirstOrDefaultAsync();
 
-    stopwatch.Stop();
-    Console.ForegroundColor = ConsoleColor.DarkRed;
-    Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+        stopwatch.Stop();
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+        stopwatch.Restart();*//*
+}*/
 
-
-}
-*/
 
 app.Run();
 

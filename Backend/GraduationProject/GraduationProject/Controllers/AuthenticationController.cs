@@ -1,10 +1,6 @@
 ﻿using GraduationProject.Controllers.RequestModels;
-using GraduationProject.Models;
-using GraduationProject.Models.DTOs;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Services;
-using Ganss.Xss;
 
 namespace GraduationProject.Controllers
 {
