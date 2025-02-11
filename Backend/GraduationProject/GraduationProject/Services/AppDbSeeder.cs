@@ -1,6 +1,6 @@
 ﻿using GraduationProject.Models;
 
-namespace GraduationProject
+namespace GraduationProject.Services
 {
     public static class AppDbSeeder
     {
