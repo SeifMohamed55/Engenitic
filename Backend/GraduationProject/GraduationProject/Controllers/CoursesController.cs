@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Models.DTOs;
-using GraduationProject.Controllers.ResponseModels;
+using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
@@ -25,14 +25,37 @@ namespace GraduationProject.Controllers
         public async Task<IActionResult> GetPageOfCourses(int index = 1)
         {
             if (index <= 0)
-                return BadRequest();
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid Page Number",
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                var courses = await _coursesRepo.GetPageOfCourses(index);
 
-            var courses = await _coursesRepo.GetPageOfCourses(index);
+                if (index > courses.TotalPages)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid Page Number",
+                        Code = System.Net.HttpStatusCode.BadRequest,
+                    });
 
-            if (index > courses.TotalPages)
-                return BadRequest();
-
-            return Ok(new PaginatedResponse<CourseDTO>(courses));
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Courses Retrieved Successfully.",
+                    Data = new PaginatedResponse<CourseDTO>(courses),
+                    Code = System.Net.HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = System.Net.HttpStatusCode.InternalServerError,
+                });
+            }
 
         }
 
@@ -41,29 +64,77 @@ namespace GraduationProject.Controllers
         public async Task<IActionResult> GetCoursesBySearching(string searchTerm, int index = 1)
         {
             if (index <= 0)
-                return BadRequest();
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid Page Number",
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                var courses = await _coursesRepo.GetPageOfCoursesBySearching(searchTerm, index);
 
-            var courses = await _coursesRepo.GetPageOfCoursesBySearching(searchTerm, index);
+                if (courses.TotalPages == 0)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "No Courses Found.",
+                        Code = System.Net.HttpStatusCode.NotFound,
+                    });
 
-            if (courses.TotalPages == 0)
-                return NotFound();
+                if (index > courses.TotalPages)
+                    return BadRequest(new ErrorResponse
+                    {
+                        Message = "Invalid Page Number",
+                        Code = System.Net.HttpStatusCode.BadRequest,
+                    });
 
-            if (index > courses.TotalPages)
-                return BadRequest("Invalid Page Number");
+                return Ok(new SuccessResponse
+                {
+                    Message = "Courses Retrieved Successfully.",
+                    Data = new PaginatedResponse<CourseDTO>(courses),
+                    Code = System.Net.HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = System.Net.HttpStatusCode.InternalServerError,
+                });
 
-            return Ok(new PaginatedResponse<CourseDTO>(courses));
+            }
         }
 
 
         [HttpGet("id/{courseId}")]
         public async Task<IActionResult> GetCourseById(int courseId)
         {
-            var course = await _coursesRepo.GetById(courseId);
+            try
+            {
+                var course = await _coursesRepo.GetById(courseId);
 
-            if (course == null)
-                return NotFound();
+                if (course == null)
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "Course Not Found.",
+                        Code = System.Net.HttpStatusCode.NotFound,
+                    });
 
-            return Ok(course);
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Course Retrieved Successfully.",
+                    Data = course,
+                    Code = System.Net.HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = System.Net.HttpStatusCode.InternalServerError,
+                });
+            }
         }
     }
 }

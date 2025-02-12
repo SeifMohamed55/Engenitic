@@ -61,72 +61,30 @@ namespace GraduationProject.Services
         }
 
 
-        private bool IsValidImageType(IFormFile? image)
-        {
-            if (image == null || image.Length == 0)
-                return false;
-            else
-            {
-                var allowedExtensions = new HashSet<string>
-                {
-                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff"
-                };
-
-
-                var provider = new FileExtensionContentTypeProvider();
-                if (!provider.TryGetContentType(image.FileName, out var contentType))
-                {
-                    return false;
-                }
-                var allowedMimeTypes = new HashSet<string>
-                {
-                    "image/jpeg", "image/png", "image/gif", "image/bmp",
-                    "image/webp", "image/tiff"
-                };
-
-                var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
-
-                if (!allowedExtensions.Contains(extension) || !allowedMimeTypes.Contains(contentType))
-                {
-                    return false;
-                }
-
-                long maxFileSize = 2 * 1024 * 1024; // 2MB
-                if (image.Length > maxFileSize)
-                {
-                    return false;
-                }
-                return true;
-            }
-        }
-
-
-        private string GetImageType(string fileExtension)
-        {
-           return fileExtension switch
-            {
-                ".jpg" => "image/jpeg",
-                ".jpeg" => "image/jpeg",
-                ".png" => "image/png",
-                ".gif" => "image/gif",
-                ".bmp" => "image/bmp",
-                ".webp" => "image/webp",
-                _ => "application/octet-stream", // default MIME type if unknown
-            };
-        }
-
         public async Task<IResult> Register(RegisterCustomRequest model)
         {
             if(await _userManager.FindByEmailAsync(model.Email) != null)
-                return Results.BadRequest("Email already exists");
+                return Results.BadRequest(new ErrorResponse 
+                { 
+                    Message = "Email already exists",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
             model.Role = model.Role.ToLower();
             if (model.Role != "instructor" && model.Role != "student")
-                return Results.BadRequest("Invalid Role!");
+                return Results.BadRequest(new ErrorResponse()
+                {
+                   Message = "Invalid Role!",
+                   Code = System.Net.HttpStatusCode.BadRequest,
+                });
 
             if (model.Password != model.ConfirmPassword)
             {
-                return Results.BadRequest("Passwords do not match");
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message =  "Passwords do not match",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
             }
 
             string? RegionCode = null;
@@ -141,13 +99,21 @@ namespace GraduationProject.Services
                 }
                 else
                 {
-                    return Results.BadRequest("Invalid phone number");
+                    return Results.BadRequest(new ErrorResponse() 
+                    { 
+                        Message = "Invalid phone number",
+                        Code = System.Net.HttpStatusCode.BadRequest 
+                    });
                 }
             }
 
             var userRole = await _roleManager.FindByNameAsync(model.Role);
             if (userRole == null || userRole.NormalizedName == "ADMIN" || userRole.Id == 1)
-                return Results.BadRequest();
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid Role",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
             HtmlSanitizer sanitizer = new HtmlSanitizer();
             model.Username = sanitizer.Sanitize(model.Username);
@@ -176,7 +142,7 @@ namespace GraduationProject.Services
                 {
                     try
                     {
-                        if(IsValidImageType(model.Image))
+                        if(ImageHelper.IsValidImageType(model.Image))
                         {
                             Debug.Assert(model.Image != null);
 
@@ -198,27 +164,36 @@ namespace GraduationProject.Services
                             await _appUserRepo.UpdateUserImage(user, imageURL);
                         }
 
-                        return Results.Ok(new
+                        return Results.Ok(new SuccessResponse()
                         {
-                            result = "User created successfully",
-                            user = new AppUserDTO()
+                            Message = "User created successfully",
+                            Data = new AppUserDTO()
                             {
                                 Email = user.Email,
                                 PhoneNumber = user.PhoneNumber ?? "",
                                 Id = user.Id,
                                 PhoneRegionCode = user.PhoneRegionCode,
                                 UserName = user.FullName
-                            }
+                            },
+                            Code = System.Net.HttpStatusCode.OK
                         });
                     }
                     catch (Exception)
                     {
-                        return Results.BadRequest("Couldn't update user image");
+                        return Results.BadRequest(new ErrorResponse()
+                        {
+                            Message = "Couldn't update user image",
+                            Code = System.Net.HttpStatusCode.BadRequest,
+                        });
                     }
                 }
             }
 
-            return Results.BadRequest(result.Errors);
+            return Results.BadRequest(new ErrorResponse()
+            {
+                Message = result.Errors,
+                Code = System.Net.HttpStatusCode.BadRequest,
+            });
         }
 
         
@@ -227,7 +202,11 @@ namespace GraduationProject.Services
 
             var user = await _appUserRepo.GetUserWithTokenAndRoles(model.Email);
             if (user == null)
-                return Results.NotFound("Email does not exist");
+                return Results.NotFound(new ErrorResponse 
+                { 
+                    Message = "Email does not exist",
+                    Code = System.Net.HttpStatusCode.NotFound
+                });
 
             if(user.RefreshToken != null)
                 _tokenBlacklistService.BlacklistToken(user.RefreshToken.LatestJwtAccessToken);
@@ -236,7 +215,11 @@ namespace GraduationProject.Services
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
 
             if (result.IsLockedOut)
-                return Results.BadRequest("LockedOut");
+                return Results.BadRequest(new ErrorResponse 
+                { 
+                    Message = "User is LockedOut" ,
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
             if (result.Succeeded)
             {
@@ -250,7 +233,11 @@ namespace GraduationProject.Services
                 var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
 
                 if (res == false)
-                    return Results.BadRequest("Couldn't SignIn");
+                    return Results.BadRequest(new ErrorResponse()
+                    {
+                        Message = "Couldn't SignIn",
+                        Code = System.Net.HttpStatusCode.BadRequest
+                    });
 
                 var cookieOptions = new CookieOptions
                 {
@@ -270,11 +257,12 @@ namespace GraduationProject.Services
                     var imageBytes = File.ReadAllBytes(imagePath);
                     var base64Image = Convert.ToBase64String(imageBytes);
                     var fileExtension = Path.GetExtension(imagePath).ToLower();
-                    var imageSrc = $"data:{GetImageType(fileExtension)};base64,{base64Image}";
+                    var imageSrc = $"data:{ImageHelper.GetImageType(fileExtension)};base64,{base64Image}";
 
-                    return Results.Ok(new
+                    return Results.Ok(new SuccessResponse()
                     {
-                        User = new
+                        Message = "User Logged In successfully",
+                        Data = new
                         {
                             Name = user.FullName,
                             Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
@@ -283,15 +271,24 @@ namespace GraduationProject.Services
                                 double.Parse(_jwtOptions.AccessTokenValidityMinutes))
                                         .ToString("f", CultureInfo.InvariantCulture),
                             Image = imageSrc,
-                        }
+                        },
+                        Code = System.Net.HttpStatusCode.OK
                     });
                 }
                 catch (Exception)
                 {
-                    Results.BadRequest("Directory Not Found");
+                    return Results.BadRequest(new ErrorResponse() 
+                    {
+                        Message = "Couldn't find user image",
+                        Code = System.Net.HttpStatusCode.BadRequest
+                    });
                 }
             }
-            return Results.NotFound("Password is incorrect!");
+            return Results.NotFound(new ErrorResponse
+            {
+                Message = "Password is incorrect!",
+                Code = System.Net.HttpStatusCode.NotFound
+            });
         }
 
 
@@ -299,34 +296,56 @@ namespace GraduationProject.Services
         {
             string? refreshToken = httpContext.Request.Cookies["refreshToken"];
             if (refreshToken == null)
-                return Results.BadRequest("RefreshToken is not found"); 
+                return Results.BadRequest(new ErrorResponse() 
+                {
+                    Message = "RefreshToken is not found",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                }); 
 
             string? accessToken = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (accessToken is null)
-                return Results.BadRequest("Jwt Token not found");
+                return Results.BadRequest(new ErrorResponse() { 
+                    Message = "Jwt Token not found",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
 
             int? id = _tokenService.ExtractIdFromExpiredToken(accessToken); // allow expired token to signout
 
             if (!id.HasValue)
-                return Results.BadRequest("Invalid AccessToken");
+                return Results.BadRequest(new ErrorResponse() 
+                { Message = "Invalid AccessToken",
+                    Code = System.Net.HttpStatusCode.BadRequest 
+                });
 
             var dbRefreshToken = await _appUserRepo.GetUserRefreshToken(id.Value);
             if (dbRefreshToken is null)
-                return Results.BadRequest("User is not Signed In");
+                return Results.BadRequest(new ErrorResponse() 
+                { Message = "User is not Signed In",
+                    Code = System.Net.HttpStatusCode.BadRequest 
+                });
 
             if (!_tokenService.VerifyRefreshHmac(refreshToken, dbRefreshToken.EncryptedToken))
-                return Results.BadRequest("Invalid RefreshToken !");
+                return Results.BadRequest(new ErrorResponse() 
+                { Message = "Invalid RefreshToken !",
+                    Code = System.Net.HttpStatusCode.BadRequest 
+                });
 
             if (accessToken != dbRefreshToken.LatestJwtAccessToken)
-                return Results.BadRequest("Latest AccessToken Doesn't match");
+                return Results.BadRequest(new ErrorResponse() 
+                { Message = "Latest AccessToken Doesn't match",
+                    Code = System.Net.HttpStatusCode.BadRequest 
+                });
 
             // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
             _tokenBlacklistService.BlacklistToken(dbRefreshToken.LatestJwtAccessToken);
             var res = await _appUserRepo.DeleteRefreshToken(id.Value);
 
             if(res == false)
-                return Results.BadRequest("User Does not exist");
+                return Results.BadRequest(new ErrorResponse() 
+                { Message = "User Does not exist",
+                    Code = System.Net.HttpStatusCode.BadRequest 
+                });
 
             var cookieOptions = new CookieOptions
             {
@@ -338,7 +357,11 @@ namespace GraduationProject.Services
 
             httpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
 
-            return Results.Ok();
+            return Results.Ok(new SuccessResponse
+            {
+                Message = "User Logged Out successfully",
+                Code = System.Net.HttpStatusCode.OK
+            });
 
         }
     }

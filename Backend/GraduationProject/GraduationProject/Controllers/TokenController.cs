@@ -34,14 +34,26 @@ namespace GraduationProject.Controllers
             // add latest true accesstoken to database and check it
             var requestRefToken = HttpContext.Request.Cookies["refreshToken"];
             if (requestRefToken == null)
-                return BadRequest("No Refresh Token Provided");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "No Refresh Token Provided.",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
             string? oldAccessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (oldAccessToken == null)
-                return BadRequest("No AccessToken Provided");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "No Access Token Provided.",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
             if(_tokenService.IsAccessTokenValid(oldAccessToken))
-                return BadRequest("AccessToken is valid");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "AccessToken is valid",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
 
             int extractedId;
             try
@@ -50,7 +62,11 @@ namespace GraduationProject.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Provided token is invalid");
+                return BadRequest(new ErrorResponse 
+                {
+                    Message = "Provided token is invalid",
+                    Code = System.Net.HttpStatusCode.BadRequest 
+                });
             }
 
 
@@ -61,31 +77,49 @@ namespace GraduationProject.Controllers
                 _tokenService.IsRefreshTokenExpired(user.RefreshToken) || // expired
                 oldAccessToken != user.RefreshToken.LatestJwtAccessToken
                 )
-                    return BadRequest("Provided token is invalid Sign In again");
+                    return BadRequest(new ErrorResponse 
+                    { Message = "Provided token is invalid Sign In again",
+                        Code = System.Net.HttpStatusCode.BadRequest
+                    });
 
             try
-            {   
+            {
                 var isValid = _encryptionService.VerifyHMAC(requestRefToken, user.RefreshToken.EncryptedToken);
 
                 if (!isValid)
-                    return Unauthorized("Invalid user request You have to login!");
+                    return Unauthorized(new ErrorResponse
+                    {
+                        Message = "Invalid Refresh Token",
+                        Code = System.Net.HttpStatusCode.Unauthorized
+                    });
 
 
-                string newAccessToken =  _tokenService.GenerateJwtToken(user);
+                string newAccessToken = _tokenService.GenerateJwtToken(user);
                 user.RefreshToken.LatestJwtAccessToken = newAccessToken;
 
                 await _appUsersRepository.UpdateAsync(user);
 
 
-                return Ok(new AccessTokenResponse
+                return Ok(new SuccessResponse
                 {
-                    AccessToken = newAccessToken,
-                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes)).ToString("f", CultureInfo.InvariantCulture)
+                    Message = "Token Refreshed Successfully",
+                    Code = System.Net.HttpStatusCode.OK,
+                    Data = new AccessTokenResponse
+                    {
+                        AccessToken = newAccessToken,
+                        ValidTo = DateTime.UtcNow
+                                    .AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes))
+                                    .ToString("f", CultureInfo.InvariantCulture)
+                    }
                 });
             }
-            catch(Exception)
+            catch (Exception)
             {
-                return BadRequest("Token is invalid");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "Token is invalid",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
             }
 
         }

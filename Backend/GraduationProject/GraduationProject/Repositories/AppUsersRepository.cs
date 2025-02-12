@@ -23,6 +23,7 @@ namespace GraduationProject.Repositories
         Task UpdateUserImage(AppUser user, string image);
         Task<bool> EnrollOnCourse(int userId, int courseId);
         Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId);
+        Task<string?> GetUserImage(int id);
     }
 
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
@@ -64,6 +65,11 @@ namespace GraduationProject.Repositories
                     ImageURL = x.ImageSrc,
                     UserName = x.FullName
                 }).FirstOrDefaultAsync(x=> x.Id == id);
+        }
+
+        public async Task<string?> GetUserImage(int id)
+        {
+            return (await _dbSet.FindAsync(id))?.ImageSrc;
         }
 
         public async Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId)

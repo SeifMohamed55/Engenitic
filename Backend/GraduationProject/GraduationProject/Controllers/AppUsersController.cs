@@ -1,7 +1,9 @@
-﻿using GraduationProject.Models.DTOs;
+﻿using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 
 namespace GraduationProject.Controllers
@@ -25,31 +27,96 @@ namespace GraduationProject.Controllers
             return Ok(await _appUsersRepository.GetUsersDTO());
         }
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AppUserDTO>> GetProfileData(int id)
+        // GET: api/Users/
+        [HttpGet("profile")]
+        public async Task<ActionResult<AppUserDTO>> GetProfileData()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null)
+            if (userId == null || int.TryParse(userId, out int currentUserId))
             {
-                return Unauthorized("User ID not found.");
+                return Unauthorized(new ErrorResponse(){
+                    Code = HttpStatusCode.Unauthorized,
+                    Message = "Invalid User ID."
+                });
             }
-
-            if (int.TryParse(userId, out int currentUserId) && id != currentUserId)
-            {
-                return Forbid();
-            }
-            var appUser = await _appUsersRepository.GetAppUserDTO(id);
+            
+            var appUser = await _appUsersRepository.GetAppUserDTO(currentUserId);
 
             if (appUser == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.NotFound,
+                    Message = "User not found."
+                });
             }
 
             return appUser;
         }
- 
+
+        // GET: GetUserImage
+        [HttpGet("image")]
+        public async Task<ActionResult> GetUserImage()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized(new ErrorResponse(){
+                    Code = HttpStatusCode.Unauthorized,
+                    Message = "User ID not found." 
+                });
+            }
+            if (!int.TryParse(userId, out int currentUserId))
+            {
+                return Unauthorized(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.Unauthorized,
+                    Message = "Invalid User ID."
+                });
+            }
+            var userImage = await _appUsersRepository.GetUserImage(currentUserId);
+            if (userImage == null)
+            {
+                return NotFound(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.NotFound,
+                    Message = "User image not found."
+                });
+            }
+
+            string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
+                                                            "uploads", "images", userImage);
+            byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            var base64Image = Convert.ToBase64String(imageBytes);
+            var fileExtension = Path.GetExtension(imagePath).ToLower();
+
+            return File(imageBytes, "image/jpeg"); // Set correct MIME type
+
+        }
+
+        // GET: Enrolled Courses Page
+        [HttpGet("enrolled-courses/{index}")]
+        [Authorize(Roles= "student")]
+        public async Task<ActionResult> GetEnrolledCoursesPage(int index)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized(new ErrorResponse() {
+                    Code = HttpStatusCode.Unauthorized, 
+                    Message = "User ID not found." });
+            }
+            if (!int.TryParse(userId, out int currentUserId))
+            {
+                return Unauthorized(new ErrorResponse() {
+                    Code = HttpStatusCode.Unauthorized,
+                    Message = "Invalid User ID." 
+                });
+            }
+            return Ok(await _appUsersRepository.GetEnrolledCoursesPage(index, currentUserId));
+        }
+
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
@@ -59,10 +126,18 @@ namespace GraduationProject.Controllers
             var banned = await _appUsersRepository.BanAppUser(id);
             if (banned)
             {
-                return Ok();
+                return Ok(new SuccessResponse()
+                {
+                    Message = "User has been banned.",
+                    Code = HttpStatusCode.OK
+                });
             }
 
-            return BadRequest();
+            return BadRequest(new ErrorResponse()
+            {
+                Message = "User not found.",
+                Code = HttpStatusCode.BadRequest
+            });
         }
 
     }
