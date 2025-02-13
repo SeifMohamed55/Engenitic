@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using GraduationProject.Controllers.APIResponses;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json;
@@ -49,34 +52,36 @@ namespace GraduationProject.StartupConfigurations
 
                  options.Events = new JwtBearerEvents
                  {
-                     OnTokenValidated = context =>
-                     {
-                         var token = context.SecurityToken as JwtSecurityToken;
-
-                         return Task.CompletedTask;
-                     },
-                     OnAuthenticationFailed = context =>
-                     {
-                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                         {
-                             Console.WriteLine("Token expired");
-                         }
-                         return Task.CompletedTask;
-                     },
-
                      OnChallenge = context =>
                      {
-                        context.Response.StatusCode = 401;
-                        context.Response.ContentType = "application/json";
-                        var result = JsonSerializer.Serialize(new { Message = "Unauthorized" });
-                        return context.Response.WriteAsync(result);
+                         context.HandleResponse(); // Suppress default challenge behavior
+
+                         context.Response.StatusCode = 401;
+                         context.Response.ContentType = "application/json";
+                         string msg = context.Request.Headers["Authorization"]
+                                        .FirstOrDefault()?
+                                        .Split(" ")
+                                        .Last() != null ?
+                                        "Unauthorized Please Refresh Access Token" :
+                                        "Unauthorized No Access Token Provided";
+
+                         var body = JsonConvert.SerializeObject(new ErrorResponse
+                         {
+                             Message = msg,
+                             Code = System.Net.HttpStatusCode.Unauthorized,
+                         });
+                         return context.Response.WriteAsync(body);
                      },
                      OnForbidden = context =>
                      {
-                        context.Response.StatusCode = 403;
+                         context.Response.StatusCode = 403;
                         context.Response.ContentType = "application/json";
-                        var result = JsonSerializer.Serialize(new { Message = "Forbidden" });
-                        return context.Response.WriteAsync(result);
+                         var body = JsonConvert.SerializeObject(new ErrorResponse
+                         {
+                             Message = "Forbidden Insufficient Roles",
+                             Code = System.Net.HttpStatusCode.Forbidden,
+                         });
+                        return context.Response.WriteAsync(body);
                      }
                  };
              })

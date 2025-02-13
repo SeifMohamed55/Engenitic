@@ -173,7 +173,8 @@ namespace GraduationProject.Services
                                 PhoneNumber = user.PhoneNumber ?? "",
                                 Id = user.Id,
                                 PhoneRegionCode = user.PhoneRegionCode,
-                                UserName = user.FullName
+                                UserName = user.FullName,
+                                ImageURL = "https://localhost/api/users/image"
                             },
                             Code = System.Net.HttpStatusCode.OK
                         });
@@ -252,37 +253,23 @@ namespace GraduationProject.Services
                 string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
                                                 "uploads", "images", user.ImageSrc);
 
-                try
-                {
-                    var imageBytes = File.ReadAllBytes(imagePath);
-                    var base64Image = Convert.ToBase64String(imageBytes);
-                    var fileExtension = Path.GetExtension(imagePath).ToLower();
-                    var imageSrc = $"data:{ImageHelper.GetImageType(fileExtension)};base64,{base64Image}";
 
-                    return Results.Ok(new SuccessResponse()
-                    {
-                        Message = "User Logged In successfully",
-                        Data = new
-                        {
-                            Name = user.FullName,
-                            Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
-                            AccessToken = accessToken,
-                            ValidTo = DateTime.UtcNow.AddMinutes(
-                                double.Parse(_jwtOptions.AccessTokenValidityMinutes))
-                                        .ToString("f", CultureInfo.InvariantCulture),
-                            Image = imageSrc,
-                        },
-                        Code = System.Net.HttpStatusCode.OK
-                    });
-                }
-                catch (Exception)
+                return Results.Ok(new SuccessResponse()
                 {
-                    return Results.BadRequest(new ErrorResponse() 
+                    Message = "User Logged In successfully",
+                    Data = new
                     {
-                        Message = "Couldn't find user image",
-                        Code = System.Net.HttpStatusCode.BadRequest
-                    });
-                }
+                        Name = user.FullName,
+                        Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
+                        AccessToken = accessToken,
+                        ValidTo = DateTime.UtcNow.AddMinutes(
+                            double.Parse(_jwtOptions.AccessTokenValidityMinutes))
+                                    .ToString("f", CultureInfo.InvariantCulture),
+                        ImageLink = "https://localhost/api/users/image",
+                    },
+                    Code = System.Net.HttpStatusCode.OK
+                });
+
             }
             return Results.NotFound(new ErrorResponse
             {

@@ -14,12 +14,12 @@ namespace GraduationProject.Controllers
     {
         private readonly IJwtTokenService _tokenService;
         private readonly JwtOptions _jwtOptions;
-        private readonly AppUsersRepository _appUsersRepository;
+        private readonly IUserRepository _appUsersRepository;
         private readonly IEncryptionService _encryptionService;
         public TokenController
             (IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
-            AppUsersRepository appUsersRepository,
+            IUserRepository appUsersRepository,
             IEncryptionService encryptionService)
         {
             _tokenService = tokenService;
@@ -95,9 +95,8 @@ namespace GraduationProject.Controllers
 
 
                 string newAccessToken = _tokenService.GenerateJwtToken(user);
-                user.RefreshToken.LatestJwtAccessToken = newAccessToken;
 
-                await _appUsersRepository.UpdateAsync(user);
+                await _appUsersRepository.UpdateUserLatestToken(user, newAccessToken);
 
 
                 return Ok(new SuccessResponse

@@ -1,4 +1,6 @@
-﻿using GraduationProject.Services;
+﻿using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Services;
+using System.Net;
 
 namespace GraduationProject.Middlewares
 {
@@ -20,7 +22,12 @@ namespace GraduationProject.Middlewares
             if (!string.IsNullOrEmpty(token) && _tokenBlacklistService.IsTokenBlacklisted(token))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Token has been blacklisted Logging User out.");
+                await context.Response.WriteAsJsonAsync(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.Unauthorized,
+                    Message = "Token has been blacklisted Logging User out."
+                }); 
+               
                 return;
             }
 

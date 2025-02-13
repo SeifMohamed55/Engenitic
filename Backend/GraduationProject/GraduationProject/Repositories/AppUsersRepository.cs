@@ -15,6 +15,7 @@ namespace GraduationProject.Repositories
         Task<AppUser?> GetUserWithTokenAndRoles(string email);
         Task<RefreshToken?> GetUserRefreshToken(int id);
         Task<bool> UpdateUser(AppUserDTO dto);
+        Task UpdateUserLatestToken(AppUser user, string latestToken);
         Task<bool> BanAppUser(int id);
         Task<AppUserDTO?> GetUserDTOByEmail(string email);
         Task<bool> UpdateRefreshToken(AppUser appUser, RefreshToken token);
@@ -126,6 +127,15 @@ namespace GraduationProject.Repositories
 
         }
 
+        public async Task UpdateUserLatestToken(AppUser user, string latestToken)
+        {
+            if (user.RefreshToken == null)
+                throw new ArgumentNullException();
+
+            user.RefreshToken.LatestJwtAccessToken = latestToken;
+            await UpdateAsync(user);
+        }
+
 
         public async Task<bool> BanAppUser(int id)
         {
@@ -169,7 +179,7 @@ namespace GraduationProject.Repositories
             {
                 var entry = _dbSet.Entry(appUser).Context.ChangeTracker.Entries<RefreshToken>().FirstOrDefault();
                 if(entry != null)
-                    entry.State = EntityState.Detached;
+                    entry.State = EntityState.Detached; // don't track it
 
                 appUser.RefreshToken = token;
                 await UpdateAsync(appUser);
