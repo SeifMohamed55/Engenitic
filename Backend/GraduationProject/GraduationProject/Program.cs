@@ -41,6 +41,7 @@ builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddScoped<ICourseRepository, CoursesRepository>();
 
 
 builder.Services.AddJwtAuthentication(builder.Configuration);

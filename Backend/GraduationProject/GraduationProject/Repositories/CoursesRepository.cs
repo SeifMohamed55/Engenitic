@@ -26,7 +26,7 @@ namespace GraduationProject.Repositories
 
         public async Task<CourseDTO?> GetById(int id)
         {
-            var course = await _dbSet.FindAsync(id);
+            var course = await _dbSet.Include(x => x.Instructor).FirstOrDefaultAsync(x=> x.Id == id);
             if (course == null)
                 return null;
 
