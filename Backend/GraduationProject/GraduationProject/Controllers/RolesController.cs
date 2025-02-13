@@ -3,87 +3,145 @@ using Microsoft.EntityFrameworkCore;
 using GraduationProject.Models;
 using Microsoft.AspNetCore.Identity;
 using GraduationProject.Controllers.ApiRequest;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Web;
+using Microsoft.AspNetCore.Authorization;
+using GraduationProject.Controllers.APIResponses;
+using System.Net;
 
 
 namespace GraduationProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class RolesController : ControllerBase
     {
-        private readonly AppDbContext _context;
         private readonly RoleManager<Role> _roleManager;
 
-        public RolesController(AppDbContext context, RoleManager<Role> roleManager)
+        public RolesController(RoleManager<Role> roleManager)
         {
-            _context = context;
             _roleManager = roleManager;
         }
 
         // GET: api/Roles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+        public async Task<ActionResult> GetRoles()
         {
-            return await _roleManager.Roles.ToListAsync();
+            try
+            {
+                return Ok(new SuccessResponse
+                {
+                    Message = "Roles retrieved successfully",
+                    Code = HttpStatusCode.OK,
+                    Data = await _roleManager.Roles.ToListAsync(),
+                });
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse
+                {
+                    Message = "An error occurred while retrieving roles",
+                    Code = HttpStatusCode.InternalServerError,
+                });
+            }
         }
 
         // GET: api/Roles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Role>> GetRole(int id)
+        public async Task<ActionResult> GetRole(int id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
 
             if (role == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse
+                {
+                    Message = "Role not found",
+                    Code = HttpStatusCode.NotFound,
+                });
             }
 
-            return role;
+            return Ok(new SuccessResponse
+            {
+                Message = "Role retrieved successfully",
+                Code = HttpStatusCode.OK,
+                Data = role
+            });
         }
 
 
         // PUT: api/Roles
         [HttpPut()]
-        public async Task<IActionResult> EditRole
-                    ([FromBody]RoleRequest request)
+        public async Task<IActionResult> EditRole([FromBody]RoleRequest request)
         {
+            //Edit BadRequest to  new ErrorResponse
+
             if (request.NewName == null)
-                return BadRequest("Please provide new name");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "Please provide new name",
+                    Code = HttpStatusCode.BadRequest,
+                });
 
             if (request.OldId == 0 && request.OldName == null)
-                return BadRequest("Please provide either id or name");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "Please provide either name or id",
+                    Code = HttpStatusCode.BadRequest,
+                });
 
             else if (request.OldId != 0)
             {
                 var role = await _roleManager.FindByIdAsync(request.OldId.ToString());
                 if (role == null)
-                    return NotFound();
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "Role not found",
+                        Code = HttpStatusCode.NotFound,
+                    });
 
                 var res = await _roleManager.SetRoleNameAsync(role, request.NewName);
                 if (res.Succeeded)
                     res = await _roleManager.UpdateAsync(role);
                     if (!res.Succeeded)
-                        return BadRequest(res.Errors);
+                        return BadRequest(new ErrorResponse
+                        {
+                            Message = res.Errors,
+                            Code = HttpStatusCode.BadRequest,
+                        });
             }
             else if (request.OldName != null)
             {
                 var role = await _roleManager.FindByNameAsync(request.OldName);
                 if (role == null)
-                    return NotFound();
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "Role not found",
+                        Code = HttpStatusCode.NotFound,
+                    });
 
                 var res = await _roleManager.SetRoleNameAsync(role, request.NewName);
                 if (res.Succeeded)
                     res = await _roleManager.UpdateAsync(role);
                     if(!res.Succeeded)
-                        return BadRequest(res.Errors);
+                        return BadRequest(new ErrorResponse
+                        {
+                            Message = res.Errors,
+                            Code = HttpStatusCode.BadRequest,
+                        });
             }
             else
             {
-                return BadRequest();
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "An error occurred",
+                    Code = HttpStatusCode.BadRequest,
+                });
             }
-            return Ok();
+            return Ok(new SuccessResponse
+            {
+                Message = "Role updated successfully",
+                Code = HttpStatusCode.OK,
+            });
         }
 
         // POST: api/Roles
@@ -91,14 +149,18 @@ namespace GraduationProject.Controllers
         public async Task<ActionResult<Role>> PostRole([FromBody] RoleRequest request)
         {
             if(request.NewName == null)
-                return BadRequest("Please provide new name");
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "Please provide a new name",
+                    Code = HttpStatusCode.BadRequest,
+                });
 
             Role newRole = new Role { Name = request.NewName};
             var x =  await _roleManager.CreateAsync(newRole);
             if(x.Succeeded)
                 return CreatedAtAction("GetRole", new { id = newRole.Id }, newRole);
             else
-                return BadRequest(x.Errors);
+                return BadRequest(new ErrorResponse { Message = x.Errors, Code = HttpStatusCode.BadRequest });
 
         }
 
@@ -110,43 +172,60 @@ namespace GraduationProject.Controllers
             string? name = request.OldName;
 
             if (id == 0 && name == null)
-                return BadRequest("Please provide either id or name");
+                return BadRequest(new ErrorResponse { Message = "Please provide either id or name", Code = HttpStatusCode.BadRequest });
 
             else if(id != 0)
             {
                 var role = await _roleManager.FindByIdAsync(id.ToString());
                 if (role == null)
-                    return NotFound();
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "Role not found",
+                        Code = HttpStatusCode.NotFound,
+                    });
 
                 var res = await _roleManager.DeleteAsync(role);
 
                 if(!res.Succeeded)
-                    return BadRequest(res.Errors);
+                    return BadRequest(new ErrorResponse 
+                    { 
+                        Message = res.Errors,
+                        Code = HttpStatusCode.BadRequest 
+                    });
             }
             else if(name != null)
             {
                 var role = await _roleManager.FindByNameAsync(name);
                 if (role == null)
-                    return NotFound();
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "Role not found",
+                        Code = HttpStatusCode.NotFound,
+                    });
 
                 var res = await _roleManager.DeleteAsync(role);
 
                 if (!res.Succeeded)
-                    return BadRequest(res.Errors);
+                    return BadRequest(new ErrorResponse 
+                    { 
+                        Message = res.Errors,
+                        Code = HttpStatusCode.BadRequest 
+                    });
             }
             else
             {
-                BadRequest();
+                BadRequest(new ErrorResponse
+                {
+                    Message = "An error occurred",
+                    Code = HttpStatusCode.BadRequest,
+                });
             }
 
-            return Ok();
-        }
-
-        [HttpDelete("deleteDatabase")]
-        public void DeleteDatabase()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Database.EnsureCreated();
+            return Ok(new SuccessResponse
+            {
+                Message = "Role deleted successfully",
+                Code = HttpStatusCode.OK,
+            });
         }
     }
 }

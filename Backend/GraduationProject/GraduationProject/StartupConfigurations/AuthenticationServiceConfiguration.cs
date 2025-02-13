@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json;
 
 namespace GraduationProject.StartupConfigurations
 {
@@ -61,6 +62,21 @@ namespace GraduationProject.StartupConfigurations
                              Console.WriteLine("Token expired");
                          }
                          return Task.CompletedTask;
+                     },
+
+                     OnChallenge = context =>
+                     {
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+                        var result = JsonSerializer.Serialize(new { Message = "Unauthorized" });
+                        return context.Response.WriteAsync(result);
+                     },
+                     OnForbidden = context =>
+                     {
+                        context.Response.StatusCode = 403;
+                        context.Response.ContentType = "application/json";
+                        var result = JsonSerializer.Serialize(new { Message = "Forbidden" });
+                        return context.Response.WriteAsync(result);
                      }
                  };
              })

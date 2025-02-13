@@ -1,6 +1,6 @@
 ﻿using GraduationProject.Services;
 
-namespace GraduationProject.Controllers.ResponseModels
+namespace GraduationProject.Controllers.APIResponses
 {
     public class PaginatedResponse<T>
     {

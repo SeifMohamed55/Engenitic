@@ -1,6 +1,7 @@
 ﻿using GraduationProject.Controllers.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Services;
+using GraduationProject.Controllers.APIResponses;
 
 namespace GraduationProject.Controllers
 {
@@ -18,7 +19,12 @@ namespace GraduationProject.Controllers
         public async Task<IResult> Login(LoginCustomRequest model)
         {
             if (!ModelState.IsValid)
-                return Results.BadRequest(ModelState);
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Invalid Data",
+                    Status = "Error"
+                });
 
             return await _loginService.Login(model, HttpContext);
 
@@ -38,7 +44,11 @@ namespace GraduationProject.Controllers
         {
 
             if (!ModelState.IsValid)
-                return Results.BadRequest(ModelState);
+                return Results.BadRequest(new ErrorResponse(){
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = ModelState,
+                    Status = "Error",
+                });
             
 
             return await _loginService.Register(model);
