@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -6,6 +8,8 @@ import { Injectable } from '@angular/core';
 export class UserService {
 
   constructor(private _HttpClient:HttpClient) {};
+
+  registered : BehaviorSubject<string> = new BehaviorSubject("");
 
   registerData(value : any) : Observable<any> {
     return this._HttpClient.post(`https://localhost/api/Authentication/register`, value);

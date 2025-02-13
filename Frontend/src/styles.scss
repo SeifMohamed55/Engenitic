@@ -14,6 +14,11 @@
     .engenitic-input {
         @apply w-full border-[1.5px] border-black rounded py-2 font-display px-2
     }
+
+    .engenitic-button-disabled {
+        @apply border-[#8E8E8E];
+    }
+
     .danger-button {
         background-color: rgb(236, 34, 31) ;
         color: white;

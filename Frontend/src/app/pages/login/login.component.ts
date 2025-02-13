@@ -22,7 +22,8 @@ export class LoginComponent {
 
   }
 
-  loginResponse !: Login 
+  loginResponse !: Login;
+  buttonDisabled : boolean = false;
 
   loginForm : FormGroup = new FormGroup ({
     email : new FormControl('', [Validators.email, Validators.required]),
@@ -30,20 +31,26 @@ export class LoginComponent {
   });
 
   handleLogin(){
+
+    this.buttonDisabled = true;
+
     if(this.loginForm.valid){
       this._UserService.loginData(this.loginForm.value).subscribe({
-        next : res=>{
-          this.loginResponse = res.user;
-          console.log(this.loginResponse);
-          this.toastr.success("user logged in successfully !");
+        next : res =>{
+          this.loginResponse = res;
+          this._UserService.registered.next(this.loginResponse.data.accessToken);
+          localStorage.setItem('Token',this.loginResponse.data.accessToken);
+          this.toastr.success(res.message);
         },
         error : err =>{
           console.log(err);
+          this.toastr.error(err.error.message);
         }
       });
     }
     else {
       this.loginForm.markAllAsTouched();
     }
-  }
+    this.buttonDisabled = false;
+  };
 }
