@@ -40,6 +40,7 @@ export class NavbarComponent implements OnInit {
   handleLogout(): void {
     localStorage.clear();
     this._UserService.registered.next("");
+    this._UserService.logoutConfirmation().subscribe
     this._Router.navigate(['/home']);
   };
   

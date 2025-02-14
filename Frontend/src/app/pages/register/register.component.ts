@@ -1,6 +1,8 @@
+import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { UserService } from '../../feature/users/user.service';
 
 @Component({
   selector: 'app-register',
@@ -11,17 +13,21 @@ import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractContro
 export class RegisterComponent {
 
   disableButton : boolean = false;
-  selectedFile: File | null = null; // Store the file externally
+  selectedFile: File | null = null; 
   fileValidationError: string | null = null;
+
+  constructor(private _ToastrService:ToastrService, private _UserService:UserService){
+
+  }
 
   registerForm: FormGroup = new FormGroup(
     {
       phoneGroup: new FormGroup({
         countryCode: new FormControl('', [
-          Validators.pattern(/^\+\d{1,4}$/), // Country code validation
+          Validators.pattern(/^\+\d{1,4}$/),
         ]),
         phone: new FormControl('', [
-          Validators.pattern(/^\d{7,15}$/), // Phone number validation
+          Validators.pattern(/^\d{7,15}$/),
         ]),
       }, this.phoneNumberValidation), 
       image: new FormControl(''),
@@ -29,7 +35,7 @@ export class RegisterComponent {
       userName: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
       repassword: new FormControl('', [Validators.required, Validators.minLength(5)]),
-      userType: new FormControl('student'),
+      role: new FormControl('student'),
     },
     {
       validators: [this.confirmPassword, this.phoneNumberValidation],
@@ -81,9 +87,8 @@ export class RegisterComponent {
 
 
     const acceptableTypes: string[] = ['image/jpg', 'image/png', 'image/jpeg'];
-    const maxSize = 2 * 1024 * 1024; // 2 MB
+    const maxSize = 2 * 1024 * 1024; 
 
-    // Validate the file type and size
     if (!acceptableTypes.includes(this.selectedFile.type)) {
       this.selectedFile = null;
       this.fileValidationError = "invalid image type";
@@ -97,7 +102,7 @@ export class RegisterComponent {
     }
   }
     else {
-      this.selectedFile = null; // Reset selected file
+      this.selectedFile = null; 
     }
 }
 
@@ -106,17 +111,29 @@ export class RegisterComponent {
     this.disableButton = true;
     if (this.registerForm.valid) {
       const formData = new FormData();
-      formData.append('userName', this.registerForm.get('userName')?.value);
+      formData.append('username', this.registerForm.get('userName')?.value);
       formData.append('email', this.registerForm.get('email')?.value);
       formData.append('password', this.registerForm.get('password')?.value);
-      formData.append('repassword', this.registerForm.get('repassword')?.value);
+      formData.append('confirmPassword', this.registerForm.get('repassword')?.value);
       formData.append('phoneNumber', this.registerForm.get('phoneGroup')?.get('phone')?.value);
-      formData.append('countryCode', this.registerForm.get('phoneGroup')?.get('countryCode')?.value);
-      formData.append('userType', this.registerForm.get('userType')?.value);
+      formData.append('phoneRegion', this.registerForm.get('phoneGroup')?.get('countryCode')?.value);
+      formData.append('role', this.registerForm.get('role')?.value);
       if(this.selectedFile){
         formData.append('image', this.selectedFile);
       }
-      formData.forEach(el => console.log(el));
+      this._UserService.registerData(formData).subscribe({
+        next : res =>{
+          this._ToastrService.success(res.message);
+        },
+        error : err =>{
+          if ( err.error.message ){
+            this._ToastrService.error(err.error.message);
+          }
+          else {
+            this._ToastrService.error("an error has during connecting to the server occured try again later");
+          }
+        }
+      });
     } else {
       this.registerForm.markAllAsTouched();
     }

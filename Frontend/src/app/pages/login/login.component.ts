@@ -38,15 +38,25 @@ export class LoginComponent {
     if(this.loginForm.valid){
       this._UserService.loginData(this.loginForm.value).subscribe({
         next : res =>{
+
           this.loginResponse = res;
+
           this._UserService.registered.next(this.loginResponse.data.accessToken);
+
           localStorage.setItem('Token',this.loginResponse.data.accessToken);
+
           this.toastr.success(res.message);
+
           this._Router.navigate(["/home"]);
+          
         },
         error : err =>{
-          console.log(err);
-          this.toastr.error(err.message);
+          if ( err.error.message ){
+            this.toastr.error(err.error.message);
+          }
+          else {
+            this.toastr.error("an error has during connecting to the server occured try again later");
+          }
         }
       });
     }
