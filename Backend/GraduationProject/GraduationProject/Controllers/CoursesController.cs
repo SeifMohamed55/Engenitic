@@ -12,9 +12,9 @@ namespace GraduationProject.Controllers
     [Route("api/[controller]")]
     public class CoursesController : ControllerBase
     {
-        private readonly CoursesRepository _coursesRepo;
+        private readonly ICourseRepository _coursesRepo;
 
-        public CoursesController(CoursesRepository coursesRepository)
+        public CoursesController(ICourseRepository coursesRepository)
         {
             _coursesRepo = coursesRepository;
         }
@@ -60,10 +60,11 @@ namespace GraduationProject.Controllers
         }
 
 
-        [HttpGet("search/{searchTerm}")]
-        public async Task<IActionResult> GetCoursesBySearching(string searchTerm, int index = 1)
+        [HttpGet("search")]
+        public async Task<IActionResult> GetCoursesBySearching
+                                        ([FromQuery(Name = "search")]string search, [FromQuery]int page = 1)
         {
-            if (index <= 0)
+            if (page <= 0)
                 return BadRequest(new ErrorResponse()
                 {
                     Message = "Invalid Page Number",
@@ -71,7 +72,7 @@ namespace GraduationProject.Controllers
                 });
             try
             {
-                var courses = await _coursesRepo.GetPageOfCoursesBySearching(searchTerm, index);
+                var courses = await _coursesRepo.GetPageOfCoursesBySearching(search, page);
 
                 if (courses.TotalPages == 0)
                     return NotFound(new ErrorResponse()
@@ -80,7 +81,7 @@ namespace GraduationProject.Controllers
                         Code = System.Net.HttpStatusCode.NotFound,
                     });
 
-                if (index > courses.TotalPages)
+                if (page > courses.TotalPages)
                     return BadRequest(new ErrorResponse
                     {
                         Message = "Invalid Page Number",

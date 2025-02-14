@@ -43,12 +43,6 @@ namespace GraduationProject.Services
         // user included with roles and refreshToken
         public string GenerateJwtToken(AppUser user)
         {
-            if(user.RefreshToken != null)
-            {
-                bool jwtValid = IsAccessTokenValid(user.RefreshToken.LatestJwtAccessToken);
-                if (jwtValid)
-                    return user.RefreshToken.LatestJwtAccessToken;
-            }
 
             var key = new SymmetricSecurityKey(_jwtKey);
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -184,7 +178,7 @@ namespace GraduationProject.Services
         public int ExtractIdFromExpiredToken(string token)
         {
             var principal = GetPrincipalFromExpiredToken(token);
-            var idClaim = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var idClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (idClaim?.Value != null)
             {
                 if (int.TryParse(idClaim.Value, out int id))

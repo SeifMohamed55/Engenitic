@@ -1,6 +1,7 @@
 ﻿using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
+using GraduationProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -55,8 +56,9 @@ namespace GraduationProject.Controllers
             return appUser;
         }
 
-        // GET: GetUserImage
+        // GET: api/Users/image
         [HttpGet("image")]
+        [Authorize]
         public async Task<ActionResult> GetUserImage()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -88,10 +90,9 @@ namespace GraduationProject.Controllers
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
                                                             "uploads", "images", userImage);
             byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
-            var base64Image = Convert.ToBase64String(imageBytes);
             var fileExtension = Path.GetExtension(imagePath).ToLower();
 
-            return File(imageBytes, "image/jpeg"); // Set correct MIME type
+            return File(imageBytes, ImageHelper.GetImageType(fileExtension));
 
         }
 
