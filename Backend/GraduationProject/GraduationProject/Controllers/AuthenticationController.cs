@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GraduationProject.Services;
 using GraduationProject.Controllers.APIResponses;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GraduationProject.Controllers
 {
@@ -16,6 +17,7 @@ namespace GraduationProject.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("UserLoginRateLimit")]
         public async Task<IResult> Login(LoginCustomRequest model)
         {
             if (!ModelState.IsValid)
@@ -23,7 +25,6 @@ namespace GraduationProject.Controllers
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
                     Message = "Invalid Data",
-                    Status = "Error"
                 });
 
             return await _loginService.Login(model, HttpContext);

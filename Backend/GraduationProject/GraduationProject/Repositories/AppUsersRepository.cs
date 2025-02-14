@@ -3,6 +3,7 @@ using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Services;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 namespace GraduationProject.Repositories
 {
@@ -25,6 +26,7 @@ namespace GraduationProject.Repositories
         Task<bool> EnrollOnCourse(int userId, int courseId);
         Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId);
         Task<string?> GetUserImage(int id);
+
     }
 
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
@@ -63,7 +65,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = x.ImageSrc,
+                    ImageURL = "https://localhost/api/users/image",
                     UserName = x.FullName
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
@@ -261,5 +263,7 @@ namespace GraduationProject.Repositories
             }
 
         }
+
+
     }
 }
