@@ -246,7 +246,6 @@ namespace GraduationProject.Services
                     Secure = true ,
                     SameSite = SameSiteMode.Strict,
                     Path = "/",
-                    Domain = "https://localhost:443",
                     Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
                 };
 
@@ -343,7 +342,6 @@ namespace GraduationProject.Services
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Path = "/",
-                Domain = "https://localhost:443",
                 Expires = DateTime.Now.AddDays(-1)
             };
 
