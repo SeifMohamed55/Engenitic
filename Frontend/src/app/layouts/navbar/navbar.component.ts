@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
@@ -11,7 +12,7 @@ import { UserService } from '../../feature/users/user.service';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(private _Router:Router, private _UserService:UserService){
+  constructor(private _Router:Router, private _UserService:UserService, private _ToastrService:ToastrService){
 
   }
 
@@ -42,6 +43,14 @@ export class NavbarComponent implements OnInit {
     this._UserService.registered.next("");
     this._UserService.logoutConfirmation().subscribe
     this._Router.navigate(['/home']);
+    this._UserService.logoutConfirmation().subscribe({
+      next : res =>{
+        console.log(res);
+        this._ToastrService.success(res.message);
+      },
+      error : err => {
+        console.error(err);
+      }
+    });
   };
-  
 }

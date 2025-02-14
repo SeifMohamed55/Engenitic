@@ -17,11 +17,11 @@ export class UserService {
   };
 
   loginData(value : any) : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Authentication/login`, value);
+    return this._HttpClient.post(`https://localhost/api/Authentication/login`, value, {withCredentials: true});
   };
 
   logoutConfirmation() : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Authentication/logout`, null);
+    return this._HttpClient.post(`https://localhost/api/Authentication/logout`, null, {withCredentials: true});
   };
 
   refreshToken() : Observable<any> {
