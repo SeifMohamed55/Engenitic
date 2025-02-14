@@ -22,10 +22,10 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
         if (error.status === 401){
           _UserService.refreshToken().subscribe({
             next : res =>{
-              
+              console.log(res);
             },
             error : err =>{
-
+              console.log(err);
             }
           })
         }
