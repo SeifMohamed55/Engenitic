@@ -65,23 +65,22 @@ namespace GraduationProject.StartupConfigurations
                                         "Unauthorized Please Refresh Access Token" :
                                         "Unauthorized No Access Token Provided";
 
-                         var body = JsonConvert.SerializeObject(new ErrorResponse
+                         return context.Response.WriteAsJsonAsync(new ErrorResponse
                          {
                              Message = msg,
                              Code = System.Net.HttpStatusCode.Unauthorized,
                          });
-                         return context.Response.WriteAsync(body);
                      },
                      OnForbidden = context =>
                      {
                          context.Response.StatusCode = 403;
-                        context.Response.ContentType = "application/json";
-                         var body = JsonConvert.SerializeObject(new ErrorResponse
-                         {
-                             Message = "Forbidden Insufficient Roles",
-                             Code = System.Net.HttpStatusCode.Forbidden,
-                         });
-                        return context.Response.WriteAsync(body);
+                         context.Response.ContentType = "application/json";
+                         
+                        return context.Response.WriteAsJsonAsync(new ErrorResponse
+                        {
+                            Message = "Forbidden Insufficient Roles",
+                            Code = System.Net.HttpStatusCode.Forbidden,
+                        });
                      }
                  };
              })

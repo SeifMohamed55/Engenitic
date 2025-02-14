@@ -3,6 +3,8 @@ using GraduationProject.Models.DTOs;
 using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Net;
 
 namespace GraduationProject.Controllers
 {
@@ -134,6 +136,115 @@ namespace GraduationProject.Controllers
                 {
                     Message = "Something Wrong Happened.",
                     Code = System.Net.HttpStatusCode.InternalServerError,
+                });
+            }
+        }
+
+
+        // GET: /api/courses/student/1
+        [HttpGet("student/{index}")]
+        [Authorize(Roles = "student")]
+        public async Task<IActionResult> GetStudentCourses(int index)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                var courses = await _coursesRepo.GetStudentEnrolledCourses(int.Parse(claimId), index);
+                if (courses.Count == 0)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "No Courses Found.",
+                        Code = HttpStatusCode.NotFound,
+                    });
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Courses Retrieved Successfully.",
+                    Data = new PaginatedResponse<EnrollmentDTO>(courses),
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+        }
+
+        // GET: search for instructor
+        // GET: /api/users/instructor/1
+        [HttpGet("instructor/{index}")]
+        [Authorize(Roles = "instructor")]
+        public async Task<IActionResult> GetInstructorCourses(int index)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                var courses = await _coursesRepo.GetInstructorCourses(int.Parse(claimId), index);
+                if (courses.Count == 0)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "No Courses Found.",
+                        Code = HttpStatusCode.NotFound,
+                    });
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Courses Retrieved Successfully.",
+                    Data = new PaginatedResponse<CourseDTO>(courses),
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+        }
+
+        // GET: /api/courses/statistics/1
+        [HttpGet("statistics/{courseId}")]
+        [Authorize(Roles = "instructor")]
+        public async Task<IActionResult> GetCourseStatistics(int courseId)
+        {
+            try
+            {
+                var statistics = await _coursesRepo.GetCourseStatistics(courseId);
+                if (statistics == null)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "No Statistics Found.",
+                        Code = HttpStatusCode.NotFound,
+                    });
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Statistics Retrieved Successfully.",
+                    Data = statistics,
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.BadRequest,
                 });
             }
         }

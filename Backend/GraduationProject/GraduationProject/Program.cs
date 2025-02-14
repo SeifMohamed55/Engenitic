@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using GraduationProject.Services;
 using GraduationProject.Repositories;
 using GraduationProject.Middlewares;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,22 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod()
                   .AllowCredentials();
         });
+});
+
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("UserLoginRateLimit", context =>
+    {
+        var userId = context.User.Identity?.Name ?? "anonymous"; // Get user ID
+        return RateLimitPartition.GetFixedWindowLimiter(
+            userId, // Key = user ID
+            (x) => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10, // Max 5 login attempts
+                Window = TimeSpan.FromMinutes(1) // Resets every 5 minutes
+            });
+    });
 });
 
 var app = builder.Build();

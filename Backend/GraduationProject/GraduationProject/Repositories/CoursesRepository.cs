@@ -13,15 +13,19 @@ namespace GraduationProject.Repositories
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesWithHidden(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
-        Task<List<CourseDTO>> GetInstructorCourses(int id);
-        Task<List<CourseStatistics>> GetCourseStatistics(int courseId);
+        Task<CourseStatistics?> GetCourseStatistics(int courseId);
+        Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
+        Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
+        // Edit, Add, Remove
 
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
 
+        private readonly DbSet<UserEnrollment> _enrollments;
         public CoursesRepository(AppDbContext context) : base(context)
         {
+            _enrollments = context.Set<UserEnrollment>();
         }
 
         public async Task<CourseDTO?> GetById(int id)
@@ -66,25 +70,43 @@ namespace GraduationProject.Repositories
             return await PaginatedList<CourseDTO>.CreateAsync(courses, index);
         }
 
-        public async Task<List<CourseDTO>> GetInstructorCourses(int instructorId)
-        {
-            return await _dbSet
-                .Where(x => x.InstructorId == instructorId)
-                .Select(x=> new CourseDTO(x))
-                .ToListAsync();
-        }
 
-        public async Task<List<CourseStatistics>> GetCourseStatistics(int courseId)
+        public async Task<CourseStatistics?> GetCourseStatistics(int courseId)
         {
             return await _dbSet.Include(x=> x.Enrollments)
-                .Where(x => x.Id == courseId)
                 .Select(x => new CourseStatistics()
                 {
+                    CourseId = x.Id,
                     UserEmails = x.Enrollments.Select(e => e.User.Email),
                     TotalEnrollments = x.Enrollments.Count,
                     TotalCompleted = x.Enrollments.Count(e => e.IsCompleted == true),
                 })
-                .ToListAsync();
+                .FirstOrDefaultAsync(x => x.CourseId == courseId)
+;
+        }
+
+        public async Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index)
+        {
+            var query =  _dbSet
+                .Where(x => x.InstructorId == instructorId)
+                .Include(x=> x.Instructor)
+                .OrderBy(x => x.Title)
+                .Select(x=> new CourseDTO(x));
+
+            return await PaginatedList<CourseDTO>.CreateAsync(query, index);
+           
+        }
+
+        public async Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index)
+        {
+            var query = _enrollments.Include(x=> x.Course)
+                .Where(x => x.UserId == studentId)
+                .OrderBy(x => x.IsCompleted)
+                .ThenBy(x=> x.Course.Title)
+                .Select(x => new EnrollmentDTO(x));
+
+            return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);
+
         }
     }
 }

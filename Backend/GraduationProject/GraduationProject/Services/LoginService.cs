@@ -279,6 +279,7 @@ namespace GraduationProject.Services
         }
 
 
+        // U can make latest access token with null and don't use blacklisting
         public async Task<IResult> Logout(HttpContext httpContext)
         {
             string? refreshToken = httpContext.Request.Cookies["refreshToken"];

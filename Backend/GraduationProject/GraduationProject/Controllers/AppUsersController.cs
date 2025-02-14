@@ -34,7 +34,7 @@ namespace GraduationProject.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null || int.TryParse(userId, out int currentUserId))
+            if (userId == null || !int.TryParse(userId, out int currentUserId))
             {
                 return Unauthorized(new ErrorResponse(){
                     Code = HttpStatusCode.Unauthorized,
@@ -53,7 +53,11 @@ namespace GraduationProject.Controllers
                 });
             }
 
-            return appUser;
+            return Ok(new SuccessResponse() 
+            {
+                Data = appUser,
+                Message = "User fetched successfully!"                 
+            });
         }
 
         // GET: api/Users/image
