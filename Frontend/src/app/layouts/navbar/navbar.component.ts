@@ -9,16 +9,24 @@ import { UserService } from '../../feature/users/user.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
 
   constructor(private _Router:Router, private _UserService:UserService){
 
   }
 
 
+
+  registered : string | null = null 
   userName : string = 'abdelrhman khaled';
   userPicture : string = '';
   userRole : string = '';
+
+  ngOnInit(): void {
+      this._UserService.registered.subscribe(data=>{
+        this.registered = data
+      })
+  }
 
 
   handleLogout(): void {

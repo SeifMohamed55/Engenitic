@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
@@ -18,7 +19,7 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent {
 
-  constructor (private _UserService:UserService, private toastr: ToastrService){
+  constructor (private _UserService:UserService, private toastr: ToastrService, private _Router:Router){
 
   }
 
@@ -41,10 +42,11 @@ export class LoginComponent {
           this._UserService.registered.next(this.loginResponse.data.accessToken);
           localStorage.setItem('Token',this.loginResponse.data.accessToken);
           this.toastr.success(res.message);
+          this._Router.navigate(["/home"])
         },
         error : err =>{
           console.log(err);
-          this.toastr.error(err.error.message);
+          this.toastr.error(err.message);
         }
       });
     }

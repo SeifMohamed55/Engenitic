@@ -1,6 +1,6 @@
 <nav class="w-full">
   <ul class="container flex justify-between items-center p-5 ">
-    <li *ngIf="registered;else reg_logo">
+    <li *ngIf="!registered;else reg_logo">
       <img src="assets/icons/logo-black.svg" alt="engenitics black logo" />
     </li>
     <li><a routerLink="/home" class="font-display capitalize">home</a></li>
@@ -8,7 +8,7 @@
     <li><a routerLink="/grammar" class="font-display">grammar help</a></li>
     <li><a routerLink="/Q&A" class="font-display">Q & A</a></li>
     <li><a routerLink="/listening" class="font-display">listening</a></li>
-    <div *ngIf="registered;else user_info">
+    <div *ngIf="!registered;else user_info">
       <span  class="flex justify-between items-center">
         <div class="me-6"><a routerLink="login" class="engenitic-button">log in</a></div>
         <div class="ms-6"><a routerLink="register" class="engenitic-button">register</a></div>
