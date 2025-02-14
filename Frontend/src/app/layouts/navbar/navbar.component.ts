@@ -23,10 +23,18 @@ export class NavbarComponent implements OnInit {
   userRole : string = '';
 
   ngOnInit(): void {
+
       this._UserService.registered.subscribe(data=>{
         this.registered = data
-      })
-  }
+      });
+
+      if (typeof window !== 'undefined') {
+        const token: string | null = localStorage.getItem("Token");
+        if (token) {
+          this._UserService.registered.next(token);
+        }
+      }
+  };
 
 
   handleLogout(): void {
@@ -35,7 +43,4 @@ export class NavbarComponent implements OnInit {
     this._Router.navigate(['/home']);
   };
   
-  handleProfile():void {
-
-  };
 }

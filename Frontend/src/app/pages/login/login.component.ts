@@ -42,7 +42,7 @@ export class LoginComponent {
           this._UserService.registered.next(this.loginResponse.data.accessToken);
           localStorage.setItem('Token',this.loginResponse.data.accessToken);
           this.toastr.success(res.message);
-          this._Router.navigate(["/home"])
+          this._Router.navigate(["/home"]);
         },
         error : err =>{
           console.log(err);
