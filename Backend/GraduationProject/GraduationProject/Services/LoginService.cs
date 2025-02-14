@@ -244,7 +244,7 @@ namespace GraduationProject.Services
                 {
                     HttpOnly = true,
                     Secure = true ,
-                    SameSite = SameSiteMode.Strict,
+                    SameSite = SameSiteMode.None,
                     Path = "/",
                     Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
                 };
@@ -340,7 +340,7 @@ namespace GraduationProject.Services
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Path = "/",
                 Expires = DateTime.Now.AddDays(-1)
             };
