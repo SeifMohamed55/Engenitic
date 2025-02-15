@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpHandler, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserService } from '../feature/users/user.service';
 import { catchError } from 'rxjs';
@@ -17,7 +17,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
   
   return next(req).pipe(
-    catchError((error: HttpErrorResponse) =>
+    catchError((error : HttpErrorResponse) =>
       {
         if (error.status === 401){
           _UserService.refreshToken().subscribe({

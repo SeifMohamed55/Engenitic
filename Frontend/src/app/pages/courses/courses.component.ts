@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CourseComponent } from '../../components/course/course.component';
 
 @Component({
   selector: 'app-courses',
@@ -10,14 +11,16 @@ import { RouterModule } from '@angular/router';
 })
 export class CoursesComponent {
 
-  totalNumCourses : number = 23;
+  @ViewChild(CourseComponent) child!: CourseComponent;
+
+  totalNumCourses : number = 10;
   
-  paginagingNum : number = 5;
-
+  paginagingNum : number = 10;
+  
   idxx : number = 0;
-
+  
   links : number[] = Array.from({length : Math.min(this.paginagingNum, this.totalNumCourses - this.idxx + 1) }, (_, i) => this.idxx + i + 1);
-
+  
 
   handleLinks(value : number, idx : number) : void {
     this.idxx = value;
