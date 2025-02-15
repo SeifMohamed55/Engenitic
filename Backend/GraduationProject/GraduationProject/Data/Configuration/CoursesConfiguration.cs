@@ -28,6 +28,9 @@ namespace GraduationProject.Data.Configuration
             builder.Property(u => u.Code)
                 .HasMaxLength(10);
 
+            builder.Property(u => u.Requirements)
+                .IsUnicode()
+                .HasMaxLength(300);
 
             builder.HasMany(c => c.Quizes)
                 .WithOne(s => s.Course)

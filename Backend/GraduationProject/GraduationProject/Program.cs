@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using GraduationProject.Services;
 using GraduationProject.Repositories;
 using GraduationProject.Middlewares;
-using System.Threading.RateLimiting;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,24 +65,29 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.AddPolicy("UserLoginRateLimit", context =>
-    {
-        var userId = context.User.Identity?.Name ?? "anonymous"; // Get user ID
-        return RateLimitPartition.GetFixedWindowLimiter(
-            userId, // Key = user ID
-            (x) => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 10, // Max 5 login attempts
-                Window = TimeSpan.FromMinutes(1) // Resets every 5 minutes
-            });
-    });
-});
+builder.Services.AddRateLimiting(); // Add Rate Limiting Configuration
 
 var app = builder.Build();
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
+
+
+
+//app.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigin");
+
+app.UseRateLimiter();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseMiddleware<CheckingRefreshTokenAfterAuthorizationMiddleware>();
+
+app.MapControllers();
+
+app.Run();
+
 
 // Configure the HTTP request pipeline.
 /*if (app.Environment.IsDevelopment())
@@ -90,15 +95,6 @@ app.UseMiddleware<TokenBlacklistMiddleware>();
     app.UseSwagger();
     app.UseSwaggerUI();
 }*/
-
-//app.UseStaticFiles();
-app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigin");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
 
 /*using (var scope = app.Services.CreateScope())
 {
@@ -157,7 +153,5 @@ app.MapControllers();
         Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
         stopwatch.Restart();
 }*/
-
-app.Run();
 
 

@@ -9,6 +9,7 @@
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string ImageUrl { get; set; } = null!;
+        public string Requirements { get; set; } = null!;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int InstructorId { get; set; }

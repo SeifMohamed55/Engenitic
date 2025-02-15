@@ -3,6 +3,7 @@ using GraduationProject.Repositories;
 using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 
@@ -10,6 +11,7 @@ namespace GraduationProject.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("UserLoginRateLimit")]
     public class TokenController : ControllerBase
     {
         private readonly IJwtTokenService _tokenService;

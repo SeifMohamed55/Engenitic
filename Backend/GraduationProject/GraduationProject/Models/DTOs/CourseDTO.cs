@@ -12,6 +12,7 @@
             InstructorName = course.Instructor.FullName;
             InstructorEmail = course.Instructor.Email;
             InstructorPhone = course.Instructor.PhoneNumber;
+            Requirements = course.Requirements;
             Image = new() { ImageURL = "https://localhost/api/users/image", Name = course.ImageUrl};
         }
 
@@ -22,6 +23,7 @@
         public string InstructorName { get; set; } = null!;
         public string InstructorEmail { get; set; } = null!;
         public string? InstructorPhone { get; set; }
+        public string Requirements { get; set; } = null!;
         public ImageMetadata? Image { get; set; }
 
     }
