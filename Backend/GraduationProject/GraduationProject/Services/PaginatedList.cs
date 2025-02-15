@@ -43,5 +43,14 @@ namespace GraduationProject.Services
 
             return new PaginatedList<T>(items, pageIndex, pageSize, totalCount);
         }
+
+        public static  PaginatedList<T> Create(IQueryable<T> source, int pageIndex, int pageSize = 10)
+        {
+            var totalCount =  source.Count();
+
+            var items =  source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginatedList<T>(items, pageIndex, pageSize, totalCount);
+        }
     }
 }

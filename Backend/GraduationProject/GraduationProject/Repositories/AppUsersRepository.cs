@@ -50,7 +50,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode =  x.PhoneRegionCode,
-                    ImageURL = x.ImageSrc,
+                    Image = new ImageMetadata() { Name = x.ImageSrc, ImageURL = "https://localhost/api/users/image" },
                 }).ToListAsync();
         }
 
@@ -65,7 +65,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = "https://localhost/api/users/image",
+                    Image = new() { Name = x.ImageSrc, ImageURL = "https://localhost/api/users/image"},
                     UserName = x.FullName
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
@@ -171,7 +171,7 @@ namespace GraduationProject.Repositories
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
-                    ImageURL = x.ImageSrc,
+                    Image = new ImageMetadata() { Name = x.ImageSrc, ImageURL = "https://localhost/api/users/image" }
                 }).FirstOrDefaultAsync(x => x.Email == email);
         }
 

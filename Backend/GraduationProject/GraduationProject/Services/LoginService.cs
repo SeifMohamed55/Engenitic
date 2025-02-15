@@ -5,7 +5,6 @@ using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using GraduationProject.StartupConfigurations;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,7 +12,6 @@ using Newtonsoft.Json.Linq;
 using System.Drawing;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
-using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -174,7 +172,11 @@ namespace GraduationProject.Services
                                 Id = user.Id,
                                 PhoneRegionCode = user.PhoneRegionCode,
                                 UserName = user.FullName,
-                                ImageURL = "https://localhost/api/users/image"
+                                Image = new ImageMetadata() 
+                                {
+                                    ImageURL = "https://localhost/api/users/image",
+                                    Name = user.ImageSrc 
+                                }
                             },
                             Code = System.Net.HttpStatusCode.OK
                         });
@@ -266,7 +268,11 @@ namespace GraduationProject.Services
                         ValidTo = DateTime.UtcNow.AddMinutes(
                             double.Parse(_jwtOptions.AccessTokenValidityMinutes))
                                     .ToString("f", CultureInfo.InvariantCulture),
-                        ImageLink = "https://localhost/api/users/image",
+                        Image = new 
+                        { 
+                            Url = "https://localhost/api/users/image",
+                            Name = user.ImageSrc
+                        }
                     },
                     Code = System.Net.HttpStatusCode.OK
                 });

@@ -1,13 +1,8 @@
 ﻿using GraduationProject.Controllers.APIResponses;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Text.Json;
 
 namespace GraduationProject.StartupConfigurations
 {
@@ -52,6 +47,14 @@ namespace GraduationProject.StartupConfigurations
 
                  options.Events = new JwtBearerEvents
                  {
+                     OnMessageReceived = context =>
+                     {
+                         if (context.Request.Cookies.ContainsKey("access_token"))
+                         {
+                             context.Token = context.Request.Cookies["access_token"];
+                         }
+                         return Task.CompletedTask;
+                     },
                      OnChallenge = context =>
                      {
                          context.HandleResponse(); // Suppress default challenge behavior
