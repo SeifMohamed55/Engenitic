@@ -12,8 +12,7 @@ namespace GraduationProject.Controllers.APIResponses
         {
             PaginatedList = list;
             TotalPages = list.TotalPages;
-            
-            CurrentlyViewing =  $"({1 + ((list.PageIndex - 1) * list.PageSize)} - {list.PageIndex * list.PageSize})";
+            CurrentlyViewing =  $"({1 + ((list.PageIndex - 1) * list.PageSize)} - {(list.PageIndex != list.TotalPages ? list.PageIndex * list.PageSize : (list.PageIndex - 1) * list.PageSize  + list.Count)})";
         }
 
 
