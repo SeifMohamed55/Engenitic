@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Net;
 using GraduationProject.Services;
 using GraduationProject.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GraduationProject.Controllers
 {
@@ -146,7 +147,13 @@ namespace GraduationProject.Controllers
             var courseDTOs = courses.Select(course => new CourseDTO(course)).ToList();
 
             var paginated = PaginatedList<CourseDTO>.Create(courseDTOs.AsQueryable(), index, 6);
-             
+
+            if (index > paginated.TotalPages)
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = "Invalid Page Number"
+                });
 
             return Ok(new SuccessResponse
             {
