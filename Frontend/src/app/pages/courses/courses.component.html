@@ -10,17 +10,6 @@
     </form>
     
 
-    <div class="flex justify-center items-center">
-        <a (click)="leftArrow()"  routerLink="/offered-courses/1"><i class="fa-solid fa-arrow-left-long text-lg"></i></a>
-        <ul class="font-display text-header flex px-6">
-            <li *ngFor="let link of links; index as idx">
-                <a (click)="handleLinks(links[idx], idx)" [routerLink]="['/offered-courses',link]" routerLinkActive="text-red-500">{{ link }}</a>
-                <span *ngIf="idx !== links.length-1">,</span>
-            </li>
-        </ul>
-        <a (click)="rightArrow()"  [routerLink]="['/offered-courses',totalNumCourses]"><i class="fa-solid fa-arrow-right-long text-lg"></i></a>
-    </div>
-
     <router-outlet>
         
     </router-outlet>

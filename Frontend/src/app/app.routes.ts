@@ -23,7 +23,7 @@ export const routes: Routes = [
     {path : "home", component : HomeComponent},
     {path : "offered-courses", component : CoursesComponent, children : [
         {path : '', redirectTo : '1', pathMatch : 'full'},
-        {path : ':collection', component : CourseComponent },
+        {path : ':collectionNumber', component : CourseComponent },
     ]},
     {path : 'course/:id' , component : CourseDetailsComponent},
     {path : "grammar", component : GrammarHelpComponent},
