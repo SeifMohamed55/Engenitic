@@ -9,16 +9,29 @@
 
 @layer utilities {
     .engenitic-button {
-        @apply px-6 py-2 border-2 shadow-xl border-black rounded-3xl font-display uppercase  text-center;
+        @apply px-6 py-2 border-2 shadow-xl border-black rounded-3xl font-display uppercase text-center transition-all duration-500 hover:text-white  hover:border-white ;
     }
     .engenitic-input {
         @apply w-full border-[1.5px] border-black rounded py-2 font-display px-2
     }
-
-    .engenitic-button-disabled {
-        @apply border-[#8E8E8E];
+    .gradient {
+        @apply bg-gradient-to-r from-[#0FB5E8] via-[#670A78] to-[#0B0129]
     }
-
+    .engenitic-button-disabled {
+        @apply bg-[#8E8E8E];
+    }
+    .engenitic-danger {
+        @apply bg-[#EC221F] ;
+    }
+    .engenitic-success {
+        @apply bg-[#14AE5C] ;
+    }
+    .engenitic-purple {
+        @apply bg-[#670A78];
+    }
+    .engenitic-blue {
+        @apply bg-[#0FB5E8];
+    }
 }
 
 body {
@@ -27,14 +40,6 @@ body {
     overflow-x: hidden;
 }
 
-.danger-button {
-    background-color: rgb(236, 34, 31) ;
-    color: white;
-}
-.success-button {
-    background-color: RGB(20, 174, 92) ;
-    color: white;
-}
 .custom-file-input {
     border: none;
     border-radius: 5px;
@@ -50,6 +55,16 @@ body {
     margin-right: 10px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.course{
+    overflow: hidden;
+    &:hover{
+        .course-button{
+            transform: translateY(0);
+            transition: all 1s;
+        }
+    }
 }
 
 

@@ -17,7 +17,7 @@ export class CourseComponent implements OnInit {
   
   paginagingNum : number = 10;
   
-  idxx : number = 0;
+  tempValue : number = 0;
   
   collectionNumber !: number | null;
   
@@ -43,6 +43,7 @@ export class CourseComponent implements OnInit {
           console.log(res);
           this.courses = res.data.paginatedList;
           this.totalNumCourses = res.data.paginatedList.length;
+          this.computeLinks();
         },
         error : err =>{
           console.log(err);
@@ -53,11 +54,18 @@ export class CourseComponent implements OnInit {
       })
     });
   }
+
+  computeLinks(): void {
+    this.links = Array.from(
+      { length: Math.min(this.paginagingNum, this.totalNumCourses - this.tempValue + 1) },
+      (_, i) => this.tempValue + i + 1
+    );
+  }
+
   
 
   handleLinks(value : number, idx : number) : void {
-
-    this.idxx = value;
+    this.tempValue = value;
     
     const calc = Math.floor(this.paginagingNum / 2);
 
@@ -74,10 +82,9 @@ export class CourseComponent implements OnInit {
     }
 
     this.links  = Array.from({length : Math.min(this.paginagingNum, this.totalNumCourses) }, (_, i) => {
-      return  this.idxx + i + temp; 
+      return  this.tempValue + i + temp; 
     });
-
-  }
+  };
 
   leftArrow() : void{
     this.handleLinks(1, 0);

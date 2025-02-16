@@ -3,9 +3,9 @@ module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
     extend: {
-      container: {
-        center: true,
-        padding: "16px",
+      container : {
+        center : true,
+        padding : '1rem'
       },
       fontFamily : {
         'display' : ["Playfair Display"],

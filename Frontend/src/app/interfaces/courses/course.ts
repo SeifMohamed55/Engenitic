@@ -6,5 +6,10 @@ export interface Course {
     instructorName: string
     instructorEmail: string
     instructorPhone: string
+    image: Image
+}
+
+export interface Image {
+    name: string
     imageURL: string
 }

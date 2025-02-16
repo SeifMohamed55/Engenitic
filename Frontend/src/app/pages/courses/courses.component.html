@@ -1,12 +1,19 @@
 <main>
     <figure>
-        <img src="./assets/images/courses-pic.svg" alt="courses page picture" class="w-full h-[300px] object-cover">
+        <img src="./assets/images/Tessa.jpeg" alt="courses page picture" class="mx-auto w-[400px] h-[400px] object-contain">
     </figure>
 
 
-    <form action="" class="grid grid-cols-9 gap-10 my-10 ">
+    <form action="" class="grid grid-cols-9 gap-10 my-5 ">
         <input type="search" class="engenitic-input col-span-8" placeholder="  Search For a Course ...."> 
-        <button type="submit" class="engenitic-button h-fit w-fit " >Search ...</button>
+        <button type="submit" class="engenitic-button h-fit w-fit relative group inline-block hover:bg-yellow-500" >
+            <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                search
+            </span>
+            <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                <i class="fa-solid fa-magnifying-glass fa-shake"></i>
+            </span>
+        </button>
     </form>
     
 

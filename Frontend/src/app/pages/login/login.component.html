@@ -13,6 +13,6 @@
             <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('password')?.getError('required')">the password entity is required</p>
             <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('password')?.getError('minlength')">password must be more than 5 characters</p>
         </div>
-        <button [disabled]="buttonDisabled" type="submit" class="engenitic-button w-fit mx-auto" [ngClass]="{buttonDisabled : 'engenitic-button-disabled'}">submit</button>
+        <button [disabled]="buttonDisabled" [ngClass]="{'engenitic-button-disabled hover:engenitic-button-disabled text-white' : buttonDisabled}" type="submit" class="engenitic-button hover:engenitic-blue w-fit mx-auto" [ngClass]="{buttonDisabled : 'engenitic-button-disabled'}">submit</button>
     </form>
 </main>
