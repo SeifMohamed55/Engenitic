@@ -14,7 +14,7 @@ namespace GraduationProject.Models
             Description = course.Description;
             Requirements = course.Requirements;
             InstructorId = course.InstructorId;
-            Quizes = course.Quizes.Select(x=> new Quiz(x)).ToList();
+            Quizes = course.Quizes.Select(x => new Quiz(x)).ToList();
 
         }
 

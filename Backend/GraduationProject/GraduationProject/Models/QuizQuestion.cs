@@ -9,10 +9,7 @@ namespace GraduationProject.Models
         {
             QuestionText = question.QuestionText;
             Position = question.Position;
-            Answers = question.Answers.Select(x =>
-            {
-               return new QuizAnswer(x);
-            }).ToList();
+            Answers = question.Answers.Select(x => new QuizAnswer(x)).ToList();
         }
         public int Id { get; set; }
         public string QuestionText { get; set; } = string.Empty;

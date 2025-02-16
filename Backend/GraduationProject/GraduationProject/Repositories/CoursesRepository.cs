@@ -116,17 +116,19 @@ namespace GraduationProject.Repositories
 
         }
 
-        public async Task<Course> AddCourse(RegisterCourseRequest course)
+        public async Task<Course> AddCourse(RegisterCourseRequest courseReq)
         {
-            Course courseDb = new Course(course);
+            Course courseDb = new Course(courseReq);
 
-            if (ImageHelper.IsValidImageType(course.Image))
+            await this.AddAsync(courseDb);
+
+            if (ImageHelper.IsValidImageType(courseReq.Image))
             {
-                Debug.Assert(course.Image != null);
+                Debug.Assert(courseReq.Image != null);
 
-                var extension = Path.GetExtension(course.Image.FileName).ToLower();
+                var extension = Path.GetExtension(courseReq.Image.FileName).ToLower();
                 extension = (extension == ".jpeg" || extension == ".jpg") ?
-                                extension : ImageHelper.GetImageExtenstion(course.Image.ContentType);
+                                extension : ImageHelper.GetImageExtenstion(courseReq.Image.ContentType);
 
                 var imageURL = "course_" + courseDb.Id + "." + extension;
 
@@ -140,9 +142,10 @@ namespace GraduationProject.Repositories
                 var filePath = Path.Combine(uploadsFolder, imageURL);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await course.Image.CopyToAsync(stream);
+                    await courseReq.Image.CopyToAsync(stream);
                 }
-
+                courseDb.ImageUrl = imageURL;
+                await this.UpdateAsync(courseDb);
             }
             return courseDb;
         }
