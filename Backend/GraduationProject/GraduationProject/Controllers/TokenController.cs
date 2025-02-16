@@ -57,10 +57,10 @@ namespace GraduationProject.Controllers
                     Code = System.Net.HttpStatusCode.BadRequest
                 });
 
-            int extractedId;
+            int extractedId; string jti;
             try
             {
-                extractedId = _tokenService.ExtractIdFromExpiredToken(oldAccessToken);
+                (extractedId, jti) = _tokenService.ExtractIdAndJtiFromExpiredToken(oldAccessToken);
             }
             catch (Exception)
             {
@@ -77,7 +77,7 @@ namespace GraduationProject.Controllers
             if (user == null || 
                 user.RefreshToken == null || 
                 _tokenService.IsRefreshTokenExpired(user.RefreshToken) || // expired
-                oldAccessToken != user.RefreshToken.LatestJwtAccessToken
+                jti != user.RefreshToken.LatestJwtAccessTokenJti
                 )
                     return BadRequest(new ErrorResponse 
                     { Message = "Provided token is invalid Sign In again",
@@ -96,9 +96,9 @@ namespace GraduationProject.Controllers
                     });
 
 
-                string newAccessToken = _tokenService.GenerateJwtToken(user);
+                (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user);
 
-                await _appUsersRepository.UpdateUserLatestToken(user, newAccessToken);
+                await _appUsersRepository.UpdateUserLatestToken(user, newJti);
 
 
                 return Ok(new SuccessResponse

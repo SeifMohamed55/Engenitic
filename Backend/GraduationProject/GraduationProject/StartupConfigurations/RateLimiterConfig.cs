@@ -24,7 +24,7 @@ namespace GraduationProject.StartupConfigurations
                     var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "anonymous"; // Get user Ip Address
                     return RateLimitPartition.GetFixedWindowLimiter(clientIp, _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 10,
+                        PermitLimit = 15,
                         Window = TimeSpan.FromMinutes(1)
                     });
                 });

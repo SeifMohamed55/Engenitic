@@ -9,10 +9,9 @@ using GraduationProject.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Configuration.AddEnvironmentVariables();
 
+// Add services to the container.
 
 builder.Services.AddDbContextPool<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD"))
@@ -27,6 +26,11 @@ builder.Services
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 5;
         options.User.RequireUniqueEmail = true;
+
+        // Working
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 10;
+        options.Lockout.AllowedForNewUsers = true;
     })
     .AddRoles<Role>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -49,8 +53,8 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
 
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
@@ -71,7 +75,12 @@ var app = builder.Build();
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
 
-
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 //app.UseStaticFiles();
 app.UseHttpsRedirection();
@@ -89,12 +98,7 @@ app.MapControllers();
 app.Run();
 
 
-// Configure the HTTP request pipeline.
-/*if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}*/
+
 
 /*using (var scope = app.Services.CreateScope())
 {

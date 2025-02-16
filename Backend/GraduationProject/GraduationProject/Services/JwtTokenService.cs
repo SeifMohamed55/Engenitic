@@ -13,13 +13,12 @@ namespace GraduationProject.Services
     public interface IJwtTokenService
     {
         (RefreshToken, string) GenerateRefreshToken(AppUser appUser);
-        string GenerateJwtToken(AppUser userWithTokenAndRoles);
-        int ExtractIdFromExpiredToken(string token);
+        (string, string) GenerateJwtToken(AppUser userWithTokenAndRoles);
+        (int, string) ExtractIdAndJtiFromExpiredToken(string token);
         bool IsAccessTokenValid(string token);
         string? ExtractJwtTokenFromContext(HttpContext context);
         DateTimeOffset GetAccessTokenExpiration(string accessToken);
         bool IsRefreshTokenExpired(RefreshToken refreshToken);
-
         bool VerifyRefreshHmac(string raw, string hashed);
     }
 
@@ -41,17 +40,17 @@ namespace GraduationProject.Services
         }
 
         // user included with roles and refreshToken
-        public string GenerateJwtToken(AppUser user)
+        public (string, string) GenerateJwtToken(AppUser user)
         {
 
             var key = new SymmetricSecurityKey(_jwtKey);
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-
+            var Jti = Guid.NewGuid().ToString();
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Jti)
             };
 
             foreach (var role in user.Roles)
@@ -68,9 +67,8 @@ namespace GraduationProject.Services
 
             var strToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return strToken;
+            return (strToken, Jti);
         }
-
 
 
         private string GenerateSecureToken()
@@ -175,18 +173,18 @@ namespace GraduationProject.Services
             }
         }
 
-        public int ExtractIdFromExpiredToken(string token)
+        public (int, string) ExtractIdAndJtiFromExpiredToken(string token)
         {
             var principal = GetPrincipalFromExpiredToken(token);
             var idClaim = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (idClaim?.Value != null)
+            var jtiClaim = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti);
+            if (idClaim?.Value != null && jtiClaim?.Value != null)
             {
                 if (int.TryParse(idClaim.Value, out int id))
-                    return id;
+                    return (id, jtiClaim.Value);
             }
             throw new SecurityTokenException("Invalid token structure");
         }
-
         public string? ExtractJwtTokenFromContext(HttpContext context)
         {
             return context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();

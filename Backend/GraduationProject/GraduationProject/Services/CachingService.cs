@@ -8,7 +8,8 @@ namespace GraduationProject.Services
     public interface ITokenBlacklistService
     {
         bool IsTokenBlacklisted(string accessToken);
-        void BlacklistToken(string accessToken);
+        bool IsTokenBlacklisted(HttpContext context);
+        void BlacklistToken(string accessTokenJti, DateTimeOffset exp);
     }
 
 
@@ -25,15 +26,26 @@ namespace GraduationProject.Services
 
         public bool IsTokenBlacklisted(string accessToken)
         {
-            return _memoryCache.TryGetValue(accessToken, out _);
+            (int _, string accessTokenJti) = _jwtTokenService.ExtractIdAndJtiFromExpiredToken(accessToken);
+            return _memoryCache.TryGetValue(accessTokenJti, out _);
         }
 
-        public void BlacklistToken(string accessToken)
+        public bool IsTokenBlacklisted(HttpContext context)
+        {
+            var accessToken = _jwtTokenService.ExtractJwtTokenFromContext(context);
+            if(accessToken == null)
+            {
+                return false;
+            }
+            (int _, string accessTokenJti) = _jwtTokenService.ExtractIdAndJtiFromExpiredToken(accessToken);
+            return _memoryCache.TryGetValue(accessTokenJti, out _);
+        }
+
+        public void BlacklistToken(string accessTokenJti, DateTimeOffset exp)
         {
             try
             {
-                var exp = _jwtTokenService.GetAccessTokenExpiration(accessToken);
-                _memoryCache.Set(accessToken, true, exp);
+                _memoryCache.Set(accessTokenJti, true, exp);
 
             }
             catch(Exception)

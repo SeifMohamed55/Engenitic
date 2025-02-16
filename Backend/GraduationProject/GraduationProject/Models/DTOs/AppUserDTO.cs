@@ -9,6 +9,5 @@
         public string? PhoneRegionCode { get; set; } = null!;
         public ImageMetadata Image { get; set; } = null!;
         public bool Banned { get; set; }
-        public List<EnrollmentDTO> Enrollments { get; set; } = new List<EnrollmentDTO>();
     }
 }

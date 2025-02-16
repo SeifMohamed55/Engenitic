@@ -202,7 +202,6 @@ namespace GraduationProject.Services
         
         public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
         {
-
             var user = await _appUserRepo.GetUserWithTokenAndRoles(model.Email);
             if (user == null)
                 return Results.NotFound(new ErrorResponse 
@@ -212,7 +211,8 @@ namespace GraduationProject.Services
                 });
 
             if(user.RefreshToken != null)
-                _tokenBlacklistService.BlacklistToken(user.RefreshToken.LatestJwtAccessToken);
+                _tokenBlacklistService.BlacklistToken
+                    (user.RefreshToken.LatestJwtAccessTokenJti, user.RefreshToken.LatestJwtAccessTokenExpiry);
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
@@ -220,18 +220,21 @@ namespace GraduationProject.Services
             if (result.IsLockedOut)
                 return Results.BadRequest(new ErrorResponse 
                 { 
-                    Message = "User is LockedOut" ,
+                    Message = "User is LockedOut Try again in 5 minutes" ,
                     Code = System.Net.HttpStatusCode.BadRequest
                 });
 
+
             if (result.Succeeded)
             {
-
+                await _userManager.ResetAccessFailedCountAsync(user);
                 (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
-                var accessToken = _tokenService.GenerateJwtToken(user);
+                (string accessToken, string jti) = _tokenService.GenerateJwtToken(user);
 
-                refreshToken.LatestJwtAccessToken = accessToken;
+                refreshToken.LatestJwtAccessTokenJti = jti;
+                refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                    (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
 
                 var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
 
@@ -262,9 +265,10 @@ namespace GraduationProject.Services
                     Message = "User Logged In successfully",
                     Data = new
                     {
+                        user.Id,
+                        user.Banned,
                         Name = user.FullName,
                         Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
-                        AccessToken = accessToken,
                         ValidTo = DateTime.UtcNow.AddMinutes(
                             double.Parse(_jwtOptions.AccessTokenValidityMinutes))
                                     .ToString("f", CultureInfo.InvariantCulture),
@@ -272,21 +276,24 @@ namespace GraduationProject.Services
                         { 
                             Url = "https://localhost/api/users/image",
                             Name = user.ImageSrc
-                        }
+                        },
+                        AccessToken = accessToken,
+
                     },
                     Code = System.Net.HttpStatusCode.OK
                 });
 
             }
-            return Results.NotFound(new ErrorResponse
+
+            await _userManager.AccessFailedAsync(user);
+            return Results.BadRequest(new ErrorResponse
             {
                 Message = "Password is incorrect!",
-                Code = System.Net.HttpStatusCode.NotFound
+                Code = System.Net.HttpStatusCode.BadRequest
             });
         }
 
 
-        // U can make latest access token with null and don't use blacklisting
         public async Task<IResult> Logout(HttpContext httpContext)
         {
             string? refreshToken = httpContext.Request.Cookies["refreshToken"];
@@ -305,15 +312,22 @@ namespace GraduationProject.Services
                 });
 
 
-            int? id = _tokenService.ExtractIdFromExpiredToken(accessToken); // allow expired token to signout
-
-            if (!id.HasValue)
-                return Results.BadRequest(new ErrorResponse() 
-                { Message = "Invalid AccessToken",
-                    Code = System.Net.HttpStatusCode.BadRequest 
+            int id; string accessJti;
+            try
+            {
+                (id, accessJti) = _tokenService.ExtractIdAndJtiFromExpiredToken(accessToken); // allow expired token to signout
+            }
+            catch
+            {
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid AccessToken",
+                    Code = System.Net.HttpStatusCode.BadRequest
                 });
+            }
 
-            var dbRefreshToken = await _appUserRepo.GetUserRefreshToken(id.Value);
+
+            var dbRefreshToken = await _appUserRepo.GetUserRefreshToken(id);
             if (dbRefreshToken is null)
                 return Results.BadRequest(new ErrorResponse() 
                 { Message = "User is not Signed In",
@@ -326,15 +340,16 @@ namespace GraduationProject.Services
                     Code = System.Net.HttpStatusCode.BadRequest 
                 });
 
-            if (accessToken != dbRefreshToken.LatestJwtAccessToken)
+            if (accessJti != dbRefreshToken.LatestJwtAccessTokenJti)
                 return Results.BadRequest(new ErrorResponse() 
                 { Message = "Latest AccessToken Doesn't match",
                     Code = System.Net.HttpStatusCode.BadRequest 
                 });
 
             // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
-            _tokenBlacklistService.BlacklistToken(dbRefreshToken.LatestJwtAccessToken);
-            var res = await _appUserRepo.DeleteRefreshToken(id.Value);
+            _tokenBlacklistService.BlacklistToken
+                (dbRefreshToken.LatestJwtAccessTokenJti, dbRefreshToken.LatestJwtAccessTokenExpiry);
+            var res = await _appUserRepo.DeleteRefreshToken(id);
 
             if(res == false)
                 return Results.BadRequest(new ErrorResponse() 

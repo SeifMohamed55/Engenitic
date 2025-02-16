@@ -2,7 +2,9 @@
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Services;
+using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using static System.Net.WebRequestMethods;
 
 namespace GraduationProject.Repositories
@@ -21,10 +23,8 @@ namespace GraduationProject.Repositories
         Task<AppUserDTO?> GetUserDTOByEmail(string email);
         Task<bool> UpdateRefreshToken(AppUser appUser, RefreshToken token);
         Task<bool> DeleteRefreshToken(int id);
-        Task<bool> DeleteRefreshToken(AppUser appUser);
         Task UpdateUserImage(AppUser user, string image);
         Task<bool> EnrollOnCourse(int userId, int courseId);
-        Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId);
         Task<string?> GetUserImage(int id);
 
     }
@@ -32,11 +32,13 @@ namespace GraduationProject.Repositories
     public class AppUsersRepository : Repository<AppUser>, IUserRepository
     {
 
-        private readonly DbSet<UserEnrollment> _enrollments;
+        private readonly AppDbContext _context;
+        private readonly JwtOptions _jwtOptions;
 
-        public AppUsersRepository(AppDbContext context) : base(context)
+        public AppUsersRepository(AppDbContext context, IOptions<JwtOptions> options) : base(context)
         {
-            _enrollments = context.Set<UserEnrollment>();
+            _context = context;
+            _jwtOptions = options.Value;
         }
 
         public async Task<IEnumerable<AppUserDTO>> GetUsersDTO()
@@ -66,23 +68,14 @@ namespace GraduationProject.Repositories
                     PhoneNumber = x.PhoneNumber,
                     PhoneRegionCode = x.PhoneRegionCode,
                     Image = new() { Name = x.ImageSrc, ImageURL = "https://localhost/api/users/image"},
-                    UserName = x.FullName
+                    UserName = x.FullName,
+                    Banned = x.Banned
                 }).FirstOrDefaultAsync(x=> x.Id == id);
         }
 
         public async Task<string?> GetUserImage(int id)
         {
             return (await _dbSet.FindAsync(id))?.ImageSrc;
-        }
-
-        public async Task<PaginatedList<EnrollmentDTO>> GetEnrolledCoursesPage(int index, int userId)
-        {
-            var Enrollments = _enrollments
-                .Where(x=> x.UserId == userId)
-                .OrderBy(x=> x.CourseId)
-                .Select(e => new EnrollmentDTO(e));
-            return await PaginatedList<EnrollmentDTO>.CreateAsync(Enrollments, index);
-
         }
 
         public async Task<AppUser?> GetUserWithTokenAndRoles(int id)
@@ -129,12 +122,14 @@ namespace GraduationProject.Repositories
 
         }
 
-        public async Task UpdateUserLatestToken(AppUser user, string latestToken)
+        public async Task UpdateUserLatestToken(AppUser user, string latestJti)
         {
             if (user.RefreshToken == null)
                 throw new ArgumentNullException();
 
-            user.RefreshToken.LatestJwtAccessToken = latestToken;
+            user.RefreshToken.LatestJwtAccessTokenJti = latestJti;
+            user.RefreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                                                        (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
             await UpdateAsync(user);
         }
 
@@ -200,37 +195,22 @@ namespace GraduationProject.Repositories
             try
             {
                 var user = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-                if (user == null)
+                if (user == null || user.RefreshToken == null)
                 {
                     return false;
                 }
-                user.RefreshToken = null;
-                await UpdateAsync(user);
+
+                _context.RefreshTokens.Remove(user.RefreshToken);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
             {
-
             }
             return false;
 
         }
 
-        public async Task<bool> DeleteRefreshToken(AppUser appUser)
-        {
-            try
-            {
-                appUser.RefreshToken = null;
-                await UpdateAsync(appUser);
-                return true;
-            }
-            catch (Exception)
-            {
-
-            }
-            return false;
-
-        }
 
         public async Task UpdateUserImage(AppUser user, string image)
         {
