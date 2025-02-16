@@ -1,4 +1,5 @@
-﻿using GraduationProject.Controllers.APIResponses;
+﻿using GraduationProject.Controllers.ApiRequest;
+using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -82,6 +83,51 @@ namespace GraduationProject.Controllers
                 {
                     Message = "Statistics Retrieved Successfully.",
                     Data = statistics,
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+        }
+
+        // POST: Add Course
+
+        [HttpPost("addCourse")]
+        public async Task<IActionResult> AddCourse([FromBody] RegisterCourseRequest course)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                if (!int.TryParse(claimId, out int parsedId) || parsedId != course.InstructorId)
+                    return Unauthorized(new ErrorResponse()
+                    {
+                        Message = "Invalid User.",
+                        Code = HttpStatusCode.Unauthorized,
+                    });
+                course.InstructorId = parsedId;
+                var addedCourse = await _coursesRepo.AddCourse(course);
+                if (addedCourse == null)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Something Wrong Happened.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Course Added Successfully.",
+                    Data = new CourseDTO(addedCourse),
                     Code = HttpStatusCode.OK,
                 });
             }

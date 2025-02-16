@@ -3,6 +3,9 @@ using GraduationProject.Models;
 using GraduationProject.Services;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1;
+using System.Diagnostics;
+using GraduationProject.Controllers.ApiRequest;
+using Ganss.Xss;
 
 namespace GraduationProject.Repositories
 {
@@ -16,7 +19,11 @@ namespace GraduationProject.Repositories
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
         Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
+
         // Edit, Add, Remove
+        Task<Course> AddCourse(RegisterCourseRequest course);
+        Task<Course> EditCourse(CourseDTO course);
+        Task<bool> DisableCourse(int courseId);
 
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
@@ -107,6 +114,47 @@ namespace GraduationProject.Repositories
 
             return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);
 
+        }
+
+        public async Task<Course> AddCourse(RegisterCourseRequest course)
+        {
+            Course courseDb = new Course(course);
+
+            if (ImageHelper.IsValidImageType(course.Image))
+            {
+                Debug.Assert(course.Image != null);
+
+                var extension = Path.GetExtension(course.Image.FileName).ToLower();
+                extension = (extension == ".jpeg" || extension == ".jpg") ?
+                                extension : ImageHelper.GetImageExtenstion(course.Image.ContentType);
+
+                var imageURL = "course_" + courseDb.Id + "." + extension;
+
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
+                                        "uploads", "images", "courses");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var filePath = Path.Combine(uploadsFolder, imageURL);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await course.Image.CopyToAsync(stream);
+                }
+
+            }
+            return courseDb;
+        }
+
+        public Task<Course> EditCourse(CourseDTO course)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DisableCourse(int courseId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

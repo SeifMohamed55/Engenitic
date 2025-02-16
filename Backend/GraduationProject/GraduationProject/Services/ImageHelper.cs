@@ -57,5 +57,18 @@ namespace GraduationProject.Services
                 _ => "application/octet-stream", // default MIME type if unknown
             };
         }
+
+        public static string GetImageExtenstion(string MIMEtype)
+        {
+            return MIMEtype switch
+            {
+                "image/jpeg" => ".jpg",
+                "image/png" => ".png",
+                "image/gif" => ".gif",
+                "image/bmp" => ".bmp",
+                "image/webp" => ".webp",
+                _ => "application/octet-stream", // default MIME type if unknown
+            };
+        }
     }
 }

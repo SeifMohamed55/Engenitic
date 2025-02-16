@@ -16,6 +16,7 @@ using System.Linq;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace GraduationProject.Services
 {
@@ -113,10 +114,6 @@ namespace GraduationProject.Services
                     Code = System.Net.HttpStatusCode.BadRequest
                 });
 
-            HtmlSanitizer sanitizer = new HtmlSanitizer();
-            model.Username = sanitizer.Sanitize(model.Username);
-            model.Email = sanitizer.Sanitize(model.Email);
-            model.PhoneNumber = sanitizer.Sanitize(model.PhoneNumber ?? "");
 
             var user = new AppUser()
             {
@@ -144,10 +141,14 @@ namespace GraduationProject.Services
                         {
                             Debug.Assert(model.Image != null);
 
-                            var imageURL = "user_" + user.Id + ".jpeg";
+                            var extension = Path.GetExtension(model.Image.FileName).ToLower();
+                            extension = (extension == ".jpeg" || extension == ".jpg") ?
+                                            extension : ImageHelper.GetImageExtenstion(model.Image.ContentType);
+
+                            var imageURL = "user_" + user.Id + "." + extension;
 
                             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                                                    "uploads", "images");
+                                                    "uploads", "images", "users");
                             if (!Directory.Exists(uploadsFolder))
                             {
                                 Directory.CreateDirectory(uploadsFolder);

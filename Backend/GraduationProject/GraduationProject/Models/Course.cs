@@ -1,8 +1,23 @@
-﻿namespace GraduationProject.Models
+﻿using GraduationProject.Controllers.ApiRequest;
+using GraduationProject.Models.DTOs;
+
+namespace GraduationProject.Models
 {
     // TODO: Add Stages, Requirements and Tags
     public class Course
     {
+        public Course(){ }
+        public Course(RegisterCourseRequest course)
+        {
+            Code = course.Code;
+            Title = course.Title;
+            Description = course.Description;
+            Requirements = course.Requirements;
+            InstructorId = course.InstructorId;
+            Quizes = course.Quizes.Select(x=> new Quiz(x)).ToList();
+
+        }
+
         public int Id { get; set; }
         public bool hidden { get; set; }
         public string? Code { get; set; }

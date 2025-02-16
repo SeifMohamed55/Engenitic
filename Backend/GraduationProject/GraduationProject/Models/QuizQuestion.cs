@@ -1,7 +1,19 @@
-﻿namespace GraduationProject.Models
+﻿using GraduationProject.Models.DTOs;
+
+namespace GraduationProject.Models
 {
     public class QuizQuestion
     {
+        public QuizQuestion() { }
+        public QuizQuestion(QuestionDTO question)
+        {
+            QuestionText = question.QuestionText;
+            Position = question.Position;
+            Answers = question.Answers.Select(x =>
+            {
+               return new QuizAnswer(x);
+            }).ToList();
+        }
         public int Id { get; set; }
         public string QuestionText { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
