@@ -1,97 +1,64 @@
 import { CoursesService } from './../../feature/courses/courses.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Course } from '../../interfaces/courses/course';
 import { ToastrService } from 'ngx-toastr';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @Component({
   selector: 'app-course',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,NgxPaginationModule],
   templateUrl: './course.component.html',
   styleUrl: './course.component.scss'
 })
 export class CourseComponent implements OnInit {
   
-  totalNumCourses !: number;
-  
-  paginagingNum : number = 10;
-  
-  tempValue : number = 0;
-  
-  collectionNumber !: number | null;
-  
-  courses !: Course[]
+  currentPage: number = 1; // Current page number
+  itemsPerPage: number = 6; // Items per page
+  totalPages: number = 0; // Total number of pages
+  totalItems: number = 0; // Total number of items (courses)
+  collectionNumber: number = 0; // Collection number for pagination
+  courses!: Course[]; // Array of courses
 
-  links: number[] = [];
-  
-  constructor(private _ActivatedRoute : ActivatedRoute, private _CoursesService:CoursesService, private _ToastrService:ToastrService){
-    
-  }
-  
+  constructor(
+    private _ActivatedRoute: ActivatedRoute,
+    private _CoursesService: CoursesService,
+    private _ToastrService: ToastrService,
+    private _Router: Router
+  ) {}
+
   ngOnInit(): void {
-    
-    this._ActivatedRoute.paramMap.subscribe(params =>{
-      if(params.get('collectionNumber')){
-        this.collectionNumber =  Number.parseInt(params.get('collectionNumber')!); 
-      }
-      else {
-        this.collectionNumber = 0
-      }
-      this._CoursesService.coursesOffered(this.collectionNumber).subscribe({
-        next : res=>{
-          console.log(res);
-          this.courses = res.data.paginatedList;
-          this.totalNumCourses = res.data.paginatedList.length;
-          this.computeLinks();
-        },
-        error : err =>{
-          console.log(err);
-          if(err.error.message){
-            this._ToastrService.error(err.error.message);
-          }
+    this._ActivatedRoute.paramMap.subscribe(params => {
+      // Get the collection number from the route
+      this.collectionNumber = params.get('collectionNumber') ? Number(params.get('collectionNumber')) : 0;
+      
+      // Fetch courses based on the collection number
+      this.fetchCourses(this.collectionNumber);
+    });
+  }
+
+  // Fetch courses from the service
+  fetchCourses(collectionNumber: number): void {
+    this._CoursesService.coursesOffered(collectionNumber).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.courses = res.data.paginatedList;
+        this.totalPages = res.data.totalPages;
+        this.totalItems = res.data.totalItems;
+      },
+      error: (err) => {
+        console.error(err);
+        if (err.error.message) {
+          this._ToastrService.error(err.error.message);
         }
-      })
+      }
     });
   }
 
-  computeLinks(): void {
-    this.links = Array.from(
-      { length: Math.min(this.paginagingNum, this.totalNumCourses - this.tempValue + 1) },
-      (_, i) => this.tempValue + i + 1
-    );
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this._Router.navigate(['/offered-courses', page]);
   }
-
-  
-
-  handleLinks(value : number, idx : number) : void {
-    this.tempValue = value;
-    
-    const calc = Math.floor(this.paginagingNum / 2);
-
-    let temp : number = 0;
-
-    if (value - calc <= 0){
-      temp =  - (value-1);
-    }
-    else if (this.totalNumCourses - calc < value){
-      temp =  - (this.paginagingNum - (this.totalNumCourses - value ) - 1);
-    }
-    else {
-      temp = 0 - calc;
-    }
-
-    this.links  = Array.from({length : Math.min(this.paginagingNum, this.totalNumCourses) }, (_, i) => {
-      return  this.tempValue + i + temp; 
-    });
-  };
-
-  leftArrow() : void{
-    this.handleLinks(1, 0);
-  };
-
-  rightArrow() : void{
-    this.handleLinks(this.totalNumCourses, this.paginagingNum - 1);
-  };
-
 }
+

@@ -1,16 +1,16 @@
 <main class="py-10">
-
-    <div class="flex justify-center items-center">
-        <a (click)="leftArrow()"  routerLink="/offered-courses/1"><i class="fa-solid fa-arrow-left-long text-lg"></i></a>
-        <ul class="font-display text-header flex px-6">
-            <li *ngFor="let link of links; index as idx">
-                <a (click)="handleLinks(links[idx], idx)" [routerLink]="['/offered-courses',link]" routerLinkActive="text-[#0FB5E8]">{{ link }}</a>
-                <span *ngIf="idx !== links.length-1">,</span>
+    <div>
+        <ul>
+            <li *ngFor="let course of courses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalPages }">
             </li>
         </ul>
-        <a (click)="rightArrow()"  [routerLink]="['/offered-courses',totalNumCourses]"><i class="fa-solid fa-arrow-right-long text-lg"></i></a>
+        <pagination-controls 
+            (pageChange)="onPageChange($event)" 
+            previousLabel="Previous"
+            nextLabel="Next"
+            [responsive]="true">
+        </pagination-controls>
     </div>
-
     <div class="py-10 flex justify-between items-center flex-wrap gap-x-10 gap-y-16">
         <div *ngFor="let course of courses;index as idx" class="grid grid-cols-2 gap-10 items-center border border-black rounded-lg p-5 shadow-xl course">
             <div class="grid grid-rows-4 gap-10">

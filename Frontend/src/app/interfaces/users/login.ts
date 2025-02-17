@@ -1,14 +1,14 @@
 export interface Login {
-    status: string
-    code: number
-    message: string
-    data: Data
-};
-
-interface Data {
+    id: number
+    banned: boolean
     name: string
     roles: string[]
-    accessToken: string
     validTo: string
-    image: string
-};
+    image: Image
+    accessToken: string
+}
+
+interface Image {
+    url: string
+    name: string
+}

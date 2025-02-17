@@ -81,7 +81,10 @@
                 <option value="instructor">instructor</option>
             </select>
         </div>
-        <button [disabled]="disableButton" type="submit" class="engenitic-button hover:engenitic-blue">submit</button>
+        <button [disabled]="buttonDisabled" [ngClass]="{
+            'engenitic-button-disabled text-white hover:text-white hover:border-black': buttonDisabled, 
+            'hover:engenitic-blue': !buttonDisabled
+        }" type="submit" class="engenitic-button hover:engenitic-blue">submit</button>
     </form>
     <figure>
         <img src="./assets/images/register-pic.svg" alt="register picture">

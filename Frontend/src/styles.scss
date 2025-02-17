@@ -1,9 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'ngx-toastr/toastr';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import 'ngx-toastr/toastr';
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Farsan&display=swap');
 
@@ -67,4 +67,20 @@ body {
     }
 }
 
+.ngx-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    li {
+        margin: 0 5px;
+    a {
+        text-decoration: none;
+        color: #007bff;
+        }
+    &.current {
+        background: #007bff;
+        color: white;
+        }
+    }
+}
 

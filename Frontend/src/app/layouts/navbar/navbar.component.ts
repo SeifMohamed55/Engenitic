@@ -1,6 +1,6 @@
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component,  OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../feature/users/user.service';
 
@@ -39,17 +39,15 @@ export class NavbarComponent implements OnInit {
 
 
   handleLogout(): void {
-    localStorage.clear();
-    this._UserService.registered.next("");
-    this._UserService.logoutConfirmation().subscribe
     this._Router.navigate(['/home']);
     this._UserService.logoutConfirmation().subscribe({
       next : res =>{
-        console.log(res);
         this._ToastrService.success(res.message);
+        localStorage.clear();
+        this._UserService.registered.next("");
       },
       error : err => {
-        console.error(err);
+        this._ToastrService.error("something went wrong try again later !");
       }
     });
   };

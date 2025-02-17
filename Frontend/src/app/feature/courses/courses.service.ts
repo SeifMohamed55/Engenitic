@@ -10,6 +10,6 @@ export class CoursesService {
   constructor(private _HttpClient:HttpClient) { }
 
   coursesOffered(collectionNumber : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/courses/dummy/${collectionNumber}`);
+    return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`);
   }
 }

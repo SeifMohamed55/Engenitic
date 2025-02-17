@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import {  Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -9,7 +9,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './courses.component.scss'
 })
 export class CoursesComponent {
-
-  
 
 }

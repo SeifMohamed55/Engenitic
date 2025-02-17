@@ -12,7 +12,7 @@ import { UserService } from '../../feature/users/user.service';
 })
 export class RegisterComponent {
 
-  disableButton : boolean = false;
+  buttonDisabled : boolean = false;
   selectedFile: File | null = null; 
   fileValidationError: string | null = null;
 
@@ -108,7 +108,7 @@ export class RegisterComponent {
 
 
   registerSubmit(): void {
-    this.disableButton = true;
+    this.buttonDisabled = true;
     if (this.registerForm.valid) {
       const formData = new FormData();
       formData.append('username', this.registerForm.get('userName')?.value);
@@ -137,6 +137,6 @@ export class RegisterComponent {
     } else {
       this.registerForm.markAllAsTouched();
     }
-    this.disableButton = false;
+    this.buttonDisabled = false;
   }
 }
