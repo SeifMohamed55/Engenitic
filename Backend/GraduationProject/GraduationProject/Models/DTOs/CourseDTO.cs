@@ -13,7 +13,7 @@
             InstructorEmail = course.Instructor.Email;
             InstructorPhone = course.Instructor.PhoneNumber;
             Requirements = course.Requirements;
-            Image = new() { ImageURL = "https://localhost/api/users/image", Name = course.ImageUrl};
+            Image = new() { ImageURL = "https://localhost/api/course/image", Name = course.ImageUrl};
         }
 
         public int Id { get; set; }

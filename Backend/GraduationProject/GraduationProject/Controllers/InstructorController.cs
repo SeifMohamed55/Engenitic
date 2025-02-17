@@ -99,7 +99,7 @@ namespace GraduationProject.Controllers
         // POST: Add Course
 
         [HttpPost("addCourse")]
-        public async Task<IActionResult> AddCourse([FromBody] RegisterCourseRequest course)
+        public async Task<IActionResult> AddCourse([FromForm] RegisterCourseRequest course)
         {
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimId == null)
@@ -118,12 +118,7 @@ namespace GraduationProject.Controllers
                     });
                 course.InstructorId = parsedId;
                 var addedCourse = await _coursesRepo.AddCourse(course);
-                if (addedCourse == null)
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = "Something Wrong Happened.",
-                        Code = HttpStatusCode.BadRequest,
-                    });
+
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Added Successfully.",
