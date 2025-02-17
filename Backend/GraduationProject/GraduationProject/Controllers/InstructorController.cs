@@ -1,9 +1,12 @@
 ﻿using GraduationProject.Controllers.ApiRequest;
 using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
@@ -12,13 +15,15 @@ namespace GraduationProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "instructor")]
+    //[Authorize(Roles = "instructor")]
     public class InstructorController : ControllerBase
     {
         private readonly ICourseRepository _coursesRepo;
-        public InstructorController(ICourseRepository courseRepository) 
+        private readonly UserManager<AppUser> _userManager;
+        public InstructorController(ICourseRepository courseRepository, UserManager<AppUser> userManager) 
         {
             _coursesRepo = courseRepository;
+            _userManager = userManager;
         }
 
 
@@ -101,6 +106,17 @@ namespace GraduationProject.Controllers
         [HttpPost("addCourse")]
         public async Task<IActionResult> AddCourse([FromForm] RegisterCourseRequest course)
         {
+
+
+
+            if(!ModelState.IsValid)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = ModelState,
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimId == null)
                 return BadRequest(new ErrorResponse()
@@ -116,6 +132,16 @@ namespace GraduationProject.Controllers
                         Message = "Invalid User.",
                         Code = HttpStatusCode.Unauthorized,
                     });
+
+                var instructor = await _userManager.FindByIdAsync(claimId);
+                if(instructor == null)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid User.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
+
+
                 course.InstructorId = parsedId;
                 var addedCourse = await _coursesRepo.AddCourse(course);
 

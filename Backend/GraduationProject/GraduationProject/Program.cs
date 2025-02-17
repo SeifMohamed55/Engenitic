@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using GraduationProject.Services;
 using GraduationProject.Repositories;
 using GraduationProject.Middlewares;
+using Microsoft.AspNetCore.Mvc;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,13 @@ builder.Services
     .AddRoles<Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 

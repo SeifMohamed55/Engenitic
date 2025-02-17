@@ -3,10 +3,8 @@ using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using GraduationProject.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Security.Claims;
 
 namespace GraduationProject.Controllers
 {

@@ -4,14 +4,16 @@ namespace GraduationProject.Controllers.APIResponses
 {
     public class PaginatedResponse<T>
     {
-        public PaginatedList<T> PaginatedList { get; init; }
         public int TotalPages { get; init; }
+        public int TotalItems { get; init; }
         public string CurrentlyViewing { get; init; }
+        public PaginatedList<T> PaginatedList { get; init; }
 
         public PaginatedResponse(PaginatedList<T> list) 
         {
             PaginatedList = list;
             TotalPages = list.TotalPages;
+            TotalItems = list.TotalCount;
             CurrentlyViewing =  
                 $"({1 + ((list.PageIndex - 1) * list.PageSize)}" +
                 $" - " +
