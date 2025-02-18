@@ -8,7 +8,7 @@ using System.Net;
 
 namespace GraduationProject.Controllers
 {
-    // TODO: Add Stages(number of videos and quizes), Requirements and Tags
+    // TODO: Tags
 
     [ApiController]
     [Route("api/[controller]")]
@@ -22,7 +22,7 @@ namespace GraduationProject.Controllers
         }
 
 
-
+        // Id, Title , Description(3 words + ...), imageUrl, instructorName, 
         [HttpGet("{index}")]
         public async Task<IActionResult> GetPageOfCourses(int index = 1)
         {
@@ -109,6 +109,53 @@ namespace GraduationProject.Controllers
         }
 
 
+        [HttpGet("search/tag")]
+        public async Task<IActionResult> GetCoursesByTag
+                                ([FromQuery] string tag, [FromQuery] int index = 1)
+        {
+            if (index <= 0)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid Page Number",
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                var courses = await _coursesRepo.GetPageOfCoursesByTag(tag, index);
+
+                if (courses.TotalPages == 0)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "No Courses Found.",
+                        Code = System.Net.HttpStatusCode.NotFound,
+                    });
+
+                if (index > courses.TotalPages)
+                    return BadRequest(new ErrorResponse
+                    {
+                        Message = "Invalid Page Number",
+                        Code = System.Net.HttpStatusCode.BadRequest,
+                    });
+
+                return Ok(new SuccessResponse
+                {
+                    Message = "Courses Retrieved Successfully.",
+                    Data = new PaginatedResponse<CourseDTO>(courses),
+                    Code = System.Net.HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = System.Net.HttpStatusCode.InternalServerError,
+                });
+
+            }
+        }
+
+
         [HttpGet("id/{courseId}")]
         public async Task<IActionResult> GetCourseById(int courseId)
         {
@@ -141,8 +188,38 @@ namespace GraduationProject.Controllers
         }
 
 
-        
-        
+        [HttpGet("image/{id}")]
+        public async Task<IActionResult> GetCourseImage(int id)
+        {
+            var imageUrl = await _coursesRepo.GetImageUrl(id);
+            if (imageUrl == null)
+                return NotFound(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.NotFound,
+                    Message = "Invalid Course ID"
+                });
+
+            string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
+                                                            "uploads", "images", "courses", imageUrl);
+            try
+            {
+                byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
+                var fileExtension = Path.GetExtension(imagePath).ToLower();
+
+                return File(imageBytes, ImageHelper.GetImageType(fileExtension));
+            }
+            catch
+            {
+                return NotFound(new ErrorResponse
+                {
+                    Code = HttpStatusCode.NotFound,
+                    Message = "Image Not found"
+                });
+
+            }
+        }
+
+
 
         [HttpGet("dummy/{index}")]
         // GET: /api/courses/dummy/1

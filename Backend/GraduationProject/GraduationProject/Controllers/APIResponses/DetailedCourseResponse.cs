@@ -1,20 +1,23 @@
-﻿using AngleSharp.Text;
+﻿using GraduationProject.Models.DTOs;
+using GraduationProject.Models;
+using AngleSharp.Text;
 
-namespace GraduationProject.Models.DTOs
+namespace GraduationProject.Controllers.APIResponses
 {
-    public class CourseDTO
+    public class CourseDetailsResponse
     {
-        public CourseDTO() { }
-        public CourseDTO(Course course)
+        public CourseDetailsResponse(Course course)
         {
             Id = course.Id;
             Title = course.Title;
             Code = course.Code;
             Stages = course.Stages;
-            Description = string.Concat(course.Description.SplitSpaces().Take(3), "...");
+            Description =  course.Description;
             InstructorName = course.Instructor.FullName;
+            InstructorEmail = course.Instructor.Email;
+            InstructorPhone = course.Instructor.PhoneNumber;
             Requirements = course.Requirements;
-            Image = new() { ImageURL = $"https://localhost/api/courses/image?id={Id}", Name = course.ImageUrl};
+            Image = new() { ImageURL = $"https://localhost/api/courses/image?id={Id}", Name = course.ImageUrl };
         }
 
         public int Id { get; set; }
@@ -22,9 +25,10 @@ namespace GraduationProject.Models.DTOs
         public string? Code { get; set; }
         public string Description { get; set; } = null!;
         public string InstructorName { get; set; } = null!;
+        public string InstructorEmail { get; set; } = null!;
+        public string? InstructorPhone { get; set; }
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
         public ImageMetadata? Image { get; set; }
-
     }
 }

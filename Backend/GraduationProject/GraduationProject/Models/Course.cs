@@ -7,7 +7,7 @@ namespace GraduationProject.Models
     public class Course
     {
         public Course(){ }
-        public Course(RegisterCourseRequest course)
+        public Course(RegisterCourseRequest course, List<Tag> tags)
         {
             Code = course.Code;
             Title = course.Title;
@@ -15,6 +15,8 @@ namespace GraduationProject.Models
             Requirements = course.Requirements;
             InstructorId = course.InstructorId;
             Quizes = course.Quizes.Select(x => new Quiz(x)).ToList();
+            Stages = Quizes.Count;
+            Tags = tags;
 
         }
 
@@ -25,6 +27,7 @@ namespace GraduationProject.Models
         public string Description { get; set; } = null!;
         public string ImageUrl { get; set; } = null!;
         public string Requirements { get; set; } = null!;
+        public int Stages { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int InstructorId { get; set; }
@@ -32,6 +35,7 @@ namespace GraduationProject.Models
 
         public ICollection<Quiz> Quizes { get; set; } = new List<Quiz>();
         public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>();
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     }
 
 

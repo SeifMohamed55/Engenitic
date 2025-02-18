@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250217223556_UpdatingNumberOfCourseStages")]
+    partial class UpdatingNumberOfCourseStages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace GraduationProject.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "citext");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("CourseTag", b =>
-                {
-                    b.Property<int>("CoursesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TagsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CoursesId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("CourseTags", (string)null);
-                });
 
             modelBuilder.Entity("GraduationProject.Models.AppUser", b =>
                 {
@@ -355,27 +343,6 @@ namespace GraduationProject.Migrations
                     b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("GraduationProject.Models.Tag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .IsUnicode(true)
-                        .HasColumnType("citext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Value");
-
-                    b.ToTable("Tags", (string)null);
-                });
-
             modelBuilder.Entity("GraduationProject.Models.UserAnswer", b =>
                 {
                     b.Property<int>("Id")
@@ -576,21 +543,6 @@ namespace GraduationProject.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("CourseTag", b =>
-                {
-                    b.HasOne("GraduationProject.Models.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GraduationProject.Models.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("GraduationProject.Models.AppUser", b =>

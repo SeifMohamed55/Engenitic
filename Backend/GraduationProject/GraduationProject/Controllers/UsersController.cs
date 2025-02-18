@@ -86,10 +86,22 @@ namespace GraduationProject.Controllers
 
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
                                                             "uploads", "images", "users", userImage);
-            byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
-            var fileExtension = Path.GetExtension(imagePath).ToLower();
+            try
+            {
+                byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
+                var fileExtension = Path.GetExtension(imagePath).ToLower();
 
-            return File(imageBytes, ImageHelper.GetImageType(fileExtension));
+                return File(imageBytes, ImageHelper.GetImageType(fileExtension));
+            }
+            catch
+            {
+                return NotFound(new ErrorResponse
+                {
+                    Code = HttpStatusCode.NotFound,
+                    Message = "Image Not found"
+                });
+            }
+
 
         }
 

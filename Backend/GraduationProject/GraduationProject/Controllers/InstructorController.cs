@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Claims;
 
@@ -15,7 +18,7 @@ namespace GraduationProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "instructor")]
+    [Authorize(Roles = "instructor")]
     public class InstructorController : ControllerBase
     {
         private readonly ICourseRepository _coursesRepo;
@@ -105,17 +108,52 @@ namespace GraduationProject.Controllers
 
         [HttpPost("addCourse")]
         public async Task<IActionResult> AddCourse([FromForm] RegisterCourseRequest course)
+        
         {
 
-
-
-            if(!ModelState.IsValid)
-                return BadRequest(new ErrorResponse()
+            List<QuizDTO>? quizes;
+            List<TagDTO>? tags;
+            try
+            {
+                quizes = JsonConvert.DeserializeObject<List<QuizDTO>>(course.QuizesStr);
+                if (quizes == null)
+                    throw new JsonException("Nothing Sent");
+            }
+            catch (JsonException)
+            {
+                return BadRequest(new ErrorResponse() 
                 {
-                    Message = ModelState,
+                    Message = "Invalid Quizes.",
                     Code = HttpStatusCode.BadRequest,
                 });
+            }
 
+            try
+            {
+                tags = JsonConvert.DeserializeObject<List<TagDTO>>(course.TagsStr);
+                if(tags == null)
+                    throw new JsonException("Nothing Sent");
+
+            }
+            catch{ tags = new List<TagDTO>(); }
+
+            course.Quizes = quizes;
+            course.QuizesStr = "Useless!";
+
+            course.Tags = tags;
+            course.TagsStr = "useless";
+
+            var validationResults = new List<ValidationResult>();
+
+            var context = new ValidationContext(course);
+            if (!Validator.TryValidateObject(course, context, validationResults, true))
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = validationResults,
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }                
 
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimId == null)
@@ -141,14 +179,12 @@ namespace GraduationProject.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
 
-
-                course.InstructorId = parsedId;
                 var addedCourse = await _coursesRepo.AddCourse(course);
 
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Added Successfully.",
-                    Data = new CourseDTO(addedCourse),
+                    Data = addedCourse,
                     Code = HttpStatusCode.OK,
                 });
             }

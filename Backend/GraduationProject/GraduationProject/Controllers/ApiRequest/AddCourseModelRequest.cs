@@ -30,7 +30,11 @@ namespace GraduationProject.Controllers.ApiRequest
         public IFormFile Image { get; set; } = null!;
 
         [Required]
-        public string quizes { get; set; } = null!;
+        public string TagsStr { get; set; } = null!; 
+        public List<TagDTO> Tags { get; set; } = new List<TagDTO>();
+
+        [Required]
+        public string QuizesStr { get; set; } = null!;
 
         [Required]
         [UniquePostition]

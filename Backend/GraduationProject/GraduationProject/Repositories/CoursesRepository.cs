@@ -6,42 +6,48 @@ using Org.BouncyCastle.Asn1;
 using System.Diagnostics;
 using GraduationProject.Controllers.ApiRequest;
 using Ganss.Xss;
+using GraduationProject.Controllers.APIResponses;
+using NuGet.Packaging;
 
 namespace GraduationProject.Repositories
 {
 
     public interface ICourseRepository : IRepository<Course>
     {
-        Task<CourseDTO?> GetById(int id);
+        Task<CourseDetailsResponse?> GetById(int id);
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesWithHidden(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
         Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
+        Task<string?> GetImageUrl(int courseId); 
 
         // Edit, Add, Remove
-        Task<Course> AddCourse(RegisterCourseRequest course);
+        Task<CourseDTO> AddCourse(RegisterCourseRequest course);
         Task<Course> EditCourse(CourseDTO course);
         Task<bool> DisableCourse(int courseId);
-
+        Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
+        Task<bool> AddCourseToTag(int courseId, List<TagDTO> tag);
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
 
         private readonly DbSet<UserEnrollment> _enrollments;
+        private readonly DbSet<Tag> _tags;
         public CoursesRepository(AppDbContext context) : base(context)
         {
             _enrollments = context.Set<UserEnrollment>();
+            _tags = context.Set<Tag>();
         }
 
-        public async Task<CourseDTO?> GetById(int id)
+        public async Task<CourseDetailsResponse?> GetById(int id)
         {
             var course = await _dbSet.Include(x => x.Instructor).FirstOrDefaultAsync(x=> x.Id == id);
             if (course == null)
                 return null;
 
-            return new CourseDTO(course);
+            return new CourseDetailsResponse(course);
         }
 
         public async Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1)
@@ -116,9 +122,11 @@ namespace GraduationProject.Repositories
 
         }
 
-        public async Task<Course> AddCourse(RegisterCourseRequest courseReq)
+        public async Task<CourseDTO> AddCourse(RegisterCourseRequest courseReq)
         {
-            Course courseDb = new Course(courseReq);
+            var tags = new List<Tag>();
+            Course courseDb = new Course(courseReq, tags);
+            courseDb.ImageUrl = "default.jpeg";
 
             await this.AddAsync(courseDb);
 
@@ -130,7 +138,7 @@ namespace GraduationProject.Repositories
                 extension = (extension == ".jpeg" || extension == ".jpg") ?
                                 extension : ImageHelper.GetImageExtenstion(courseReq.Image.ContentType);
 
-                var imageURL = "course_" + courseDb.Id + "." + extension;
+                var imageURL = "course_" + courseDb.Id + extension;
 
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
                                         "uploads", "images", "courses");
@@ -147,7 +155,7 @@ namespace GraduationProject.Repositories
                 courseDb.ImageUrl = imageURL;
                 await this.UpdateAsync(courseDb);
             }
-            return courseDb;
+            return new CourseDTO(courseDb);
         }
 
         public Task<Course> EditCourse(CourseDTO course)
@@ -158,6 +166,41 @@ namespace GraduationProject.Repositories
         public Task<bool> DisableCourse(int courseId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string?> GetImageUrl(int courseId)
+        {
+           return (await _dbSet.Select(x=> new { x.ImageUrl , x.Id})
+                .FirstOrDefaultAsync(x => x.Id == courseId))?.ImageUrl;
+        }
+
+        public Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index)
+        {
+            var query = _dbSet
+                            .Where(c => c.Tags.Any(t=> t.Value == tag))
+                            .OrderBy(x => x.Title)
+                            .Select(c=> new CourseDTO(c));
+
+            return  PaginatedList<CourseDTO>.CreateAsync(query, index);
+        }
+
+        public async Task<bool> AddCourseToTag(int courseId, List<TagDTO> tags )
+        {
+            var course = await _dbSet.FirstOrDefaultAsync(x=> x.Id == courseId);
+            if (course == null)
+                return false;
+
+            try
+            {
+                var dbTags = await _tags.Where(t => tags.Any(x => x.Id == t.Id)).ToListAsync();
+                course.Tags.AddRange(dbTags);
+                await UpdateAsync(course);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="uploads\images\courses\default.jpeg" />
     <Content Include="uploads\images\users\default.jpeg" />
   </ItemGroup>
 
@@ -51,7 +52,6 @@
 
   <ItemGroup>
     <Folder Include="uploads\CVs\" />
-    <Folder Include="uploads\images\courses\" />
   </ItemGroup>
 
 </Project>

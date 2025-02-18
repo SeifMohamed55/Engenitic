@@ -17,7 +17,7 @@ namespace GraduationProject.Controllers
         }
 
         [HttpPost("login")]
-        [EnableRateLimiting("UserLoginRateLimit")]
+        //[EnableRateLimiting("UserLoginRateLimit")]
         public async Task<IResult> Login(LoginCustomRequest model)
         {
             if (!ModelState.IsValid)

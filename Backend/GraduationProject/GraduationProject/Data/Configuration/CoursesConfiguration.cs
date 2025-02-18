@@ -41,6 +41,10 @@ namespace GraduationProject.Data.Configuration
                 .WithOne(s => s.Course)
                 .HasForeignKey(s => s.CourseId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(c => c.Tags)
+                .WithMany(s => s.Courses)
+                .UsingEntity(j => j.ToTable("CourseTags"));
         }
     }
 
