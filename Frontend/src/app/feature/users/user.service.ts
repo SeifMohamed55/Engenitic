@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class UserService {
 
-  
+  userId : BehaviorSubject<number> = new BehaviorSubject(0);
   registered : BehaviorSubject<string> = new BehaviorSubject("");
   
   constructor(private _HttpClient:HttpClient) {};
@@ -28,4 +28,7 @@ export class UserService {
     return this._HttpClient.post(`https://localhost/api/Token/refresh`, null);
   };
 
+  getProfileData(userId : number) : Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Users/profile?id=${userId}`)
+  }
 };

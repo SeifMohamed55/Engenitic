@@ -14,11 +14,11 @@ import {NgxPaginationModule} from 'ngx-pagination';
 })
 export class CourseComponent implements OnInit {
   
+  collectionNumber: number = 0; // Collection number for pagination
   currentPage: number = 1; // Current page number
   itemsPerPage: number = 6; // Items per page
   totalPages: number = 0; // Total number of pages
   totalItems: number = 0; // Total number of items (courses)
-  collectionNumber: number = 0; // Collection number for pagination
   courses!: Course[]; // Array of courses
 
   constructor(
@@ -59,6 +59,7 @@ export class CourseComponent implements OnInit {
   onPageChange(page: number): void {
     this.currentPage = page;
     this._Router.navigate(['/offered-courses', page]);
+    this.fetchCourses(this.currentPage);
   }
 }
 

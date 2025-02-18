@@ -22,7 +22,7 @@ export const routes: Routes = [
     {path : "" , redirectTo : "home" , pathMatch : "full"},
     {path : "home", component : HomeComponent},
     {path : "offered-courses", component : CoursesComponent, children : [
-        {path : '', redirectTo : '1', pathMatch : 'full'},
+        {path : '', redirectTo : '1' , pathMatch : 'full'},
         {path : ':collectionNumber', component : CourseComponent },
     ]},
     {path : 'course/:id' , component : CourseDetailsComponent},

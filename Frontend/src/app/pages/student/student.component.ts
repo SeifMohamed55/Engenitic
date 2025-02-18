@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { UserService } from '../../feature/users/user.service';
 
 @Component({
   selector: 'app-student',
@@ -9,8 +10,13 @@ import { RouterModule } from '@angular/router';
   templateUrl: './student.component.html',
   styleUrl: './student.component.scss'
 })
-export class StudentComponent implements OnInit { 
+export class StudentComponent implements OnInit {
 
+  constructor(
+    private _UserService:UserService
+  ){}
+
+  userId !: number;
   disapleButton : boolean = false;
   userPic !: any;
   selectedFile: File | null = null;
@@ -18,11 +24,24 @@ export class StudentComponent implements OnInit {
   fileValidationError: string | null = null;
 
   ngOnInit(): void {
-      
+
+    this._UserService.userId.subscribe(data =>{
+      this.userId = data;
+    });
+
+    this._UserService.getProfileData(this.userId).subscribe({
+      next : res =>{
+        console.log(res);
+      },
+      error : err => {
+        console.log(err);
+      }
+    });
+    
   }
 
   studentProfileForm : FormGroup = new FormGroup({
-    image : new FormControl('', ),
+    image : new FormControl(''),
     email : new FormControl('', [Validators.email, Validators.required]),
     userName : new FormControl('', [Validators.required]),
     oldPassword : new FormControl('', [Validators.required, Validators.minLength(5)]),
@@ -44,7 +63,7 @@ export class StudentComponent implements OnInit {
 
 
     const acceptableTypes: string[] = ['image/jpg', 'image/png', 'image/jpeg'];
-    const maxSize = 2 * 1024 * 1024; // 2 MB
+    const maxSize = 2 * 1024 * 1024;
 
     // Validate the file type and size
     if (!acceptableTypes.includes(this.selectedFile.type)) {
@@ -64,7 +83,7 @@ export class StudentComponent implements OnInit {
     }
 
     this.previewUrl = URL.createObjectURL(this.selectedFile);
-  }
+    }
     else {
       this.selectedFile = null; // Reset selected file
     }
@@ -91,43 +110,4 @@ export class StudentComponent implements OnInit {
   }
 
 
-  totalNumCourses : number = 23;
-  
-  paginagingNum : number = 10;
-
-  idxx : number = 0;
-
-  links : number[] = Array.from({length : Math.min(this.paginagingNum, this.totalNumCourses - this.idxx + 1) }, (_, i) => this.idxx + i + 1);
-
-
-  handleLinks(value : number, idx : number) : void {
-    this.idxx = value;
-
-    const calc = Math.floor(this.paginagingNum / 2);
-
-    let temp : number = 0;
-
-    if (value - calc <= 0){
-      temp =  - (value-1);
-    }
-    else if (this.totalNumCourses - calc < value){
-      temp =  - (this.paginagingNum - (this.totalNumCourses - value ) - 1);
-    }
-    else {
-      temp = 0 - calc;
-    }
-
-    this.links  = Array.from({length : this.paginagingNum }, (_, i ) => {
-      return  this.idxx + i + temp; 
-    });
-
-  }
-
-  leftArrow() : void{
-    this.handleLinks(1, 0);
-  };
-
-  rightArrow() : void{
-    this.handleLinks(this.totalNumCourses, this.paginagingNum - 1);
-  };
 }

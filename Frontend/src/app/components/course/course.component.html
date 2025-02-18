@@ -1,14 +1,16 @@
 <main class="py-10">
     <div>
         <ul>
-            <li *ngFor="let course of courses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalPages }">
+            <li *ngFor="let course of courses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : 20 }">
             </li>
         </ul>
         <pagination-controls 
             (pageChange)="onPageChange($event)" 
             previousLabel="Previous"
             nextLabel="Next"
-            [responsive]="true">
+            [responsive]="true"
+            [maxSize]="10"
+            >
         </pagination-controls>
     </div>
     <div class="py-10 flex justify-between items-center flex-wrap gap-x-10 gap-y-16">

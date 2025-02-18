@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
 
 
 
+  userId !: number;
   registered : string | null = null 
   userName : string = 'abdelrhman khaled';
   userPicture : string = '';
@@ -25,16 +26,20 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
 
-      this._UserService.registered.subscribe(data=>{
-        this.registered = data
-      });
+    this._UserService.registered.subscribe(data=>{
+      this.registered = data
+    });
 
-      if (typeof window !== 'undefined') {
-        const token: string | null = localStorage.getItem("Token");
-        if (token) {
-          this._UserService.registered.next(token);
-        }
+    this._UserService.userId.subscribe(data =>{
+      this.userId = data;
+    });
+
+    if (typeof window !== 'undefined') {
+      const token: string | null = localStorage.getItem("Token");
+      if (token) {
+        this._UserService.registered.next(token);
       }
+    }
   };
 
 
@@ -47,6 +52,7 @@ export class NavbarComponent implements OnInit {
         this._UserService.registered.next("");
       },
       error : err => {
+        console.log(err);
         this._ToastrService.error("something went wrong try again later !");
       }
     });

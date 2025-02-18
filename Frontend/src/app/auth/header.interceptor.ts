@@ -29,11 +29,8 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         return _UserService.refreshToken().pipe(
           switchMap((res: any) => {
-
             const newToken = res.data.accessToken;
-
             localStorage.setItem('Token', newToken);
-
             const newReq = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${newToken}`

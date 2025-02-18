@@ -38,10 +38,12 @@ export class LoginComponent {
     if(this.loginForm.valid){
       this._UserService.loginData(this.loginForm.value).subscribe({
         next : res =>{
-
+          
           this.loginResponse = res.data;
-
+          
           this._UserService.registered.next(this.loginResponse.accessToken);
+
+          this._UserService.userId.next(this.loginResponse.id);
 
           localStorage.setItem('Token',this.loginResponse.accessToken);
 

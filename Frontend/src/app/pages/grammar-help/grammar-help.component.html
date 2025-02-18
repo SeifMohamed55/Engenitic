@@ -5,11 +5,10 @@
             <div class="mb-3" *ngIf="grammarForm.get('sentence')?.errors && (grammarForm.get('sentence')?.touched || sentence.value.length > 0)">
                 <p class="text-normal font-regular text-red-500" *ngIf="grammarForm.get('sentence')?.getError('required')">you must enter a sentence before submitting !</p>
             </div>
-            <button [disabled]="disableButton" class="engenitic-button" type="submit">
-                <ngx-spinner
-                    bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#ffffff" type = "fire" [fullScreen] = "false"
-                >
-                </ngx-spinner>
+            <button [disabled]="buttonDisabled" class="engenitic-button" type="submit" [ngClass]="{
+                'engenitic-button-disabled text-white hover:text-white hover:border-black': buttonDisabled, 
+                'hover:engenitic-blue': !buttonDisabled
+            }">
                 submit
             </button>
         </div>

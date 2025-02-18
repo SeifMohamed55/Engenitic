@@ -6,14 +6,14 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: 'app-grammar-help',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgxSpinnerModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './grammar-help.component.html',
   styleUrls: ['./grammar-help.component.scss'],
   animations: [] // Include this if animations are used
 })
 export class GrammarHelpComponent {
   response : string = '';
-  disableButton = false;
+  buttonDisabled = false;
 
   grammarForm: FormGroup = new FormGroup({
     sentence: new FormControl('', [Validators.required])
@@ -22,17 +22,15 @@ export class GrammarHelpComponent {
   constructor(private _ngxSpinnerService: NgxSpinnerService) {}
 
   handleSubmit(): void {
-    this.disableButton = true;
-    this._ngxSpinnerService.show();
+    this.buttonDisabled = true;
 
     if (this.grammarForm.valid) {
       console.log(this.grammarForm.value);
-      this.disableButton = false;
-      this._ngxSpinnerService.hide();
-    } else {
+      this.buttonDisabled = false;
+    } 
+    else {
       this.grammarForm.markAllAsTouched();
-      this.disableButton = false;
-      this._ngxSpinnerService.hide();
+      this.buttonDisabled = false;
       console.error(`Error: ${this.grammarForm.value}`);
     }
   }

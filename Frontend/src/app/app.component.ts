@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./layouts/navbar/navbar.component";
 import { FooterComponent } from "./layouts/footer/footer.component";
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
-  imports: [NavbarComponent, FooterComponent, RouterOutlet],
+  imports: [NavbarComponent, FooterComponent, RouterOutlet, NgxSpinnerModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
