@@ -124,7 +124,10 @@ namespace GraduationProject.Repositories
 
         public async Task<CourseDTO> AddCourse(RegisterCourseRequest courseReq)
         {
-            var tags = new List<Tag>();
+            var tags = await _tags
+                .Where(t => courseReq.Tags.Select(x=> x.Id).Contains(t.Id))
+                .ToListAsync();
+
             Course courseDb = new Course(courseReq, tags);
             courseDb.ImageUrl = "default.jpeg";
 
@@ -192,7 +195,7 @@ namespace GraduationProject.Repositories
 
             try
             {
-                var dbTags = await _tags.Where(t => tags.Any(x => x.Id == t.Id)).ToListAsync();
+                var dbTags = await _tags.Where(t => tags.Select(x => x.Id).Contains(t.Id)).ToListAsync();
                 course.Tags.AddRange(dbTags);
                 await UpdateAsync(course);
                 return true;
