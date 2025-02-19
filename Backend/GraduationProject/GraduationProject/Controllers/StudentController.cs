@@ -1,4 +1,5 @@
-﻿using GraduationProject.Controllers.APIResponses;
+﻿using GraduationProject.Controllers.ApiRequest;
+using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -15,15 +16,14 @@ namespace GraduationProject.Controllers
     public class StudentController : ControllerBase
     {
 
-        private readonly ICourseRepository _coursesRepo;
-        private readonly IUserRepository _userRepository;
-        public StudentController(ICourseRepository courseRepository, IUserRepository userRepository) 
+        private readonly IEnrollmentRepository _enrollmentRepository;
+
+        public StudentController(IEnrollmentRepository enrollmentRepository) 
         {
-            _coursesRepo = courseRepository;
-            _userRepository = userRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
-        // GET: /api/courses/student/1
+        // GET: /api/student/courses
         [HttpGet("courses")]
         public async Task<IActionResult> GetStudentCourses([FromQuery]int index, [FromQuery]int id)
         {
@@ -43,7 +43,7 @@ namespace GraduationProject.Controllers
                         Code = HttpStatusCode.Unauthorized,
                     });
 
-                var courses = await _coursesRepo.GetStudentEnrolledCourses(parsedId, index);
+                var courses = await _enrollmentRepository.GetStudentEnrolledCourses(parsedId, index);
                 if (courses.Count == 0)
                     return NotFound(new ErrorResponse()
                     {
@@ -67,6 +67,39 @@ namespace GraduationProject.Controllers
             }
         }
 
+
+        // POST: /api/student/enroll
+        [HttpPost("enroll")]
+        public async Task<IActionResult> Enroll(StudentEnrollmentRequest enrollment)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+            if (!int.TryParse(claimId, out int parsedId) || parsedId != enrollment.StudentId)
+                return Unauthorized(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.Unauthorized,
+                });
+            var result = await _enrollmentRepository.EnrollOnCourse(enrollment);
+            if (result == false)
+                return NotFound(new ErrorResponse()
+                {
+                    Message = "An Error occured, Please Try again later.",
+                    Code = HttpStatusCode.NotFound,
+                });
+            return Ok(new SuccessResponse()
+            {
+                Message = "Enrolled Successfully.",
+                Data = result,
+                Code = HttpStatusCode.OK,
+            });
+        }
 
     }
 }

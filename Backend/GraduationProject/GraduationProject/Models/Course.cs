@@ -1,5 +1,6 @@
 ﻿using GraduationProject.Controllers.ApiRequest;
 using GraduationProject.Models.DTOs;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GraduationProject.Models
 {

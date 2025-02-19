@@ -8,6 +8,7 @@ using GraduationProject.Controllers.ApiRequest;
 using Ganss.Xss;
 using GraduationProject.Controllers.APIResponses;
 using NuGet.Packaging;
+using GraduationProject.Data;
 
 namespace GraduationProject.Repositories
 {
@@ -16,10 +17,9 @@ namespace GraduationProject.Repositories
     {
         Task<CourseDetailsResponse?> GetById(int id);
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
-        Task<PaginatedList<CourseDTO>> GetPageOfCoursesWithHidden(int index = 1);
+        Task<PaginatedList<CourseDTO>> GetPageOfHiddenCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
-        Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
         Task<string?> GetImageUrl(int courseId); 
 
@@ -33,11 +33,9 @@ namespace GraduationProject.Repositories
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
 
-        private readonly DbSet<UserEnrollment> _enrollments;
         private readonly DbSet<Tag> _tags;
         public CoursesRepository(AppDbContext context) : base(context)
         {
-            _enrollments = context.Set<UserEnrollment>();
             _tags = context.Set<Tag>();
         }
 
@@ -50,36 +48,42 @@ namespace GraduationProject.Repositories
             return new CourseDetailsResponse(course);
         }
 
+
+        private IQueryable<Course> GetCoursesQuery()
+        {
+            return _dbSet
+                .Where(x => x.hidden == false)
+                .Include(x => x.Instructor)
+                .OrderBy(x => x.Title);
+                
+        }
+
         public async Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1)
         {
-            var courses = _dbSet
-                .Include(x => x.Instructor)
-                .Where(x => x.hidden == false)
-                .OrderBy(x => x.Title)
-                .Select(x => new CourseDTO(x));
+            var courses = GetCoursesQuery().DTOProjection();
+
 
             return await PaginatedList<CourseDTO>.CreateAsync(courses, index);
         }
 
-        public async Task<PaginatedList<CourseDTO>> GetPageOfCoursesWithHidden(int index = 1)
+        public async Task<PaginatedList<CourseDTO>> GetPageOfHiddenCourses(int index = 1)
         {
             var courses = _dbSet
+                .Where(x => x.hidden == true)
                 .Include(x => x.Instructor)
                 .OrderBy(x => x.Title)
-                .Select(x => new CourseDTO(x));
+                .DTOProjection();
+
 
             return await PaginatedList<CourseDTO>.CreateAsync(courses, index);
         }
 
         public async Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1)
         {
-            var courses = _dbSet
-                .Include(x => x.Instructor)
-                .Where(x => x.hidden == false)
-                .Where(x => x.Title.Contains(searchTerm) || 
-                            x.Description.Contains(searchTerm))
-                .OrderBy(x => x.Title)
-                .Select(x => new CourseDTO(x));
+            var courses = GetCoursesQuery()
+                .Where(x => x.Title.Contains(searchTerm) || x.Description.Contains(searchTerm))
+                .DTOProjection();
+
             return await PaginatedList<CourseDTO>.CreateAsync(courses, index);
         }
 
@@ -100,26 +104,11 @@ namespace GraduationProject.Repositories
 
         public async Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index)
         {
-            var query =  _dbSet
+            var query = GetCoursesQuery()
                 .Where(x => x.InstructorId == instructorId)
-                .Include(x=> x.Instructor)
-                .OrderBy(x => x.Title)
-                .Select(x=> new CourseDTO(x));
-
+                .DTOProjection();
             return await PaginatedList<CourseDTO>.CreateAsync(query, index);
            
-        }
-
-        public async Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index)
-        {
-            var query = _enrollments.Include(x=> x.Course)
-                .Where(x => x.UserId == studentId)
-                .OrderBy(x => x.IsCompleted)
-                .ThenBy(x=> x.Course.Title)
-                .Select(x => new EnrollmentDTO(x));
-
-            return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);
-
         }
 
         public async Task<CourseDTO> AddCourse(RegisterCourseRequest courseReq)
@@ -182,7 +171,7 @@ namespace GraduationProject.Repositories
             var query = _dbSet
                             .Where(c => c.Tags.Any(t=> t.Value == tag))
                             .OrderBy(x => x.Title)
-                            .Select(c=> new CourseDTO(c));
+                            .DTOProjection();
 
             return  PaginatedList<CourseDTO>.CreateAsync(query, index);
         }

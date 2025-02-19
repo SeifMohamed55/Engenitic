@@ -22,7 +22,6 @@ namespace GraduationProject.Controllers
         }
 
 
-        // Id, Title , Description(3 words + ...), imageUrl, instructorName, 
         [HttpGet("{index}")]
         public async Task<IActionResult> GetPageOfCourses(int index = 1)
         {

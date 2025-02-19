@@ -12,6 +12,7 @@ namespace GraduationProject.StartupConfigurations
                 options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
                 {
                     var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+                    context.Response.Headers.RetryAfter = (300).ToString();
                     return RateLimitPartition.GetFixedWindowLimiter(clientIp, _ => new FixedWindowRateLimiterOptions
                     {
                         PermitLimit = 3000,
@@ -22,6 +23,7 @@ namespace GraduationProject.StartupConfigurations
                 options.AddPolicy("UserLoginRateLimit", context =>
                 {
                     var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "anonymous"; // Get user Ip Address
+                    context.Response.Headers.RetryAfter = (60).ToString();
                     return RateLimitPartition.GetFixedWindowLimiter(clientIp, _ => new FixedWindowRateLimiterOptions
                     {
                         PermitLimit = 15,

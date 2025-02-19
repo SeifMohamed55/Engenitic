@@ -2,6 +2,7 @@
 {
     public class EnrollmentDTO
     {
+        public EnrollmentDTO() { }
         public EnrollmentDTO(UserEnrollment enrollment)
         {
             Id = enrollment.Id;
@@ -19,7 +20,7 @@
         public int TotalStages { get; set; }
         public bool IsCompleted { get; set; }
         public float Progress { get; set; }
-        public CourseDTO Course { get; set; }
+        public CourseDTO Course { get; set; } = null!;
         public int CourseId { get; set; }
 
     }
