@@ -29,6 +29,7 @@ namespace GraduationProject.Repositories
         Task<bool> DisableCourse(int courseId);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
         Task<bool> AddCourseToTag(int courseId, List<TagDTO> tag);
+        //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
@@ -194,5 +195,26 @@ namespace GraduationProject.Repositories
                 return false;
             }
         }
+
+/*        public async Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses)
+        {
+            var dbCourses = courses.Select(x => new Course(x, x.Tags.Select(x => new Tag(x)).ToList()));
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await _context.Courses.AddRangeAsync(dbCourses);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+                
+            }
+        }*/
     }
 }

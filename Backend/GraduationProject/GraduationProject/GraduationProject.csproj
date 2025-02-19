@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="uploads\images\courses\default.jpeg" />
     <Content Include="uploads\images\users\default.jpeg" />
   </ItemGroup>
 

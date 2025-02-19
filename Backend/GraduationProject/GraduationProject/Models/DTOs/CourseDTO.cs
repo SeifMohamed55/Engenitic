@@ -11,7 +11,7 @@ namespace GraduationProject.Models.DTOs
             Title = course.Title;
             Code = course.Code;
             Stages = course.Stages;
-            Description = string.Concat(course.Description.SplitSpaces().Take(3), "...");
+            Description = string.Join(' ', course.Description.Split(' ').Take(3).Append("..."));
             InstructorName = course.Instructor?.FullName;
             Requirements = course.Requirements;
             Image = new() { ImageURL = $"https://localhost/api/courses/image?id={Id}", Name = course.ImageUrl};

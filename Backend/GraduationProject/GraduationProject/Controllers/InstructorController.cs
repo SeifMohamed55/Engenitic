@@ -3,6 +3,7 @@ using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
+using GraduationProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -197,6 +198,22 @@ namespace GraduationProject.Controllers
                 });
             }
         }
+
+/*
+        [AllowAnonymous]
+        [HttpPost("addDummyCourses")]
+        public async Task<IActionResult> AddDummyCourses()
+        {
+
+            var courses = CourseGenerator.GenerateCourses();
+
+            var result = await _coursesRepo.AddListOfCourses(courses);
+
+
+
+
+            return Ok(result);
+        }*/
 
     }
 }

@@ -18,6 +18,7 @@ namespace GraduationProject.Models
             Quizes = course.Quizes.Select(x => new Quiz(x)).ToList();
             Stages = Quizes.Count;
             Tags = tags;
+            ImageUrl = "default.jpeg";
 
         }
 
