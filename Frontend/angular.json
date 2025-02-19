@@ -32,6 +32,7 @@
             "styles": [
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/ngx-spinner/animations/ball-atom.css",
+              "node_modules/animate.css/animate.min.css",
               "src/styles.scss"
             ],
             "scripts": [],
@@ -103,5 +104,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "54e632bb-5c47-4362-803e-39806dc083be"
   }
 }

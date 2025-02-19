@@ -9,6 +9,7 @@ import { headerInterceptor } from './auth/header.interceptor';
 import { NgxSpinnerModule, provideSpinnerConfig } from 'ngx-spinner';
 import { loaderInterceptor } from './auth/loader.interceptor';
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(), // Provide animations
@@ -19,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgxSpinnerModule.forRoot()), // Import and configure NgxSpinnerModule
     provideZoneChangeDetection({ eventCoalescing: true }), // Enable zone change detection
     provideRouter(routes), // Provide routes
-    provideClientHydration(withEventReplay()), // Enable client hydration
+    provideClientHydration(withEventReplay()),
   ],
 };

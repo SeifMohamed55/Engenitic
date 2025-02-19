@@ -1,5 +1,7 @@
+
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-home',
   imports: [RouterModule],
@@ -7,4 +9,6 @@ import { RouterModule } from '@angular/router';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+
+
 }

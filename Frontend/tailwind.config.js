@@ -8,11 +8,11 @@ module.exports = {
         padding : '1rem'
       },
       fontFamily : {
-        'display' : ["Playfair Display"],
-        'regular' : ["Farsan"],
+        'display' : ["Bebas Neue"],
+        'regular' : ["Montserrat"],
       },
       fontSize : {
-        'header' : "32px",
+        'header' : "60px",
         'secondary-header' : "20px",
         'normal' : "16px"
       }

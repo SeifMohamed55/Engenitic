@@ -13,7 +13,7 @@
             >
         </pagination-controls>
     </div>
-    <div class="py-10 flex justify-between items-center flex-wrap gap-x-10 gap-y-16">
+    <div class="py-10 grid grid-cols-2 flex-wrap gap-x-10 gap-y-16">
         <div *ngFor="let course of courses;index as idx" class="grid grid-cols-2 gap-10 items-center border border-black rounded-lg p-5 shadow-xl course">
             <div class="grid grid-rows-4 gap-10">
                 <h3 class="font-display text-secondary-header">
@@ -34,7 +34,7 @@
                     </span>
                 </a>
             </div>
-            <figure class="w-[300px] h-[300px] flex justify-center items-center">
+            <figure class="w-full flex justify-center items-center">
                 <img [src]="course.image.imageURL" [alt]="course.image.name" class="mx-auto object-contain rounded-xl">
             </figure>
         </div>

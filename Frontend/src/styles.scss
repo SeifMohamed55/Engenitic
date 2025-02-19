@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+
 @use 'ngx-toastr/toastr';
 @tailwind base;
 @tailwind components;
@@ -6,31 +7,29 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Farsan&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monomakh&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @layer utilities {
-    .engenitic-button {
-        @apply px-6 py-2 border-2 shadow-xl border-black rounded-3xl font-display uppercase text-center transition-all duration-500 hover:text-white  hover:border-white ;
-    }
     .engenitic-input {
         @apply w-full border-[1.5px] border-black rounded py-2 font-display px-2
     }
+
     .gradient {
         @apply bg-gradient-to-r from-[#0FB5E8] via-[#670A78] to-[#0B0129]
     }
+
     .engenitic-button-disabled {
         @apply bg-[#8E8E8E];
     }
+
     .engenitic-danger {
-        @apply bg-[#EC221F] ;
+        @apply bg-[#EC221F];
     }
+
     .engenitic-success {
-        @apply bg-[#14AE5C] ;
-    }
-    .engenitic-purple {
-        @apply bg-[#670A78];
-    }
-    .engenitic-blue {
-        @apply bg-[#0FB5E8];
+        @apply bg-[#14AE5C];
     }
 }
 
@@ -38,6 +37,101 @@ body {
     text-transform: capitalize !important;
     background-color: FFFFFF;
     overflow-x: hidden;
+
+}
+
+p {
+    line-height: 30px;
+
+}
+
+
+
+// fade-out down ( for arrows if needed )
+
+.fade-out-bottom {
+    animation: fade-out-bottom 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s infinite both;
+}
+
+@keyframes fade-out-bottom {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+}
+
+// animation light on header
+.animate-gradient {
+    background: #FFFFFF;
+    background: linear-gradient(-45deg, #000 40%, #fff 40%, #fff 60%, #000 60%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-size: 150% auto;
+    animation: animatedgradient 5s ease infinite alternate;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.493);
+}
+
+@keyframes animatedgradient {
+    to {
+        background-position: 150% center;
+    }
+}
+
+// shadow container for anything like containers or buttons
+.shadow-container{
+    border: 1px solid black;
+    box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black, 4px 4px 0px black, 5px 5px 0px black ;
+    transition: 0.3s;
+    aspect-ratio: auto 4/3;
+    &:hover {
+        box-shadow: 0px 0px 0px black;
+    }
+}
+input{
+    border: 1px solid black;
+    box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black ;
+    transition: 0.3s;
+    &:focus{
+        border: 1px solid black;
+        box-shadow: 1px 1px 0px black ;
+    }
+}
+
+// shadow container for buttons
+.engenitic-button {
+    border: 1px solid black;
+    padding: 5px 10px 7px 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black ;
+    transition: 0.3s;
+
+    &:hover {
+        box-shadow: 0px 0px 0px black;
+    }
+}
+
+// (White) shadow container for buttons
+.engenitic-button-inverted{
+    border: 1px solid white;
+    padding: 5px 10px 7px 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 0px white, 2px 2px 0px white, 3px 3px 0px white ;
+    transition: 0.3s;
+
+    &:hover {
+        box-shadow: 0px 0px 0px white;
+    }
+}
+
+.engenitic-purple:hover {
+    background-color: #0FB5E8;
+    color: white;
+
 }
 
 .custom-file-input {
@@ -47,6 +141,7 @@ body {
     cursor: pointer;
     color: #555;
 }
+
 .custom-file-input::-webkit-file-upload-button {
     background-color: black;
     color: white;
@@ -57,10 +152,11 @@ body {
     cursor: pointer;
 }
 
-.course{
+.course {
     overflow: hidden;
-    &:hover{
-        .course-button{
+
+    &:hover {
+        .course-button {
             transform: translateY(0);
             transition: all 1s;
         }
@@ -71,16 +167,18 @@ body {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+
     li {
         margin: 0 5px;
-    a {
-        text-decoration: none;
-        color: #007bff;
+
+        a {
+            text-decoration: none;
+            color: #007bff;
         }
-    &.current {
-        background: #007bff;
-        color: white;
+
+        &.current {
+            background: #007bff;
+            color: white;
         }
     }
 }
-
