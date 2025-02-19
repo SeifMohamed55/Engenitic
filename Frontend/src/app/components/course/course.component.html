@@ -14,7 +14,7 @@
         </pagination-controls>
     </div>
     <div class="py-10 grid grid-cols-2 flex-wrap gap-x-10 gap-y-16">
-        <div *ngFor="let course of courses;index as idx" class="grid grid-cols-2 gap-10 items-center border border-black rounded-lg p-5 shadow-xl course">
+        <div *ngFor="let course of courses;index as idx" class="grid grid-cols-2 gap-10 items-center border border-black rounded-lg p-5 shadow-container course">
             <div class="grid grid-rows-4 gap-10">
                 <h3 class="font-display text-secondary-header">
                     {{ course.title }}
@@ -25,7 +25,7 @@
                 <p class="text-normal font-regular">
                     made by : {{ course.instructorName }}
                 </p>
-                <a [routerLink]="['/course', course.id]" class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:engenitic-purple">
+                <a [routerLink]="['/course', course.id]" class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color">
                     <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
                         view details
                     </span>

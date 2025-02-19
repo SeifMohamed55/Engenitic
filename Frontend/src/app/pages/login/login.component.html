@@ -1,6 +1,6 @@
 <main class="grid grid-cols-2 items-center gap-10 container">
-    <figure>
-        <img src="./assets/images/login-pic.svg" alt="" class="">
+    <figure class="flex justify-start">
+        <img src="./assets/images/login-main-pic.jpeg"  alt="" class="w-[450px] h-[400px]">
     </figure>
     <form class="grid grid-rows-3 gap-10 items-center" [formGroup]="loginForm" (ngSubmit)=" handleLogin() " >
         <input #email type="email" class="engenitic-input" placeholder="  Email ..." formControlName="email">
@@ -13,10 +13,6 @@
             <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('password')?.getError('required')">the password entity is required</p>
             <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('password')?.getError('minlength')">password must be more than 5 characters</p>
         </div>
-        <button [disabled]="buttonDisabled"   [ngClass]="{
-            'engenitic-button-disabled text-white hover:text-white hover:border-black': buttonDisabled, 
-            'hover:engenitic-blue': !buttonDisabled
-        }"
-        type="submit" class="engenitic-button w-fit mx-auto">submit</button>
+        <button [disabled]="buttonDisabled" type="submit" class="engenitic-button w-fit mx-auto">submit</button>
     </form>
 </main>

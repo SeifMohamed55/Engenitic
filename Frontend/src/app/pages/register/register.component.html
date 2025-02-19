@@ -1,4 +1,4 @@
-<main class="grid grid-cols-2 gap-32 items-start w-full container">
+<main class="grid grid-cols-2 gap-10 items-start w-full container">
     <form class="flex justify-between items-start flex-col h-full" [formGroup]="registerForm" (ngSubmit)="registerSubmit()" >
         <div>
             <input placeholder="select an image" type="file" accept="image/*" (change)="onFileChange($event)" class="mb-3 custom-file-input font-display lowercase" formControlName="image"><span class="font-regular font-normal ps-3">(optional)</span>
@@ -24,27 +24,27 @@
         <div *ngIf="registerForm.get('repassword')?.errors && (registerForm.get('repassword')?.touched || repassword.value.length > 0)">
             <p class="text-normal font-regular text-red-500" *ngIf="registerForm.get('repassword')?.getError('passwordMiss')" > passwords don't match ! </p>
         </div>
-        <div class="grid grid-cols-4 my-3" formGroupName="phoneGroup">
-            <input #countryCode type="text" id="country-code" class="engenitic-input me-5" placeholder=" +20  (optional) " formControlName="countryCode">
+        <div class="grid grid-cols-4 my-3 gap-12" formGroupName="phoneGroup">
+            <input #countryCode type="text" id="country-code" class="engenitic-input" placeholder=" +20  (optional) " formControlName="countryCode">
             <input #phoneNumber type="tel" class="engenitic-input col-span-3" placeholder="  Phone Number ...   (optional)" formControlName="phone">
         </div>
         <div *ngIf="(registerForm.get('phone')?.errors || registerForm.get('countryCode')?.errors ) && ((registerForm.get('countryCode')?.touched || registerForm.get('phone')?.touched)  || (countryCode.value.length > 0 || phoneNumber.value.length > 0))">
             <input
-    #countryCode
-    type="text"
-    id="country-code"
-    class="engenitic-input me-5"
-    placeholder="+20 (optional)"
-    formControlName="countryCode"
-  >
-  <input
-    #phoneNumber
-    type="tel"
-    class="engenitic-input col-span-3"
-    placeholder="Phone Number ... (optional)"
-    formControlName="phone"
-  >
-</div>
+            #countryCode
+            type="text"
+            id="country-code"
+            class="engenitic-input me-5"
+            placeholder="+20 (optional)"
+            formControlName="countryCode"
+        >
+        <input
+            #phoneNumber
+            type="tel"
+            class="engenitic-input col-span-3"
+            placeholder="Phone Number ... (optional)"
+            formControlName="phone"
+        >
+        </div>
 
 <!-- Error Messages -->
 <div
@@ -73,20 +73,17 @@
     >
         Phone number is invalid.
     </p>
-        </div>
+</div>
         <div>
             <span class="font-regular text-normal pe-5">choose user type please : </span>
-            <select title="role" class="my-3 border border-black rounded p-2 font-regular" formControlName="role">
+            <select title="role" class="my-3 rounded font-regular  py-3" formControlName="role">
                 <option value="student">student</option>
                 <option value="instructor">instructor</option>
             </select>
         </div>
-        <button [disabled]="buttonDisabled" [ngClass]="{
-            'engenitic-button-disabled text-white hover:text-white hover:border-black': buttonDisabled, 
-            'hover:engenitic-blue': !buttonDisabled
-        }" type="submit" class="engenitic-button hover:engenitic-blue">submit</button>
+        <button [disabled]="buttonDisabled" type="submit" class="engenitic-button hover:engenitic-blue">submit</button>
     </form>
-    <figure>
-        <img src="./assets/images/register-pic.svg" alt="register picture">
+    <figure class="w-full flex  py-10">
+        <img src="./assets/images/register-main-pic.png" class="w-[400px] h-[400px] ml-auto" alt="register picture">
     </figure>
 </main>

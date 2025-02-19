@@ -20,8 +20,8 @@
         @apply bg-gradient-to-r from-[#0FB5E8] via-[#670A78] to-[#0B0129]
     }
 
-    .engenitic-button-disabled {
-        @apply bg-[#8E8E8E];
+    .enginitic-main-color {
+        @apply bg-[#58B6B8]
     }
 
     .engenitic-danger {
@@ -87,12 +87,12 @@ p {
     border: 1px solid black;
     box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black, 4px 4px 0px black, 5px 5px 0px black ;
     transition: 0.3s;
-    aspect-ratio: auto 4/3;
     &:hover {
         box-shadow: 0px 0px 0px black;
     }
 }
-input{
+
+input  textarea , select{
     border: 1px solid black;
     box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black ;
     transition: 0.3s;
@@ -126,12 +126,6 @@ input{
     &:hover {
         box-shadow: 0px 0px 0px white;
     }
-}
-
-.engenitic-purple:hover {
-    background-color: #0FB5E8;
-    color: white;
-
 }
 
 .custom-file-input {
@@ -173,11 +167,11 @@ input{
 
         a {
             text-decoration: none;
-            color: #007bff;
+            color: #000;
         }
 
         &.current {
-            background: #007bff;
+            background: #58B6B8;
             color: white;
         }
     }
