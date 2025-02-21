@@ -1,4 +1,4 @@
-<main>
+<main class="container pt-10">
     <form class="grid grid-cols-2 gap-20" [formGroup]="studentProfileForm" (ngSubmit)="handleSubmit()">
         <div>
             <input #email type="email" placeholder="  Email" class="engenitic-input" formControlName="email">
@@ -15,7 +15,7 @@
         </div>
         <div class="col-span-2 w-[300px] h-[300px] mx-auto flex justify-between items-center flex-col">
             <img [src]="selectedFile ? previewUrl :  './assets/images/no-user-pic.jpeg'" alt="profile picture" class="w[250px] h-[250px] object-contain">
-            <input placeholder="update picture" type="file" accept="image/*" (change)="onFileChange($event)" class="custom-file-input font-display lowercase ms-12 my-4" formControlName="image">
+            <input placeholder="update picture" type="file" accept="image/*" (change)="onFileChange($event)" class="custom-file-input font-display lowercase mx-auto my-4" formControlName="image">
             <p class="text-normal font-regular text-red-500 my-4" *ngIf="fileValidationError"> {{ fileValidationError }}</p>
         </div>
         <div>
@@ -32,7 +32,7 @@
                 <p class="text-normal font-regular text-red-500 py-4" *ngIf="studentProfileForm.get('newPassword')?.getError('minlength')"> password field must be more than 5</p>
             </div>
         </div>
-        <button type="submit" [disabled]='disapleButton' class="engenitic-button w-fit">update</button>
+        <button type="submit" [disabled]='disapleButton' class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all">update</button>
     </form>
     <section>
         <h2 class="py-4 text-header font-display text-center">enrolled courses</h2>

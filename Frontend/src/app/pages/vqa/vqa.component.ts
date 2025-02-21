@@ -22,6 +22,7 @@ export class VqaComponent {
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
+    this.fileValidationError = null;
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -29,9 +30,8 @@ export class VqaComponent {
 
 
     const acceptableTypes: string[] = ['image/jpg', 'image/png', 'image/jpeg'];
-    const maxSize = 2 * 1024 * 1024; // 2 MB
+    const maxSize = 2 * 1024 * 1024; 
 
-    // Validate the file type and size
     if (!acceptableTypes.includes(this.selectedFile.type)) {
       this.selectedFile = null;
       this.fileValidationError = "invalid image type";
@@ -39,42 +39,31 @@ export class VqaComponent {
     }
 
     if (this.selectedFile.size > maxSize) {
+      this.fileValidationError = 'image size must be less than 2MB';
       this.selectedFile = null;
       return ;
     }
-
-
-    const image = new Image();
-    const url = URL.createObjectURL(file);
-
-    image.onload = () => {
-      this.fileValidationError = null; // Valid image
-      URL.revokeObjectURL(url); // Free memory
-    };
-
-    image.onerror = () => {
-      this.fileValidationError = 'Invalid file. The file is not a valid image.';
-      this.selectedFile = null; // Reset selected file
-      URL.revokeObjectURL(url); // Free memory
-    };
-
-    image.src = url; // Validate the file as an image
-    }
-    else {
-      this.selectedFile = null; // Reset selected file
-    }
   }
+    else {
+      this.selectedFile = null; 
+    }
+}
+
 
   handleSubmit() : void{
     this.isDisabled = true;
     if(this.vqaForm.valid){
-      console.log(this.vqaForm.value);
-      this.isDisabled = false;
+      const formData = new FormData();
+      if(this.selectedFile) {
+        formData.append('image', this.selectedFile);
+      }
+      formData.append('question', this.vqaForm.get('question')?.value);
+      this.response = this.vqaForm.get('question')?.value;
     }
     else {
       console.error(`an error has occured : ${this.vqaForm.value}`);
       this.vqaForm.markAllAsTouched();
-      this.isDisabled = false;
     }
+    this.isDisabled = false;
   }
 }

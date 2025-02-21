@@ -1,5 +1,5 @@
-<main>
-    <form class="flex justify-center items-center" [formGroup]="vqaForm" (ngSubmit)="handleSubmit()">
+<main class="container">
+    <form [formGroup]="vqaForm" (ngSubmit)="handleSubmit()">
         <div class="grid grid-cols-2 gap-20">
             <div class="flex justify-between items-start flex-col">
                 <input type="file" (change)="onFileChange($event)" accept="image/*" class="mb-3 custom-file-input font-display lowercase" formControlName="image">
@@ -13,9 +13,9 @@
                 <div *ngIf="vqaForm.get('question')?.errors && (vqaForm.get('question')?.touched || question.value.length > 0)">
                     <p class="text-normal font-regular text-red-500" *ngIf="vqaForm.get('question')?.getError('required')">the question field is required</p>
                 </div>
-                <button [disabled]="isDisabled"  type="submit" class="engenitic-button" [ngClass]="{isDisabled : 'text-gray-500'}">submit</button>
+                <button [disabled]="isDisabled"  type="submit" class="engenitic-button hover:enginitic-main-color hover:text-white" [ngClass]="{isDisabled : 'text-gray-500'}">submit</button>
             </div>
-            <div>
+            <div class="ms-auto">
                 <textarea class="engenitic-input" disabled rows="12" cols="60" placeholder="    your answer will be here .">{{ response }}</textarea>
             </div>
         </div>

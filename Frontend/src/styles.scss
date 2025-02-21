@@ -5,23 +5,26 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Farsan&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Monomakh&display=swap');
+
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @layer utilities {
+
     .engenitic-input {
-        @apply w-full border-[1.5px] border-black rounded py-2 font-display px-2
+        @apply w-full border-[1.5px] border-black rounded py-2 font-regular px-2 ;
+    }
+
+    .engenitic-button {
+        @apply font-display flex justify-center items-center ;
     }
 
     .gradient {
-        @apply bg-gradient-to-r from-[#0FB5E8] via-[#670A78] to-[#0B0129]
+        @apply bg-gradient-to-r from-[#58B6B8] to-[#2E3192];
     }
 
     .enginitic-main-color {
-        @apply bg-[#58B6B8]
+        @apply bg-[#58B6B8];
     }
 
     .engenitic-danger {
@@ -37,7 +40,6 @@ body {
     text-transform: capitalize !important;
     background-color: FFFFFF;
     overflow-x: hidden;
-
 }
 
 p {
@@ -92,11 +94,12 @@ p {
     }
 }
 
-input  textarea , select{
+input , textarea , select{
     border: 1px solid black;
     box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black ;
     transition: 0.3s;
     &:focus{
+        outline: none;
         border: 1px solid black;
         box-shadow: 1px 1px 0px black ;
     }

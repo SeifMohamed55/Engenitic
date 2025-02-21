@@ -52,6 +52,10 @@ export class CourseComponent implements OnInit {
         if (err.error.message) {
           this._ToastrService.error(err.error.message);
         }
+        else {
+          this._ToastrService.error("an error has occured please try again later !");
+          this._Router.navigate(['/home']);
+        }
       }
     });
   }

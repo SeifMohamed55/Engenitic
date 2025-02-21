@@ -13,17 +13,18 @@ export class ListeningComponent {
     sentence : new FormControl('', [Validators.required]),
   });
 
+
+  responsive !: File | null;
   isDisabled : boolean = false;
 
   handleSubmit() : void{
     this.isDisabled = true;
     if(this.listeningForm.valid){
       console.log(this.listeningForm.value);
-      this.isDisabled = false;
     }
     else {
       this.listeningForm.markAllAsTouched();
-      this.isDisabled = false;
     }
+    this.isDisabled = false;
   }
 }

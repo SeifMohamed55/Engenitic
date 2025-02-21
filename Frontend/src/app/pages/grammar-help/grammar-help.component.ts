@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-grammar-help',
@@ -19,19 +19,20 @@ export class GrammarHelpComponent {
     sentence: new FormControl('', [Validators.required])
   });
 
-  constructor(private _ngxSpinnerService: NgxSpinnerService) {}
+  constructor(
+    private _ToastrService:ToastrService
+  ) {}
 
   handleSubmit(): void {
     this.buttonDisabled = true;
-
     if (this.grammarForm.valid) {
+      this.response = this.grammarForm.get('sentence')?.value;
       console.log(this.grammarForm.value);
-      this.buttonDisabled = false;
     } 
     else {
       this.grammarForm.markAllAsTouched();
-      this.buttonDisabled = false;
-      console.error(`Error: ${this.grammarForm.value}`);
+      this._ToastrService.error("an error has occured");
     }
-  }
+    this.buttonDisabled = false;
+  };
 }

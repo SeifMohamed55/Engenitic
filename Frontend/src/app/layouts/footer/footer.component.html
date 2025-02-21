@@ -1,7 +1,10 @@
 <footer class="container py-8">
-    <div class="-translate-y-10 pt-7 flex justify-center items-center"><img src="./assets/icons/footer-logo 1.svg" alt="engenitic footer logo" class="w-100"></div>
+    <div  class="-translate-y-10 pt-7 flex justify-center items-center"><img  *ngIf="!registered;else footer_gradient" src="./assets/icons/footer-logo 1.svg" alt="engenitic footer logo" class="w-100"></div>
     <div class="flex justify-between items-center">
         <div>© 2024 English Learning Hub. All rights reserved.</div>
-        <div class="font-display"><a routerLink="">privacy policy</a></div>
+        <div class="font-display duration-500 transition-all hover:text-[#58B6B8]"><a routerLink="">privacy policy</a></div>
     </div>
+    <ng-template #footer_gradient>
+        <img src="./assets/icons/footer-gradient.svg" alt="engenitic footer logo" class="w-100">
+    </ng-template>
 </footer>

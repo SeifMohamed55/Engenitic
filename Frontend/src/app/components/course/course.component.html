@@ -35,7 +35,7 @@
                 </a>
             </div>
             <figure class="w-full flex justify-center items-center">
-                <img [src]="course.image.imageURL" [alt]="course.image.name" class="mx-auto object-contain rounded-xl">
+                <img title="course image" [src]="course.image.imageURL" [alt]="course.image.name ? course.image.name : 'course image' " class="mx-auto object-contain rounded-xl">
             </figure>
         </div>
     </div>
