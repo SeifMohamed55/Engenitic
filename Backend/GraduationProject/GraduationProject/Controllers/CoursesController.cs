@@ -187,8 +187,8 @@ namespace GraduationProject.Controllers
         }
 
 
-        [HttpGet("image/{id}")]
-        public async Task<IActionResult> GetCourseImage(int id)
+        [HttpGet("image")]
+        public async Task<IActionResult> GetCourseImage([FromQuery]int id)
         {
             var imageUrl = await _coursesRepo.GetImageUrl(id);
             if (imageUrl == null)
