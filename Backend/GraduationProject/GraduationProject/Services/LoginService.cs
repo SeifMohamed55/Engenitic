@@ -175,7 +175,7 @@ namespace GraduationProject.Services
                                 UserName = user.FullName,
                                 Image = new ImageMetadata() 
                                 {
-                                    ImageURL = "https://localhost/api/users/image",
+                                    ImageURL = $"https://localhost/api/users/image?id={user.Id}",
                                     Name = user.ImageSrc 
                                 }
                             },
@@ -275,7 +275,7 @@ namespace GraduationProject.Services
                                     .ToString("f", CultureInfo.InvariantCulture),
                         Image = new 
                         { 
-                            Url = "https://localhost/api/users/image",
+                            Url = $"https://localhost/api/users/image?id={user.Id}",
                             Name = user.ImageSrc
                         },
                         AccessToken = accessToken,

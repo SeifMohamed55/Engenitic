@@ -55,7 +55,6 @@ namespace GraduationProject.Controllers
 
         // GET: api/Users/image
         [HttpGet("image")]
-        [Authorize]
         public async Task<ActionResult> GetUserImage([FromQuery] int id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

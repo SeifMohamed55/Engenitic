@@ -28,7 +28,7 @@ namespace GraduationProject.Data
                 Email = x.Email,
                 PhoneNumber = x.PhoneNumber,
                 PhoneRegionCode = x.PhoneRegionCode,
-                Image = new() { Name = x.ImageSrc, ImageURL = "https://localhost/api/users/image" },
+                Image = new() { Name = x.ImageSrc, ImageURL = $"https://localhost/api/users/image?id={x.Id}" },
                 UserName = x.FullName,
                 Banned = x.Banned
             });
