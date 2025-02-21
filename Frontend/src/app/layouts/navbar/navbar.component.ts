@@ -20,7 +20,7 @@ export class NavbarComponent implements OnInit {
 
   userId !: number;
   registered : string | null = null 
-  userName : string = 'abdelrhman khaled';
+  userName : string = '';
   userPicture : string = '';
   userRole : string = '';
 
@@ -34,12 +34,22 @@ export class NavbarComponent implements OnInit {
       this.userId = data;
     });
 
+    this._UserService.image.subscribe(data => {
+      this.userPicture = data;
+    })
+
+    this._UserService.userName.subscribe(data =>{
+      this.userName = data;
+    })
+
     if (typeof window !== 'undefined') {
       const token: string | null = localStorage.getItem("Token");
       if (token) {
         this._UserService.registered.next(token);
       }
     }
+
+
   };
 
 

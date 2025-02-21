@@ -9,11 +9,16 @@ export class UserService {
 
   userId : BehaviorSubject<number> = new BehaviorSubject(0);
   registered : BehaviorSubject<string> = new BehaviorSubject("");
-  
-  constructor(private _HttpClient:HttpClient) {};
+  image : BehaviorSubject<string> = new BehaviorSubject("");
+  userName : BehaviorSubject<string> = new BehaviorSubject("");
+
+
+  constructor(
+    private _HttpClient:HttpClient
+  ) {};
 
   registerData(value : any) : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Authentication/register`, value);
+    return this._HttpClient.post(`https://localhost/api/Authentication/register`, value, {withCredentials: true});
   };
 
   loginData(value : any) : Observable<any> {
@@ -21,14 +26,20 @@ export class UserService {
   };
 
   logoutConfirmation() : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Authentication/logout`, null, {withCredentials: true});
+    return this._HttpClient.post(`https://localhost/api/Authentication/logout`, {}, {withCredentials : true });
   };
 
   refreshToken() : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Token/refresh`, null);
+    return this._HttpClient.post(`https://localhost/api/Token/refresh`, {}, {withCredentials : true });
   };
 
   getProfileData(userId : number) : Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Users/profile?id=${userId}`)
+    return this._HttpClient.get(`https://localhost/api/Users/profile?id=${userId}`, {withCredentials: true})
+  };
+
+  getUserImage(userId : number) : Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Users/profile`, { withCredentials : true , params : {
+      id : userId
+    }})
   }
 };

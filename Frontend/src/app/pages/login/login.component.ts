@@ -38,17 +38,14 @@ export class LoginComponent {
     if(this.loginForm.valid){
       this._UserService.loginData(this.loginForm.value).subscribe({
         next : res =>{
-          
+          console.log(res);
           this.loginResponse = res.data;
-          
           this._UserService.registered.next(this.loginResponse.accessToken);
-
           this._UserService.userId.next(this.loginResponse.id);
-
+          this._UserService.image.next(this.loginResponse.image.url);
+          this._UserService.userName.next(this.loginResponse.name);
           localStorage.setItem('Token',this.loginResponse.accessToken);
-
           this.toastr.success(res.message);
-
           this._Router.navigate(["/home"]);
         },
         error : err =>{

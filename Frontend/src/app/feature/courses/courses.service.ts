@@ -10,14 +10,14 @@ export class CoursesService {
   constructor(private _HttpClient:HttpClient) { }
 
   coursesOffered(collectionNumber : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`);
+    return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`, {withCredentials: true});
   };
 
   getCourseDetails(courseId : number) : Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`)
+    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`, {withCredentials: true})
   };
 
   searchForCourseCollection(courseTitle : string, index : number = 1) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/search?search=${courseTitle}&index=${index}`);
+    return this._HttpClient.get(`https://localhost/api/Courses/search?search=${courseTitle}&index=${index}`, {withCredentials: true});
   };
 }

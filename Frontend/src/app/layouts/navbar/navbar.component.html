@@ -17,7 +17,7 @@
   </ul>
   <ng-template #user_info>
     <span class="flex justify-between items-center">
-      <a [routerLink]="['/profile/student', userId]" class="duration-500 transition-all me-6 flex justify-between items-center hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]"><img src="assets/images/profile-pic.jpg" alt="" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display"> {{ userName }} </p></a>
+      <a [routerLink]="['/profile/student', userId]" class="duration-500 transition-all me-6 flex justify-between items-center hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]"><img [src]="userPicture ? userPicture : '/images/profile-pic.jpg'" alt="user profile picture" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display"> {{ userName }} </p></a>
       <div class="ms-6"><a (click)="handleLogout()" class="engenitic-button hover:engenitic-danger cursor-pointer">log out</a></div>
     </span>
   </ng-template>

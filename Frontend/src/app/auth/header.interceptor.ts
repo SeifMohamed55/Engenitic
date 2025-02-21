@@ -1,35 +1,41 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject, PLATFORM_ID } from '@angular/core';
+import { inject } from '@angular/core';
 import { UserService } from '../feature/users/user.service';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 export const headerInterceptor: HttpInterceptorFn = (req, next) => {
-
   const _UserService = inject(UserService);
-  const platformId = inject(PLATFORM_ID);
-  
-  let myToken !: string | null;
+  const _Router = inject(Router);
+  const _ToastrService = inject(ToastrService);
+  // Get the token from localStorage
+  let myToken = localStorage.getItem('Token');
 
-  if (isPlatformBrowser(platformId)) {
-    myToken = localStorage.getItem('Token');
-  }
-  
+  // If token exists, add it to the request headers
   if (myToken) {
     req = req.clone({
-      setHeaders : {
-        Authorization : `Bearer ${myToken}`
+      setHeaders: {
+        Authorization: `Bearer ${myToken}`
       }
-  })} 
+    });
+  }
   else {
-    console.error('No token found in localStorage');
+    console.warn('No token found in localStorage');
   }
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         return _UserService.refreshToken().pipe(
           switchMap((res: any) => {
-            const newToken = res.data.accessToken;
+            const newToken = res.data?.accessToken;
+            if (!newToken) {
+              console.error('Failed to get new access token');
+              _ToastrService.error("session expired !");
+              _Router.navigate(['/login']);
+              return throwError(() => new Error('Failed to refresh token'));
+            }
+            // Store new token and retry request
             localStorage.setItem('Token', newToken);
             const newReq = req.clone({
               setHeaders: {
@@ -38,18 +44,22 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
             });
             return next(newReq);
           }),
-          catchError((err: any) => {
-            console.error('Failed to refresh token:', err);
-            _UserService.logoutConfirmation().subscribe({
-              next : res => {
+          catchError((refreshError: any) => {
+            console.error('Token refresh failed:', refreshError);
+            // Perform logout and clear storage
+            return _UserService.logoutConfirmation().pipe(
+              switchMap(() => {
                 localStorage.clear();
-                console.log(res);
-              },
-              error : err =>{
-                console.log(err);
-              }
-            });
-            return throwError(() => err);
+                _ToastrService.error("session expired !");
+                _Router.navigate(['/login']);
+                return throwError(() => refreshError);
+              }),
+              catchError((logoutError) => {
+                console.error('Logout failed:', logoutError);
+                _ToastrService.error("something went wrong !");
+                return throwError(() => logoutError);
+              })
+            );
           })
         );
       } else {

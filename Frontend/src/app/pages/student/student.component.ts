@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../../feature/users/user.service';
+import { UserData } from '../../interfaces/users/user-data';
 
 @Component({
   selector: 'app-student',
@@ -16,9 +17,8 @@ export class StudentComponent implements OnInit {
     private _UserService:UserService
   ){}
 
-  userId !: number;
+  userData !: UserData; 
   disapleButton : boolean = false;
-  userPic !: any;
   selectedFile: File | null = null;
   previewUrl : string | null = null;
   fileValidationError: string | null = null;
@@ -26,24 +26,27 @@ export class StudentComponent implements OnInit {
   ngOnInit(): void {
 
     this._UserService.userId.subscribe(data =>{
-      this.userId = data;
+      this.userData.id = data;
     });
 
-    this._UserService.getProfileData(this.userId).subscribe({
+    this._UserService.getProfileData(this.userData.id).subscribe({
       next : res =>{
-        console.log(res);
+        this.userData = res.data;
       },
       error : err => {
         console.log(err);
       }
     });
-    
+
+    this._UserService.image.subscribe(data=>{
+      this.userData.image.imageURL = data
+    })
   }
 
   studentProfileForm : FormGroup = new FormGroup({
-    image : new FormControl(''),
-    email : new FormControl('', [Validators.email, Validators.required]),
-    userName : new FormControl('', [Validators.required]),
+    image : new FormControl(this.userData.image.imageURL),
+    email : new FormControl(this.userData.email, [Validators.email, Validators.required]),
+    userName : new FormControl(this.userData.userName, [Validators.required]),
     oldPassword : new FormControl('', [Validators.required, Validators.minLength(5)]),
     newPassword : new FormControl('', [Validators.required, Validators.minLength(5)])
   }, {
