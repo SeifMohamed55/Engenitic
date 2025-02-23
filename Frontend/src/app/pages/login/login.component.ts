@@ -42,9 +42,19 @@ export class LoginComponent {
           this.loginResponse = res.data;
           this._UserService.registered.next(this.loginResponse.accessToken);
           this._UserService.userId.next(this.loginResponse.id);
-          this._UserService.image.next(this.loginResponse.image.url);
           this._UserService.userName.next(this.loginResponse.name);
           localStorage.setItem('Token',this.loginResponse.accessToken);
+          localStorage.setItem('name',this.loginResponse.name);
+          localStorage.setItem('id',String(this.loginResponse.id));
+          this._UserService.getUserImage(this.loginResponse.id).subscribe({
+            next : res => {
+              this._UserService.image.next(URL.createObjectURL(res));
+              localStorage.setItem('image', this._UserService.image.value);
+            },
+            error : err =>{
+              console.log(err);
+            }
+          });
           this.toastr.success(res.message);
           this._Router.navigate(["/home"]);
         },

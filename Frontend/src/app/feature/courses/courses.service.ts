@@ -18,6 +18,8 @@ export class CoursesService {
   };
 
   searchForCourseCollection(courseTitle : string, index : number = 1) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/search?search=${courseTitle}&index=${index}`, {withCredentials: true});
+    return this._HttpClient.get(`https://localhost/api/Courses/search`, {withCredentials: true, params : 
+      {search : courseTitle, index : index}
+    });
   };
 }

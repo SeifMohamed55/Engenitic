@@ -34,12 +34,14 @@ export class UserService {
   };
 
   getProfileData(userId : number) : Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Users/profile?id=${userId}`, {withCredentials: true})
+    return this._HttpClient.get(`https://localhost/api/Users/profile`, {withCredentials: true, params :
+      {id : userId}
+    });
   };
 
   getUserImage(userId : number) : Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Users/profile`, { withCredentials : true , params : {
-      id : userId
-    }})
-  }
+    return this._HttpClient.get(`https://localhost/api/users/image`, { withCredentials : true , params : 
+      {id : userId} , responseType : 'blob'
+    });
+  };
 };

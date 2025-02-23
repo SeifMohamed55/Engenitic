@@ -9,8 +9,11 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
   const _UserService = inject(UserService);
   const _Router = inject(Router);
   const _ToastrService = inject(ToastrService);
+  let myToken: string | null = null;
   // Get the token from localStorage
-  let myToken = localStorage.getItem('Token');
+  if (typeof localStorage !== 'undefined') {
+    myToken = localStorage.getItem('Token');
+  }
 
   // If token exists, add it to the request headers
   if (myToken) {
@@ -32,6 +35,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
             if (!newToken) {
               console.error('Failed to get new access token');
               _ToastrService.error("session expired !");
+              _UserService.registered.next('');
               _Router.navigate(['/login']);
               return throwError(() => new Error('Failed to refresh token'));
             }
@@ -51,18 +55,25 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
               switchMap(() => {
                 localStorage.clear();
                 _ToastrService.error("session expired !");
+                _UserService.registered.next('');
                 _Router.navigate(['/login']);
                 return throwError(() => refreshError);
               }),
               catchError((logoutError) => {
                 console.error('Logout failed:', logoutError);
+                _UserService.registered.next('');
                 _ToastrService.error("something went wrong !");
                 return throwError(() => logoutError);
               })
             );
           })
         );
-      } else {
+      }
+      else if(error.status === 403) {
+        console.log("forbiden error");
+        return throwError(() => error);
+      }
+      else {
         return throwError(() => error);
       }
     })
