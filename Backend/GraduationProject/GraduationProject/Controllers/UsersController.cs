@@ -315,6 +315,38 @@ namespace GraduationProject.Controllers
 
         }
 
+        [HttpPost("update-image")]
+        public async Task<IActionResult> UpdateImage([FromForm] IFormFile image, [FromForm] int id)
+        {
+            if (!ImageHelper.IsValidImageType(image))
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = "Invalid Image Format or size."
+                });
+
+            var claimId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null || claimId != id.ToString())
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = "Ids don't match"
+                });
+
+            var res = await _appUsersRepository.UpdateUserImage(image, id);
+            if (!res)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something wrong happend."
+                });
+
+            return Ok(new SuccessResponse()
+            {
+                Code = HttpStatusCode.OK,
+                Message = "Image Updated Successfully"
+            });
+        }
+
 
 
     }

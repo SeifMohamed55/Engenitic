@@ -148,7 +148,7 @@ namespace GraduationProject.Services
                             extension = (extension == ".jpeg" || extension == ".jpg") ?
                                             extension : ImageHelper.GetImageExtenstion(model.Image.ContentType);
 
-                            var imageURL = "user_" + user.Id + "." + extension;
+                            var imageURL = "user_" + user.Id + extension;
 
                             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
                                                     "uploads", "images", "users");
@@ -163,7 +163,7 @@ namespace GraduationProject.Services
                                 await model.Image.CopyToAsync(stream);
                             }
 
-                            await _appUserRepo.UpdateUserImage(user, imageURL);
+                            await _appUserRepo.SetUserImageUrl(user, imageURL);
                         }
 
                         return Results.Ok(new SuccessResponse()
@@ -454,7 +454,7 @@ namespace GraduationProject.Services
                             extension = (extension == ".jpeg" || extension == ".jpg") ?
                                             extension : ImageHelper.GetImageExtenstion(model.Image.ContentType);
 
-                            var imageURL = "user_" + user.Id + "." + extension;
+                            var imageURL = "user_" + user.Id + extension;
 
                             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
                                                     "uploads", "images", "users");
@@ -469,7 +469,7 @@ namespace GraduationProject.Services
                                 await model.Image.CopyToAsync(stream);
                             }
 
-                            await _appUserRepo.UpdateUserImage(user, imageURL);
+                            await _appUserRepo.SetUserImageUrl(user, imageURL);
 
                         }
                         await transaction.CommitAsync();

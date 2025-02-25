@@ -1,5 +1,6 @@
 ﻿
 using GraduationProject.Controllers.ApiRequest;
+using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Data;
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
@@ -7,6 +8,7 @@ using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using static System.Net.WebRequestMethods;
 
 namespace GraduationProject.Repositories
@@ -25,8 +27,9 @@ namespace GraduationProject.Repositories
         Task<AppUserDTO?> GetUserDTOByEmail(string email);
         Task<bool> UpdateRefreshToken(AppUser appUser, RefreshToken token);
         Task<bool> DeleteRefreshToken(int id);
-        Task UpdateUserImage(AppUser user, string image);
+        Task<bool> UpdateUserImage(IFormFile image, int id);
         Task<string?> GetUserImage(int id);
+        Task SetUserImageUrl(AppUser user, string imageUrl);
 
     }
 
@@ -200,14 +203,54 @@ namespace GraduationProject.Repositories
         }
 
 
-        public async Task UpdateUserImage(AppUser user, string image)
+        public async Task<bool> UpdateUserImage(IFormFile image, int id)
         {
-            user.ImageSrc = image;
-            await UpdateAsync(user);
+            try
+            {
+                var user = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+                if (user == null)
+                    return false;
+
+                if (ImageHelper.IsValidImageType(image))
+                {
+                    var extension = Path.GetExtension(image.FileName).ToLower();
+                    extension = (extension == ".jpeg" || extension == ".jpg") ?
+                                    extension : ImageHelper.GetImageExtenstion(image.ContentType);
+
+                    var imageURL = "user_" + user.Id + extension;
+
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
+                                            "uploads", "images", "users");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var filePath = Path.Combine(uploadsFolder, imageURL);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    user.ImageSrc = imageURL;
+                    await UpdateAsync(user);
+                    return true;
+                }
+                
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return false;
+
         }
 
-        
-
-
+        public async Task SetUserImageUrl(AppUser user, string imageUrl)
+        {
+            user.ImageSrc = imageUrl;
+            await UpdateAsync(user);
+        }
     }
 }
