@@ -370,6 +370,10 @@ ASALocalRun/
 # Visual Studio History (VSHistory) files
 .vshistory/
 
+# GmailClient
+Engenetic OAuth Client.json
+tokenStore.json
+
 # BeatPulse healthcheck temp database
 healthchecksdb
 

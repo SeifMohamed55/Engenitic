@@ -1,6 +1,7 @@
 ﻿using GraduationProject.Controllers.APIResponses;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -87,11 +88,15 @@ namespace GraduationProject.StartupConfigurations
                      }
                  };
              })
+            .AddCookie()
             .AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = configuration["Authentication:Google:ClientId"] ?? "";
-                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "";
+                googleOptions.ClientId = configuration["Authentication:Mailing:ClientId"] ?? "";
+                googleOptions.ClientSecret = configuration["Authentication:Mailing:ClientSecret"] ?? "";
                 googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                googleOptions.AccessType = "offline";
+                googleOptions.SaveTokens = true;
+                // ✅ Force Google to ask for consent and return a refresh token
                 googleOptions.AccessDeniedPath = "/api/google/AccessDeniedPathInfo";
             })
             .AddFacebook(facebookOptions =>

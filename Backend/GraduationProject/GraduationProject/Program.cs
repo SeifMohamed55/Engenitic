@@ -6,6 +6,9 @@ using GraduationProject.Services;
 using GraduationProject.Repositories;
 using GraduationProject.Middlewares;
 using Microsoft.AspNetCore.Mvc;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Util.Store;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +29,7 @@ builder.Services
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 5;
+
         options.User.RequireUniqueEmail = true;
 
         // Working
@@ -46,10 +50,17 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
+builder.Services.Configure<MailingOptions>(builder.Configuration
+    .GetSection("Authentication")
+    .GetSection("Mailing"));
+
+
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
+
+builder.Services.AddTransient<IGmailServiceHelper, GmailServiceHelper>();
 
 builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
 builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
@@ -70,7 +81,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200") 
+            policy.WithOrigins("http://localhost:4200")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -81,6 +92,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddRateLimiting(); // Add Rate Limiting Configuration
 
 var app = builder.Build();
+
+
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
 

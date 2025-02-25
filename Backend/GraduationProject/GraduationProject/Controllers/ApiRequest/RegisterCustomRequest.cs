@@ -6,11 +6,12 @@ namespace GraduationProject.Controllers.RequestModels
     public class RegisterCustomRequest
     {
         [Required]
-        [MaxLength(100)]
+        [MaxLength(120)]
         public string Username { get; set; } = null!;
 
         [Required]
         [EmailAddress]
+        [MaxLength(100)]
         public string Email { get; set; } = null!;
 
         [Required]

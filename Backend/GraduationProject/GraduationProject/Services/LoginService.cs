@@ -27,6 +27,7 @@ namespace GraduationProject.Services
         Task<IResult> Logout(HttpContext httpContext);
 
         Task<IResult> Register(RegisterCustomRequest model);
+        Task<IResult> RegisterAdmin(RegisterCustomRequest model);
     }
     public class LoginRegisterService : ILoginRegisterService
     {
@@ -37,6 +38,7 @@ namespace GraduationProject.Services
         private readonly RoleManager<Role> _roleManager;
         private readonly IUserRepository _appUserRepo;
         private readonly ITokenBlacklistService _tokenBlacklistService;
+        private readonly AppDbContext _context; 
 
         public LoginRegisterService(
             UserManager<AppUser> userManager,
@@ -57,6 +59,7 @@ namespace GraduationProject.Services
             _roleManager = roleManager;
             _appUserRepo = appUsersRepository;
             _tokenBlacklistService = tokenBlacklistService;
+            _context = context;
         }
 
 
@@ -376,5 +379,139 @@ namespace GraduationProject.Services
             });
 
         }
+
+
+
+        public async Task<IResult> RegisterAdmin(RegisterCustomRequest model)
+        {
+            if (await _userManager.FindByEmailAsync(model.Email) != null)
+                return Results.BadRequest(new ErrorResponse
+                {
+                    Message = "Email already exists",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Passwords do not match",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+            }
+
+            string? RegionCode = null;
+            if (model.PhoneNumber != null && model.PhoneRegion != null)
+            {
+                (string, string)? phoneDetails = PhoneNumberService
+                                        .IsValidPhoneNumber(model.PhoneNumber, model.PhoneRegion);
+                if (phoneDetails.HasValue)
+                {
+                    model.PhoneNumber = phoneDetails.Value.Item1;
+                    RegionCode = phoneDetails.Value.Item2;
+                }
+                else
+                {
+                    return Results.BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid phone number",
+                        Code = System.Net.HttpStatusCode.BadRequest
+                    });
+                }
+            }
+
+            var user = new AppUser()
+            {
+                Email = model.Email,
+                UserName = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                Banned = false,
+                PhoneRegionCode = RegionCode,
+                ImageSrc = "default.jpeg",
+                FullName = model.Username
+
+            };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    result = await _userManager.AddToRoleAsync(user, "admin");
+
+                    if (result.Succeeded)
+                    {
+
+                        if (ImageHelper.IsValidImageType(model.Image))
+                        {
+                            Debug.Assert(model.Image != null);
+
+                            var extension = Path.GetExtension(model.Image.FileName).ToLower();
+                            extension = (extension == ".jpeg" || extension == ".jpg") ?
+                                            extension : ImageHelper.GetImageExtenstion(model.Image.ContentType);
+
+                            var imageURL = "user_" + user.Id + "." + extension;
+
+                            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
+                                                    "uploads", "images", "users");
+                            if (!Directory.Exists(uploadsFolder))
+                            {
+                                Directory.CreateDirectory(uploadsFolder);
+                            }
+
+                            var filePath = Path.Combine(uploadsFolder, imageURL);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await model.Image.CopyToAsync(stream);
+                            }
+
+                            await _appUserRepo.UpdateUserImage(user, imageURL);
+
+                        }
+                        await transaction.CommitAsync();
+
+                        return Results.Ok(new SuccessResponse()
+                        {
+                            Message = "User created successfully",
+                            Data = new AppUserDTO()
+                            {
+                                Email = user.Email,
+                                PhoneNumber = user.PhoneNumber ?? "",
+                                Id = user.Id,
+                                PhoneRegionCode = user.PhoneRegionCode,
+                                UserName = user.FullName,
+                                Image = new ImageMetadata()
+                                {
+                                    ImageURL = $"https://localhost/api/users/image?id={user.Id}",
+                                    Name = user.ImageSrc
+                                }
+                            },
+                            Code = System.Net.HttpStatusCode.OK
+                        });
+
+                    }
+                }
+                throw new Exception();
+            }
+            catch 
+            {
+
+                await transaction.RollbackAsync();
+
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "An error occured.",
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                });
+            }
+
+            
+        }
+
+
     }
 }
