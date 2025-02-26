@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Text.Json;
+using System.Web;
 
 namespace GraduationProject.Services
 {
@@ -25,6 +28,8 @@ namespace GraduationProject.Services
         //Task<IResult> ExternalLogin(string provider, AuthenticatedPayload payload , HttpContext httpContext);
         Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext);
         Task<IResult> Logout(HttpContext httpContext);
+
+        Task<IResult> ExternalLogin(string provider, AuthenticatedPayload payload, HttpContext httpContext);
 
         Task<IResult> Register(RegisterCustomRequest model);
         Task<IResult> RegisterAdmin(RegisterCustomRequest model);
@@ -378,6 +383,158 @@ namespace GraduationProject.Services
                 Code = System.Net.HttpStatusCode.OK
             });
 
+        }
+
+
+        public async Task<IResult> ExternalLogin(string provider, AuthenticatedPayload payload, HttpContext httpContext)
+        {
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                user = new AppUser()
+                {
+                    Email = payload.Email,
+                    UserName = payload.Email,
+                    Banned = false,
+                    ImageSrc = payload.Image,
+                    FullName = payload.Name,                    
+                };
+
+                await using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    List<IdentityError> errors = new List<IdentityError>();
+                    try
+                    {
+                        var result = await _userManager.CreateAsync(user);
+                        if (!result.Succeeded)
+                        {
+                            errors.AddRange(result.Errors);
+                            throw new Exception();
+                        }
+                        result = await _userManager.AddToRoleAsync(user, "student");
+                        if (!result.Succeeded)
+                        {
+                            errors.AddRange(result.Errors);
+                            throw new Exception();
+                        }
+
+                        var loginInfo = new UserLoginInfo
+                            (provider, payload.UniqueId, provider);
+
+                        result = await _userManager.AddLoginAsync(user, loginInfo);
+                        if (!result.Succeeded)
+                        {
+                            errors.AddRange(result.Errors);
+                            throw new Exception();
+                        }
+                        await transaction.CommitAsync();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return Results.BadRequest(new ErrorResponse()
+                        {
+                            Code = System.Net.HttpStatusCode.BadRequest,
+                            Message = errors.Count > 0 ?
+                                    errors : new List<IdentityError> { new IdentityError { Description = ex.Message } }
+                        });
+                    }
+                }
+                
+            }
+
+            var providerLogin = _context.UserLogins.Where(x => x.UserId == user.Id)
+                .Select(x => x.LoginProvider)
+                .Contains(provider);
+
+            if (!providerLogin)
+            {
+                var loginInfo = new UserLoginInfo
+                       (provider, payload.UniqueId, provider);
+                var result = await _userManager.AddLoginAsync(user, loginInfo);
+                if (!result.Succeeded)
+                    return Results.BadRequest(result.Errors);
+
+            }
+
+            (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
+
+            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user);
+
+            refreshToken.LatestJwtAccessTokenJti = jti;
+            refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
+
+            var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
+
+            if (res == false)
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Couldn't SignIn",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/",
+                Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
+            };
+
+            httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
+
+
+            var responseObject = new SuccessResponse()
+            {
+                Message = "User Logged In successfully",
+                Data = new
+                {
+                    user.Id,
+                    user.Banned,
+                    Name = user.FullName,
+                    Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
+                    ValidTo = DateTime.UtcNow.AddMinutes(
+                        double.Parse(_jwtOptions.AccessTokenValidityMinutes))
+                                .ToString("f", CultureInfo.InvariantCulture),
+                    Image = new
+                    {
+                        Url = payload.Image,
+                        Name = "user_image.png"
+                    },
+                    AccessToken = accessToken,
+
+                },
+                Code = System.Net.HttpStatusCode.OK
+            };
+
+            var jsonResponse = HttpUtility.JavaScriptStringEncode(JsonSerializer.Serialize(responseObject));
+
+            var htmlContent = $@"
+                 <html>
+                 <head>
+                     <title>Authentication Successful</title>
+                 </head>
+                 <body>
+                     <script>
+                         (function() {{
+                             function sendToken() {{
+                                 var data = JSON.parse(""{jsonResponse}""); // ✅ Safely parse JSON
+                                 window.opener.postMessage(data, '{_jwtOptions.Audience}');
+                                 window.close();
+                             }}
+                             sendToken();
+                         }})();
+                     </script>
+                     <p>Authentication successful. You can close this window.</p>
+                 </body>
+                 </html>
+            ";
+
+            return Results.Content(htmlContent, "text/html");
         }
 
 

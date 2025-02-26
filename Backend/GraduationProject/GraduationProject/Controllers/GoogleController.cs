@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using GraduationProject.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using GraduationProject.Services;
 
 namespace GraduationProject.Controllers
 {
@@ -21,17 +23,17 @@ namespace GraduationProject.Controllers
     public class GoogleController : ControllerBase
     {
         private readonly MailingOptions _options;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILoginRegisterService _loginService;
         public GoogleController(
             IOptions<MailingOptions> options,
-            SignInManager<AppUser> signInManager,
-            UserManager<AppUser> userManager
+            UserManager<AppUser> userManager,
+            ILoginRegisterService loginService
             ) 
         {
             _options = options.Value;
-            _signInManager = signInManager;
             _userManager = userManager;
+            _loginService = loginService;
         }
 
        
@@ -118,7 +120,7 @@ namespace GraduationProject.Controllers
 
 
 
-/*        [HttpGet("login")]
+        [HttpGet("login")]
         public IActionResult Login()
         {
             var properties = new AuthenticationProperties
@@ -132,32 +134,47 @@ namespace GraduationProject.Controllers
 
         // Handle the callback from Google
         [HttpGet("Callback")]
-        public async Task<IActionResult> Callback()
+        public async Task<IResult> Callback()
         {
             var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
             if (!authenticateResult.Succeeded)
-                return BadRequest(); // Handle error
+                return Results.BadRequest(); // Handle error
 
-            // Extract tokens from the authentication properties
-            var authProperties = authenticateResult.Properties;
-            var accessToken = authProperties.GetTokenValue("access_token");
-            var refreshToken = authProperties.GetTokenValue("refresh_token");
+            var claims = authenticateResult.Principal.Identities.FirstOrDefault()?.Claims;
 
-            // Store the refresh token securely (e.g., in a database)
-            // For example:
-            // _userService.SaveRefreshToken(User.FindFirstValue(ClaimTypes.NameIdentifier), refreshToken);
+            var accessToken = authenticateResult.Properties.GetTokenValue("access_token");
+            var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var googleId = claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value; // Unique Google ID
+            string? image = null;
+            
+            using (var client = new HttpClient())
+            {
+                var res = await client.GetFromJsonAsync<GoogleProfileResponse>
+                        ($"https://www.googleapis.com/oauth2/v3/userinfo?access_token={accessToken}");
 
-            // Extract user information
-            var claims = authenticateResult.Principal.Claims;
-            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            var name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                image = res?.Picture;
+            }
 
-            // Sign in the user
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            if (email == null || name == null || image == null || googleId == null)
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = "email or name or photo does not exist"
+                });
 
-            return Ok("Done");
+            AuthenticatedPayload payload = new()
+            {
+                 Email = email,
+                 Name =  name,
+                 UniqueId = googleId,
+                 Image = image,
+            };
+
+
+            return await _loginService.ExternalLogin(GoogleDefaults.DisplayName, payload, HttpContext);
+
         }
 
 
@@ -169,7 +186,7 @@ namespace GraduationProject.Controllers
                 Code = System.Net.HttpStatusCode.Unauthorized,
                 Message = "Authentication Failed"
             });
-        }*/
+        }
 
 
 

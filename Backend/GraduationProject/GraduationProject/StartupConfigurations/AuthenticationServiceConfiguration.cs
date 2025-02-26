@@ -96,7 +96,11 @@ namespace GraduationProject.StartupConfigurations
                 googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 googleOptions.AccessType = "offline";
                 googleOptions.SaveTokens = true;
-                // ✅ Force Google to ask for consent and return a refresh token
+
+                googleOptions.Scope.Add("openid");
+                googleOptions.Scope.Add("profile");
+                googleOptions.Scope.Add("email");
+
                 googleOptions.AccessDeniedPath = "/api/google/AccessDeniedPathInfo";
             })
             .AddFacebook(facebookOptions =>

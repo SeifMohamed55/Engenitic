@@ -2,9 +2,9 @@
 {
     public class AuthenticatedPayload
     {
-        public required string Id { get; set; }
         public required string Email { get; set; }
-        public required string GivenName { get; set; }
-        public required string FamilyName { get; set; }
+        public required string Name { get; set; }
+        public required string Image {  get; set; }
+        public required string UniqueId { get; set; }
     }
 }
