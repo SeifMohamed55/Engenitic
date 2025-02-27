@@ -11,6 +11,7 @@ export class UserService {
   registered : BehaviorSubject<string> = new BehaviorSubject("");
   image : BehaviorSubject<string> = new BehaviorSubject("");
   userName : BehaviorSubject<string> = new BehaviorSubject("");
+  role : BehaviorSubject<string> = new BehaviorSubject("");
 
 
   constructor(

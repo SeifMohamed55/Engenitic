@@ -1,8 +1,9 @@
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { UserService } from '../../feature/users/user.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -10,14 +11,22 @@ import { UserService } from '../../feature/users/user.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy{
 
+  private destroy$ = new Subject<void>();
   buttonDisabled : boolean = false;
   selectedFile: File | null = null; 
   fileValidationError: string | null = null;
 
-  constructor(private _ToastrService:ToastrService, private _UserService:UserService){
+  constructor
+  (
+    private _ToastrService:ToastrService, 
+    private _UserService:UserService
+  ){}
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   registerForm: FormGroup = new FormGroup(
@@ -121,7 +130,7 @@ export class RegisterComponent {
       if(this.selectedFile){
         formData.append('image', this.selectedFile);
       }
-      this._UserService.registerData(formData).subscribe({
+      this._UserService.registerData(formData).pipe(takeUntil(this.destroy$)).subscribe({
         next : res =>{
           this._ToastrService.success(res.message);
         },

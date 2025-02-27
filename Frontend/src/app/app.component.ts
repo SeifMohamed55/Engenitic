@@ -14,8 +14,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 export class AppComponent {
 
 
-  handleArrow(event : Event) : void{
-
+  handleArrow(event : Event) : void {
       window.scrollTo({
         behavior : 'smooth',
         top : 0

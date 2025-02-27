@@ -9,11 +9,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
   const _UserService = inject(UserService);
   const _Router = inject(Router);
   const _ToastrService = inject(ToastrService);
-  let myToken: string | null = null;
-  // Get the token from localStorage
-  if (typeof localStorage !== 'undefined') {
-    myToken = localStorage.getItem('Token');
-  }
+  let myToken = localStorage.getItem('Token');
 
   // If token exists, add it to the request headers
   if (myToken) {
@@ -22,10 +18,13 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
         Authorization: `Bearer ${myToken}`
       }
     });
-  }
-  else {
+  } else {
     console.warn('No token found in localStorage');
   }
+
+  let retryCount = 0;
+  const maxRetries = 1;
+
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
@@ -34,11 +33,14 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
             const newToken = res.data?.accessToken;
             if (!newToken) {
               console.error('Failed to get new access token');
-              _ToastrService.error("session expired !");
+              _ToastrService.error("Session expired!");
               _UserService.registered.next('');
-              _Router.navigate(['/login']);
+              if (_Router.url !== '/login') {
+                _Router.navigate(['/login']);
+              }
               return throwError(() => new Error('Failed to refresh token'));
             }
+
             // Store new token and retry request
             localStorage.setItem('Token', newToken);
             const newReq = req.clone({
@@ -46,34 +48,34 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
                 Authorization: `Bearer ${newToken}`
               }
             });
-            return next(newReq);
+
+            if (retryCount < maxRetries) {
+              retryCount++;
+              return next(newReq);
+            } else {
+              return throwError(() => new Error('Max retries reached'));
+            }
           }),
           catchError((refreshError: any) => {
             console.error('Token refresh failed:', refreshError);
-            // Perform logout and clear storage
             return _UserService.logoutConfirmation().pipe(
               switchMap(() => {
                 localStorage.clear();
-                _ToastrService.error("session expired !");
+                _ToastrService.error("Session expired!");
                 _UserService.registered.next('');
-                _Router.navigate(['/login']);
+                if (_Router.url !== '/login') {
+                  _Router.navigate(['/login']);
+                }
                 return throwError(() => refreshError);
-              }),
-              catchError((logoutError) => {
-                console.error('Logout failed:', logoutError);
-                _UserService.registered.next('');
-                _ToastrService.error("something went wrong !");
-                return throwError(() => logoutError);
               })
             );
           })
         );
-      }
-      else if(error.status === 403) {
-        console.log("forbiden error");
+      } else if (error.status === 403) {
+        console.log("Forbidden error");
         return throwError(() => error);
-      }
-      else {
+      } else {
+        _ToastrService.error(`An error occurred: ${error.status} - ${error.message}`);
         return throwError(() => error);
       }
     })

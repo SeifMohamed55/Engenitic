@@ -1,46 +1,23 @@
-<div class="flex flex-col justify-between">
-    <div class="grid grid-cols-5 py-10">
-        <figure class=" w-fit col-span-1">
-            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
-        </figure>
-        <article class="col-span-4 flex flex-col justify-between items-start">
-            <h3 class="text-secondary-header font-display">course title</h3>
-            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">continue</a>
-        </article>
+<main class="container">
+    <div>
+        <ul>
+            <li *ngFor="let course of userCourses.paginatedList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : totalItems }">
+            </li>
+        </ul>
     </div>
-    <div class="grid grid-cols-5 py-10">
-        <figure class=" w-fit col-span-1">
-            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
-        </figure>
-        <article class="col-span-4 flex flex-col justify-between items-start">
-            <h3 class="text-secondary-header font-display">course title</h3>
-            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
-        </article>
+    <div class="flex flex-col justify-between">
+        <div *ngFor="let course of " class="grid grid-cols-5 py-10">
+            <figure class=" w-fit col-span-1">
+                <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
+            </figure>
+            <article class="col-span-4 flex flex-col justify-between items-start">
+                <h3 class="text-secondary-header font-display">course title</h3>
+                <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
+                <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">continue</a>
+            </article>
+        </div>
+        <ng-template #finishedCourses>
+            <a routerLink="" class="engenitic-button">details</a>
+        </ng-template>
     </div>
-    <div class="grid grid-cols-5 py-10">
-        <figure class=" w-fit col-span-1">
-            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
-        </figure>
-        <article class="col-span-4 flex flex-col justify-between items-start">
-            <h3 class="text-secondary-header font-display">course title</h3>
-            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
-        </article>
-    </div>
-    <div class="grid grid-cols-5 py-10">
-        <figure class=" w-fit col-span-1">
-            <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
-        </figure>
-        <article class="col-span-4 flex flex-col justify-between items-start">
-            <h3 class="text-secondary-header font-display">course title</h3>
-            <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-            <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button">continue</a>
-        </article>
-    </div>
-
-    <ng-template #finishedCourses>
-        <a routerLink="" class="engenitic-button">details</a>
-    </ng-template>
-</div>
+</main>

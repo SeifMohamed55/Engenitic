@@ -9,6 +9,16 @@ export class CoursesService {
 
   constructor(private _HttpClient:HttpClient) { }
 
+  getEnrolledCourses(index : number, userId : number) : Observable<any>{
+    return this._HttpClient.get(`https://localhost/api/Student/courses`, {
+      withCredentials : true,
+      params : {
+        index,
+        userId
+      }
+    });
+  };
+
   coursesOffered(collectionNumber : number) : Observable<any>{
     return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`, {withCredentials: true});
   };
@@ -19,7 +29,10 @@ export class CoursesService {
 
   searchForCourseCollection(courseTitle : string, index : number = 1) : Observable<any>{
     return this._HttpClient.get(`https://localhost/api/Courses/search`, {withCredentials: true, params : 
-      {search : courseTitle, index : index}
+      {
+        search : courseTitle,
+        index : index
+      }
     });
   };
 }
