@@ -27,6 +27,7 @@ export class LoginComponent implements OnDestroy {
   ) {}
 
   private destroy$ = new Subject<void>();
+  private destroyImage$ = new Subject<void>();
   loginResponse!: Login;
   buttonDisabled: boolean = false;
 
@@ -38,6 +39,9 @@ export class LoginComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+
+    this.destroyImage$.next();
+    this.destroyImage$.complete();
   }
 
   handleLogin() {
@@ -45,9 +49,9 @@ export class LoginComponent implements OnDestroy {
       this.loginForm.markAllAsTouched();
       return;
     }
-
+  
     this.buttonDisabled = true;
-
+  
     this._UserService.loginData(this.loginForm.value).pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
         if (!res?.data) {
@@ -55,27 +59,36 @@ export class LoginComponent implements OnDestroy {
           this.buttonDisabled = false;
           return;
         }
-
+  
         this.loginResponse = res.data;
         this._UserService.registered.next(this.loginResponse.accessToken);
         this._UserService.userId.next(this.loginResponse.id);
         this._UserService.userName.next(this.loginResponse.name);
         this._UserService.role.next(this.loginResponse.roles[0]);
-
+  
         localStorage.setItem('Token', this.loginResponse.accessToken);
         localStorage.setItem('name', this.loginResponse.name);
         localStorage.setItem('id', String(this.loginResponse.id));
         localStorage.setItem('role', this.loginResponse.roles[0]);
-
-        this._UserService.getUserImage(this.loginResponse.id).pipe(takeUntil(this.destroy$)).subscribe({
-          next: res => {
-            const imageUrl = URL.createObjectURL(res);
-            this._UserService.image.next(imageUrl);
-            localStorage.setItem('image', imageUrl);
+  
+        // Fetch user image (Blob -> Base64 conversion)
+        this._UserService.getUserImage(this.loginResponse.id).subscribe({
+          next: blob => {
+            if (blob.size === 0) {
+              console.warn("Empty image response received.");
+              return;
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(blob); // Convert Blob to Base64
+            reader.onloadend = () => {
+              const base64Image = reader.result as string; // Correct Base64
+              this._UserService.image.next(base64Image);
+              sessionStorage.setItem('image', base64Image); // Store Base64 safely in sessionStorage
+            };
           },
           error: err => console.error("Failed to fetch user image", err)
         });
-
+  
         this.toastr.success(res.message);
         this._Router.navigate(["/home"]);
       },
@@ -84,7 +97,7 @@ export class LoginComponent implements OnDestroy {
         this.toastr.error(errorMessage);
       }
     }).add(() => {
-      this.buttonDisabled = false; // Ensure button is re-enabled after request completes
+      this.buttonDisabled = false;
     });
   }
 }

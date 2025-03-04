@@ -11,24 +11,24 @@ export class CoursesService {
 
   getEnrolledCourses(index : number, userId : number) : Observable<any>{
     return this._HttpClient.get(`https://localhost/api/Student/courses`, {
-      withCredentials : true,
       params : {
         index,
-        userId
+        id : userId
       }
     });
   };
 
   coursesOffered(collectionNumber : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`, {withCredentials: true});
+    return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`);
   };
 
   getCourseDetails(courseId : number) : Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`, {withCredentials: true})
+    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`)
   };
 
   searchForCourseCollection(courseTitle : string, index : number = 1) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/search`, {withCredentials: true, params : 
+    return this._HttpClient.get(`https://localhost/api/Courses/search`, { 
+    params : 
       {
         search : courseTitle,
         index : index

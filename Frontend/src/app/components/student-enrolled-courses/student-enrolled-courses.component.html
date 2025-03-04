@@ -4,16 +4,24 @@
             <li *ngFor="let course of userCourses.paginatedList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : totalItems }">
             </li>
         </ul>
+        <pagination-controls 
+            (pageChange)="onPageChange($event)" 
+            previousLabel="Previous"
+            nextLabel="Next"
+            [responsive]="true"
+            [maxSize]="10"
+        >
+        </pagination-controls>
     </div>
     <div class="flex flex-col justify-between">
-        <div *ngFor="let course of " class="grid grid-cols-5 py-10">
+        <div *ngFor="let course of userCourses.paginatedList" class="grid grid-cols-5 py-10">
             <figure class=" w-fit col-span-1">
-                <img src="./assets/images/course-1.jpeg" alt="" class="object-cover w-[250px] h-[250px]">
+                <img [src]="course.course.image.imageURL" [alt]="course.course.image.name" class="object-cover w-[250px] h-[250px]">
             </figure>
             <article class="col-span-4 flex flex-col justify-between items-start">
-                <h3 class="text-secondary-header font-display">course title</h3>
+                <h3 class="text-secondary-header font-display"> {{ course.course.title }} </h3>
                 <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-                <a *ngIf="!courseDone; else finishedCourses" routerLink="" class="engenitic-button hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">continue</a>
+                <a *ngIf="!courseDone; else finishedCourses" [routerLink]="" class="engenitic-button hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">continue</a>
             </article>
         </div>
         <ng-template #finishedCourses>
