@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../../feature/users/user.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -43,8 +43,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   });
 
   passwordForm = new FormGroup({
-    oldPassword: new FormControl('', [Validators.required]),
-    newPassword: new FormControl('', [Validators.required])
+    oldPassword: new FormControl('', [Validators.required, Validators.minLength(5)]),
+    newPassword: new FormControl('', [Validators.required, Validators.minLength(5)])
+  }, {
+    validators : [this.passwordValidation]
   });
 
   ngOnInit(): void {
@@ -114,7 +116,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       reader.readAsDataURL(file);
       reader.onload = () => {
         this.previewUrl = reader.result as string;
-
         if (this.previewUrl === this.userImage.Url) {
           this.fileValidationError = 'No changes detected! Your profile picture remains the same.';
           this.disableButtonImage = true;
@@ -126,7 +127,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.selectedFile = null;
       this.previewUrl = null;
     }
-  }
+  };
+
+  passwordValidation (passwordForm : AbstractControl) : ValidationErrors | null {
+    const oldPassword = passwordForm.get('oldPassword')?.value;
+    const newPassword = passwordForm.get('newPassword')?.value;
+    if(oldPassword === newPassword){
+      return {samePassword : true}
+    }
+    return null;
+  };
 
   handleEmailSubmit(): void {
     if (this.emailForm.valid) {
@@ -166,28 +176,44 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   handleImageSubmit(): void {
-    // if (!this.selectedFile) return;
+    if (!this.selectedFile) return;
 
-    // const formData = new FormData();
-    // formData.append('image', this.selectedFile);
-
-    // this._UserService.updateImage(this.userId, formData).pipe(takeUntil(this.destroy$)).subscribe({
-    //   next: res => {
-    //     this._ToastrService.success(res.message);
-    //     this.userImage.name = this.selectedFile!.name;
-    //     this.userImage.Url = this.previewUrl!;
-    //     sessionStorage.setItem('image', this.previewUrl!);
-    //     this.disableButtonImage = true;
-    //   },
-    //   error: err => {
-    //     console.error(err);
-    //   }
-    // });
+    const formData = new FormData();
+    formData.append('image', this.selectedFile);
+    formData.append('id', `${this.userId}`);
+    this._UserService.updateImage(formData).pipe(takeUntil(this.destroy$)).subscribe({
+      next: res => {
+        this._ToastrService.success(res.message);
+        this.userImage.name = this.selectedFile!.name;
+        this.userImage.Url = this.previewUrl!;
+        this._UserService.image.next(this.previewUrl!);
+        sessionStorage.setItem('image', this.previewUrl!);
+        this.disableButtonImage = true;
+      },
+      error: err => {
+        console.error(err);
+      }
+    });
   }
 
   handlePasswordSubmit(): void {
     if (this.passwordForm.valid) {
-
+      const {oldPassword, newPassword} : any = this.passwordForm.value;
+      this._UserService.updatePassword(this.userId, oldPassword, newPassword).pipe(takeUntil(this.destroy$)).subscribe({
+        next : res =>{
+          this._ToastrService.success(res.message);
+        },
+        error : err =>{
+          if(err.error.message) {
+            this._ToastrService.error(err.error.message[0].description);
+          }else {
+            console.log(err);
+          }
+        }
+      })
+    }
+    else {
+      this.passwordForm.markAllAsTouched();
     }
   }
 }

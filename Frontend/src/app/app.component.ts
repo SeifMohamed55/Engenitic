@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./layouts/navbar/navbar.component";
 import { FooterComponent } from "./layouts/footer/footer.component";
@@ -12,6 +12,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  isVisible: boolean = false;
+  scrollHeight: number = 100; 
 
 
   handleArrow(event : Event) : void {
@@ -20,5 +22,13 @@ export class AppComponent {
         top : 0
       });
   };
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+    this.isVisible = scrollPosition > this.scrollHeight;
+  }
+
+
 
 }

@@ -5,6 +5,7 @@ import { CoursesService } from '../../feature/courses/courses.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UserEnrolledCourses } from '../../interfaces/courses/user-enrolled-courses';
 import { Subject, takeUntil } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-student-enrolled-courses',
@@ -17,7 +18,12 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   userId!: number;
   courseDone: boolean = false;
-  userCourses!: UserEnrolledCourses;
+  userCourses: UserEnrolledCourses = {
+    totalPages: 0,
+    totalItems: 0,
+    currentlyViewing: '',
+    paginatedList: []
+  };
   currentPage: number = 1;
   itemsPerPage: number = 6;
   totalItems: number = 0;
@@ -25,11 +31,14 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
   constructor(
     private _ActivatedRouter: ActivatedRoute,
     private _CoursesService: CoursesService,
-    private _Router: Router
+    private _Router: Router,
+    private _ToastrService:ToastrService
   ) {}
 
   ngOnInit(): void {
-    this._ActivatedRouter.paramMap.subscribe(params => {
+    this._ActivatedRouter.paramMap
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(params => {
       const userIdParam = params.get('userId');
       const pageParam = params.get('collectionId');
 
@@ -47,22 +56,40 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
 
   fetchCollection(): void {
     if (!this.userId) return;
-
-    this._CoursesService.getEnrolledCourses(this.currentPage, this.userId).pipe(takeUntil(this.destroy$)).subscribe({
-      next: res => {
-        this.userCourses = res.data;
-        this.totalItems = res.data.totalItems;
-      },
-      error: err => {
-        console.error(err);
-      }
-    });
-  }
+  
+    this._CoursesService.getEnrolledCourses(this.currentPage, this.userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: res => {
+          this.userCourses = res.data ?? { 
+            totalPages: 0,
+            totalItems: 0,
+            currentlyViewing: '',
+            paginatedList: []
+          };
+          this.totalItems = this.userCourses.totalItems;
+        },
+        error: err => {
+          console.log(err);
+          this.userCourses = { 
+            totalPages: 0,
+            totalItems: 0,
+            currentlyViewing: '',
+            paginatedList: []
+          };
+        }
+      });
+  };
+  
+  
+  trackByCourse(index: number, course: any): number {
+    return course.course.id;
+  };
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this._Router.navigate(['/profile/student', this.userId, page]);
-    this.fetchCollection();
+    this._Router.navigate(['/profile/student', this.userId, page])
+    .then(() => this.fetchCollection());
   }
 }
 

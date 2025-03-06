@@ -39,7 +39,7 @@ export const routes: Routes = [
         },
         {path : 'instructor', children : [
             {path : '', redirectTo : '1', pathMatch : 'full'},
-            {path : ':collection', component : InstructorMadeCoursesComponent},
+            {path : ':userId/:collection', component : InstructorMadeCoursesComponent},
             {path : '**' , component : NotFoundComponent}
         ]
     },

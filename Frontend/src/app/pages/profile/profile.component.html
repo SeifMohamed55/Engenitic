@@ -15,33 +15,37 @@
             </div>
             <button type="submit" [ngClass]="{'engenitic-button-disabled' : disableButtonUserName}" [disabled]='disableButtonUserName' class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all mt-4">update</button>
         </form>
-        <div class="col-span-2 w-[300px] h-[300px] mx-auto flex justify-between items-center flex-col">
-            <img [src]="previewUrl" alt="profile picture" class="w[250px] h-[250px] object-contain">
+        <div class="col-span-2 w-[300px] h-[300px] mx-auto flex justify-between items-center flex-col mb-20">
+            <img [src]="previewUrl" alt="profile picture" class="w-[200px] h-[200px] object-cover rounded-[50%]">
             <input placeholder="update picture" type="file" accept="image/*" (change)="onFileChange($event)" class="custom-file-input font-display lowercase mx-auto my-4">
-            <p class="text-normal font-regular text-red-500 my-4" *ngIf="fileValidationError"> {{ fileValidationError }}</p>
+            <p class="text-normal text-center font-regular text-red-500 my-4" *ngIf="fileValidationError"> {{ fileValidationError }}</p>
             <button type="submit" [ngClass]="{'engenitic-button-disabled' : disableButtonImage}" [disabled]='disableButtonImage' class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all mt-4" (click)="handleImageSubmit()">update</button>
         </div>
-        <form  class="col-span-2 grid grid-cols-2 gap-20 w-full mt-3" [formGroup]="passwordForm" (ngSubmit)="handlePasswordSubmit()">
+        <form  class="col-span-2 grid grid-cols-2 gap-x-20 gap-y-5 w-full mt-3" [formGroup]="passwordForm" (ngSubmit)="handlePasswordSubmit()">
             <div>
                 <input #oldPassword type="password" placeholder="  Old Password" class="engenitic-input" formControlName="oldPassword">
                 <div *ngIf="passwordForm.get('oldPassword')?.errors && (passwordForm.get('oldPassword')?.touched || oldPassword.value.length > 0)">
-                    <p class="text-normal font-regular text-red-500 py-4" *ngIf="passwordForm.get('oldPassword')?.getError('required')"> password field is required </p>
+                    <p class="text-normal font-regular text-red-500 py-4" *ngIf="passwordForm.get('oldPassword')?.getError('required')"> old password field is required </p>
                     <p class="text-normal font-regular text-red-500 py-4" *ngIf="passwordForm.get('oldPassword')?.getError('minlength')"> password field must be more than 5</p>
                 </div>
             </div>
             <div>
                 <input #newPassword type="password" placeholder="  New Password" class="engenitic-input" formControlName="newPassword">
                 <div *ngIf="passwordForm.get('newPassword')?.errors && (passwordForm.get('newPassword')?.touched || newPassword.value.length > 0)">
-                    <p class="text-normal font-regular text-red-500 py-4" *ngIf="passwordForm.get('newPassword')?.getError('required')"> password field is required </p>
+                    <p class="text-normal font-regular text-red-500 py-4" *ngIf="passwordForm.get('newPassword')?.getError('required')"> new password field is required </p>
                     <p class="text-normal font-regular text-red-500 py-4" *ngIf="passwordForm.get('newPassword')?.getError('minlength')"> password field must be more than 5</p>
                 </div>
+            </div>
+            <div class="col-span-2 mx-auto" *ngIf="
+            passwordForm.errors?.['samePassword'] &&
+            !passwordForm.get('oldPassword')?.errors &&
+            !passwordForm.get('newPassword')?.errors">
+                    <p class="text-normal font-regular text-red-500 py-4">Passwords must be different!</p>
             </div>
             <button type="submit" [ngClass]="{'engenitic-button-disabled' : disableButtonPassword}" [disabled]='disableButtonPassword' class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all col-span-2">update</button>
         </form>
     </div>
     <section>
-        <h2 class="py-4 text-header font-display text-center">enrolled courses</h2>
-        
         <router-outlet></router-outlet>
     </section>
 </main>

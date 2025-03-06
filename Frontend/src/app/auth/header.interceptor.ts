@@ -70,7 +70,6 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
         console.warn("Forbidden error:", error);
         return throwError(() => error);
       } else {
-        _ToastrService.error(`An error occurred: ${error.status} - ${error.message}`);
         return throwError(() => error);
       }
     })

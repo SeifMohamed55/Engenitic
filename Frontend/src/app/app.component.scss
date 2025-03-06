@@ -4,3 +4,13 @@
     min-height: 100vh;
     justify-content: space-between;
 }
+
+.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.hidden:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+}

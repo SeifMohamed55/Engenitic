@@ -64,9 +64,13 @@ export class UserService {
   );
   };
 
-  updateImage() : Observable<any>{
-    return this._HttpClient.post(`https://localhost/api/users/update-image`,
-      {}
-    )
+  updateImage(value : any) : Observable<any>{
+    return this._HttpClient.post(`https://localhost/api/users/update-image`, value);
+  };
+
+  updatePassword(userId : number , oldPassword : string, newPassword :string) : Observable<any> {
+    return this._HttpClient.post(`https://localhost/api/users/update-password`, {
+      id : userId , oldPassword, newPassword
+    });
   }
 };
