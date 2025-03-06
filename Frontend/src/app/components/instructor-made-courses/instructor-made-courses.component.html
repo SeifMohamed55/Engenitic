@@ -1,51 +1,40 @@
 <div class=" py-10">
+    <h2 class="py-4 text-header font-display text-center">created courses</h2>
+    <div class="py-10">
+        <ul>
+            <li *ngFor="let course of instrucorCourses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : totalItems }">
+            </li>
+        </ul>
+        <pagination-controls 
+            (pageChange)="onPageChange($event)" 
+            previousLabel="Previous"
+            nextLabel="Next"
+            [responsive]="true"
+            [maxSize]="10"
+        >
+        </pagination-controls>
+    </div>
     <div class="grid grid-cols-3 gap-20">
-        <div class="flex justify-between items-center flex-col">
-            <img src="./assets/images/course-1.jpeg" alt="">
-            <h3 class="py-4 font-display">course title</h3>
+        <div *ngFor="let course of instrucorCourses" class="flex justify-between items-center flex-col course shadow-container rounded  p-3">
+            <img  [src]="course.image.imageURL" [alt]="course.image.name">
+            <h3 class="py-4 font-display"> {{ course.title }} </h3>
             <div class="flex justify-evenly w-full">
-                <button class="engenitic-button w-fit">edit</button>
-                <button class="engenitic-button danger-button w-fit">delete</button>
-            </div>
-        </div>
-        <div class="flex justify-between items-center flex-col">
-            <img src="./assets/images/course-1.jpeg" alt="">
-            <h3 class="py-4 font-display">course title</h3>
-            <div class="flex justify-evenly w-full">
-                <button class="engenitic-button w-fit">edit</button>
-                <button class="engenitic-button danger-button w-fit">delete</button>
-            </div>
-        </div>
-        <div class="flex justify-between items-center flex-col">
-            <img src="./assets/images/course-1.jpeg" alt="">
-            <h3 class="py-4 font-display">course title</h3>
-            <div class="flex justify-evenly w-full">
-                <button class="engenitic-button w-fit">edit</button>
-                <button class="engenitic-button danger-button w-fit">delete</button>
-            </div>
-        </div>
-        <div class="flex justify-between items-center flex-col">
-            <img src="./assets/images/course-1.jpeg" alt="">
-            <h3 class="py-4 font-display">course title</h3>
-            <div class="flex justify-evenly w-full">
-                <button class="engenitic-button w-fit">edit</button>
-                <button class="engenitic-button danger-button w-fit">delete</button>
-            </div>
-        </div>
-        <div class="flex justify-between items-center flex-col">
-            <img src="./assets/images/course-1.jpeg" alt="">
-            <h3 class="py-4 font-display">course title</h3>
-            <div class="flex justify-evenly w-full">
-                <button class="engenitic-button w-fit">edit</button>
-                <button class="engenitic-button danger-button w-fit">delete</button>
-            </div>
-        </div>
-        <div class="flex justify-between items-center flex-col">
-            <img src="./assets/images/course-1.jpeg" alt="">
-            <h3 class="py-4 font-display">course title</h3>
-            <div class="flex justify-evenly w-full">
-                <button class="engenitic-button w-fit">edit</button>
-                <button class="engenitic-button danger-button w-fit">delete</button>
+                <a [routerLink]="" class="engenitic-button w-fit course-button text-center translate-y-20 course-button hover:bg-yellow-400 relative group inline-block">
+                    <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                        edit
+                    </span>
+                    <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                        <i class="fa-solid fa-gear fa-bounce"></i>
+                    </span>
+                </a>
+                <a class="engenitic-button danger-button w-fit hover:engenitic-danger text-center translate-y-20 course-button relative group inline-block">
+                    <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                        delete
+                    </span>
+                    <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                        <i class="fa-solid fa-trash fa-shake"></i>
+                    </span>
+                </a>
             </div>
         </div>
     </div>

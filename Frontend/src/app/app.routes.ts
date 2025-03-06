@@ -24,7 +24,7 @@ export const routes: Routes = [
         {path : '', redirectTo : '1' , pathMatch : 'full'},
         {path : ':collectionNumber', component : CourseComponent },
     ]},
-    {path : 'course/:id' , component : CourseDetailsComponent},
+    {path : 'course-details/:id' , component : CourseDetailsComponent},
     {path : "grammar", component : GrammarHelpComponent},
     {path : "Q&A", component : VqaComponent},
     {path : "listening", component : ListeningComponent},
@@ -39,7 +39,7 @@ export const routes: Routes = [
         },
         {path : 'instructor', children : [
             {path : '', redirectTo : '1', pathMatch : 'full'},
-            {path : ':userId/:collection', component : InstructorMadeCoursesComponent},
+            {path : ':userId/:collectionId', component : InstructorMadeCoursesComponent},
             {path : '**' , component : NotFoundComponent}
         ]
     },

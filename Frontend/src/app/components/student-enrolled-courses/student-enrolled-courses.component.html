@@ -24,7 +24,7 @@
                 <article class="col-span-4 flex flex-col justify-between items-start">
                     <h3 class="text-secondary-header font-display"> {{ course.course.title }} </h3>
                     <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-                    <a *ngIf="!course.isCompleted; else finishedCourses" [routerLink]="['/course', course.course.id]" class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">
+                    <a *ngIf="!course.isCompleted; else finishedCourses" [routerLink]="" class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">
                         <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
                             continue
                         </span>
@@ -33,6 +33,16 @@
                         </span>
                     </a>
                 </article>
+                <ng-template #finishedCourses>
+                    <a [routerLink]="['/course-details', course.course.id]" class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192]">
+                        <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
+                            details
+                        </span>
+                        <span class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                        </span>
+                    </a>
+                </ng-template>
             </div>
         </div>
         <ng-template #noCoursesFound >
@@ -52,15 +62,6 @@
                 <img src="./assets/images/no-courses-found.jpeg" alt="" class="object-contain">
             </figure>
         </ng-template>
-        <ng-template #finishedCourses>
-            <a [routerLink]="" class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192]">
-                <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
-                    details
-                </span>
-                <span class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white">
-                    <i class="fa-solid fa-thumbs-up"></i>
-                </span>
-            </a>
-        </ng-template>
+
     </div>
 </div>

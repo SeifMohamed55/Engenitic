@@ -18,6 +18,15 @@ export class CoursesService {
     });
   };
 
+  getCreatedCourses(collectionId : number , instructorId : number) : Observable<any>{
+    return this._HttpClient.get(`https://localhost/api/Instructor/courses`, {
+      params : {
+        index : collectionId,
+        instructorId
+      }
+    })
+  }
+
   coursesOffered(collectionNumber : number) : Observable<any>{
     return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`);
   };
