@@ -1,10 +1,11 @@
 import { CoursesService } from './../../feature/courses/courses.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Course } from '../../interfaces/courses/course';
 import { ToastrService } from 'ngx-toastr';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-course',
@@ -12,8 +13,10 @@ import {NgxPaginationModule} from 'ngx-pagination';
   templateUrl: './course.component.html',
   styleUrl: './course.component.scss'
 })
-export class CourseComponent implements OnInit {
+export class CourseComponent implements OnInit , OnDestroy{
   
+  private destroy$ = new Subject<void>();
+
   collectionNumber: number = 0; // Collection number for pagination
   currentPage: number = 1; // Current page number
   itemsPerPage: number = 6; // Items per page
@@ -36,11 +39,16 @@ export class CourseComponent implements OnInit {
       // Fetch courses based on the collection number
       this.fetchCourses(this.collectionNumber);
     });
+  };
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // Fetch courses from the service
   fetchCourses(collectionNumber: number): void {
-    this._CoursesService.coursesOffered(collectionNumber).subscribe({
+    this._CoursesService.coursesOffered(collectionNumber).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         console.log(res);
         this.courses = res.data.paginatedList;

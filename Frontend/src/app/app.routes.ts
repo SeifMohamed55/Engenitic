@@ -10,13 +10,12 @@ import { ListeningComponent } from './pages/listening/listening.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { CourseDetailsComponent } from './pages/course-details/course-details.component';
 import { UnothorizedComponent } from './pages/unothorized/unothorized.component';
-import { StudentComponent } from './pages/student/student.component';
-import { InstructorComponent } from './pages/instructor/instructor.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { StudentEnrolledCoursesComponent } from './components/student-enrolled-courses/student-enrolled-courses.component';
 import { InstructorMadeCoursesComponent } from './components/instructor-made-courses/instructor-made-courses.component';
 import { InstructorAddCourseComponent } from './pages/instructor-add-course/instructor-add-course.component';
 import { InstructorEditCourseComponent } from './pages/instructor-edit-course/instructor-edit-course.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
     {path : "" , redirectTo : "home" , pathMatch : "full"},
@@ -25,33 +24,34 @@ export const routes: Routes = [
         {path : '', redirectTo : '1' , pathMatch : 'full'},
         {path : ':collectionNumber', component : CourseComponent },
     ]},
-    {path : 'course/:id' , component : CourseDetailsComponent},
+    {path : 'course-details/:id' , component : CourseDetailsComponent},
     {path : "grammar", component : GrammarHelpComponent},
     {path : "Q&A", component : VqaComponent},
     {path : "listening", component : ListeningComponent},
     {path : "login", component : LoginComponent},
     {path : "register", component : RegisterComponent},
-    {path : "profile" , children : [
-        {path : 'student', component : StudentComponent, children : [
-            {path : '', redirectTo : '1', pathMatch : 'full'},
-            {path : ':collection' , component : StudentEnrolledCoursesComponent},
-            {path : '**' , component : NotFoundComponent}]
+    {path : "profile", component : ProfileComponent  , children : [
+        {path : 'student' , children : [
+            {path : '', redirectTo : '1/1', pathMatch : 'full'},
+            {path : ':userId/:collectionId' , component : StudentEnrolledCoursesComponent},
+            {path : '**' , component : NotFoundComponent}
+        ]
         },
-        {path : 'instructor', component : InstructorComponent, children : [
+        {path : 'instructor', children : [
             {path : '', redirectTo : '1', pathMatch : 'full'},
-            {path : ':collection', component : InstructorMadeCoursesComponent},
+            {path : ':userId/:collectionId', component : InstructorMadeCoursesComponent},
             {path : '**' , component : NotFoundComponent}
         ]
     },
     {path : 'admin', component : AdminComponent},
     {path : '**' , component : NotFoundComponent}
-]
-},
-{path : 'courses', children : [
-    {path : 'adding', component : InstructorAddCourseComponent},
-    {path : 'editing', component : InstructorEditCourseComponent},
-    {path : '**' , component : NotFoundComponent}
-]},
-{path : "unauthorized", component : UnothorizedComponent},
-{path : "**", component: NotFoundComponent}
+    ]
+    },
+    {path : 'courses', children : [
+        {path : 'adding', component : InstructorAddCourseComponent},
+        {path : 'editing', component : InstructorEditCourseComponent},
+        {path : '**' , component : NotFoundComponent}
+    ]},
+    {path : "unauthorized", component : UnothorizedComponent},
+    {path : "**", component: NotFoundComponent}
 ];
