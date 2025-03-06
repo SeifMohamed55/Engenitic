@@ -6,20 +6,12 @@ using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using System.Drawing;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json;
 using System.Web;
+using GraduationProject.Data;
 
 namespace GraduationProject.Services
 {
@@ -38,33 +30,33 @@ namespace GraduationProject.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IJwtTokenService _tokenService;
-        private readonly SignInManager<AppUser> _signInManager;
         private readonly JwtOptions _jwtOptions;
         private readonly RoleManager<Role> _roleManager;
-        private readonly IUserRepository _appUserRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenBlacklistService _tokenBlacklistService;
-        private readonly AppDbContext _context; 
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly ICloudinaryService _cloudinary;
 
         public LoginRegisterService(
             UserManager<AppUser> userManager,
             IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
-            SignInManager<AppUser> signInManager,
-            AppDbContext context,
             RoleManager<Role> roleManager,
-            IUserRepository appUsersRepository,
-            ITokenBlacklistService tokenBlacklistService
+            IUnitOfWork unitOfWork,
+            ITokenBlacklistService tokenBlacklistService,
+            SignInManager<AppUser> signInManager,
+            ICloudinaryService cloudinaryService
             )
 
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _jwtOptions = options.Value;
-            _signInManager = signInManager;
             _roleManager = roleManager;
-            _appUserRepo = appUsersRepository;
+            _unitOfWork = unitOfWork;
             _tokenBlacklistService = tokenBlacklistService;
-            _context = context;
+            _signInManager = signInManager;
+            _cloudinary = cloudinaryService;
         }
 
 
@@ -130,88 +122,82 @@ namespace GraduationProject.Services
                 PhoneNumber = model.PhoneNumber,
                 Banned = false,
                 PhoneRegionCode = RegionCode,
-                ImageSrc = "default.jpeg",
-                FullName = model.Username
+                FullName = model.Username,
+                ImageSrc = "default"
 
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
+            List<IdentityError> errors = new List<IdentityError>();
+            try
             {
-                result = await _userManager.AddToRoleAsync(user, model.Role);
+                await _unitOfWork.BeginTransactionAsync();
 
-                if (result.Succeeded)
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
                 {
-                    try
-                    {
-                        if(ImageHelper.IsValidImageType(model.Image))
-                        {
-                            Debug.Assert(model.Image != null);
-
-                            var extension = Path.GetExtension(model.Image.FileName).ToLower();
-                            extension = (extension == ".jpeg" || extension == ".jpg") ?
-                                            extension : ImageHelper.GetImageExtenstion(model.Image.ContentType);
-
-                            var imageURL = "user_" + user.Id + extension;
-
-                            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                                                    "uploads", "images", "users");
-                            if (!Directory.Exists(uploadsFolder))
-                            {
-                                Directory.CreateDirectory(uploadsFolder);
-                            }
-
-                            var filePath = Path.Combine(uploadsFolder, imageURL);
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await model.Image.CopyToAsync(stream);
-                            }
-
-                            await _appUserRepo.SetUserImageUrl(user, imageURL);
-                        }
-
-                        return Results.Ok(new SuccessResponse()
-                        {
-                            Message = "User created successfully",
-                            Data = new AppUserDTO()
-                            {
-                                Email = user.Email,
-                                PhoneNumber = user.PhoneNumber ?? "",
-                                Id = user.Id,
-                                PhoneRegionCode = user.PhoneRegionCode,
-                                UserName = user.FullName,
-                                Image = new ImageMetadata() 
-                                {
-                                    ImageURL = $"https://localhost/api/users/image?id={user.Id}",
-                                    Name = user.ImageSrc 
-                                }
-                            },
-                            Code = System.Net.HttpStatusCode.OK
-                        });
-                    }
-                    catch (Exception)
-                    {
-                        return Results.BadRequest(new ErrorResponse()
-                        {
-                            Message = "Couldn't update user image",
-                            Code = System.Net.HttpStatusCode.BadRequest,
-                        });
-                    }
+                    errors.AddRange(result.Errors);
+                    throw new Exception();
                 }
-            }
 
-            return Results.BadRequest(new ErrorResponse()
+                result = await _userManager.AddToRoleAsync(user, model.Role);
+                if (!result.Succeeded)
+                {
+                    errors.AddRange(result.Errors);
+                    throw new Exception();
+                }
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                if (ImageHelper.IsValidImageType(model.Image))
+                {
+                    Debug.Assert(model.Image != null);
+
+                    var imageName = "user_" + user.Id;
+
+                    var publicId = await _cloudinary.UploadAsync(model.Image, imageName, CloudinaryType.UserImage);
+                    if (publicId == null)
+                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    else
+                        user.ImageSrc = publicId;
+                }
+                else
+                {
+                    user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+
+                return Results.Ok(new SuccessResponse()
+                {
+                    Message = "User created successfully",
+                    Data = new AppUserDTO()
+                    {
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber ?? "",
+                        Id = user.Id,
+                        PhoneRegionCode = user.PhoneRegionCode,
+                        UserName = user.FullName,
+                        Image = new ImageMetadata { ImageURL = "", Name = user.ImageSrc.Split('/').LastOrDefault() ?? "" }
+                    },
+                    Code = System.Net.HttpStatusCode.OK
+                });
+            }
+            catch
             {
-                Message = result.Errors,
-                Code = System.Net.HttpStatusCode.BadRequest,
-            });
+                await _unitOfWork.RollbackTransactionAsync();
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "An error Occured please try again later",
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                });
+            }        
         }
 
         
         public async Task<IResult> Login(LoginCustomRequest model, HttpContext httpContext)
         {
-            var user = await _appUserRepo.GetUserWithTokenAndRoles(model.Email);
+            var user = await _unitOfWork.UserRepo.GetUserWithTokenAndRoles(model.Email);
             if (user == null)
                 return Results.NotFound(new ErrorResponse 
                 { 
@@ -233,31 +219,33 @@ namespace GraduationProject.Services
                     Code = System.Net.HttpStatusCode.BadRequest
                 });
 
-
-            if (result.Succeeded)
+            if(!result.Succeeded)
             {
-                await _userManager.ResetAccessFailedCountAsync(user);
-                (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
+                await _userManager.AccessFailedAsync(user);
+                return Results.BadRequest(new ErrorResponse
+                {
+                    Message = "Password is incorrect!",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+            }
 
-                (string accessToken, string jti) = _tokenService.GenerateJwtToken(user);
+            await _userManager.ResetAccessFailedCountAsync(user);
+            (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
-                refreshToken.LatestJwtAccessTokenJti = jti;
-                refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
-                    (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
+            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user);
 
-                var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
-
-                if (res == false)
-                    return Results.BadRequest(new ErrorResponse()
-                    {
-                        Message = "Couldn't SignIn",
-                        Code = System.Net.HttpStatusCode.BadRequest
-                    });
+            refreshToken.LatestJwtAccessTokenJti = jti;
+            refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
+            try
+            {
+                _unitOfWork.UserRepo.UpdateRefreshToken(user, refreshToken);
+                await _unitOfWork.SaveChangesAsync();
 
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true ,
+                    Secure = true,
                     SameSite = SameSiteMode.None,
                     Path = "/",
                     Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
@@ -265,9 +253,7 @@ namespace GraduationProject.Services
 
                 httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
-                string imagePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                                "uploads", "images", user.ImageSrc);
-
+                string imgUrl = _cloudinary.GetImageUrl(user.ImageSrc);
 
                 return Results.Ok(new SuccessResponse()
                 {
@@ -281,25 +267,26 @@ namespace GraduationProject.Services
                         ValidTo = DateTime.UtcNow.AddMinutes(
                             double.Parse(_jwtOptions.AccessTokenValidityMinutes))
                                     .ToString("f", CultureInfo.InvariantCulture),
-                        Image = new 
-                        { 
-                            Url = $"https://localhost/api/users/image?id={user.Id}",
-                            Name = user.ImageSrc
+                        Image = new
+                        {
+                            Url = imgUrl,
+                            Name = user.ImageSrc.Split('/').LastOrDefault()
                         },
                         AccessToken = accessToken,
 
                     },
                     Code = System.Net.HttpStatusCode.OK
                 });
-
             }
-
-            await _userManager.AccessFailedAsync(user);
-            return Results.BadRequest(new ErrorResponse
+            catch
             {
-                Message = "Password is incorrect!",
-                Code = System.Net.HttpStatusCode.BadRequest
-            });
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Couldn't SignIn",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+            }
+            
         }
 
 
@@ -336,7 +323,7 @@ namespace GraduationProject.Services
             }
 
 
-            var dbRefreshToken = await _appUserRepo.GetUserRefreshToken(id);
+            var dbRefreshToken = await _unitOfWork.UserRepo.GetUserRefreshToken(id);
             if (dbRefreshToken is null)
                 return Results.BadRequest(new ErrorResponse() 
                 { Message = "User is not Signed In",
@@ -358,13 +345,20 @@ namespace GraduationProject.Services
             // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
             _tokenBlacklistService.BlacklistToken
                 (dbRefreshToken.LatestJwtAccessTokenJti, dbRefreshToken.LatestJwtAccessTokenExpiry);
-            var res = await _appUserRepo.DeleteRefreshToken(id);
 
-            if(res == false)
-                return Results.BadRequest(new ErrorResponse() 
-                { Message = "User Does not exist",
-                    Code = System.Net.HttpStatusCode.BadRequest 
+            try
+            {
+                _unitOfWork.TokenRepo.DeleteRefreshToken(dbRefreshToken.Id);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch
+            {
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "An error occured.",
+                    Code = System.Net.HttpStatusCode.BadRequest
                 });
+            }
 
             var cookieOptions = new CookieOptions
             {
@@ -392,62 +386,69 @@ namespace GraduationProject.Services
 
             if (user == null)
             {
+
                 user = new AppUser()
                 {
                     Email = payload.Email,
                     UserName = payload.Email,
                     Banned = false,
                     ImageSrc = payload.Image,
-                    FullName = payload.Name,                    
+                    FullName = payload.Name,   
+                    IsExternal = true,
                 };
-
-                await using (var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                    List<IdentityError> errors = new List<IdentityError>();
-                    try
-                    {
-                        var result = await _userManager.CreateAsync(user);
-                        if (!result.Succeeded)
-                        {
-                            errors.AddRange(result.Errors);
-                            throw new Exception();
-                        }
-                        result = await _userManager.AddToRoleAsync(user, "student");
-                        if (!result.Succeeded)
-                        {
-                            errors.AddRange(result.Errors);
-                            throw new Exception();
-                        }
-
-                        var loginInfo = new UserLoginInfo
-                            (provider, payload.UniqueId, provider);
-
-                        result = await _userManager.AddLoginAsync(user, loginInfo);
-                        if (!result.Succeeded)
-                        {
-                            errors.AddRange(result.Errors);
-                            throw new Exception();
-                        }
-                        await transaction.CommitAsync();
-
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        return Results.BadRequest(new ErrorResponse()
-                        {
-                            Code = System.Net.HttpStatusCode.BadRequest,
-                            Message = errors.Count > 0 ?
-                                    errors : new List<IdentityError> { new IdentityError { Description = ex.Message } }
-                        });
-                    }
-                }
                 
+                List<string> errors = new List<string>();
+                try
+                {
+                    await _unitOfWork.BeginTransactionAsync();
+
+                    var result = await _userManager.CreateAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        errors.AddRange(result.Errors.Select(x=> x.Description));
+                        throw new Exception();
+                    }
+                    result = await _userManager.AddToRoleAsync(user, "student");
+                    if (!result.Succeeded)
+                    {
+                        errors.AddRange(result.Errors.Select(x => x.Description));
+                        throw new Exception();
+                    }
+
+                    var loginInfo = new UserLoginInfo
+                        (provider, payload.UniqueId, provider);
+
+                    result = await _userManager.AddLoginAsync(user, loginInfo);
+                    if (!result.Succeeded)
+                    {
+                        errors.AddRange(result.Errors.Select(x => x.Description));
+                        throw new Exception();
+                    }
+                    await _unitOfWork.CommitTransactionAsync(); // rollsback if something wrong happened
+
+                    var imageName = "user_" + user.Id;
+
+                    var publicId = await _cloudinary.UploadRemoteAsync(payload.Image, imageName, CloudinaryType.UserImage);
+                    if (publicId == null)
+                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    else
+                        user.ImageSrc = publicId;
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return Results.BadRequest(new ErrorResponse()
+                    {
+                        Code = System.Net.HttpStatusCode.BadRequest,
+                        Message = errors.Count > 0 ?
+                                errors : [ex.Message]
+                    });
+                }
             }
 
-            var providerLogin = _context.UserLogins.Where(x => x.UserId == user.Id)
-                .Select(x => x.LoginProvider)
-                .Contains(provider);
+            var providerLogin = await _unitOfWork.UserLoginRepo.ContainsLoginProvider(user.Id, provider);
 
             if (!providerLogin)
             {
@@ -455,8 +456,11 @@ namespace GraduationProject.Services
                        (provider, payload.UniqueId, provider);
                 var result = await _userManager.AddLoginAsync(user, loginInfo);
                 if (!result.Succeeded)
-                    return Results.BadRequest(result.Errors);
-
+                    return Results.BadRequest(new ErrorResponse() 
+                    { 
+                       Message = string.Join(".\n", result.Errors.Select(x => x.Description)),
+                       Code = System.Net.HttpStatusCode.BadRequest
+                    });
             }
 
             (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
@@ -467,14 +471,21 @@ namespace GraduationProject.Services
             refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
                 (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
 
-            var res = await _appUserRepo.UpdateRefreshToken(user, refreshToken);
-
-            if (res == false)
+            try
+            {
+                _unitOfWork.UserRepo.UpdateRefreshToken(user, refreshToken);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch
+            {
                 return Results.BadRequest(new ErrorResponse()
                 {
-                    Message = "Couldn't SignIn",
+                    Message = "An Error Occured, Try again later",
                     Code = System.Net.HttpStatusCode.BadRequest
                 });
+            }
+
+
 
             var cookieOptions = new CookieOptions
             {
@@ -487,6 +498,7 @@ namespace GraduationProject.Services
 
             httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
+            string imgUrl = _cloudinary.GetImageUrl(user.ImageSrc); 
 
             var responseObject = new SuccessResponse()
             {
@@ -498,16 +510,17 @@ namespace GraduationProject.Services
                     Name = user.FullName,
                     Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
                     ValidTo = DateTime.UtcNow.AddMinutes(
-                        double.Parse(_jwtOptions.AccessTokenValidityMinutes))
-                                .ToString("f", CultureInfo.InvariantCulture),
+                            double.Parse(_jwtOptions.AccessTokenValidityMinutes))
+                                    .ToString("f", CultureInfo.InvariantCulture),
                     Image = new
                     {
-                        Url = payload.Image,
-                        Name = "user_image.png"
+                        Url = imgUrl,
+                        Name = user.ImageSrc.Split('/').LastOrDefault()
                     },
                     AccessToken = accessToken,
 
                 },
+
                 Code = System.Net.HttpStatusCode.OK
             };
 
@@ -590,83 +603,73 @@ namespace GraduationProject.Services
 
             };
 
-            await using var transaction = await _context.Database.BeginTransactionAsync();
-
+            List<IdentityError> errors = new List<IdentityError>();
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
+
                 var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    result = await _userManager.AddToRoleAsync(user, "admin");
-
-                    if (result.Succeeded)
-                    {
-
-                        if (ImageHelper.IsValidImageType(model.Image))
-                        {
-                            Debug.Assert(model.Image != null);
-
-                            var extension = Path.GetExtension(model.Image.FileName).ToLower();
-                            extension = (extension == ".jpeg" || extension == ".jpg") ?
-                                            extension : ImageHelper.GetImageExtenstion(model.Image.ContentType);
-
-                            var imageURL = "user_" + user.Id + extension;
-
-                            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                                                    "uploads", "images", "users");
-                            if (!Directory.Exists(uploadsFolder))
-                            {
-                                Directory.CreateDirectory(uploadsFolder);
-                            }
-
-                            var filePath = Path.Combine(uploadsFolder, imageURL);
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await model.Image.CopyToAsync(stream);
-                            }
-
-                            await _appUserRepo.SetUserImageUrl(user, imageURL);
-
-                        }
-                        await transaction.CommitAsync();
-
-                        return Results.Ok(new SuccessResponse()
-                        {
-                            Message = "User created successfully",
-                            Data = new AppUserDTO()
-                            {
-                                Email = user.Email,
-                                PhoneNumber = user.PhoneNumber ?? "",
-                                Id = user.Id,
-                                PhoneRegionCode = user.PhoneRegionCode,
-                                UserName = user.FullName,
-                                Image = new ImageMetadata()
-                                {
-                                    ImageURL = $"https://localhost/api/users/image?id={user.Id}",
-                                    Name = user.ImageSrc
-                                }
-                            },
-                            Code = System.Net.HttpStatusCode.OK
-                        });
-
-                    }
+                    errors.AddRange(result.Errors);
+                    throw new Exception();
                 }
-                throw new Exception();
+
+                result = await _userManager.AddToRoleAsync(user, model.Role);
+                if (!result.Succeeded)
+                {
+                    errors.AddRange(result.Errors);
+                    throw new Exception();
+                }
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                if (ImageHelper.IsValidImageType(model.Image))
+                {
+                    Debug.Assert(model.Image != null);
+
+                    var imageName = "user_" + user.Id;
+
+                    var publicId = await _cloudinary.UploadAsync(model.Image, imageName, CloudinaryType.UserImage);
+                    if (publicId == null)
+                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    else
+                        user.ImageSrc = publicId;
+                }
+                else
+                {
+                    user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+
+                return Results.Ok(new SuccessResponse()
+                {
+                    Message = "User created successfully",
+                    Data = new AppUserDTO()
+                    {
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber ?? "",
+                        Id = user.Id,
+                        PhoneRegionCode = user.PhoneRegionCode,
+                        UserName = user.FullName,
+                    },
+                    Code = System.Net.HttpStatusCode.OK
+                });
             }
-            catch 
+            catch (Exception ex)
             {
-
-                await transaction.RollbackAsync();
-
+                await _unitOfWork.RollbackTransactionAsync();
+                errors.Add(new IdentityError() { Description = ex.Message });
                 return Results.BadRequest(new ErrorResponse()
                 {
-                    Message = "An error occured.",
+                    Message = string.Join(".\n", errors.Select(x => x.Description)),
                     Code = System.Net.HttpStatusCode.BadRequest,
                 });
             }
 
-            
+
         }
 
 

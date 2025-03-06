@@ -20,6 +20,7 @@ public class AppDbContext : IdentityDbContext<AppUser, Role, int, IdentityUserCl
     public DbSet<UserQuizAttempt> UserQuizAttempts { get; set; } = null!;
 
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

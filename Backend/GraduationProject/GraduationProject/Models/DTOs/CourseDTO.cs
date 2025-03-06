@@ -4,7 +4,7 @@ namespace GraduationProject.Models.DTOs
 {
     public class CourseDTO
     {
-        public CourseDTO() { }
+        public CourseDTO() { Image = new ImageMetadata(); }
         public CourseDTO(Course course)
         {
             Id = course.Id;
@@ -14,7 +14,7 @@ namespace GraduationProject.Models.DTOs
             Description = string.Join(' ', course.Description.Split(' ').Take(3).Append("..."));
             InstructorName = course.Instructor?.FullName;
             Requirements = course.Requirements;
-            Image = new() { ImageURL = $"https://localhost/api/courses/image?id={Id}", Name = course.ImageUrl};
+            Image = new() { ImageURL = course.ImageUrl, Name = course.ImageUrl.Split('/').LastOrDefault() ?? ""};
         }
 
         public int Id { get; set; }
@@ -24,7 +24,7 @@ namespace GraduationProject.Models.DTOs
         public string? InstructorName { get; set; } = null!;
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
-        public ImageMetadata? Image { get; set; }
+        public ImageMetadata Image { get; set; }
 
     }
 }

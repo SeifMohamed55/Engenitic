@@ -19,7 +19,7 @@ namespace GraduationProject.Services
                     Requirements = $"Basic knowledge of {GetCourseTopic(i)} is recommended",
                     InstructorId = 4,
                     TagsStr = "",
-                    Image = null,
+                    //Image = null,
                     Tags = new List<TagDTO>(),
                     QuizesStr = "",
                     Quizes = GenerateQuizzes(i + 1, GetCourseTopic(i))

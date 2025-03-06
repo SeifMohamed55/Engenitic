@@ -1,5 +1,6 @@
 ﻿using GraduationProject.Controllers.APIResponses;
 using GraduationProject.Controllers.RequestModels;
+using GraduationProject.Data;
 using GraduationProject.Repositories;
 using GraduationProject.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,46 +15,49 @@ namespace GraduationProject.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ICourseRepository _courseRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILoginRegisterService _loginService;
         public AdminController(
-            ICourseRepository courseRepository,
-            IUserRepository userRepository,
+            IUnitOfWork unitOfWork,
             ILoginRegisterService loginRegisterService)
         {
-            _courseRepository = courseRepository;
-            _userRepository = userRepository;
             _loginService = loginRegisterService;
-
+            _unitOfWork = unitOfWork;
         }
 
 
         [HttpGet("users")]
         public async Task<ActionResult> GetUsers()
         {
-            return Ok(await _userRepository.GetUsersDTO());
+            return Ok(await _unitOfWork.UserRepo.GetUsersDTO());
         }
 
         // DELETE: api/admin/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppUser(int id)
         {
-            var banned = await _userRepository.BanAppUser(id);
-            if (banned)
+            try
             {
+                await _unitOfWork.UserRepo.BanAppUser(id);
+                await _unitOfWork.SaveChangesAsync();
+
                 return Ok(new SuccessResponse()
                 {
                     Message = "User has been banned.",
                     Code = HttpStatusCode.OK
                 });
             }
-
-            return BadRequest(new ErrorResponse()
+            catch
             {
-                Message = "User not found.",
-                Code = HttpStatusCode.BadRequest
-            });
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "User not found.",
+                    Code = HttpStatusCode.BadRequest
+                });
+            }
+            
+
+            
         }
 
         [HttpPost("register")]

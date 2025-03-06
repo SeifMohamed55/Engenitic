@@ -24,7 +24,7 @@ namespace GraduationProject.Controllers
                 return Results.BadRequest(new ErrorResponse()
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid Data",
+                    Message = ModelState,
                 });
 
             return await _loginService.Login(model, HttpContext);
@@ -48,7 +48,6 @@ namespace GraduationProject.Controllers
                 return Results.BadRequest(new ErrorResponse(){
                     Code = System.Net.HttpStatusCode.BadRequest,
                     Message = ModelState,
-                    Status = "Error",
                 });
             
 

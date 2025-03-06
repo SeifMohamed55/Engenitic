@@ -22,6 +22,7 @@ namespace GraduationProject.Models
 
         }
 
+
         public int Id { get; set; }
         public bool hidden { get; set; }
         public string? Code { get; set; }
@@ -38,6 +39,19 @@ namespace GraduationProject.Models
         public ICollection<Quiz> Quizes { get; set; } = new List<Quiz>();
         public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>();
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+
+        public void UpdateFromRequest(EditCourseRequest course, List<Tag> tags)
+        {
+            Code = course.Code;
+            Title = course.Title;
+            Description = course.Description;
+            Requirements = course.Requirements;
+            Quizes = course.Quizes.Select(x => new Quiz(x)).ToList();
+            Stages = Quizes.Count;
+            Tags = tags;
+        }
+
     }
 
 

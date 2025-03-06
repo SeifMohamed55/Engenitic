@@ -1,5 +1,6 @@
 ﻿using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
+using System.Security.Policy;
 
 namespace GraduationProject.Data
 {
@@ -16,7 +17,7 @@ namespace GraduationProject.Data
                 Requirements = x.Requirements,
                 Stages = x.Stages,
                 Title = x.Title,
-                Image = new() { ImageURL = $"https://localhost/api/courses/image?id={x.Id}", Name = x.ImageUrl }
+                Image = new() { ImageURL = x.ImageUrl, Name = "" }
             });
         }
 
@@ -28,10 +29,12 @@ namespace GraduationProject.Data
                 Email = x.Email,
                 PhoneNumber = x.PhoneNumber,
                 PhoneRegionCode = x.PhoneRegionCode,
-                Image = new() { Name = x.ImageSrc, ImageURL = $"https://localhost/api/users/image?id={x.Id}" },
+                Image = new() { Name = "" , ImageURL = x.ImageSrc },
                 UserName = x.FullName,
-                Banned = x.Banned
+                Banned = x.Banned,
+                IsExternal = x.IsExternal
             });
+            
         }
 
     }

@@ -1,5 +1,7 @@
-﻿using GraduationProject.Controllers.ApiRequest;
+﻿using CloudinaryDotNet;
+using GraduationProject.Controllers.ApiRequest;
 using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Data;
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
@@ -10,7 +12,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Claims;
@@ -22,12 +23,15 @@ namespace GraduationProject.Controllers
     [Authorize(Roles = "instructor")]
     public class InstructorController : ControllerBase
     {
-        private readonly ICourseRepository _coursesRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
-        public InstructorController(ICourseRepository courseRepository, UserManager<AppUser> userManager) 
+        private readonly ICloudinaryService _cloudinary;
+        public InstructorController
+            (IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICloudinaryService cloudinary) 
         {
-            _coursesRepo = courseRepository;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _cloudinary = cloudinary;
         }
 
 
@@ -50,7 +54,7 @@ namespace GraduationProject.Controllers
                         Message = "Invalid User.",
                         Code = HttpStatusCode.Unauthorized,
                     });
-                var courses = await _coursesRepo.GetInstructorCourses(parsedId, index);
+                var courses = await _unitOfWork.CourseRepo.GetInstructorCourses(parsedId, index);
                 if (courses.Count == 0)
                     return NotFound(new ErrorResponse()
                     {
@@ -81,7 +85,7 @@ namespace GraduationProject.Controllers
         {
             try
             {
-                var statistics = await _coursesRepo.GetCourseStatistics(courseId);
+                var statistics = await _unitOfWork.CourseRepo.GetCourseStatistics(courseId);
                 if (statistics == null)
                     return NotFound(new ErrorResponse()
                     {
@@ -109,9 +113,7 @@ namespace GraduationProject.Controllers
 
         [HttpPost("addCourse")]
         public async Task<IActionResult> AddCourse([FromForm] RegisterCourseRequest course)
-        
         {
-
             List<QuizDTO>? quizes;
             List<TagDTO>? tags;
             try
@@ -180,14 +182,36 @@ namespace GraduationProject.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
 
-                var addedCourse = await _coursesRepo.AddCourse(course);
+                var addedCourse = await _unitOfWork.CourseRepo.MakeCourse(course);
+                await _unitOfWork.SaveChangesAsync();
+
+                if(ImageHelper.IsValidImageType(course.Image))
+                {
+                    var imageName = "course_" + addedCourse.Id;
+
+                    var publicId = await _cloudinary.UploadAsync(course.Image, imageName, CloudinaryType.CourseImage);
+                    if (publicId == null)
+                        addedCourse.ImageUrl = _cloudinary.DefaultCourseImagePublicId;
+                    else
+                        addedCourse.ImageUrl = publicId;
+                }
+                else
+                {
+                    addedCourse.ImageUrl = _cloudinary.DefaultCourseImagePublicId;
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+                var resp = new CourseDTO(addedCourse);
+                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL);
 
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Added Successfully.",
-                    Data = addedCourse,
+                    Data = resp,
                     Code = HttpStatusCode.OK,
                 });
+
             }
             catch
             {
@@ -199,21 +223,222 @@ namespace GraduationProject.Controllers
             }
         }
 
-/*
-        [AllowAnonymous]
-        [HttpPost("addDummyCourses")]
-        public async Task<IActionResult> AddDummyCourses()
+
+        [HttpPost("editCourse")]
+        public async Task<IActionResult> EditCourse([FromForm] EditCourseRequest course)
         {
+            List<QuizDTO>? quizes;
+            List<TagDTO>? tags;
+            try
+            {
+                quizes = JsonConvert.DeserializeObject<List<QuizDTO>>(course.QuizesStr);
+                if (quizes == null)
+                    throw new JsonException("Nothing Sent");
+            }
+            catch (JsonException)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid Quizes.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
 
-            var courses = CourseGenerator.GenerateCourses();
+            try
+            {
+                tags = JsonConvert.DeserializeObject<List<TagDTO>>(course.TagsStr);
+                if (tags == null)
+                    throw new JsonException("Nothing Sent");
 
-            var result = await _coursesRepo.AddListOfCourses(courses);
+            }
+            catch { tags = new List<TagDTO>(); }
+
+            course.Quizes = quizes;
+            course.QuizesStr = "Useless!";
+
+            course.Tags = tags;
+            course.TagsStr = "useless";
+
+            var validationResults = new List<ValidationResult>();
+
+            var context = new ValidationContext(course);
+            if (!Validator.TryValidateObject(course, context, validationResults, true))
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = validationResults,
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                if (!int.TryParse(claimId, out int parsedId) || parsedId != course.InstructorId)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid User.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
+
+                var instructor = await _userManager.FindByIdAsync(claimId);
+                if (instructor == null)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid User.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
+
+                var addedCourse = await _unitOfWork.CourseRepo.EditCourse(course);
+                await _unitOfWork.SaveChangesAsync();
+
+                var resp = new CourseDTO(addedCourse);
+                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL);
+
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Course Added Successfully.",
+                    Data = resp,
+                    Code = HttpStatusCode.OK,
+                });
+
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+        }
+
+        [HttpPost("editCourseImage")]
+        public async Task<IActionResult> EditCourseImage
+            ([FromForm] IFormFile image, [FromForm] int courseId, [FromForm]int instructorId)
+        {
+            var addedCourse = await _unitOfWork.CourseRepo.GetById(courseId);
+            if(addedCourse == null)
+                return NotFound(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.NotFound,
+                    Message = "Course Not found."
+                });
+
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+
+            if (
+                claimId == null ||
+                !int.TryParse(claimId, out int parsedId) ||
+                parsedId != instructorId ||
+                parsedId != addedCourse.InstructorId 
+                )
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+            if (ImageHelper.IsValidImageType(image))
+            {
+                var imageName = "course_" + courseId;
+
+                var publicId = await _cloudinary.UploadAsync(image, imageName, CloudinaryType.CourseImage);
+                if (publicId == null)
+                    addedCourse.ImageUrl = _cloudinary.DefaultCourseImagePublicId;
+                else
+                    addedCourse.ImageUrl = publicId;
+                await _unitOfWork.SaveChangesAsync();
+
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Image updated successfully.",
+                    Code = HttpStatusCode.OK,
+                    Data = new
+                    {
+                        Image = new ImageMetadata
+                        {
+                            ImageURL = _cloudinary.GetImageUrl(addedCourse.ImageUrl),
+                            Name = addedCourse.ImageUrl.Split('/').LastOrDefault() ?? ""
+                        }
+                    }
+                });
+            }
+            else
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid Image format.",
+                    Code= HttpStatusCode.BadRequest,
+                });
+            }
+
+        }
+
+        [HttpDelete("deleteCourse")]
+        public async Task<IActionResult> DeleteCourse(DeleteCourseRequest req)
+        {
+            var course = await _unitOfWork.CourseRepo.GetById(req.CourseId);
+            var claimId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+            if (claimId == null || !int.TryParse(claimId.Value, out int instructorId) || course == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = "Invalid User request."
+                });
+
+            if (course.InstructorId != instructorId || course.InstructorId != req.InstructorId)
+                return StatusCode(403, new ErrorResponse()
+                {
+                    Code = HttpStatusCode.Forbidden,
+                    Message = "insufficient permessions."
+                });
+            try
+            {
+                course.hidden = true;
+                await _unitOfWork.SaveChangesAsync();
+                return Ok(new SuccessResponse()
+                {
+                    Code = HttpStatusCode.OK,
+                    Message = "Course Deleted Successfully",
+                    Data = true
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = "Something wrong happend, please try again later"
+                });
+            }
+
+
+        }
+
+        /*
+                [AllowAnonymous]
+                [HttpPost("addDummyCourses")]
+                public async Task<IActionResult> AddDummyCourses()
+                {
+
+                    var courses = CourseGenerator.GenerateCourses();
+
+                    var result = await _coursesRepo.AddListOfCourses(courses);
 
 
 
 
-            return Ok(result);
-        }*/
+                    return Ok(result);
+                }*/
 
     }
 }

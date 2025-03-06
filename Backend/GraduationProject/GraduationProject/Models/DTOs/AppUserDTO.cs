@@ -9,5 +9,6 @@
         public string? PhoneRegionCode { get; set; } = null!;
         public ImageMetadata Image { get; set; } = null!;
         public bool Banned { get; set; }
+        public bool IsExternal { get; set; }
     }
 }

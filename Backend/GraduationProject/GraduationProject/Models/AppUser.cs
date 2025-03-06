@@ -11,6 +11,7 @@ namespace GraduationProject.Models
         public string ImageSrc { get; set; } = null!;
         public bool Banned { get; set; }
         public string FullName { get; set; } = null!;
+        public bool IsExternal { get; set; }
 
         public int? RefreshTokenId { get; set; }
         public RefreshToken? RefreshToken { get; set; } = null!;

@@ -1,4 +1,5 @@
 ﻿using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Data;
 using GraduationProject.Repositories;
 using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
@@ -16,17 +17,17 @@ namespace GraduationProject.Controllers
     {
         private readonly IJwtTokenService _tokenService;
         private readonly JwtOptions _jwtOptions;
-        private readonly IUserRepository _appUsersRepository;
         private readonly IEncryptionService _encryptionService;
+        private readonly IUnitOfWork _unitOfWork;
         public TokenController
             (IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
-            IUserRepository appUsersRepository,
+            IUnitOfWork unitOfWork,
             IEncryptionService encryptionService)
         {
             _tokenService = tokenService;
             _jwtOptions = options.Value;
-            _appUsersRepository = appUsersRepository;
+            _unitOfWork = unitOfWork;
             _encryptionService = encryptionService;
         }
 
@@ -72,7 +73,7 @@ namespace GraduationProject.Controllers
             }
 
 
-            var user = await _appUsersRepository.GetUserWithTokenAndRoles(extractedId);
+            var user = await _unitOfWork.UserRepo.GetUserWithTokenAndRoles(extractedId);
 
             if (user == null || 
                 user.RefreshToken == null || 
@@ -98,8 +99,8 @@ namespace GraduationProject.Controllers
 
                 (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user);
 
-                await _appUsersRepository.UpdateUserLatestToken(user, newJti);
-
+                _unitOfWork.UserRepo.UpdateUserLatestToken(user, newJti);
+                await _unitOfWork.SaveChangesAsync();
 
                 return Ok(new SuccessResponse
                 {

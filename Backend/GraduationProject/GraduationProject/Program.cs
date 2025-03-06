@@ -6,9 +6,8 @@ using GraduationProject.Services;
 using GraduationProject.Repositories;
 using GraduationProject.Middlewares;
 using Microsoft.AspNetCore.Mvc;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Util.Store;
+using GraduationProject.Data;
+using CloudinaryDotNet;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,14 +58,22 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
+builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddTransient<IGmailServiceHelper, GmailServiceHelper>();
 
-builder.Services.AddScoped<IUserRepository, AppUsersRepository>();
-builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserRepository, UsersRepository>();
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 builder.Services.AddScoped<ICourseRepository, CoursesRepository>();
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+builder.Services.AddScoped<IUserLoginRepository, UserLoginRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<ITagsRepository, TagsRepository>();
+
+
+builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
 
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -87,6 +94,12 @@ builder.Services.AddCors(options =>
                   .AllowCredentials();
         });
 });
+
+
+Cloudinary cloudinary = new Cloudinary(builder.Configuration["GraduationProject:CLOUDINARY_URL"]);
+cloudinary.Api.Secure = true;
+
+builder.Services.AddSingleton(cloudinary);
 
 
 builder.Services.AddRateLimiting(); // Add Rate Limiting Configuration

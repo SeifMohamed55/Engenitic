@@ -1,5 +1,6 @@
 ﻿using GraduationProject.Controllers.ApiRequest;
 using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Data;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,11 @@ namespace GraduationProject.Controllers
     public class StudentController : ControllerBase
     {
 
-        private readonly IEnrollmentRepository _enrollmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public StudentController(IEnrollmentRepository enrollmentRepository) 
+        public StudentController(IUnitOfWork unitOfWork) 
         {
-            _enrollmentRepository = enrollmentRepository;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: /api/student/courses
@@ -43,7 +44,7 @@ namespace GraduationProject.Controllers
                         Code = HttpStatusCode.Unauthorized,
                     });
 
-                var courses = await _enrollmentRepository.GetStudentEnrolledCourses(parsedId, index);
+                var courses = await _unitOfWork.EnrollmentRepo.GetStudentEnrolledCourses(parsedId, index);
                 if (courses.Count == 0)
                     return NotFound(new ErrorResponse()
                     {
@@ -86,19 +87,27 @@ namespace GraduationProject.Controllers
                     Message = "Invalid User.",
                     Code = HttpStatusCode.Unauthorized,
                 });
-            var result = await _enrollmentRepository.EnrollOnCourse(enrollment);
-            if (result == false)
+            try
+            {
+                var dbEnrollment = await _unitOfWork.EnrollmentRepo.EnrollOnCourse(enrollment);
+                await _unitOfWork.SaveChangesAsync();
+
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Enrolled Successfully.",
+                    Data = new EnrollmentDTO(dbEnrollment),
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch(Exception ex)
+            {
                 return NotFound(new ErrorResponse()
                 {
-                    Message = "An Error occured, Please Try again later.",
+                    Message = ex.Message,
                     Code = HttpStatusCode.NotFound,
                 });
-            return Ok(new SuccessResponse()
-            {
-                Message = "Enrolled Successfully.",
-                Data = result,
-                Code = HttpStatusCode.OK,
-            });
+            }
+            
         }
 
     }

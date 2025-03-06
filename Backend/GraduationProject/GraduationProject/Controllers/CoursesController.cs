@@ -1,4 +1,5 @@
 ﻿using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Data;
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Repositories;
@@ -14,11 +15,11 @@ namespace GraduationProject.Controllers
     [Route("api/[controller]")]
     public class CoursesController : ControllerBase
     {
-        private readonly ICourseRepository _coursesRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CoursesController(ICourseRepository coursesRepository)
+        public CoursesController(IUnitOfWork unitOfWork)
         {
-            _coursesRepo = coursesRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -33,7 +34,7 @@ namespace GraduationProject.Controllers
                 });
             try
             {
-                var courses = await _coursesRepo.GetPageOfCourses(index);
+                var courses = await _unitOfWork.CourseRepo.GetPageOfCourses(index);
 
                 if (index > courses.TotalPages)
                     return BadRequest(new ErrorResponse()
@@ -73,7 +74,7 @@ namespace GraduationProject.Controllers
                 });
             try
             {
-                var courses = await _coursesRepo.GetPageOfCoursesBySearching(search, index);
+                var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesBySearching(search, index);
 
                 if (courses.TotalPages == 0)
                     return NotFound(new ErrorResponse()
@@ -120,7 +121,7 @@ namespace GraduationProject.Controllers
                 });
             try
             {
-                var courses = await _coursesRepo.GetPageOfCoursesByTag(tag, index);
+                var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesByTag(tag, index);
 
                 if (courses.TotalPages == 0)
                     return NotFound(new ErrorResponse()
@@ -160,7 +161,7 @@ namespace GraduationProject.Controllers
         {
             try
             {
-                var course = await _coursesRepo.GetById(courseId);
+                var course = await _unitOfWork.CourseRepo.GetById(courseId);
 
                 if (course == null)
                     return NotFound(new ErrorResponse
@@ -190,7 +191,7 @@ namespace GraduationProject.Controllers
         [HttpGet("image")]
         public async Task<IActionResult> GetCourseImage([FromQuery]int id)
         {
-            var imageUrl = await _coursesRepo.GetImageUrl(id);
+            var imageUrl = await _unitOfWork.CourseRepo.GetImageUrl(id);
             if (imageUrl == null)
                 return NotFound(new ErrorResponse()
                 {

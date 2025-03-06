@@ -1,17 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AngleSharp.Dom;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace GraduationProject.Repositories
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<T> where T : class 
     {
-         Task<List<T>> GetAllAsync();
-         Task<T?> GetByIdAsync(int id);
-         Task AddAsync(T entity);
-         Task UpdateAsync(T entity);
-         Task<bool> DeleteAsync(int id);
+        Task<List<T>> GetAllAsync();
+        Task<T?> GetByIdAsync(int id);
+        void Insert(T entity);
+        void Update(T entity);
+        void Delete(object id);
+        void Delete(T entityToDelete);
     }
 
-    public abstract class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly AppDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -20,6 +23,35 @@ namespace GraduationProject.Repositories
         {
             _context = context;
             _dbSet = _context.Set<T>();
+        }
+        public virtual async Task<List<T>> Get(
+        Expression<Func<T, bool>>? filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+           string includeProperties = "")
+        {
+            // Expression to make it into LINQ
+
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                ([','], StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).ToListAsync();
+            }
+            else
+            {
+                return await query.ToListAsync();
+            }
         }
 
         public async Task<List<T>> GetAllAsync()
@@ -32,43 +64,33 @@ namespace GraduationProject.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<bool> Exists(int id)
+        public void Insert(T entity)
         {
-            if ((await GetByIdAsync(id)) != null)
-                return true;
-            return false;
+            _dbSet.Add(entity);
         }
 
-        public async Task AddAsync(T entity)
-        {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(T entity)
+        public void Update(T entity)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public virtual void Delete(object id)
         {
-            try
-            {
-                var entity = await GetByIdAsync(id);
-                if (entity != null)
-                {
-                    _dbSet.Remove(entity);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
-            }
-            catch(Exception)
-            {
-            }
-            return false;
+            T? entityToDelete = _dbSet.Find(id);
+            if (entityToDelete == null)
+                throw new ArgumentNullException("Token does not exist");
+
+            Delete(entityToDelete);
         }
 
+        public virtual void Delete(T entityToDelete)
+        {
+            if (_context.Entry(entityToDelete).State == EntityState.Detached)
+            {
+                _dbSet.Attach(entityToDelete);
+            }
+            _dbSet.Remove(entityToDelete);
+        }
     }
 
 

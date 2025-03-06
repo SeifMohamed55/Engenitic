@@ -5,7 +5,7 @@ namespace GraduationProject.Repositories
 {
     public interface ITagsRepository 
     {
-        Task<Tag> AddTagAsync(string tag);
+        Tag AddTag(string tag);
         Task<Tag?> GetTagByValueAsync(string value);
         Task<Tag> EditTagAsync(int id, string newValue);
         Task<List<Tag>> GetAllAsync();
@@ -19,10 +19,10 @@ namespace GraduationProject.Repositories
         }
 
         // Add Tag
-        public async Task<Tag> AddTagAsync(string tag)
+        public Tag AddTag(string tag)
         {
             var dbTag = new Tag(tag);
-            await this.AddAsync(dbTag);
+            this.Insert(dbTag);
             return dbTag;
         }
 
@@ -39,7 +39,7 @@ namespace GraduationProject.Repositories
             if (tag == null)
                 throw new Exception("Tag not found");
             tag.Value = newValue;
-            await UpdateAsync(tag);
+            Update(tag);
             return tag;
         }
 

@@ -9,7 +9,7 @@ namespace GraduationProject.Repositories
 
     public interface IEnrollmentRepository : IRepository<UserEnrollment>
     {
-        Task<bool> EnrollOnCourse(StudentEnrollmentRequest enrollment);
+        Task<UserEnrollment> EnrollOnCourse(StudentEnrollmentRequest enrollment);
         Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
     }
     public class EnrollmentRepository : Repository<UserEnrollment>, IEnrollmentRepository
@@ -21,34 +21,29 @@ namespace GraduationProject.Repositories
             _courses = context.Set<Course>();
         }
 
-        public async Task<bool> EnrollOnCourse(StudentEnrollmentRequest enrollment)
+        public async Task<UserEnrollment> EnrollOnCourse(StudentEnrollmentRequest enrollment)
         {
-            try
+            
+            var course = (await _courses.Select(x => new { x.Stages, x.Id, x.hidden })
+                .FirstOrDefaultAsync(x => x.Id == enrollment.CourseId));
+
+            if (course == null)
+                throw new ArgumentNullException("Course not found");
+
+            if (course.hidden)
+                throw new InvalidOperationException("Course is not available");
+
+            var dbEnrollment = new UserEnrollment
             {
-                var totalStages = (await _courses.Select(x => new { x.Stages, x.Id })
-                    .FirstOrDefaultAsync(x => x.Id == enrollment.CourseId))?.Stages;
-
-                if (totalStages == null)
-                    return false;
-
-                var dbEnrollment = new UserEnrollment
-                {
-                    UserId = enrollment.StudentId,
-                    CourseId = enrollment.CourseId,
-                    IsCompleted = false,
-                    CurrentStage = 0,
-                    EnrolledAt = DateTime.UtcNow,
-                    TotalStages = totalStages.Value
-                };
-                await AddAsync(dbEnrollment);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
+                UserId = enrollment.StudentId,
+                CourseId = enrollment.CourseId,
+                IsCompleted = false,
+                CurrentStage = 0,
+                EnrolledAt = DateTime.UtcNow,
+                TotalStages = course.Stages
+            };
+            Insert(dbEnrollment);
+            return dbEnrollment;
         }
 
         public async Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index)

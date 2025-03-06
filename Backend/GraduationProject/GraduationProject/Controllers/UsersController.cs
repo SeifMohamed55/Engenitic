@@ -1,17 +1,17 @@
 ﻿using GraduationProject.Controllers.ApiRequest;
 using GraduationProject.Controllers.APIResponses;
+using GraduationProject.Data;
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
-using GraduationProject.Repositories;
 using GraduationProject.Services;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using System.Net;
 using System.Security.Claims;
-using System.Web;
 
 namespace GraduationProject.Controllers
 {
@@ -20,21 +20,24 @@ namespace GraduationProject.Controllers
     [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _appUsersRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly IGmailServiceHelper _emailService;
         private readonly JwtOptions _jwtOptions;
+        private readonly ICloudinaryService _cloudinary;
 
         public UsersController(
-            IUserRepository appUsersRepository,
+            IUnitOfWork unitOfWork,
             UserManager<AppUser> userManager,
             IGmailServiceHelper emailService,
-            IOptions<JwtOptions> options)
+            IOptions<JwtOptions> options,
+            ICloudinaryService cloudinary)
         {
-            _appUsersRepository = appUsersRepository;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _emailService = emailService;
             _jwtOptions = options.Value;
+            _cloudinary = cloudinary;
         }
 
         // GET: api/Users/
@@ -51,16 +54,21 @@ namespace GraduationProject.Controllers
                 });
             }
 
-            var appUser = await _appUsersRepository.GetAppUserDTO(currentUserId);
+            var appUser = await _unitOfWork.UserRepo.GetAppUserDTO(currentUserId);
 
             if (appUser == null)
-            {
                 return NotFound(new ErrorResponse()
                 {
                     Code = HttpStatusCode.NotFound,
                     Message = "User not found."
                 });
-            }
+
+
+            var imageUrl = _cloudinary.GetProfileImage(appUser.Image.ImageURL);
+            var imageName = imageUrl.Split('/').LastOrDefault() ?? "";
+            appUser.Image.ImageURL = imageUrl;
+            appUser.Image.Name = imageName;
+            
 
             return Ok(new SuccessResponse()
             {
@@ -89,7 +97,7 @@ namespace GraduationProject.Controllers
                     Message = "Invalid User ID."
                 });
             }
-            var userImage = await _appUsersRepository.GetUserImage(currentUserId);
+            var userImage = await _unitOfWork.UserRepo.GetUserImage(currentUserId);
             if (userImage == null)
             {
                 return NotFound(new ErrorResponse()
@@ -116,10 +124,7 @@ namespace GraduationProject.Controllers
                     Message = "Image Not found"
                 });
             }
-
-
         }
-
 
         // Update user email
         [HttpPost("update-email")]
@@ -222,14 +227,13 @@ namespace GraduationProject.Controllers
         }
 
 
-
         [HttpPost("update-password")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordRequest req)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ErrorResponse()
                 {
-                    Code= HttpStatusCode.BadRequest,
+                    Code = HttpStatusCode.BadRequest,
                     Message = ModelState
                 });
 
@@ -272,6 +276,7 @@ namespace GraduationProject.Controllers
             });
         }
 
+
         [HttpPost("update-username")]
         public async Task<IActionResult> UpdateUsername(UpdateUsernameRequest req)
         {
@@ -298,6 +303,13 @@ namespace GraduationProject.Controllers
                     Message = "User does not exist."
                 });
 
+            if(user.FullName == req.NewUsername)
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = "Username cannot be the same."
+                });
+
             user.FullName = req.NewUsername;
             var res  = await _userManager.UpdateAsync(user);
             if(!res.Succeeded)
@@ -314,6 +326,7 @@ namespace GraduationProject.Controllers
             });
 
         }
+
 
         [HttpPost("update-image")]
         public async Task<IActionResult> UpdateImage([FromForm] IFormFile image, [FromForm] int id)
@@ -332,20 +345,49 @@ namespace GraduationProject.Controllers
                     Code = HttpStatusCode.BadRequest,
                     Message = "Ids don't match"
                 });
+            try
+            {
+                var user = await _userManager.FindByIdAsync(claimId);
+                if (user == null)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Code = HttpStatusCode.BadRequest,
+                        Message = "User does not exist"
+                    });
 
-            var res = await _appUsersRepository.UpdateUserImage(image, id);
-            if (!res)
+                if (ImageHelper.IsValidImageType(image))
+                {
+                    Debug.Assert(image != null);
+
+                    var imageName = "user_" + user.Id;
+
+                    var url = await _cloudinary.UploadAsync(image, imageName, CloudinaryType.UserImage);
+                    if (url == null)
+                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    else
+                        user.ImageSrc = url;
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+
+                return Ok(new SuccessResponse()
+                {
+                    Code = HttpStatusCode.OK,
+                    Message = "Image Updated Successfully"
+                });
+            }
+            catch
+            {
                 return BadRequest(new ErrorResponse()
                 {
+                    Code = HttpStatusCode.BadRequest,
                     Message = "Something wrong happend."
                 });
+            }
 
-            return Ok(new SuccessResponse()
-            {
-                Code = HttpStatusCode.OK,
-                Message = "Image Updated Successfully"
-            });
+            
         }
+
 
 
 
