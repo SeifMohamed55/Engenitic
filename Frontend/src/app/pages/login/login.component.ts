@@ -65,29 +65,32 @@ export class LoginComponent implements OnDestroy {
         this._UserService.userId.next(this.loginResponse.id);
         this._UserService.userName.next(this.loginResponse.name);
         this._UserService.role.next(this.loginResponse.roles[0]);
-  
+        this._UserService.image.next(this.loginResponse.image.url);
+
         localStorage.setItem('Token', this.loginResponse.accessToken);
         localStorage.setItem('name', this.loginResponse.name);
         localStorage.setItem('id', String(this.loginResponse.id));
         localStorage.setItem('role', this.loginResponse.roles[0]);
-  
-        // Fetch user image (Blob -> Base64 conversion)
-        this._UserService.getUserImage(this.loginResponse.id).subscribe({
-          next: blob => {
-            if (blob.size === 0) {
-              console.warn("Empty image response received.");
-              return;
-            }
-            const reader = new FileReader();
-            reader.readAsDataURL(blob); // Convert Blob to Base64
-            reader.onloadend = () => {
-              const base64Image = reader.result as string; // Correct Base64
-              this._UserService.image.next(base64Image);
-              sessionStorage.setItem('image', base64Image); // Store Base64 safely in sessionStorage
-            };
-          },
-          error: err => console.error("Failed to fetch user image", err)
-        });
+        localStorage.setItem('image_url', this.loginResponse.image.url);
+
+
+        // // Fetch user image (Blob -> Base64 conversion)
+        // this._UserService.getUserImage(this.loginResponse.id).subscribe({
+        //   next: blob => {
+        //     if (blob.size === 0) {
+        //       console.warn("Empty image response received.");
+        //       return;
+        //     }
+        //     const reader = new FileReader();
+        //     reader.readAsDataURL(blob); // Convert Blob to Base64
+        //     reader.onloadend = () => {
+        //       const base64Image = reader.result as string; // Correct Base64
+        //       this._UserService.image.next(base64Image);
+        //       sessionStorage.setItem('image', base64Image); // Store Base64 safely in sessionStorage
+        //     };
+        //   },
+        //   error: err => console.error("Failed to fetch user image", err)
+        // });
   
         this.toastr.success(res.message);
         this._Router.navigate(["/home"]);

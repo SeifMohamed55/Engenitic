@@ -35,8 +35,8 @@ export class NavbarComponent implements OnInit , OnDestroy{
       if(localStorage.getItem('name')){
         this._UserService.userName.next(localStorage.getItem('name')!);
       }
-      if(sessionStorage.getItem('image')){
-        this._UserService.image.next(sessionStorage.getItem('image')!);
+      if(localStorage.getItem('image_url')){
+        this._UserService.image.next(localStorage.getItem('image_url')!);
       }
       if(localStorage.getItem('id')){
         this._UserService.userId.next(parseInt(localStorage.getItem('id')!));
@@ -48,9 +48,7 @@ export class NavbarComponent implements OnInit , OnDestroy{
 
 
     this._UserService.registered.pipe(takeUntil(this.destroy$)).subscribe(data=>{
-      if(data){
-        this.registered = data;
-      }
+      this.registered = data;
     });
 
     this._UserService.userId.pipe(takeUntil(this.destroy$)).subscribe(data =>{
@@ -87,7 +85,6 @@ export class NavbarComponent implements OnInit , OnDestroy{
     this._UserService.logoutConfirmation().pipe(takeUntil(this.destroy$)).subscribe({
       next : res =>{
         localStorage.clear();
-        sessionStorage.removeItem('image');
         this._UserService.userId.next(0);
         this._UserService.image.next('');
         this._UserService.userName.next('');

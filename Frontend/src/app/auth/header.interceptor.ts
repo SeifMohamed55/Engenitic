@@ -12,7 +12,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Get the latest token dynamically
   const token = localStorage.getItem('Token') || '';
-
+  
   req = req.clone({
     withCredentials: true, // Always include credentials
     setHeaders: token ? { Authorization: `Bearer ${token}` } : {} // Add token only if it exists
@@ -20,6 +20,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
   let retryCount = 0;
   const maxRetries = 1;
+
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -31,6 +32,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
         return _UserService.refreshToken().pipe(
           switchMap((res: any) => {
+            console.log(res);
             const newToken = res.data?.accessToken;
             if (!newToken) {
               console.error('Failed to get new access token');
@@ -50,18 +52,17 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
             return retryCount < maxRetries ? (retryCount++, next(newReq)) : throwError(() => new Error('Max retries reached'));
           }),
-          catchError((refreshError: any) => {
-            console.error('Token refresh failed:', refreshError);
+          catchError((error: HttpErrorResponse) => {
+            console.error('Token refresh failed:', error);
             return _UserService.logoutConfirmation().pipe(
               switchMap(() => {
                 localStorage.clear();
-                sessionStorage.removeItem('image');
                 _UserService.registered.next('');
                 _ToastrService.error("Session expired!");
                 if (_Router.url !== '/login') {
                   _Router.navigate(['/login']);
                 }
-                return throwError(() => refreshError);
+                return throwError(() => error);
               })
             );
           })

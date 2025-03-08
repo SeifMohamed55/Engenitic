@@ -50,10 +50,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    this.userId = parseInt(localStorage.getItem('id')!) || 0;
-    this.userName = localStorage.getItem('name') || '';
-    this.previewUrl = sessionStorage.getItem('image') || '';
-    this.userImage.Url = sessionStorage.getItem('image') || '';
+    if (typeof window !== 'undefined' && localStorage) {
+      this.userId = parseInt(localStorage.getItem('id')!) || 0;
+      this.userName = localStorage.getItem('name') || '';
+      this.previewUrl = localStorage.getItem('image_url') || '';
+      this.userImage.Url = localStorage.getItem('image_url') || '';
+    }
     this.initiateForms();
 
     this.emailForm.get('email')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(newVal => {
@@ -116,12 +118,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       reader.readAsDataURL(file);
       reader.onload = () => {
         this.previewUrl = reader.result as string;
-        if (this.previewUrl === this.userImage.Url) {
-          this.fileValidationError = 'No changes detected! Your profile picture remains the same.';
-          this.disableButtonImage = true;
-        } else {
-          this.disableButtonImage = false;
-        }
+        this.disableButtonImage = false;
       };
     } else {
       this.selectedFile = null;
@@ -177,7 +174,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   handleImageSubmit(): void {
     if (!this.selectedFile) return;
-
     const formData = new FormData();
     formData.append('image', this.selectedFile);
     formData.append('id', `${this.userId}`);
@@ -187,7 +183,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.userImage.name = this.selectedFile!.name;
         this.userImage.Url = this.previewUrl!;
         this._UserService.image.next(this.previewUrl!);
-        sessionStorage.setItem('image', this.previewUrl!);
+        localStorage.setItem('image_url', this.previewUrl!);
         this.disableButtonImage = true;
       },
       error: err => {

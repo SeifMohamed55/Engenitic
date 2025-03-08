@@ -44,4 +44,23 @@ export class CoursesService {
       }
     });
   };
+
+  deleteCourse(courseId : number, instructorId : number) : Observable<any> {
+    return this._HttpClient.delete(`https://localhost/api/Instructor/deleteCourse`,  
+      {
+        body : {
+          instructorId,
+          courseId
+        }
+      }
+    );
+  };
+
+  editCourse(value : any) : Observable<any> {
+    return this._HttpClient.post(`https://localhost/api/Instructor/editCourse`, value);
+  };
+
+  addCourse(value : any) : Observable<any> {
+    return this._HttpClient.post(`https://localhost/api/Instructor/addCourse`, value);
+  };
 }

@@ -35,21 +35,18 @@ export const routes: Routes = [
             {path : '', redirectTo : '1/1', pathMatch : 'full'},
             {path : ':userId/:collectionId' , component : StudentEnrolledCoursesComponent},
             {path : '**' , component : NotFoundComponent}
-        ]
-        },
+        ]},
         {path : 'instructor', children : [
-            {path : '', redirectTo : '1', pathMatch : 'full'},
+            {path : '', redirectTo : '1/1', pathMatch : 'full'},
             {path : ':userId/:collectionId', component : InstructorMadeCoursesComponent},
             {path : '**' , component : NotFoundComponent}
-        ]
-    },
+        ]},
     {path : 'admin', component : AdminComponent},
     {path : '**' , component : NotFoundComponent}
-    ]
-    },
+    ]},
     {path : 'courses', children : [
-        {path : 'adding', component : InstructorAddCourseComponent},
-        {path : 'editing', component : InstructorEditCourseComponent},
+        {path : 'adding/:instructorId', component : InstructorAddCourseComponent},
+        {path : 'editing/:instructorId/:courseId', component : InstructorEditCourseComponent},
         {path : '**' , component : NotFoundComponent}
     ]},
     {path : "unauthorized", component : UnothorizedComponent},

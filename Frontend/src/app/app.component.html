@@ -4,8 +4,8 @@
     <router-outlet></router-outlet>
 </div>
 
-<div class="fixed right-10 bottom-20">
-    <a type="button" [class.hidden]="!isVisible" (click)="handleArrow($event)" class="engenitic-button hover:enginitic-main-color cursor-pointer hidden">
+<div class="fixed right-10 bottom-20 z-50">
+    <a type="button" [class.hidden]="!isVisible" (click)="handleArrow($event)" class="engenitic-button hover:enginitic-main-color cursor-pointer hover:rotate-[360deg] rotate-0 transition-all duration-1000 w-full h-full">
       <i class="fa-solid fa-angles-up"></i>
     </a>
 </div>

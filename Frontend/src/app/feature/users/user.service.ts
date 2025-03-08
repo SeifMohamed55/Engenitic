@@ -31,7 +31,11 @@ export class UserService {
   };
 
   refreshToken() : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Token/refresh`, {});
+    return this._HttpClient.post(`https://localhost/api/Token/refresh`, {}, {
+      headers : {
+        'Content-Type' : 'application/json'
+      }
+    });
   };
 
   getProfileData(userId : number) : Observable<any> {

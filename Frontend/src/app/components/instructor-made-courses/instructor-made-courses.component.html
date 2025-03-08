@@ -1,41 +1,54 @@
-<div class=" py-10">
-    <h2 class="py-4 text-header font-display text-center">created courses</h2>
+<div class="py-10">
+    <h2 class="py-4 text-header font-display text-center">Created Courses</h2>
     <div class="py-10">
-        <ul>
-            <li *ngFor="let course of instrucorCourses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : totalItems }">
-            </li>
-        </ul>
-        <pagination-controls 
-            (pageChange)="onPageChange($event)" 
-            previousLabel="Previous"
-            nextLabel="Next"
-            [responsive]="true"
-            [maxSize]="10"
-        >
-        </pagination-controls>
-    </div>
-    <div class="grid grid-cols-3 gap-20">
-        <div *ngFor="let course of instrucorCourses" class="flex justify-between items-center flex-col course shadow-container rounded  p-3">
-            <img  [src]="course.image.imageURL" [alt]="course.image.name">
-            <h3 class="py-4 font-display"> {{ course.title }} </h3>
-            <div class="flex justify-evenly w-full">
-                <a [routerLink]="" class="engenitic-button w-fit course-button text-center translate-y-20 course-button hover:bg-yellow-400 relative group inline-block">
-                    <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                        edit
-                    </span>
-                    <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
-                        <i class="fa-solid fa-gear fa-bounce"></i>
-                    </span>
-                </a>
-                <a class="engenitic-button danger-button w-fit hover:engenitic-danger text-center translate-y-20 course-button relative group inline-block">
-                    <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                        delete
-                    </span>
-                    <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
-                        <i class="fa-solid fa-trash fa-shake"></i>
-                    </span>
-                </a>
-            </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 py-3">
+        <div *ngFor="let course of instructorCourses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }"
+             class="flex flex-col justify-between items-center course shadow-container rounded-lg p-4">
+          <img [src]="course.image.imageURL || 'assets/images/placeholder.png'" 
+               [alt]="course.image.name" 
+               class="w-full h-48 object-cover rounded-lg"
+               title="Course Image">
+          <h3 class="py-4 font-display text-lg text-center">{{ course.title }}</h3>
+          <div class="flex justify-evenly w-full">
+            <a [routerLink]="['/courses/editing', userId, course.id]"
+               class="engenitic-button w-fit course-button text-center translate-y-20 hover:bg-yellow-400 relative group inline-block">
+              <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                Edit
+              </span>
+              <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                <i class="fa-solid fa-gear fa-bounce"></i>
+              </span>
+            </a>
+            <button (click)="deleteCourse(course.id, userId)"
+        class="engenitic-button danger-button w-fit hover:engenitic-danger text-center relative group inline-block cursor-pointer translate-y-20 course-button">
+                <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                    Delete
+                </span>
+                <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                    <i class="fa-solid fa-trash fa-shake"></i>
+                </span>
+            </button>
+          </div>
         </div>
+      </div>
+      <pagination-controls 
+        (pageChange)="onPageChange($event)" 
+        previousLabel="Previous"
+        nextLabel="Next"
+        [responsive]="true"
+        [maxSize]="5"
+        [autoHide]="true"
+      >
+      </pagination-controls>
     </div>
-</div>
+    
+    <a [routerLink]="['/courses/adding', userId]"
+       class="w-full engenitic-button hover:engenitic-success text-center cursor-pointer mt-8 relative group inline-block">
+      <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+        Add Course
+      </span>
+      <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100 text-white">
+        <i class="fa-solid fa-plus"></i>
+      </span>
+    </a>
+  </div>
