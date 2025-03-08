@@ -16,10 +16,12 @@ namespace GraduationProject.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICloudinaryService _cloudinary;
 
-        public CoursesController(IUnitOfWork unitOfWork)
+        public CoursesController(IUnitOfWork unitOfWork, ICloudinaryService cloudinary)
         {
             _unitOfWork = unitOfWork;
+            _cloudinary = cloudinary;
         }
 
 
@@ -35,6 +37,17 @@ namespace GraduationProject.Controllers
             try
             {
                 var courses = await _unitOfWork.CourseRepo.GetPageOfCourses(index);
+
+                Func<string, string> nameFunc = (string url) => url.Split('/').LastOrDefault() ?? "";
+
+                courses.ForEach(x =>
+                {
+                    x.Image = new ImageMetadata()
+                    {
+                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL),
+                        Name = nameFunc(x.Image.ImageURL),
+                    };
+                });
 
                 if (index > courses.TotalPages)
                     return BadRequest(new ErrorResponse()
@@ -90,6 +103,17 @@ namespace GraduationProject.Controllers
                         Code = System.Net.HttpStatusCode.BadRequest,
                     });
 
+                Func<string, string> nameFunc = (string url) => url.Split('/').LastOrDefault() ?? "";
+
+                courses.ForEach(x =>
+                {
+                    x.Image = new ImageMetadata()
+                    {
+                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL),
+                        Name = nameFunc(x.Image.ImageURL),
+                    };
+                });
+
                 return Ok(new SuccessResponse
                 {
                     Message = "Courses Retrieved Successfully.",
@@ -122,6 +146,18 @@ namespace GraduationProject.Controllers
             try
             {
                 var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesByTag(tag, index);
+
+                Func<string, string> nameFunc = (string url) => url.Split('/').LastOrDefault() ?? "";
+
+                courses.ForEach(x =>
+                {
+                    x.Image = new ImageMetadata()
+                    {
+                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL),
+                        Name = nameFunc(x.Image.ImageURL),
+                    };
+                });
+
 
                 if (courses.TotalPages == 0)
                     return NotFound(new ErrorResponse()
@@ -167,14 +203,24 @@ namespace GraduationProject.Controllers
                     return NotFound(new ErrorResponse
                     {
                         Message = "Course Not Found.",
-                        Code = System.Net.HttpStatusCode.NotFound,
+                        Code = HttpStatusCode.NotFound,
                     });
 
+                Func<string, string> nameFunc = (string url) => url.Split('/').LastOrDefault() ?? "";
+
+                var dtoCourse = new CourseDTO(course);
+
+                dtoCourse.Image = new ImageMetadata()
+                {
+                    ImageURL = _cloudinary.GetImageUrl(dtoCourse.Image.ImageURL),
+                    Name = nameFunc(dtoCourse.Image.ImageURL),
+                };
+                
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Retrieved Successfully.",
-                    Data = course,
-                    Code = System.Net.HttpStatusCode.OK,
+                    Data = dtoCourse,
+                    Code = HttpStatusCode.OK,
                 });
             }
             catch
@@ -188,7 +234,7 @@ namespace GraduationProject.Controllers
         }
 
 
-        [HttpGet("image")]
+/*        [HttpGet("image")]
         public async Task<IActionResult> GetCourseImage([FromQuery]int id)
         {
             var imageUrl = await _unitOfWork.CourseRepo.GetImageUrl(id);
@@ -217,11 +263,11 @@ namespace GraduationProject.Controllers
                 });
 
             }
-        }
+        }*/
 
 
 
-        [HttpGet("dummy/{index}")]
+/*        [HttpGet("dummy/{index}")]
         // GET: /api/courses/dummy/1
         public IActionResult GetDummyCourses(int index)
         {
@@ -271,7 +317,7 @@ namespace GraduationProject.Controllers
                 Data = new PaginatedResponse<CourseDTO>(paginated),
                 Code = System.Net.HttpStatusCode.OK,
             });
-        }
+        }*/
 
     }
 }

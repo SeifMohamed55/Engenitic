@@ -71,7 +71,6 @@ namespace GraduationProject.Repositories
         {
             var courses = GetCoursesQuery().DTOProjection();
 
-
             return await PaginatedList<CourseDTO>.CreateAsync(courses, index);
         }
 
