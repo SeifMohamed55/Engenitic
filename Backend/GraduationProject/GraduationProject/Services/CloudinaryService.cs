@@ -94,29 +94,38 @@ namespace GraduationProject.Services
 
         public string GetImageUrl(string publicId)
         {
-            return _cloudinary.Api
+            var link = _cloudinary.Api
                 .UrlImgUp
-                .Secure()
-                .Signed(true)
-                .Type("authenticated")
-                .BuildUrl(publicId);
+                .Secure();
+
+            if (publicId == (this as ICloudinaryService).DefaultUserImagePublicId ||
+                publicId == (this as ICloudinaryService).DefaultCourseImagePublicId)
+                return link.BuildUrl(publicId);
+
+            else
+                return link.Signed(true)
+                    .Type("authenticated")
+                    .BuildUrl(publicId);
         }
 
 
         public string GetProfileImage(string publicId)
         {
-            return _cloudinary.Api.UrlImgUp
+            var link = _cloudinary.Api.UrlImgUp
                 .Transform(new Transformation()
                     .Width(200)
                     .Height(200)
                     .Crop("thumb")
                     .Quality("auto")  // Optimizes quality
                     .FetchFormat("auto"))
-                .Secure()
-                .Signed(true)
-                .Type("authenticated")
-                .BuildUrl(publicId);
+                .Secure();
 
+            if (publicId == (this as ICloudinaryService).DefaultUserImagePublicId)
+                return link.BuildUrl(publicId);
+            else
+                return link.Signed(true)
+                    .Type("authenticated")
+                    .BuildUrl(publicId);
         }
 
         public string GetPDF(string publicId)
@@ -129,23 +138,5 @@ namespace GraduationProject.Services
                 .Type("authenticated")
                 .BuildUrl(publicId);
         }
-
-
-/*        public string GetDefaultProfileImage()
-        {
-            return _cloudinary.Api
-                .UrlImgUp
-                .Secure()
-                .Signed(true)
-                .BuildUrl("uploads/images/users/default");
-        }
-        public string GetDefaultCourseImage()
-        {
-            return _cloudinary.Api
-                .UrlImgUp
-                .Secure()
-                .Signed(true)
-                .BuildUrl("uploads/images/courses/default");
-        }*/
     }
 }
