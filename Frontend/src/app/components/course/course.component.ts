@@ -17,12 +17,10 @@ export class CourseComponent implements OnInit , OnDestroy{
   
   private destroy$ = new Subject<void>();
 
-  collectionNumber: number = 0; // Collection number for pagination
   currentPage: number = 1; // Current page number
-  itemsPerPage: number = 6; // Items per page
-  totalPages: number = 0; // Total number of pages
+  itemsPerPage: number = 10; // Items per page
   totalItems: number = 0; // Total number of items (courses)
-  courses!: Course[]; // Array of courses
+  courses : Course[] = []; // Array of courses
 
   constructor(
     private _ActivatedRoute: ActivatedRoute,
@@ -32,12 +30,12 @@ export class CourseComponent implements OnInit , OnDestroy{
   ) {}
 
   ngOnInit(): void {
-    this._ActivatedRoute.paramMap.subscribe(params => {
+    this._ActivatedRoute.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
       // Get the collection number from the route
-      this.collectionNumber = params.get('collectionNumber') ? Number(params.get('collectionNumber')) : 0;
+      this.currentPage = params.get('collectionNumber') ? Number(params.get('collectionNumber')) : 0;
       
       // Fetch courses based on the collection number
-      this.fetchCourses(this.collectionNumber);
+      this.fetchCourses(this.currentPage);
     });
   };
 
@@ -47,16 +45,14 @@ export class CourseComponent implements OnInit , OnDestroy{
   }
 
   // Fetch courses from the service
-  fetchCourses(collectionNumber: number): void {
-    this._CoursesService.coursesOffered(collectionNumber).pipe(takeUntil(this.destroy$)).subscribe({
+  fetchCourses(currentPage: number): void {
+    this._CoursesService.coursesOffered(currentPage).subscribe({
       next: (res) => {
         console.log(res);
         this.courses = res.data.paginatedList;
-        this.totalPages = res.data.totalPages;
         this.totalItems = res.data.totalItems;
       },
       error: (err) => {
-        console.error(err);
         if (err.error.message) {
           this._ToastrService.error(err.error.message);
         }

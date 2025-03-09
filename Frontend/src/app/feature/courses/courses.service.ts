@@ -28,7 +28,7 @@ export class CoursesService {
   }
 
   coursesOffered(collectionNumber : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/dummy/${collectionNumber}`);
+    return this._HttpClient.get(`https://localhost/api/Courses/${collectionNumber}`);
   };
 
   getCourseDetails(courseId : number) : Observable<any> {

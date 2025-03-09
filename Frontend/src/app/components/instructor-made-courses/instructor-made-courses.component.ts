@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { CoursesService } from '../../feature/courses/courses.service';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -17,7 +17,7 @@ export class InstructorMadeCoursesComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();
   userId: number = 0;
-  itemsPerPage: number = 6;
+  itemsPerPage: number = 10;
   currentPage: number = 0;
   totalItems: number = 0;
   instructorCourses : InstructorCourse[] = [];
@@ -25,11 +25,13 @@ export class InstructorMadeCoursesComponent implements OnInit, OnDestroy {
   constructor(
     private _ActivatedRoute: ActivatedRoute,
     private _CoursesService: CoursesService,
-    private _ToastrService: ToastrService
+    private _ToastrService: ToastrService, 
+    private _Router:Router
   ) {}
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this._Router.navigate(['/profile/instructor', this.userId, this.currentPage]); 
     this.fetchCollection(this.currentPage);
   }
 
@@ -37,7 +39,6 @@ export class InstructorMadeCoursesComponent implements OnInit, OnDestroy {
     this._ActivatedRoute.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
       this.userId = Number(params.get('userId')) || 0;
       this.currentPage = Number(params.get('collectionId')) || 1;
-  
       this.fetchCollection(this.currentPage); // Always fetch courses on init
     });
   }
@@ -49,19 +50,11 @@ export class InstructorMadeCoursesComponent implements OnInit, OnDestroy {
   fetchCollection(currentPage: number): void {
     this._CoursesService.getCreatedCourses(currentPage, this.userId).subscribe({
       next: (res) => {
-        console.log('total items  = ', res.data.totalItems);
-        console.log('courses  = ', res.data.paginatedList); 
         this.totalItems = res.data.totalItems;
         this.instructorCourses = res.data.paginatedList;
-
-        if (this.instructorCourses.length === 0 && this.currentPage > 1) {
-          this.currentPage = 1;
-          this.fetchCollection(this.currentPage);
-        }
       },
       error: (err) => {
         this._ToastrService.error('Failed to fetch courses. Please try again.');
-        this.fetchCollection(1);
       }
     });
   }
@@ -73,6 +66,7 @@ export class InstructorMadeCoursesComponent implements OnInit, OnDestroy {
         next: res => {
           this._ToastrService.success(res.message);
           this.fetchCollection(1);
+          this._Router.navigate(['/profile/instructor', this.userId, 1]); 
         },
         error: err => {
           this._ToastrService.error('Failed to delete course.');

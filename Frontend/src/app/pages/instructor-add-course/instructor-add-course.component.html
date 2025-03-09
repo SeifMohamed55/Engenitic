@@ -1,1 +1,110 @@
-<p>instructor-add-course works!</p>
+<main>
+    <div class="container">
+        <h1 class="text-center text-header py-10 font-display">Course Creation</h1>
+        
+        <form (ngSubmit)="onSubmit()">
+          <!-- Basic Course Information -->
+          <div class="form-group">
+            <label for="title">Course Title</label>
+            <input
+              type="text"
+              id="title"
+
+              name="title"
+              required
+            />
+          </div>
+  
+          <div class="form-group">
+            <label for="id">Course ID</label>
+            <input
+              type="text"
+              id="id"
+              name="id"
+              required
+            />
+          </div>
+  
+          <div class="form-group">
+            <label for="description">Course Description</label>
+            <textarea
+              id="description"
+
+              name="description"
+              required
+            ></textarea>
+          </div>
+  
+          <div class="form-group">
+            <label for="requirements">Course Requirements</label>
+            <textarea
+              id="requirements"
+
+              name="requirements"
+              required
+            ></textarea>
+          </div>
+  
+          <div class="form-group">
+            <label for="imageUrl">Course Image URL</label>
+            <input
+              type="url"
+              id="imageUrl"
+
+              name="imageUrl"
+              required
+              (input)="onImageUrlChange()"
+            />
+            <img
+              *ngIf="course.imageUrl"
+              [src]="course.imageUrl"
+              alt="Course preview"
+              class="preview-image"
+            />
+          </div>
+  
+          <!-- Level Management -->
+          <h2>Course Levels</h2>
+          
+          <div class="level-navigation">
+            <button type="button" class="btn-secondary" (click)="previousLevel()" [disabled]="currentLevelIndex === 0">
+              Previous Level
+            </button>
+            <span class="level-indicator">Level {{ currentLevelIndex + 1 }} of {{ course.levels.length }}</span>
+            <button type="button" class="btn-secondary" (click)="nextLevel()" [disabled]="currentLevelIndex === course.levels.length - 1">
+              Next Level
+            </button>
+            <button type="button" class="btn-primary" (click)="addLevel()">
+              Add New Level
+            </button>
+          </div>
+  
+          <!-- Current Level Details -->
+          <div *ngIf="course.levels.length > 0">
+            <div class="form-group">
+              <label for="videoUrl">Video URL for Level {{ currentLevelIndex + 1 }}</label>
+              <input
+                type="url"
+                id="videoUrl"
+
+                name="videoUrl"
+                required
+              />
+            </div>
+  
+            <div class="form-group">
+              <label for="quizUrl">Quiz URL for Level {{ currentLevelIndex + 1 }}</label>
+              <input
+                type="url"
+                id="quizUrl"
+
+                name="quizUrl"
+                required
+              />
+            </div>
+          </div>
+  
+          <button type="submit" class="btn-primary">Create Course</button>
+        </form>
+      </div>
+</main>

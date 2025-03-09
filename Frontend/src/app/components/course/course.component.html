@@ -1,9 +1,32 @@
 <main class="py-10">
-    <div>
-        <ul>
-            <li *ngFor="let course of courses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : 20 }">
-            </li>
-        </ul>
+    <div class="py-10 grid grid-cols-2 flex-wrap gap-x-10 gap-y-16">
+        <div *ngFor="let course of courses | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : totalItems }">
+            <div class="grid grid-cols-2 gap-10 items-center border border-black rounded-lg p-5 shadow-container course">
+                <div class="grid grid-rows-4 gap-10">
+                    <h3 class="font-display text-secondary-header">
+                        {{ course.title }}
+                    </h3>
+                    <p class="text-normal font-regular">
+                        {{ course.description }}
+                    </p>
+                    <p class="text-normal font-regular">
+                        made by : {{ course.instructorName }}
+                    </p>
+                    <a [routerLink]="['/course-details', course.id]" class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color">
+                        <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0 flex justify-center items-center">
+                            view details
+                        </span>
+                        <span class="absolute inset-0 top-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex justify-center items-center">
+                            <i class="fa-solid fa-arrow-pointer"></i>
+                        </span>
+                    </a>
+                </div>
+                <figure class="w-full flex justify-center items-center">
+                    <img title="course image" [src]="course.image.imageURL || ''" [alt]="course.image.name ? course.image.name : 'course image' " class="w-full h-48 object-cover rounded-lg">
+                </figure>
+            </div>
+        </div>
+    </div>
         <pagination-controls 
             (pageChange)="onPageChange($event)" 
             previousLabel="Previous"
@@ -12,31 +35,4 @@
             [maxSize]="10"
             >
         </pagination-controls>
-    </div>
-    <div class="py-10 grid grid-cols-2 flex-wrap gap-x-10 gap-y-16">
-        <div *ngFor="let course of courses;index as idx" class="grid grid-cols-2 gap-10 items-center border border-black rounded-lg p-5 shadow-container course">
-            <div class="grid grid-rows-4 gap-10">
-                <h3 class="font-display text-secondary-header">
-                    {{ course.title }}
-                </h3>
-                <p class="text-normal font-regular">
-                    {{ course.description }}
-                </p>
-                <p class="text-normal font-regular">
-                    made by : {{ course.instructorName }}
-                </p>
-                <a [routerLink]="['/course-details', course.id]" class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color">
-                    <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                        view details
-                    </span>
-                    <span class="absolute inset-0 top-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
-                        <i class="fa-solid fa-arrow-pointer"></i>
-                    </span>
-                </a>
-            </div>
-            <figure class="w-full flex justify-center items-center">
-                <img title="course image" [src]="course.image.imageURL" [alt]="course.image.name ? course.image.name : 'course image' " class="mx-auto object-contain rounded-xl">
-            </figure>
-        </div>
-    </div>
 </main>
