@@ -21,5 +21,6 @@ namespace GraduationProject.Models.DTOs
         [NotEmptyCollection]
         public List<QuestionDTO> Questions { get; set; } = new List<QuestionDTO>();
 
+       
     }
 }

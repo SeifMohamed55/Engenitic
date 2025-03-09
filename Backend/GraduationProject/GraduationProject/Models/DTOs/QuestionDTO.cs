@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GraduationProject.Models.DTOs
 {
-    public class QuestionDTO : IPostitionable
+    public class QuestionDTO : IPostitionable, IValidatableObject
     {
         public int Id { get; set; }
         [Required]
@@ -13,10 +13,19 @@ namespace GraduationProject.Models.DTOs
 
         public int Position { get; set; }
 
+
         [Required]
         [UniquePostition]
         [NotEmptyCollection]
+        [MinLength(4)]
         public List<AnswerDTO> Answers { get; set; } = new List<AnswerDTO>();
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (Answers.Count(x=> x.IsCorrect) != 1) 
+            {
+                yield return new ValidationResult("Must have one correct answer.", [nameof(Answers)]);
+            }
+        }
     }
 }

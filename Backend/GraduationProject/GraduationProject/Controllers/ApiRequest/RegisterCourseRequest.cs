@@ -1,6 +1,7 @@
 ﻿using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -29,16 +30,22 @@ namespace GraduationProject.Controllers.ApiRequest
         [Required]
         public IFormFile Image { get; set; } = null!;
 
-        [Required]
-        public string TagsStr { get; set; } = null!; 
-        public List<TagDTO> Tags { get; set; } = new List<TagDTO>();
+/*        [Required]
+        public string TagsStr { get; set; } = null!; */
 
         [Required]
-        public string QuizesStr { get; set; } = null!;
+        [BindProperty(BinderType = typeof(JsonModelBinder))]
+        public List<TagDTO> Tags { get; set; } = new List<TagDTO>();
+
+       /* [Required]
+        public string QuizesStr { get; set; } = null!;*/
 
         [Required]
         [UniquePostition]
         [NotEmptyCollection]
+        [BindProperty(BinderType = typeof(JsonModelBinder))]
         public ICollection<QuizDTO> Quizes { get; set; } = new List<QuizDTO>();
+
+      
     }
 }

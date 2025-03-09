@@ -5,7 +5,7 @@ namespace GraduationProject.Services
 {
     public class CourseGenerator
     {
-        public static List<RegisterCourseRequest> GenerateCourses()
+        /*public static List<RegisterCourseRequest> GenerateCourses()
         {
             var courses = new List<RegisterCourseRequest>();
 
@@ -29,7 +29,7 @@ namespace GraduationProject.Services
             }
 
             return courses;
-        }
+        }*/
 
         private static List<QuizDTO> GenerateQuizzes(int courseId, string topic)
         {

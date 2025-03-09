@@ -120,49 +120,6 @@ namespace GraduationProject.Controllers
         [HttpPost("addCourse")]
         public async Task<IActionResult> AddCourse([FromForm] RegisterCourseRequest course)
         {
-            List<QuizDTO>? quizes;
-            List<TagDTO>? tags;
-            try
-            {
-                quizes = JsonConvert.DeserializeObject<List<QuizDTO>>(course.QuizesStr);
-                if (quizes == null)
-                    throw new JsonException("Nothing Sent");
-            }
-            catch (JsonException)
-            {
-                return BadRequest(new ErrorResponse() 
-                {
-                    Message = "Invalid Quizes.",
-                    Code = HttpStatusCode.BadRequest,
-                });
-            }
-
-            try
-            {
-                tags = JsonConvert.DeserializeObject<List<TagDTO>>(course.TagsStr);
-                if(tags == null)
-                    throw new JsonException("Nothing Sent");
-
-            }
-            catch{ tags = new List<TagDTO>(); }
-
-            course.Quizes = quizes;
-            course.QuizesStr = "Useless!";
-
-            course.Tags = tags;
-            course.TagsStr = "useless";
-
-            var validationResults = new List<ValidationResult>();
-
-            var context = new ValidationContext(course);
-            if (!Validator.TryValidateObject(course, context, validationResults, true))
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = validationResults,
-                    Code = HttpStatusCode.BadRequest,
-                });
-            }                
 
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimId == null)
