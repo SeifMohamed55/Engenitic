@@ -152,6 +152,8 @@ namespace GraduationProject.Repositories
             var dbCourse = await _dbSet
                 .Include(c => c.Quizes)
                 .Include(c => c.Tags)
+                .Include(c=> c.FileHash)
+                .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(x=> x.Id == courseReq.Id);
 
             if (dbCourse == null)
