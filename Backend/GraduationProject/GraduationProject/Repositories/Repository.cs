@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -12,6 +13,14 @@ namespace GraduationProject.Repositories
         void Update(T entity);
         void Delete(object id);
         void Delete(T entityToDelete);
+        Task<List<T>> Get(
+        Expression<Func<T, bool>>? filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+           string includeProperties = "");
+
+        Task<T?> FirstOrDefaultAsync(
+        Expression<Func<T, bool>> filter,
+        string includeProperties = "");
     }
 
     public class Repository<T> : IRepository<T> where T : class
@@ -54,6 +63,21 @@ namespace GraduationProject.Repositories
             }
         }
 
+        public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> filter , string includeProperties = "")
+        {
+            // Expression to make it into LINQ
+
+            IQueryable<T> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties.Split
+             ([','], StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.FirstOrDefaultAsync(filter);
+        }
+
         public async Task<List<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -91,6 +115,8 @@ namespace GraduationProject.Repositories
             }
             _dbSet.Remove(entityToDelete);
         }
+
+        
     }
 
 

@@ -8,7 +8,7 @@ namespace GraduationProject.Models
     public class Course
     {
         public Course(){ }
-        public Course(RegisterCourseRequest course, List<Tag> tags)
+        public Course(RegisterCourseRequest course, List<Tag> tags, FileHash hash)
         {
             Code = course.Code;
             Title = course.Title;
@@ -18,8 +18,7 @@ namespace GraduationProject.Models
             Quizes = course.Quizes.Select(x => new Quiz(x)).ToList();
             Stages = Quizes.Count;
             Tags = tags;
-            ImageUrl = "default.jpeg";
-
+            FileHash = hash;
         }
 
 
@@ -28,13 +27,15 @@ namespace GraduationProject.Models
         public string? Code { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public string ImageUrl { get; set; } = null!;
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int InstructorId { get; set; }
         public AppUser Instructor { get; set; } = null!;
+
+        public int? HashId { get; set; }
+        public FileHash FileHash { get; set; } = null!;
 
         public ICollection<Quiz> Quizes { get; set; } = new List<Quiz>();
         public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>();

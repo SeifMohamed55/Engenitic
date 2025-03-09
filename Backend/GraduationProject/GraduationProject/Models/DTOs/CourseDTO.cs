@@ -14,7 +14,12 @@ namespace GraduationProject.Models.DTOs
             Description = string.Join(' ', course.Description.Split(' ').Take(3).Append("..."));
             InstructorName = course.Instructor?.FullName;
             Requirements = course.Requirements;
-            Image = new() { ImageURL = course.ImageUrl, Name = course.ImageUrl.Split('/').LastOrDefault() ?? ""};
+            Image = new() 
+            {
+                ImageURL = course.FileHash.PublicId,
+                Name = course.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
+                Hash = course.FileHash.Hash
+            };
         }
 
         public int Id { get; set; }

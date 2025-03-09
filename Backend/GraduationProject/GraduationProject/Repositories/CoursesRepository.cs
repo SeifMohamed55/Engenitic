@@ -18,18 +18,20 @@ namespace GraduationProject.Repositories
     {
         Task<CourseDetailsResponse?> GetDetailsById(int id);
         Task<Course?> GetById(int id);
+        Task<List<Course>> GetAllCoursesAsync();
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfHiddenCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
-        Task<string?> GetImageUrl(int courseId); 
 
         // Edit, Add, Remove
-        Task<Course> MakeCourse(RegisterCourseRequest course);
+        Task<Course> MakeCourse(RegisterCourseRequest course, FileHash hash);
         Task<Course> EditCourse(EditCourseRequest course);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
         Task AddCourseToTag(int courseId, List<TagDTO> tag);
+
+        
         //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
@@ -43,7 +45,9 @@ namespace GraduationProject.Repositories
 
         public async Task<CourseDetailsResponse?> GetDetailsById(int id)
         {
-            var course = await _dbSet.Include(x => x.Instructor).FirstOrDefaultAsync(x=> x.Id == id);
+            var course = await _dbSet
+                .Include(x=> x.FileHash)
+                .Include(x => x.Instructor).FirstOrDefaultAsync(x=> x.Id == id);
             if (course == null)
                 return null;
 
@@ -60,11 +64,18 @@ namespace GraduationProject.Repositories
                 
         }
 
+        public async Task<List<Course>> GetAllCoursesAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
 
         public async Task<Course?> GetById(int id)
         {
-            return await GetByIdAsync(id);
-
+            return await _dbSet
+                .Include(x => x.FileHash)
+                .Include(x=> x.Instructor)
+                .FirstOrDefaultAsync(x=> x.Id == id);
         }
 
         public async Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1)
@@ -119,14 +130,13 @@ namespace GraduationProject.Repositories
            
         }
 
-        public async Task<Course> MakeCourse(RegisterCourseRequest courseReq)
+        public async Task<Course> MakeCourse(RegisterCourseRequest courseReq, FileHash hash)
         {
             var tags = await _tags
                 .Where(t => courseReq.Tags.Select(x=> x.Id).Contains(t.Id))
                 .ToListAsync();
 
-            Course courseDb = new Course(courseReq, tags);
-            courseDb.ImageUrl = "default.jpeg";
+            Course courseDb = new Course(courseReq, tags, hash);
 
             this.Insert(courseDb);
 
@@ -155,12 +165,6 @@ namespace GraduationProject.Repositories
             return dbCourse;
         }
 
-
-        public async Task<string?> GetImageUrl(int courseId)
-        {
-           return (await _dbSet.Select(x=> new { x.ImageUrl , x.Id})
-                .FirstOrDefaultAsync(x => x.Id == courseId))?.ImageUrl;
-        }
 
         public Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index)
         {

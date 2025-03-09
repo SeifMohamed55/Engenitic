@@ -26,12 +26,18 @@ namespace GraduationProject.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IEncryptionService _encryptionService;
         public InstructorController
-            (IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICloudinaryService cloudinary) 
+            (
+            IUnitOfWork unitOfWork,
+            UserManager<AppUser> userManager,
+            ICloudinaryService cloudinary,
+            IEncryptionService encryptionService) 
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _cloudinary = cloudinary;
+            _encryptionService = encryptionService;
         }
 
 
@@ -182,7 +188,13 @@ namespace GraduationProject.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
 
-                var addedCourse = await _unitOfWork.CourseRepo.MakeCourse(course);
+                var defaultCourseHash = await _unitOfWork.FileHashRepo
+                    .FirstOrDefaultAsync(x => x.PublicId == _cloudinary.DefaultCourseImagePublicId);
+
+                if (defaultCourseHash == null)
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+
+                var addedCourse = await _unitOfWork.CourseRepo.MakeCourse(course, defaultCourseHash);
                 await _unitOfWork.SaveChangesAsync();
 
                 if(ImageHelper.IsValidImageType(course.Image))
@@ -191,24 +203,30 @@ namespace GraduationProject.Controllers
 
                     var publicId = await _cloudinary.UploadAsync(course.Image, imageName, CloudinaryType.CourseImage);
                     if (publicId == null)
-                        addedCourse.ImageUrl = _cloudinary.DefaultCourseImagePublicId;
+                        addedCourse.FileHash = defaultCourseHash;
                     else
-                        addedCourse.ImageUrl = publicId;
+                    {
+                        using var stream = course.Image.OpenReadStream();
+                        addedCourse.FileHash.PublicId = publicId;
+                        addedCourse.FileHash.Hash = await _encryptionService.HashWithxxHash(stream);
+                        addedCourse.FileHash.Type = CloudinaryType.CourseImage;
+                    }
                 }
                 else
                 {
-                    addedCourse.ImageUrl = _cloudinary.DefaultCourseImagePublicId;
+                    addedCourse.FileHash = defaultCourseHash;
                 }
 
                 await _unitOfWork.SaveChangesAsync();
 
-                var resp = new CourseDTO(addedCourse);
-                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL);
+                var dto = new CourseDTO(addedCourse);
+                dto.Image.ImageURL = _cloudinary.GetImageUrl(dto.Image.ImageURL);
+                dto.Image.Name = dto.Image.ImageURL.Split('/').LastOrDefault() ?? "";
 
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Added Successfully.",
-                    Data = resp,
+                    Data = dto,
                     Code = HttpStatusCode.OK,
                 });
 
@@ -348,13 +366,24 @@ namespace GraduationProject.Controllers
 
             if (ImageHelper.IsValidImageType(image))
             {
+                var defaultCourseHash = await _unitOfWork.FileHashRepo
+                    .FirstOrDefaultAsync(x => x.PublicId == _cloudinary.DefaultCourseImagePublicId);
+
+                if (defaultCourseHash == null)
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+
                 var imageName = "course_" + courseId;
 
                 var publicId = await _cloudinary.UploadAsync(image, imageName, CloudinaryType.CourseImage);
                 if (publicId == null)
-                    addedCourse.ImageUrl = _cloudinary.DefaultCourseImagePublicId;
+                    addedCourse.FileHash = defaultCourseHash;
                 else
-                    addedCourse.ImageUrl = publicId;
+                {
+                    using var stream = image.OpenReadStream();
+                    addedCourse.FileHash.PublicId = publicId;
+                    addedCourse.FileHash.Hash = await _encryptionService.HashWithxxHash(stream);
+                    addedCourse.FileHash.Type = CloudinaryType.CourseImage;
+                }
                 await _unitOfWork.SaveChangesAsync();
 
                 return Ok(new SuccessResponse()
@@ -365,8 +394,9 @@ namespace GraduationProject.Controllers
                     {
                         Image = new ImageMetadata
                         {
-                            ImageURL = _cloudinary.GetImageUrl(addedCourse.ImageUrl),
-                            Name = addedCourse.ImageUrl.Split('/').LastOrDefault() ?? ""
+                            ImageURL = _cloudinary.GetImageUrl(addedCourse.FileHash.PublicId),
+                            Name = addedCourse.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
+                            Hash = addedCourse.FileHash.Hash
                         }
                     }
                 });

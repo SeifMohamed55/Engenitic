@@ -1,6 +1,7 @@
 ﻿namespace GraduationProject.Data
 {
     using System;
+    using GraduationProject.Models;
     using GraduationProject.Repositories;
     using GraduationProject.StartupConfigurations;
     using Microsoft.EntityFrameworkCore.Storage;
@@ -15,6 +16,7 @@
         public IQuizRepository QuizRepo { get; }
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
+        public IRepository<FileHash> FileHashRepo { get; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();
@@ -36,6 +38,7 @@
         public IQuizRepository QuizRepo { get; }
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
+        public IRepository<FileHash> FileHashRepo { get; }
 
 
         public UnitOfWork
@@ -47,7 +50,8 @@
             IEnrollmentRepository enrollmentRepository,
             IQuizRepository quizRepository,
             ITagsRepository tagsRepository,
-            IUserLoginRepository userLoginRepository
+            IUserLoginRepository userLoginRepository,
+            IRepository<FileHash> fileHashRepository
             )
         {
             _context = context;
@@ -58,6 +62,7 @@
             QuizRepo = quizRepository;
             TagsRepo = tagsRepository;
             UserLoginRepo = userLoginRepository;
+            FileHashRepo = fileHashRepository;
         }
 
         public async Task SaveChangesAsync()

@@ -17,7 +17,7 @@ builder.Configuration.AddEnvironmentVariables();
 // Add services to the container.
 
 builder.Services.AddDbContextPool<AppDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD"))
+        options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD_ONLINE"))
                .EnableServiceProviderCaching());
 
 builder.Services

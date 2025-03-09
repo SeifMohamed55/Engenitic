@@ -1,4 +1,5 @@
-﻿using GraduationProject.Controllers.ApiRequest;
+﻿using CloudinaryDotNet;
+using GraduationProject.Controllers.ApiRequest;
 using GraduationProject.Models;
 using GraduationProject.Models.DTOs;
 using GraduationProject.Services;
@@ -50,6 +51,7 @@ namespace GraduationProject.Repositories
         {
             var query = _dbSet.Include(x => x.Course)
                 .ThenInclude(x=> x.Instructor)
+                .Include(x => x.Course.FileHash)
                 .Where(x => x.UserId == studentId)
                 .OrderBy(x => x.IsCompleted)
                 .ThenBy(x => x.Course.Title)
@@ -71,7 +73,12 @@ namespace GraduationProject.Repositories
                         Description = GraduationProject.Data.MyDbFunctions.ShortDescription(enrollment.Course.Description),
                         InstructorName = enrollment.Course.Instructor.FullName,
                         Requirements = enrollment.Course.Requirements,
-                        Image = new() { ImageURL = $"https://localhost/api/courses/image?id={enrollment.Course.Id}", Name = enrollment.Course.ImageUrl }
+                        Image = new()
+                        {
+                            ImageURL = enrollment.Course.FileHash.PublicId,
+                            Name =  "Course Image",
+                            Hash = enrollment.Course.FileHash.Hash
+                        }
                     },
                 });
             return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);

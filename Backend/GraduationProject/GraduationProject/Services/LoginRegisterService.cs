@@ -36,6 +36,7 @@ namespace GraduationProject.Services
         private readonly ITokenBlacklistService _tokenBlacklistService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IEncryptionService _encryptionService;
 
         public LoginRegisterService(
             UserManager<AppUser> userManager,
@@ -45,7 +46,8 @@ namespace GraduationProject.Services
             IUnitOfWork unitOfWork,
             ITokenBlacklistService tokenBlacklistService,
             SignInManager<AppUser> signInManager,
-            ICloudinaryService cloudinaryService
+            ICloudinaryService cloudinaryService,
+            IEncryptionService encryptionService
             )
 
         {
@@ -57,6 +59,7 @@ namespace GraduationProject.Services
             _tokenBlacklistService = tokenBlacklistService;
             _signInManager = signInManager;
             _cloudinary = cloudinaryService;
+            _encryptionService = encryptionService;
         }
 
 
@@ -123,9 +126,19 @@ namespace GraduationProject.Services
                 Banned = false,
                 PhoneRegionCode = RegionCode,
                 FullName = model.Username,
-                ImageSrc = "default"
-
             };
+
+            var defaultHash = await _unitOfWork.FileHashRepo
+                .FirstOrDefaultAsync(x=> x.PublicId == _cloudinary.DefaultUserImagePublicId);
+            
+            if(defaultHash == null)
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Default Image not found",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+
+            string? publicId;
 
             List<IdentityError> errors = new List<IdentityError>();
             try
@@ -154,19 +167,30 @@ namespace GraduationProject.Services
 
                     var imageName = "user_" + user.Id;
 
-                    var publicId = await _cloudinary.UploadAsync(model.Image, imageName, CloudinaryType.UserImage);
+                    publicId = await _cloudinary.UploadAsync(model.Image, imageName, CloudinaryType.UserImage);
                     if (publicId == null)
-                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    {
+                        publicId = _cloudinary.DefaultUserImagePublicId;
+                        user.FileHashes.Add(defaultHash);
+                    }
                     else
-                        user.ImageSrc = publicId;
+                        user.FileHashes.Add(new FileHash()
+                        {
+                            Type = CloudinaryType.UserImage,
+                            PublicId = publicId,
+                            Hash = await _encryptionService.HashWithxxHash(model.Image.OpenReadStream())
+                        });
                 }
                 else
                 {
-                    user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    publicId = _cloudinary.DefaultUserImagePublicId;
+                    user.FileHashes.Add(defaultHash);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
 
+                var imageUrl = _cloudinary.GetImageUrl(publicId);
+                var imgName = imageUrl.Split('/').LastOrDefault() ?? "";
 
                 return Results.Ok(new SuccessResponse()
                 {
@@ -178,7 +202,10 @@ namespace GraduationProject.Services
                         Id = user.Id,
                         PhoneRegionCode = user.PhoneRegionCode,
                         UserName = user.FullName,
-                        Image = new ImageMetadata { ImageURL = "", Name = user.ImageSrc.Split('/').LastOrDefault() ?? "" }
+                        Image = new ImageMetadata
+                        { 
+                            ImageURL = imageUrl, Name = imgName, Hash = user.FileHashes.FirstOrDefault(x=> x.PublicId == publicId)?.Hash ?? 0
+                        }
                     },
                     Code = System.Net.HttpStatusCode.OK
                 });
@@ -253,7 +280,14 @@ namespace GraduationProject.Services
 
                 httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
-                string imgUrl = _cloudinary.GetImageUrl(user.ImageSrc);
+                var publicId = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.PublicId;
+
+                if (publicId == null)
+                    return Results.StatusCode(StatusCodes.Status500InternalServerError);
+
+
+                string imgUrl = _cloudinary.GetImageUrl(publicId);
+                string imgName = publicId.Split('/').LastOrDefault() ?? "default";
 
                 return Results.Ok(new SuccessResponse()
                 {
@@ -270,7 +304,7 @@ namespace GraduationProject.Services
                         Image = new
                         {
                             Url = imgUrl,
-                            Name = user.ImageSrc.Split('/').LastOrDefault()
+                            Name = imgName
                         },
                         AccessToken = accessToken,
 
@@ -392,11 +426,20 @@ namespace GraduationProject.Services
                     Email = payload.Email,
                     UserName = payload.Email,
                     Banned = false,
-                    ImageSrc = payload.Image,
-                    FullName = payload.Name,   
+                    FullName = payload.Name,
                     IsExternal = true,
                 };
-                
+
+                var defaultHash = await _unitOfWork.FileHashRepo
+                    .FirstOrDefaultAsync(x => x.PublicId == _cloudinary.DefaultUserImagePublicId);
+
+                if (defaultHash == null)
+                    return Results.BadRequest(new ErrorResponse()
+                    {
+                        Message = "Default Image not found",
+                        Code = System.Net.HttpStatusCode.BadRequest
+                    });
+
                 List<string> errors = new List<string>();
                 try
                 {
@@ -428,11 +471,26 @@ namespace GraduationProject.Services
 
                     var imageName = "user_" + user.Id;
 
-                    var publicId = await _cloudinary.UploadRemoteAsync(payload.Image, imageName, CloudinaryType.UserImage);
+                    string? publicId = await _cloudinary.UploadRemoteAsync(payload.Image, imageName, CloudinaryType.UserImage);
                     if (publicId == null)
-                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    {
+                        publicId = _cloudinary.DefaultUserImagePublicId;
+                        user.FileHashes.Add(defaultHash);
+                    }
                     else
-                        user.ImageSrc = publicId;
+                    {
+                        await using var stream = await _cloudinary.GetFileStreamAsync(publicId);
+                        if (stream == null)
+                            throw new Exception();
+
+                        user.FileHashes.Add(new FileHash()
+                        {
+                            Type = CloudinaryType.UserImage,
+                            PublicId = publicId,
+                            Hash = await _encryptionService.HashWithxxHash(stream)
+                        });
+                    }
+                        
 
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -498,7 +556,12 @@ namespace GraduationProject.Services
 
             httpContext.Response.Cookies.Append("refreshToken", raw, cookieOptions);
 
-            string imgUrl = _cloudinary.GetImageUrl(user.ImageSrc); 
+
+            string? publicIdimg = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.PublicId;
+            if (publicIdimg == null)
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+
+            string imgUrl = _cloudinary.GetImageUrl(publicIdimg); 
 
             var responseObject = new SuccessResponse()
             {
@@ -515,7 +578,7 @@ namespace GraduationProject.Services
                     Image = new
                     {
                         Url = imgUrl,
-                        Name = user.ImageSrc.Split('/').LastOrDefault()
+                        Name = imgUrl.Split('/').LastOrDefault()
                     },
                     AccessToken = accessToken,
 
@@ -598,10 +661,19 @@ namespace GraduationProject.Services
                 PhoneNumber = model.PhoneNumber,
                 Banned = false,
                 PhoneRegionCode = RegionCode,
-                ImageSrc = "default.jpeg",
-                FullName = model.Username
-
+                FullName = model.Username,
             };
+
+            var defaultHash = await _unitOfWork.FileHashRepo
+                .FirstOrDefaultAsync(x => x.PublicId == _cloudinary.DefaultUserImagePublicId);
+
+            if (defaultHash == null)
+                return Results.BadRequest(new ErrorResponse()
+                {
+                    Message = "Default Image not found",
+                    Code = System.Net.HttpStatusCode.BadRequest
+                });
+
 
             List<IdentityError> errors = new List<IdentityError>();
             try
@@ -624,21 +696,32 @@ namespace GraduationProject.Services
 
                 await _unitOfWork.CommitTransactionAsync();
 
+                string? publicId;
+
                 if (ImageHelper.IsValidImageType(model.Image))
                 {
                     Debug.Assert(model.Image != null);
 
                     var imageName = "user_" + user.Id;
 
-                    var publicId = await _cloudinary.UploadAsync(model.Image, imageName, CloudinaryType.UserImage);
+                    publicId = await _cloudinary.UploadAsync(model.Image, imageName, CloudinaryType.UserImage);
                     if (publicId == null)
-                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    {
+                        publicId = _cloudinary.DefaultUserImagePublicId;
+                        user.FileHashes.Add(defaultHash);
+                    }
                     else
-                        user.ImageSrc = publicId;
+                        user.FileHashes.Add(new FileHash()
+                        {
+                            Type = CloudinaryType.UserImage,
+                            PublicId = publicId,
+                            Hash = await _encryptionService.HashWithxxHash(model.Image.OpenReadStream())
+                        });
                 }
                 else
                 {
-                    user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
+                    publicId = _cloudinary.DefaultUserImagePublicId;
+                    user.FileHashes.Add(defaultHash);
                 }
 
                 await _unitOfWork.SaveChangesAsync();

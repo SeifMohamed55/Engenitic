@@ -11,6 +11,7 @@ namespace GraduationProject.Repositories
     public interface IUserRepository
     {
         Task<IEnumerable<AppUserDTO>> GetUsersDTO();
+        Task<List<AppUser>> GetAllUsersAsync();
         Task<AppUserDTO?> GetAppUserDTO(int id);
         Task<AppUser?> GetUserWithTokenAndRoles(int id);
         Task<AppUser?> GetUserWithTokenAndRoles(string email);
@@ -20,7 +21,7 @@ namespace GraduationProject.Repositories
         Task BanAppUser(int id);
         Task<AppUserDTO?> GetUserDTOByEmail(string email);
         void UpdateRefreshToken(AppUser appUser, RefreshToken token);
-        Task<string?> GetUserImage(int id);
+        //Task<string?> GetUserImage(int id);
 
     }
 
@@ -39,29 +40,29 @@ namespace GraduationProject.Repositories
             return await _dbSet
                 .Include(x=> x.Roles)
                 .Include(x=> x.RefreshToken)
-                .Select(x=> new AppUserDTO
-                {
-                    Id = x.Id,
-                    Email = x.Email,
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneRegionCode =  x.PhoneRegionCode,
-                    Image = new ImageMetadata() { Name = x.ImageSrc, ImageURL = "https://localhost/api/users/image" },
-                }).ToListAsync();
+                .DTOProjection()
+                .ToListAsync();
+        }
+
+        public async Task<List<AppUser>> GetAllUsersAsync()
+        {
+            return await _dbSet
+                .ToListAsync();
         }
 
         public async Task<AppUserDTO?> GetAppUserDTO(int id)
         {
-            return await _dbSet 
+            return  await _dbSet 
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
                 .DTOProjection()
                 .FirstOrDefaultAsync(x=> x.Id == id);
         }
 
-        public async Task<string?> GetUserImage(int id)
+        /*public async Task<string?> GetUserImage(int id)
         {
             return (await _dbSet.FindAsync(id))?.ImageSrc;
-        }
+        }*/
 
         // Needs optimization
         public async Task<AppUser?> GetUserWithTokenAndRoles(int id)
@@ -69,6 +70,7 @@ namespace GraduationProject.Repositories
             return await _dbSet
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
+                .Include(x => x.FileHashes)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -77,6 +79,7 @@ namespace GraduationProject.Repositories
             return await _dbSet
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
+                .Include(x=> x.FileHashes)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 

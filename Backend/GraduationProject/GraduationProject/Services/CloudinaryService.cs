@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using System.Net.Http;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GraduationProject.Services
@@ -39,6 +40,8 @@ namespace GraduationProject.Services
         string GetProfileImage(string publicId);
         string GetPDF(string publicId);
 
+        Task<Stream?> GetFileStreamAsync(string publicId);
+
         //string GetDefaultProfileImage();
         //string GetDefaultCourseImage();
 
@@ -47,7 +50,7 @@ namespace GraduationProject.Services
     public class CloudinaryService : ICloudinaryService
     {
         private readonly Cloudinary _cloudinary;
-        public CloudinaryService(Cloudinary cloudinary) 
+        public CloudinaryService(Cloudinary cloudinary)
         {
             _cloudinary = cloudinary;
         }
@@ -90,6 +93,30 @@ namespace GraduationProject.Services
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
             return uploadResult.PublicId;
+        }
+
+
+        public async Task<Stream?> GetFileStreamAsync(string publicId)
+        {
+            // Get the file details from Cloudinary
+            var resource = await _cloudinary.GetResourceAsync(new GetResourceParams(publicId));
+
+            if (resource == null || string.IsNullOrEmpty(resource.Url))
+            {
+                return null;
+            }
+
+            using var httpClient = new HttpClient();
+            // Download the file
+            var response = await httpClient.GetAsync(resource.Url);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var stream = await response.Content.ReadAsStreamAsync();
+
+            return stream;
         }
 
         public string GetImageUrl(string publicId)

@@ -13,8 +13,6 @@ namespace GraduationProject.Data.Configuration
             builder.ToTable("Users");
             builder.HasKey(u => u.Id);
 
-            builder.Property(x=> x.ImageSrc).IsRequired();
-
             builder.Property(u => u.PhoneRegionCode).HasMaxLength(5);
 
             builder.HasIndex(x => x.NormalizedEmail).IsUnique();
@@ -53,6 +51,10 @@ namespace GraduationProject.Data.Configuration
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.FileHashes)
+                .WithMany(x => x.Users);
+                
         }
     }
 

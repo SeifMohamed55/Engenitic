@@ -17,7 +17,7 @@ namespace GraduationProject.Controllers.APIResponses
             InstructorEmail = course.Instructor.Email;
             InstructorPhone = course.Instructor.PhoneNumber;
             Requirements = course.Requirements;
-            Image = new() { ImageURL = $"https://localhost/api/courses/image?id={Id}", Name = course.ImageUrl };
+            Image = new() { ImageURL = course.FileHash.PublicId, Name = "", Hash = course.FileHash.Hash };
         }
 
         public int Id { get; set; }
@@ -29,6 +29,6 @@ namespace GraduationProject.Controllers.APIResponses
         public string? InstructorPhone { get; set; }
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
-        public ImageMetadata? Image { get; set; }
+        public ImageMetadata Image { get; set; }
     }
 }

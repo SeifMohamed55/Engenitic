@@ -25,19 +25,23 @@ namespace GraduationProject.Controllers
         private readonly IGmailServiceHelper _emailService;
         private readonly JwtOptions _jwtOptions;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IEncryptionService _encryptionService;
 
         public UsersController(
             IUnitOfWork unitOfWork,
             UserManager<AppUser> userManager,
             IGmailServiceHelper emailService,
             IOptions<JwtOptions> options,
-            ICloudinaryService cloudinary)
+            ICloudinaryService cloudinary,
+            IEncryptionService encryptionService
+            )
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _emailService = emailService;
             _jwtOptions = options.Value;
             _cloudinary = cloudinary;
+            _encryptionService = encryptionService;
         }
 
         // GET: api/Users/
@@ -77,7 +81,7 @@ namespace GraduationProject.Controllers
             });
         }
 
-        // GET: api/Users/image
+/*        // GET: api/Users/image
         [HttpGet("image")]
         public async Task<ActionResult> GetUserImage([FromQuery] int id)
         {
@@ -124,7 +128,7 @@ namespace GraduationProject.Controllers
                     Message = "Image Not found"
                 });
             }
-        }
+        }*/
 
         // Update user email
         [HttpPost("update-email")]
@@ -355,20 +359,47 @@ namespace GraduationProject.Controllers
                         Message = "User does not exist"
                     });
 
-                if (ImageHelper.IsValidImageType(image))
+                var imageName = "user_" + user.Id;
+
+                var publicId = await _cloudinary.UploadAsync(image, imageName, CloudinaryType.UserImage);
+                if (publicId == null)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Code = HttpStatusCode.BadRequest,
+                        Message = "Image was not uploaded please try again later."
+                    });
+
+                var newImageHash = await _encryptionService.HashWithxxHash(image.OpenReadStream());
+
+                var dbFileHash = await _unitOfWork.FileHashRepo.FirstOrDefaultAsync(hash => hash.PublicId == publicId);
+                if (dbFileHash == null)
                 {
-                    Debug.Assert(image != null);
-
-                    var imageName = "user_" + user.Id;
-
-                    var url = await _cloudinary.UploadAsync(image, imageName, CloudinaryType.UserImage);
-                    if (url == null)
-                        user.ImageSrc = _cloudinary.DefaultUserImagePublicId;
-                    else
-                        user.ImageSrc = url;
-
+                    dbFileHash = new FileHash()
+                    {
+                        PublicId = publicId,
+                        Hash = newImageHash,
+                        Type = CloudinaryType.UserImage,
+                    };
+                    user.FileHashes.Add(dbFileHash);
                     await _unitOfWork.SaveChangesAsync();
                 }
+
+                else if (dbFileHash.Hash == newImageHash)
+                {
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Code = HttpStatusCode.BadRequest,
+                        Message = "Please choose a new Image."
+                    });
+                }
+                else
+                {
+                    dbFileHash.Hash = newImageHash;
+                    dbFileHash.Type = CloudinaryType.UserImage;
+                    dbFileHash.PublicId = publicId;
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                
 
                 return Ok(new SuccessResponse()
                 {

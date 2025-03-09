@@ -5,6 +5,7 @@
     using System;
     using System.Security.Cryptography;
     using System.Text;
+    using System.IO.Hashing;
 
 
     public interface IEncryptionService
@@ -13,7 +14,10 @@
         string AesDecrypt(string encryptedBase64);
         string HashWithHMAC(string input);
         bool VerifyHMAC(string raw, string hash);
-    }   
+        Task<ulong> HashWithxxHash(Stream stream);
+
+    }
+
     public class EncryptionService : IEncryptionService
     {
         private readonly byte[] _key;
@@ -120,6 +124,15 @@
             return newHash == hash;
         }
 
+
+        public async Task<ulong> HashWithxxHash(Stream file)
+        {
+            using var stream = new MemoryStream();
+            await file.CopyToAsync(stream);
+            byte[] data = stream.ToArray(); // Get exact bytes
+            ulong hash = XxHash64.HashToUInt64(data);
+            return hash;
+        }
     }
 
 }
