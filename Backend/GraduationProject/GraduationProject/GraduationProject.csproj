@@ -9,10 +9,6 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="uploads\images\users\default.jpeg" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.27.4" />
@@ -53,7 +49,7 @@
 
 
   <ItemGroup>
-    <Folder Include="uploads\CVs\" />
+    <Folder Include="Common\Helpers\" />
   </ItemGroup>
 
 </Project>

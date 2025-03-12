@@ -1,13 +1,10 @@
-using GraduationProject.Models;
+using GraduationProject.Application.Services;
+using GraduationProject.Common.Middlewares;
+using GraduationProject.Domain.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using GraduationProject.Services;
-using GraduationProject.Repositories;
-using GraduationProject.Middlewares;
-using Microsoft.AspNetCore.Mvc;
-using GraduationProject.Data;
-using CloudinaryDotNet;
+using Microsoft.Extensions.DependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,36 +42,30 @@ builder.Services
     options.SuppressModelStateInvalidFilter = true;
 });*/
 
+builder.Services.AddHttpClient<IVqaService, VqaService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:8000/"); // Python FastAPI server
+});
 
 
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
-builder.Services.Configure<MailingOptions>(builder.Configuration
-    .GetSection("Authentication")
-    .GetSection("Mailing"));
+var vqaSection = builder.Configuration.GetSection("VQA");
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var mailingSection = builder.Configuration.GetSection("Authentication").GetSection("Mailing");
+
+if (!jwtSection.Exists() || !vqaSection.Exists() || !mailingSection.Exists())
+{
+    throw new InvalidOperationException("Configuration section is missing.");
+}
+
+builder.Services.Configure<VqaApiKeyOption>(vqaSection);
+builder.Services.Configure<JwtOptions>(jwtSection);
+builder.Services.Configure<MailingOptions>(mailingSection);
 
 
 builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
-builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
-builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
-builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
 
-builder.Services.AddTransient<IGmailServiceHelper, GmailServiceHelper>();
-
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUserRepository, UsersRepository>();
-builder.Services.AddScoped<IQuizRepository, QuizRepository>();
-builder.Services.AddScoped<ICourseRepository, CoursesRepository>();
-builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
-builder.Services.AddScoped<IUserLoginRepository, UserLoginRepository>();
-builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-builder.Services.AddScoped<ITagsRepository, TagsRepository>();
-
-
-builder.Services.AddScoped<ILoginRegisterService, LoginRegisterService>();
-
+builder.Services.AddDependencies(builder.Configuration);
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -96,11 +87,6 @@ builder.Services.AddCors(options =>
 });
 
 
-Cloudinary cloudinary = new Cloudinary(builder.Configuration["GraduationProject:CLOUDINARY_URL"]);
-cloudinary.Api.Secure = true;
-
-builder.Services.AddSingleton(cloudinary);
-
 
 builder.Services.AddRateLimiting(); // Add Rate Limiting Configuration
 
@@ -110,14 +96,12 @@ var app = builder.Build();
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");
 
@@ -132,65 +116,5 @@ app.MapControllers();
 
 app.Run();
 
-
-
-
-/*using (var scope = app.Services.CreateScope())
-{
-
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var QuizRepo = scope.ServiceProvider.GetRequiredService<IQuizRepository>();
-    //AppDbSeeder.Seed(dbContext);
-
-    dbContext.Roles.Add(new Role() { Name = "Superadmin"});
-    await dbContext.SaveChangesAsync();
-    *//*
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-
-        var quiz = await QuizRepo.GetQuizByCourseAndPosition(1, 1);
-
-        stopwatch.Stop();
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
-        stopwatch.Restart();
-
-        var quiz2 = await QuizRepo.GetQuizByCourseAndPosition(1, 1);
-
-        stopwatch.Stop();
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
-
-        var quiz3 = await dbContext.Quizzes
-                    .Include(x => x.Questions)
-                        .ThenInclude(q => q.Answers)
-                    .Where(q => q.CourseId == 1 && q.Position == 1)
-                    .Select(q => new QuizDTO()
-                    {
-                        Id = q.Id,
-                        Title = q.Title,
-                        Position = q.Position,
-                        Questions = q.Questions.OrderBy(x => x.Position).Select(qq => new QuestionDTO()
-                        {
-                            Id = qq.Id,
-                            QuestionText = qq.QuestionText,
-                            Position = qq.Position,
-                            Answers = qq.Answers.OrderBy(x => x.Position).Select(a => new AnswerDTO()
-                            {
-                                Id = a.Id,
-                                AnswerText = a.AnswerText,
-                                IsCorrect = a.IsCorrect,
-                                Position = a.Position
-                            }).ToList()
-                        }).ToList()
-                    })
-                    .AsSingleQuery()
-                    .FirstOrDefaultAsync();
-
-        stopwatch.Stop();
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
-        stopwatch.Restart();
-}*/
 
 

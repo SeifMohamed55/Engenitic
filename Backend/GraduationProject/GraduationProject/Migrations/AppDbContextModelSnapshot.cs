@@ -168,7 +168,7 @@ namespace GraduationProject.Migrations
                         .IsUnicode(true)
                         .HasColumnType("citext");
 
-                    b.Property<int?>("HashId")
+                    b.Property<int>("HashId")
                         .HasColumnType("integer");
 
                     b.Property<int>("InstructorId")
@@ -664,7 +664,8 @@ namespace GraduationProject.Migrations
                     b.HasOne("GraduationProject.Models.FileHash", "FileHash")
                         .WithMany("Courses")
                         .HasForeignKey("HashId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
                     b.HasOne("GraduationProject.Models.AppUser", "Instructor")
                         .WithMany("Courses")

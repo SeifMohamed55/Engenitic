@@ -1,7 +1,6 @@
-﻿using GraduationProject.Controllers.APIResponses;
+﻿using GraduationProject.API.Responses;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -35,7 +34,7 @@ namespace GraduationProject.StartupConfigurations
                 options.ValidAudience = tokenValidationParameters.ValidAudience;
                 options.IssuerSigningKey = tokenValidationParameters.IssuerSigningKey;
                 options.ClockSkew = TimeSpan.Zero;
-            });       
+            });
 
             services.AddAuthentication(options =>
             {
@@ -79,12 +78,12 @@ namespace GraduationProject.StartupConfigurations
                      {
                          context.Response.StatusCode = 403;
                          context.Response.ContentType = "application/json";
-                         
-                        return context.Response.WriteAsJsonAsync(new ErrorResponse
-                        {
-                            Message = "Forbidden Insufficient Roles",
-                            Code = System.Net.HttpStatusCode.Forbidden,
-                        });
+
+                         return context.Response.WriteAsJsonAsync(new ErrorResponse
+                         {
+                             Message = "Forbidden Insufficient Roles",
+                             Code = System.Net.HttpStatusCode.Forbidden,
+                         });
                      }
                  };
              })

@@ -1,0 +1,6 @@
+# .gitignore
+venv/
+env/
+*.pyc
+__pycache__/
+models/

@@ -1,4 +1,4 @@
-﻿using GraduationProject.Controllers.APIResponses;
+﻿using GraduationProject.API.Responses;
 using System.Threading.RateLimiting;
 
 namespace GraduationProject.StartupConfigurations
