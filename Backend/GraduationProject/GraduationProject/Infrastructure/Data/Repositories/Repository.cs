@@ -11,6 +11,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         void Update(T entity);
         void Delete(object id);
         void Delete(T entityToDelete);
+
+        void Detach(T entity);
         Task<List<T>> Get(
         Expression<Func<T, bool>>? filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
@@ -60,6 +62,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 return await query.ToListAsync();
             }
         }
+
 
         public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> filter, string includeProperties = "")
         {
@@ -114,7 +117,10 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             _dbSet.Remove(entityToDelete);
         }
 
-
+        public void Detach(T entity)
+        {
+            _dbSet.Entry(entity).State = EntityState.Detached;
+        }
     }
 
 

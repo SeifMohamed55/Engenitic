@@ -63,7 +63,7 @@ namespace GraduationProject.API.Controllers
             }
         }
 
-        // DELETE: api/admin/Users/5
+/*        // DELETE: api/admin/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> BanAppUser(int id)
         {
@@ -90,7 +90,7 @@ namespace GraduationProject.API.Controllers
 
 
         }
-
+*/
         [HttpPost("register")]
         public async Task<IActionResult> AddAdmin([FromForm] RegisterCustomRequest model)
         {

@@ -19,14 +19,17 @@ namespace GraduationProject.Application.Services
         private readonly IJwtTokenService _tokenService;
         private readonly IEncryptionService _encryptionService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
         public RefreshTokenService
             (IJwtTokenService tokenService,
             IUnitOfWork unitOfWork,
-            IEncryptionService encryptionService)
+            IEncryptionService encryptionService,
+            IUserService userService)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _encryptionService = encryptionService;
+            _userService = userService;
         }
 
         public async Task<ServiceResult<string>> Refresh(string oldAccessToken, string requestRefToken)
@@ -68,7 +71,7 @@ namespace GraduationProject.Application.Services
 
                 (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user);
 
-                _unitOfWork.UserRepo.UpdateUserLatestToken(user, newJti);
+                _userService.UpdateUserLatestToken(user, newJti);
                 await _unitOfWork.SaveChangesAsync();
 
                 return ServiceResult<string>.Success(newAccessToken);

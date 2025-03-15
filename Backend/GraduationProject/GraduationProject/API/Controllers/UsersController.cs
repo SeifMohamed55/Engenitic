@@ -156,7 +156,10 @@ namespace GraduationProject.API.Controllers
             var user = await _userManager.FindByIdAsync(req.UserId);
             if (user == null)
             {
-                return BadRequest("User not found.");
+                return BadRequest(new ErrorResponse(){
+                    Message = "User not found.",
+                    Code = HttpStatusCode.BadRequest
+                });
             }
 
             var emailExists = await _userManager.FindByEmailAsync(req.NewEmail) != null;
@@ -181,7 +184,8 @@ namespace GraduationProject.API.Controllers
             return Ok(new SuccessResponse()
             {
                 Code = HttpStatusCode.OK,
-                Message = "Email verified successfully"
+                Message = "Email verified successfully",
+                Data = req.NewEmail
             });
 
         }

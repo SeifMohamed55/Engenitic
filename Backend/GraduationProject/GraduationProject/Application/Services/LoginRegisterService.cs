@@ -30,6 +30,7 @@ namespace GraduationProject.Application.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IUploadingService _uploadingService;
         private readonly ICloudinaryService _cloudinaryService;
+        private readonly IUserService _userService;
 
         public LoginRegisterService(
             UserManager<AppUser> userManager,
@@ -40,7 +41,8 @@ namespace GraduationProject.Application.Services
             ITokenBlacklistService tokenBlacklistService,
             SignInManager<AppUser> signInManager,
             IUploadingService uploadingService,
-            ICloudinaryService cloudinaryService
+            ICloudinaryService cloudinaryService,
+            IUserService userService
             )
 
         {
@@ -53,6 +55,8 @@ namespace GraduationProject.Application.Services
             _signInManager = signInManager;
             _uploadingService = uploadingService;
             _cloudinaryService = cloudinaryService;
+            _userService = userService;
+
         }
 
 
@@ -203,7 +207,7 @@ namespace GraduationProject.Application.Services
                 (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
             try
             {
-                _unitOfWork.UserRepo.UpdateRefreshToken(user, refreshToken);
+                _userService.UpdateRefreshToken(user, refreshToken);
                 await _unitOfWork.SaveChangesAsync();
 
 
@@ -380,7 +384,7 @@ namespace GraduationProject.Application.Services
 
             try
             {
-                _unitOfWork.UserRepo.UpdateRefreshToken(user, refreshToken);
+                _userService.UpdateRefreshToken(user, refreshToken);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
