@@ -1,0 +1,8 @@
+@startuml
+class UserEnrollmentConfiguration {
+    Configure(builder:EntityTypeBuilder<UserEnrollment>) : void
+}
+class "IEntityTypeConfiguration`1"<T> {
+}
+"IEntityTypeConfiguration`1" "<UserEnrollment>" <|-- UserEnrollmentConfiguration
+@enduml

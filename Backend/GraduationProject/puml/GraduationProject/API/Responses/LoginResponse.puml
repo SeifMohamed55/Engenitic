@@ -1,0 +1,13 @@
+@startuml
+class LoginResponse {
+    + Id : int <<get>> <<set>>
+    + Banned : bool <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + ValidTo : string <<get>> <<set>>
+    + AccessToken : string <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+LoginResponse o-> "Roles<string>" "List`1"
+LoginResponse o-> "Image" ImageMetadata
+@enduml

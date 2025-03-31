@@ -1,0 +1,11 @@
+@startuml
+class CourseStatistics {
+    + CourseStatistics()
+    + TotalEnrollments : int <<get>> <<set>>
+    + TotalCompleted : int <<get>> <<set>>
+    + CourseId : int <<get>> <<set>>
+}
+class "IEnumerable`1"<T> {
+}
+CourseStatistics o-> "UserEmails<string>" "IEnumerable`1"
+@enduml

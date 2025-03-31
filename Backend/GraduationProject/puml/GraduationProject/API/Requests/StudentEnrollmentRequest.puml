@@ -1,0 +1,6 @@
+@startuml
+class StudentEnrollmentRequest {
+    + CourseId : int <<get>> <<set>>
+    + StudentId : int <<get>> <<set>>
+}
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+class JwtOptions {
+    Key : string <<get>> <<set>>
+    Issuer : string <<get>> <<set>>
+    Audience : string <<get>> <<set>>
+    AccessTokenValidityMinutes : string <<get>> <<set>>
+    RefreshTokenValidityDays : string <<get>> <<set>>
+    RefreshTokenKey : string <<get>> <<set>>
+    IV : string <<get>> <<set>>
+}
+@enduml

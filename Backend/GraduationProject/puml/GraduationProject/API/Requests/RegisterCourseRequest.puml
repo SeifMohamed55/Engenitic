@@ -1,0 +1,16 @@
+@startuml
+class RegisterCourseRequest {
+    + Code : string? <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + Requirements : string <<get>> <<set>>
+    + InstructorId : int <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+RegisterCourseRequest o-> "Image" IFormFile
+RegisterCourseRequest o-> "Tags<TagDTO>" "List`1"
+RegisterCourseRequest o-> "Quizes<QuizDTO>" "ICollection`1"
+@enduml

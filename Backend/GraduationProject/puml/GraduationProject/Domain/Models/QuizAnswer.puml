@@ -1,0 +1,12 @@
+@startuml
+class QuizAnswer {
+    + QuizAnswer()
+    + QuizAnswer(answer:AnswerDTO)
+    + Id : int <<get>> <<set>>
+    + AnswerText : string <<get>> <<set>>
+    + IsCorrect : bool <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+    + QuestionId : int <<get>> <<set>>
+}
+QuizAnswer o-> "Question" QuizQuestion
+@enduml

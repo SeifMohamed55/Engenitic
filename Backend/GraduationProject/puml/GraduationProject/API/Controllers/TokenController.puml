@@ -1,0 +1,9 @@
+@startuml
+class TokenController {
+    + TokenController(tokenService:IRefreshTokenService, options:IOptions<JwtOptions>)
+    + <<async>> Refresh() : Task<IActionResult>
+}
+ControllerBase <|-- TokenController
+TokenController --> "_tokenService" IRefreshTokenService
+TokenController --> "_jwtOptions" JwtOptions
+@enduml

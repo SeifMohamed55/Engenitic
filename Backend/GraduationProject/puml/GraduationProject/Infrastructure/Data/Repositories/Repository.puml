@@ -1,0 +1,30 @@
+@startuml
+interface "IRepository`1"<T> {
+    GetAllAsync() : Task<List<T>>
+    GetByIdAsync(id:int) : Task<T?>
+    Insert(entity:T) : void
+    Update(entity:T) : void
+    Delete(id:object) : void
+    Delete(entityToDelete:T) : void
+    Detach(entity:T) : void
+    Get(filter:Expression<Func<T, bool>>?, orderBy:Func<IQueryable<T>, IOrderedQueryable<T>>?, includeProperties:string) : Task<List<T>>
+    FirstOrDefaultAsync(filter:Expression<Func<T, bool>>, includeProperties:string) : Task<T?>
+}
+class "Repository`1"<T> {
+    + Repository(context:AppDbContext)
+    + <<virtual>> <<async>> Get(filter:Expression<Func<T, bool>>?, orderBy:Func<IQueryable<T>, IOrderedQueryable<T>>?, includeProperties:string) : Task<List<T>>
+    + <<async>> FirstOrDefaultAsync(filter:Expression<Func<T, bool>>, includeProperties:string) : Task<T?>
+    + <<async>> GetAllAsync() : Task<List<T>>
+    + <<async>> GetByIdAsync(id:int) : Task<T?>
+    + Insert(entity:T) : void
+    + Update(entity:T) : void
+    + <<virtual>> Delete(id:object) : void
+    + <<virtual>> Delete(entityToDelete:T) : void
+    + Detach(entity:T) : void
+}
+class "DbSet`1"<T> {
+}
+"IRepository`1" "<T>" <|-- "Repository`1"
+"Repository`1" --> "_context" AppDbContext
+"Repository`1" --> "_dbSet<T>" "DbSet`1"
+@enduml

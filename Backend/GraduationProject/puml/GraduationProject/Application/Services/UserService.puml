@@ -1,0 +1,21 @@
+@startuml
+interface IUserService {
+    UpdateUserLatestToken(user:AppUser, latestToken:string) : void
+    UpdateRefreshToken(appUser:AppUser, token:RefreshToken) : void
+}
+class UserService {
+    + UserService(unitOfWork:IUnitOfWork, userManager:UserManager<AppUser>, emailService:IGmailServiceHelper, options:IOptions<JwtOptions>, cloudinary:ICloudinaryService, uploadingService:IUploadingService, hashingService:IHashingService)
+    + UpdateRefreshToken(appUser:AppUser, token:RefreshToken) : void
+    + UpdateUserLatestToken(user:AppUser, latestJti:string) : void
+}
+class "UserManager`1"<T> {
+}
+IUserService <|-- UserService
+UserService --> "_unitOfWork" IUnitOfWork
+UserService --> "_userManager<AppUser>" "UserManager`1"
+UserService --> "_emailService" IGmailServiceHelper
+UserService --> "_jwtOptions" JwtOptions
+UserService --> "_cloudinary" ICloudinaryService
+UserService --> "_uploadingService" IUploadingService
+UserService --> "_hashingService" IHashingService
+@enduml

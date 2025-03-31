@@ -1,0 +1,7 @@
+@startuml
+class CheckingRefreshTokenAfterAuthorizationMiddleware {
+    + CheckingRefreshTokenAfterAuthorizationMiddleware(next:RequestDelegate)
+    + <<async>> InvokeAsync(context:HttpContext) : Task
+}
+CheckingRefreshTokenAfterAuthorizationMiddleware --> "_next" RequestDelegate
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+class JsonModelBinder {
+    + BindModelAsync(bindingContext:ModelBindingContext) : Task
+}
+IModelBinder <|-- JsonModelBinder
+@enduml

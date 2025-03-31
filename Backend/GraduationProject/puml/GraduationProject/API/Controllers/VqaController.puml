@@ -1,0 +1,8 @@
+@startuml
+class VqaController {
+    + VqaController(vqaService:IVqaService)
+    + <<async>> Predict(image:IFormFile, question:string) : Task<IActionResult>
+}
+ControllerBase <|-- VqaController
+VqaController --> "_vqaService" IVqaService
+@enduml

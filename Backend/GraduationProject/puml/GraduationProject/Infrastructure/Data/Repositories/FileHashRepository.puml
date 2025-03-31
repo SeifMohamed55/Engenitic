@@ -1,0 +1,22 @@
+@startuml
+interface IFileHashRepository {
+    GetDefaultUserImageAsync() : Task<FileHash>
+    GetDefaultCourseImageAsync() : Task<FileHash>
+    IsDefaultCourseImageHash(hash:FileHash) : bool
+    IsDefaultUserImageHash(hash:FileHash) : bool
+}
+class FileHashRepository {
+    + FileHashRepository(context:AppDbContext)
+    + <<async>> GetDefaultUserImageAsync() : Task<FileHash>
+    + <<async>> GetDefaultCourseImageAsync() : Task<FileHash>
+    + IsDefaultCourseImageHash(hash:FileHash) : bool
+    + IsDefaultUserImageHash(hash:FileHash) : bool
+}
+class "IRepository`1"<T> {
+}
+class "Repository`1"<T> {
+}
+"IRepository`1" "<FileHash>" <|-- IFileHashRepository
+"Repository`1" "<FileHash>" <|-- FileHashRepository
+IFileHashRepository <|-- FileHashRepository
+@enduml

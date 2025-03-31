@@ -1,0 +1,9 @@
+@startuml
+class AnswerDTO {
+    + Id : int <<get>> <<set>>
+    + AnswerText : string <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+    + IsCorrect : bool <<get>> <<set>>
+}
+IPostitionable <|-- AnswerDTO
+@enduml

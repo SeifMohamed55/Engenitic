@@ -1,0 +1,14 @@
+@startuml
+class RolesController {
+    + RolesController(roleManager:RoleManager<Role>)
+    + <<async>> GetRoles() : Task<ActionResult>
+    + <<async>> GetRole(id:int) : Task<ActionResult>
+    + <<async>> EditRole(request:RoleRequest) : Task<IActionResult>
+    + <<async>> PostRole(request:RoleRequest) : Task<ActionResult<Role>>
+    + <<async>> DeleteRole(request:RoleRequest) : Task<IActionResult>
+}
+class "RoleManager`1"<T> {
+}
+ControllerBase <|-- RolesController
+RolesController --> "_roleManager<Role>" "RoleManager`1"
+@enduml

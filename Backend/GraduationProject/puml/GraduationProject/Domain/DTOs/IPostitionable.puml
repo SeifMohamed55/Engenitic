@@ -1,0 +1,5 @@
+@startuml
+interface IPostitionable {
+    + Position : int <<get>> <<set>>
+}
+@enduml

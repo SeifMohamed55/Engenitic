@@ -1,0 +1,8 @@
+@startuml
+class TagsConfiguration {
+    Configure(builder:EntityTypeBuilder<Tag>) : void
+}
+class "IEntityTypeConfiguration`1"<T> {
+}
+"IEntityTypeConfiguration`1" "<Tag>" <|-- TagsConfiguration
+@enduml

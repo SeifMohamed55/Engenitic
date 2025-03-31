@@ -1,0 +1,16 @@
+@startuml
+class "AddDbContextPool`1"<T> {
+}
+class "AddIdentity`2"<T1,T2> {
+}
+class "AddRoles`1"<T> {
+}
+class "AddEntityFrameworkStores`1"<T> {
+}
+class "AddHttpClient`2"<T1,T2> {
+}
+class "Configure`1"<T> {
+}
+class "UseMiddleware`1"<T> {
+}
+@enduml

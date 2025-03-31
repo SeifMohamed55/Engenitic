@@ -1,0 +1,11 @@
+@startuml
+class UserAnswer {
+    + Id : int <<get>> <<set>>
+    + IsCorrect : bool <<get>> <<set>>
+    + UserQuizAttemptId : int <<get>> <<set>>
+    + QuestionId : int <<get>> <<set>>
+    + AnswerId : int <<get>> <<set>>
+}
+UserAnswer o-> "Question" QuizQuestion
+UserAnswer o-> "Answer" QuizAnswer
+@enduml

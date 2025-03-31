@@ -1,0 +1,6 @@
+@startuml
+class NotEmptyCollectionAttribute {
+    # <<override>> IsValid(value:object?, validationContext:ValidationContext) : ValidationResult?
+}
+ValidationAttribute <|-- NotEmptyCollectionAttribute
+@enduml

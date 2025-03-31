@@ -1,0 +1,5 @@
+@startuml
+class MyDbFunctions <<static>> {
+    + {static} ShortDescription(Description:string) : string
+}
+@enduml

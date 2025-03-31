@@ -1,0 +1,12 @@
+@startuml
+class CoursesController {
+    + CoursesController(unitOfWork:IUnitOfWork, cloudinary:ICloudinaryService)
+    + <<async>> GetPageOfCourses(index:int) : Task<IActionResult>
+    + <<async>> GetCoursesBySearching(search:string, index:int) : Task<IActionResult>
+    + <<async>> GetCoursesByTag(tag:string, index:int) : Task<IActionResult>
+    + <<async>> GetCourseById(courseId:int) : Task<IActionResult>
+}
+ControllerBase <|-- CoursesController
+CoursesController --> "_unitOfWork" IUnitOfWork
+CoursesController --> "_cloudinary" ICloudinaryService
+@enduml

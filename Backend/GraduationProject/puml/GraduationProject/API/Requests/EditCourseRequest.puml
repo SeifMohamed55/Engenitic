@@ -1,0 +1,20 @@
+@startuml
+class EditCourseRequest {
+    + Id : int <<get>> <<set>>
+    + Code : string? <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + Requirements : string <<get>> <<set>>
+    + InstructorId : int <<get>> <<set>>
+}
+class DeleteCourseRequest {
+    + CourseId : int <<get>> <<set>>
+    + InstructorId : int <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+EditCourseRequest o-> "Tags<TagDTO>" "List`1"
+EditCourseRequest o-> "Quizes<QuizDTO>" "ICollection`1"
+@enduml

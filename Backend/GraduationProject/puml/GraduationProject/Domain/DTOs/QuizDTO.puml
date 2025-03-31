@@ -1,0 +1,12 @@
+@startuml
+class QuizDTO {
+    + Id : int <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+    + VideoUrl : string <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+IPostitionable <|-- QuizDTO
+QuizDTO o-> "Questions<QuestionDTO>" "List`1"
+@enduml

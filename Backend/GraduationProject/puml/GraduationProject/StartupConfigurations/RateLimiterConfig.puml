@@ -1,0 +1,5 @@
+@startuml
+class RateLimiterConfig <<static>> {
+    + {static} AddRateLimiting(services:IServiceCollection) : IServiceCollection
+}
+@enduml

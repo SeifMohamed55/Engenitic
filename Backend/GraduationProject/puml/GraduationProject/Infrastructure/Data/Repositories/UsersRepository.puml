@@ -1,0 +1,31 @@
+@startuml
+interface IUserRepository {
+    GetUsersDTO(index:int) : Task<PaginatedList<AppUserDTO>>
+    GetAllUsersAsync() : Task<List<AppUser>>
+    GetAppUserDTO(id:int) : Task<AppUserDTO?>
+    GetUserWithTokenAndRoles(id:int) : Task<AppUser?>
+    GetUserWithTokenAndRoles(email:string) : Task<AppUser?>
+    GetUserRefreshToken(id:int) : Task<RefreshToken?>
+    GetUserDTOByEmail(email:string) : Task<AppUserDTO?>
+    GetUserImageHash(id:int) : Task<FileHash>
+}
+class UsersRepository {
+    + UsersRepository(context:AppDbContext)
+    - DefaultQuery() : IQueryable<AppUser>
+    + <<async>> GetUsersDTO(index:int) : Task<PaginatedList<AppUserDTO>>
+    + <<async>> GetAllUsersAsync() : Task<List<AppUser>>
+    + <<async>> GetAppUserDTO(id:int) : Task<AppUserDTO?>
+    + <<async>> GetUserWithTokenAndRoles(id:int) : Task<AppUser?>
+    + <<async>> GetUserWithTokenAndRoles(email:string) : Task<AppUser?>
+    + <<async>> GetUserRefreshToken(id:int) : Task<RefreshToken?>
+    + <<async>> GetUserDTOByEmail(email:string) : Task<AppUserDTO?>
+    + <<async>> GetUserImageHash(userId:int) : Task<FileHash>
+}
+class "IRepository`1"<T> {
+}
+class "Repository`1"<T> {
+}
+"IRepository`1" "<AppUser>" <|-- IUserRepository
+"Repository`1" "<AppUser>" <|-- UsersRepository
+IUserRepository <|-- UsersRepository
+@enduml

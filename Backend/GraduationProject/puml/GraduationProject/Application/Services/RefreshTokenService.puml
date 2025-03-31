@@ -1,0 +1,14 @@
+@startuml
+interface IRefreshTokenService {
+    Refresh(oldAccessToken:string, requestRefToken:string) : Task<ServiceResult<string>>
+}
+class RefreshTokenService {
+    + RefreshTokenService(tokenService:IJwtTokenService, unitOfWork:IUnitOfWork, encryptionService:IEncryptionService, userService:IUserService)
+    + <<async>> Refresh(oldAccessToken:string, requestRefToken:string) : Task<ServiceResult<string>>
+}
+IRefreshTokenService <|-- RefreshTokenService
+RefreshTokenService --> "_tokenService" IJwtTokenService
+RefreshTokenService --> "_encryptionService" IEncryptionService
+RefreshTokenService --> "_unitOfWork" IUnitOfWork
+RefreshTokenService --> "_userService" IUserService
+@enduml

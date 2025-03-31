@@ -1,0 +1,6 @@
+@startuml
+class AccessTokenResponse {
+    + ValidTo : string <<get>> <<set>>
+    + AccessToken : string <<get>> <<set>>
+}
+@enduml

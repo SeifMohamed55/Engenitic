@@ -1,0 +1,7 @@
+@startuml
+enum CloudinaryType {
+    UserImage,
+    CourseImage,
+    InstructorCV,
+}
+@enduml

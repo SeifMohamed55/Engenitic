@@ -1,0 +1,9 @@
+@startuml
+class UserQuizAttemptDTO {
+    + EnrollmentId : int <<get>> <<set>>
+    + QuizId : int <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+UserQuizAttemptDTO o-> "UserAnswers<UserAnswerDTO>" "List`1"
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+class CourseGenerator {
+    - {static} GenerateQuizzes(courseId:int, topic:string) : List<QuizDTO>
+    - {static} GenerateQuestions(topic:string, quizId:int) : List<QuestionDTO>
+    - {static} GenerateAnswers(topic:string, quizId:int, questionId:int) : List<AnswerDTO>
+    - {static} GetCourseTopic(index:int) : string
+    - {static} GetYouTubeLink(courseId:int, quizId:int) : string
+    - {static} GetQuestionText(topic:string, quizId:int, questionId:int) : string
+    - {static} GetCorrectAnswer(topic:string, quizId:int, questionId:int) : string
+    - {static} GetIncorrectAnswers(topic:string, quizId:int, questionId:int) : List<string>
+}
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+class TagDTO {
+    + Id : int <<get>> <<set>>
+    + Value : string <<get>> <<set>>
+}
+@enduml

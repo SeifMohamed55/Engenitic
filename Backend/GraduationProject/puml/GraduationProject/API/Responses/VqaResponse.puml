@@ -1,0 +1,5 @@
+@startuml
+class VqaResponse {
+    + Answer : string <<get>> <<set>>
+}
+@enduml

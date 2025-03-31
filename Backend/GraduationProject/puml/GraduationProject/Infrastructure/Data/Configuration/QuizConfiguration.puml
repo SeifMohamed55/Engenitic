@@ -1,0 +1,8 @@
+@startuml
+class QuizConfiguration {
+    Configure(builder:EntityTypeBuilder<Quiz>) : void
+}
+class "IEntityTypeConfiguration`1"<T> {
+}
+"IEntityTypeConfiguration`1" "<Quiz>" <|-- QuizConfiguration
+@enduml

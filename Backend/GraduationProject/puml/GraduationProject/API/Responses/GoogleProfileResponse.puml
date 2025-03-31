@@ -1,0 +1,7 @@
+@startuml
+class GoogleProfileResponse {
+    + Sub : string <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Picture : string <<get>> <<set>>
+}
+@enduml

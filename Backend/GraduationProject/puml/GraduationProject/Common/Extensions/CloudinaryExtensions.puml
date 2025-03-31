@@ -1,0 +1,5 @@
+@startuml
+class CloudinaryExtensions <<static>> {
+    + {static} GetTypePath(type:CloudinaryType) : string
+}
+@enduml

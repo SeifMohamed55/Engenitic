@@ -1,0 +1,8 @@
+@startuml
+class TokenBlacklistMiddleware {
+    + TokenBlacklistMiddleware(next:RequestDelegate, tokenBlacklistService:ITokenBlacklistService, jwtTokenService:IJwtTokenService)
+    + <<async>> InvokeAsync(context:HttpContext) : Task
+}
+TokenBlacklistMiddleware --> "_next" RequestDelegate
+TokenBlacklistMiddleware --> "_tokenBlacklistService" ITokenBlacklistService
+@enduml

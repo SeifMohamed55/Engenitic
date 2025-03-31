@@ -1,0 +1,5 @@
+@startuml
+class CourseExtension <<static>> {
+    + {static} DTOProjection(query:IQueryable<Course>) : IQueryable<CourseDTO>
+}
+@enduml

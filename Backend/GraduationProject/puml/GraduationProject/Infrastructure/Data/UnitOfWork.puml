@@ -1,0 +1,34 @@
+@startuml
+interface IUnitOfWork {
+    SaveChangesAsync() : Task
+    BeginTransactionAsync() : Task
+    CommitTransactionAsync() : Task
+    RollbackTransactionAsync() : Task
+}
+class UnitOfWork {
+    - _transaction : IDbContextTransaction? = null
+    + UnitOfWork(context:AppDbContext, userRepository:IUserRepository, tokenRepository:ITokenRepository, courseRepository:ICourseRepository, enrollmentRepository:IEnrollmentRepository, quizRepository:IQuizRepository, tagsRepository:ITagsRepository, userLoginRepository:IUserLoginRepository, fileHashRepository:IFileHashRepository)
+    + <<async>> SaveChangesAsync() : Task
+    + <<async>> BeginTransactionAsync() : Task
+    + <<async>> CommitTransactionAsync() : Task
+    + <<async>> RollbackTransactionAsync() : Task
+}
+IUnitOfWork --> "UserRepo" IUserRepository
+IUnitOfWork --> "TokenRepo" ITokenRepository
+IUnitOfWork --> "CourseRepo" ICourseRepository
+IUnitOfWork --> "EnrollmentRepo" IEnrollmentRepository
+IUnitOfWork --> "QuizRepo" IQuizRepository
+IUnitOfWork --> "TagsRepo" ITagsRepository
+IUnitOfWork --> "UserLoginRepo" IUserLoginRepository
+IUnitOfWork --> "FileHashRepo" IFileHashRepository
+IUnitOfWork <|-- UnitOfWork
+UnitOfWork --> "_context" AppDbContext
+UnitOfWork --> "UserRepo" IUserRepository
+UnitOfWork --> "TokenRepo" ITokenRepository
+UnitOfWork --> "CourseRepo" ICourseRepository
+UnitOfWork --> "EnrollmentRepo" IEnrollmentRepository
+UnitOfWork --> "QuizRepo" IQuizRepository
+UnitOfWork --> "TagsRepo" ITagsRepository
+UnitOfWork --> "UserLoginRepo" IUserLoginRepository
+UnitOfWork --> "FileHashRepo" IFileHashRepository
+@enduml

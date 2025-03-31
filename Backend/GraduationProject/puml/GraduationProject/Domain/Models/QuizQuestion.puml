@@ -1,0 +1,15 @@
+@startuml
+class QuizQuestion {
+    + QuizQuestion()
+    + QuizQuestion(question:QuestionDTO)
+    + Id : int <<get>> <<set>>
+    + QuestionText : string <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+    + QuizId : int <<get>> <<set>>
+}
+class "ICollection`1"<T> {
+}
+QuizQuestion o-> "CreatedAt" DateTime
+QuizQuestion o-> "Quiz" Quiz
+QuizQuestion o-> "Answers<QuizAnswer>" "ICollection`1"
+@enduml

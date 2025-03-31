@@ -1,0 +1,10 @@
+@startuml
+class AdminController {
+    + AdminController(unitOfWork:IUnitOfWork, loginRegisterService:ILoginRegisterService)
+    + <<async>> GetUsers(index:int) : Task<ActionResult>
+    + <<async>> AddAdmin(model:RegisterCustomRequest) : Task<IActionResult>
+}
+ControllerBase <|-- AdminController
+AdminController --> "_unitOfWork" IUnitOfWork
+AdminController --> "_loginService" ILoginRegisterService
+@enduml

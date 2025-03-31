@@ -1,0 +1,8 @@
+@startuml
+class FileHashConfiguration {
+    Configure(builder:EntityTypeBuilder<FileHash>) : void
+}
+class "IEntityTypeConfiguration`1"<T> {
+}
+"IEntityTypeConfiguration`1" "<FileHash>" <|-- FileHashConfiguration
+@enduml

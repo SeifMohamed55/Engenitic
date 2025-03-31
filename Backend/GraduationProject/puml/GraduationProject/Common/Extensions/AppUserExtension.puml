@@ -1,0 +1,5 @@
+@startuml
+class AppUserExtension <<static>> {
+    + {static} DTOProjection(query:IQueryable<AppUser>) : IQueryable<AppUserDTO>
+}
+@enduml

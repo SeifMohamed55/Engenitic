@@ -1,0 +1,14 @@
+@startuml
+class EnrollmentDTO {
+    + EnrollmentDTO()
+    + EnrollmentDTO(enrollment:UserEnrollment)
+    + Id : int <<get>> <<set>>
+    + CurrentStage : int <<get>> <<set>>
+    + TotalStages : int <<get>> <<set>>
+    + IsCompleted : bool <<get>> <<set>>
+    + Progress : float <<get>> <<set>>
+    + CourseId : int <<get>> <<set>>
+}
+EnrollmentDTO --> "EnrolledAt" DateTime
+EnrollmentDTO o-> "Course" CourseDTO
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+class AuthenticationController {
+    + AuthenticationController(loginService:ILoginRegisterService, options:IOptions<JwtOptions>)
+    + <<async>> Login(model:LoginCustomRequest) : Task<IActionResult>
+    + <<async>> Revoke() : Task<IActionResult>
+    + <<async>> Register(model:RegisterCustomRequest) : Task<IActionResult>
+}
+ControllerBase <|-- AuthenticationController
+AuthenticationController --> "_loginService" ILoginRegisterService
+AuthenticationController --> "_jwtOptions" JwtOptions
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+class AuthenticationServiceConfiguration <<static>> {
+    + {static} AddJwtAuthentication(services:IServiceCollection, configuration:IConfiguration) : IServiceCollection
+}
+@enduml

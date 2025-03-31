@@ -1,0 +1,21 @@
+@startuml
+interface IEnrollmentRepository {
+    EnrollOnCourse(enrollment:StudentEnrollmentRequest) : Task<UserEnrollment>
+    GetStudentEnrolledCourses(studentId:int, index:int) : Task<PaginatedList<EnrollmentDTO>>
+}
+class EnrollmentRepository {
+    + EnrollmentRepository(context:AppDbContext)
+    + <<async>> EnrollOnCourse(enrollment:StudentEnrollmentRequest) : Task<UserEnrollment>
+    + <<async>> GetStudentEnrolledCourses(studentId:int, index:int) : Task<PaginatedList<EnrollmentDTO>>
+}
+class "IRepository`1"<T> {
+}
+class "Repository`1"<T> {
+}
+class "DbSet`1"<T> {
+}
+"IRepository`1" "<UserEnrollment>" <|-- IEnrollmentRepository
+"Repository`1" "<UserEnrollment>" <|-- EnrollmentRepository
+IEnrollmentRepository <|-- EnrollmentRepository
+EnrollmentRepository --> "_courses<Course>" "DbSet`1"
+@enduml

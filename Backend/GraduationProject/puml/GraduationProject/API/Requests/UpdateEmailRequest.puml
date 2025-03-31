@@ -1,0 +1,6 @@
+@startuml
+class UpdateEmailRequest {
+    + Id : int <<get>> <<set>>
+    + NewEmail : string <<get>> <<set>>
+}
+@enduml

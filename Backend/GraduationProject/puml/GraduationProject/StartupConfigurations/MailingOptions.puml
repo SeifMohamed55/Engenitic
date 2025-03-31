@@ -1,0 +1,7 @@
+@startuml
+class MailingOptions {
+    + ClientId : string <<get>> <<set>>
+    + ClientSecret : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+}
+@enduml

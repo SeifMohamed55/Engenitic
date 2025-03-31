@@ -1,0 +1,7 @@
+@startuml
+class ImageMetadata {
+    + Name : string <<get>> <<set>>
+    + ImageURL : string <<get>> <<set>>
+    + Hash : ulong <<get>> <<set>>
+}
+@enduml

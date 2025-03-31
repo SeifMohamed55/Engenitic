@@ -1,0 +1,8 @@
+@startuml
+class AppUserConfiguration {
+    Configure(builder:EntityTypeBuilder<AppUser>) : void
+}
+class "IEntityTypeConfiguration`1"<T> {
+}
+"IEntityTypeConfiguration`1" "<AppUser>" <|-- AppUserConfiguration
+@enduml

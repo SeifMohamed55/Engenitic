@@ -1,0 +1,12 @@
+@startuml
+class RegisterCustomRequest {
+    + Username : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + ConfirmPassword : string <<get>> <<set>>
+    + Role : string <<get>> <<set>>
+    + PhoneNumber : string? <<get>> <<set>>
+    + PhoneRegion : string? <<get>> <<set>>
+    + Image : IFormFile? <<get>> <<set>>
+}
+@enduml

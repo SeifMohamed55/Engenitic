@@ -1,0 +1,5 @@
+@startuml
+class PhoneNumberService {
+    + {static} IsValidPhoneNumber(phoneNumber:string, countryCode:string) : (string, string)?
+}
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class RoleRequest {
+    + OldId : int <<get>> <<set>> = 0
+    + OldName : string? <<get>> <<set>>
+    + NewName : string? <<get>> <<set>>
+}
+@enduml
