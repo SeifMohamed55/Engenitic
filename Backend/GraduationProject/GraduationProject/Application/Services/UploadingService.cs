@@ -69,6 +69,9 @@ namespace GraduationProject.Application.Services
 
         public async Task<FileHash?> UploadImageAsync(Stream stream, string imageName, CloudinaryType type)
         {
+            var hash = await _hashingService.HashWithxxHash(stream);
+            stream.Position = 0;
+
             var publicId = await UploadAsync(stream, imageName, type);
             if (publicId == null)
                 return null;
@@ -77,7 +80,7 @@ namespace GraduationProject.Application.Services
             {
                 Type = type,
                 PublicId = publicId,
-                Hash = await _hashingService.HashWithxxHash(stream)
+                Hash = hash
             };
         }
 

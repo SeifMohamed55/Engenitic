@@ -6,7 +6,6 @@ import os
 from fastapi import FastAPI, Header, HTTPException
 
 app = FastAPI()
-
 # Load the BLIP-VQA model
 processor = AutoProcessor.from_pretrained("Salesforce/blip-vqa-base", cache_dir="./models")
 model = AutoModelForVisualQuestionAnswering.from_pretrained("Salesforce/blip-vqa-base", cache_dir="./models")

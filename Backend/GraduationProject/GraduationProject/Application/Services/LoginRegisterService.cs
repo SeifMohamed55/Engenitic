@@ -7,6 +7,7 @@ using GraduationProject.Infrastructure.Data;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 
@@ -122,33 +123,35 @@ namespace GraduationProject.Application.Services
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                FileHash? fileHash;
-                var defaultHash = await _unitOfWork.FileHashRepo.GetDefaultUserImageAsync();
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                var list = errors.Select(x => x.Description).ToList();
+                return ServiceResult<AppUserDTO>.Failure(list.Count == 0 ? "An error occured" : string.Join('\n', list));
+            }
+
+            try
+            {
+                var fileHash = await _unitOfWork.FileHashRepo.GetDefaultUserImageAsync();
 
                 if (UploadingService.IsValidImageType(model.Image))
                 {
-                    var imageName = "user_" + user.Id;
+                    var imageName = $"user_{user.Id}";
 
-                    using var stream = model.Image.OpenReadStream();
-
-                    fileHash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.UserImage);
-
-                    if (fileHash == null)
-                        fileHash = defaultHash;
+                    using (Stream stream = model.Image.OpenReadStream())
+                    {
+                        fileHash = await TryUploadImage(stream, imageName, fileHash);
+                    }
                 }
-                else
-                {
-                    fileHash = defaultHash;
-                }
-                    
+
                 user.FileHashes.Add(fileHash);
-
                 await _unitOfWork.SaveChangesAsync();
 
                 var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId);
                 var imgName = imageUrl.Split('/').LastOrDefault() ?? "";
 
-                var data = new AppUserDTO()
+                var data = new AppUserDTO
                 {
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber ?? "",
@@ -164,14 +167,35 @@ namespace GraduationProject.Application.Services
                 };
 
                 return ServiceResult<AppUserDTO>.Success(data);
-
             }
             catch
             {
-                await _unitOfWork.RollbackTransactionAsync();
-                return ServiceResult<AppUserDTO>.Failure(errors.Select(x => x.Description).ToList());
+
+                return ServiceResult<AppUserDTO>.Failure("Couldn't save image");
             }
         }
+
+        private async Task<FileHash> TryUploadImage(Stream stream, string imageName, FileHash defaultHash)
+        {
+            try
+            {
+                var fileHash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.UserImage);
+
+                if (fileHash != null)
+                {
+                    _unitOfWork.FileHashRepo.Insert(fileHash);
+                    await _unitOfWork.SaveChangesAsync();
+                }        
+
+                return fileHash ?? defaultHash;
+
+            }
+            catch 
+            {
+                return defaultHash;
+            }
+        }
+
 
 
         public async Task<(ServiceResult<LoginResponse>, string?)> Login(LoginCustomRequest model)

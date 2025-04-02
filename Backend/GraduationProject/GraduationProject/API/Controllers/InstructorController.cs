@@ -57,10 +57,11 @@ namespace GraduationProject.API.Controllers
                     });
                 var courses = await _unitOfWork.CourseRepo.GetInstructorCourses(parsedId, index);
                 if (courses.Count == 0)
-                    return NotFound(new ErrorResponse()
+                    return Ok(new SuccessResponse()
                     {
                         Message = "No Courses Found.",
-                        Code = HttpStatusCode.NotFound,
+                        Code = HttpStatusCode.OK,
+                        Data = new PaginatedResponse<CourseDTO>(courses)
                     });
                 return Ok(new SuccessResponse()
                 {

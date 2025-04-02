@@ -49,6 +49,14 @@ namespace GraduationProject.API.Controllers
                     };
                 });
 
+                if(courses.TotalPages == 0)
+                    return Ok(new SuccessResponse()
+                    {
+                        Message = "No Courses Found.",
+                        Data = new PaginatedResponse<CourseDTO>(courses),
+                        Code = HttpStatusCode.OK,
+                    });
+
                 if (index > courses.TotalPages)
                     return BadRequest(new ErrorResponse()
                     {
@@ -71,7 +79,6 @@ namespace GraduationProject.API.Controllers
                     Code = HttpStatusCode.InternalServerError,
                 });
             }
-
         }
 
 
@@ -90,10 +97,11 @@ namespace GraduationProject.API.Controllers
                 var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesBySearching(search, index);
 
                 if (courses.TotalPages == 0)
-                    return NotFound(new ErrorResponse()
+                    return Ok(new SuccessResponse()
                     {
                         Message = "No Courses Found.",
-                        Code = HttpStatusCode.NotFound,
+                        Data = new PaginatedResponse<CourseDTO>(courses),
+                        Code = HttpStatusCode.OK,
                     });
 
                 if (index > courses.TotalPages)
@@ -153,12 +161,12 @@ namespace GraduationProject.API.Controllers
                     x.Image.ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL);
                 });
 
-
                 if (courses.TotalPages == 0)
-                    return NotFound(new ErrorResponse()
+                    return Ok(new SuccessResponse()
                     {
                         Message = "No Courses Found.",
-                        Code = HttpStatusCode.NotFound,
+                        Data = new PaginatedResponse<CourseDTO>(courses),
+                        Code = HttpStatusCode.OK,
                     });
 
                 if (index > courses.TotalPages)
