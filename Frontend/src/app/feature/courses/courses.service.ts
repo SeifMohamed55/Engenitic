@@ -1,66 +1,102 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CoursesService {
+  constructor(private _HttpClient: HttpClient) {}
 
-  constructor(private _HttpClient:HttpClient) { }
+  currentSearchQuery = '';
 
-  getEnrolledCourses(index : number, userId : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Student/courses`, {
-      params : {
-        index,
-        id : userId
-      }
-    });
-  };
+  isSearchActive = new BehaviorSubject<boolean>(false);
+  private searchResults = new BehaviorSubject<any>(null);
+  currentSearchResults = this.searchResults.asObservable();
 
-  getCreatedCourses(collectionId : number , instructorId : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Instructor/courses`, {
-      params : {
-        index : collectionId,
-        instructorId
-      }
-    })
+  updateSearchResults(results: any) {
+    this.searchResults.next(results);
+    this.isSearchActive.next(true);
   }
 
-  coursesOffered(collectionNumber : number) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/${collectionNumber}`);
-  };
+  clearSearchResults() {
+    this.currentSearchQuery = '';
+    this.searchResults.next(null);
+    this.isSearchActive.next(false);
+  }
 
-  getCourseDetails(courseId : number) : Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`)
-  };
-
-  searchForCourseCollection(courseTitle : string, index : number = 1) : Observable<any>{
-    return this._HttpClient.get(`https://localhost/api/Courses/search`, { 
-    params : 
-      {
-        search : courseTitle,
-        index : index
-      }
+  searchForCourseCollection(
+    courseTitle: string,
+    index: number = 1
+  ): Observable<any> {
+    this.currentSearchQuery = courseTitle;
+    return this._HttpClient.get(`https://localhost/api/Courses/search`, {
+      params: {
+        search: courseTitle,
+        index: index.toString(),
+      },
     });
-  };
+  }
 
-  deleteCourse(courseId : number, instructorId : number) : Observable<any> {
-    return this._HttpClient.delete(`https://localhost/api/Instructor/deleteCourse`,  
+  // Add this method to handle search pagination
+  searchCourses(query: string, page: number): Observable<any> {
+    return this.searchForCourseCollection(query, page);
+  }
+
+  getEnrolledCourses(index: number, userId: number): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Student/courses`, {
+      params: {
+        index,
+        id: userId,
+      },
+    });
+  }
+
+  getCreatedCourses(
+    collectionId: number,
+    instructorId: number
+  ): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Instructor/courses`, {
+      params: {
+        index: collectionId,
+        instructorId,
+      },
+    });
+  }
+
+  coursesOffered(collectionNumber: number): Observable<any> {
+    return this._HttpClient.get(
+      `https://localhost/api/Courses/${collectionNumber}`
+    );
+  }
+
+  getCourseDetails(courseId: number): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`);
+  }
+
+  deleteCourse(courseId: number, instructorId: number): Observable<any> {
+    return this._HttpClient.delete(
+      `https://localhost/api/Instructor/deleteCourse`,
       {
-        body : {
+        body: {
           instructorId,
-          courseId
-        }
+          courseId,
+        },
       }
     );
-  };
+  }
 
-  editCourse(value : any) : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Instructor/editCourse`, value);
-  };
+  editCourse(value: any): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Instructor/editCourse`,
+      value
+    );
+  }
 
-  addCourse(value : any) : Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Instructor/addCourse`, value);
-  };
+  addCourse(value: any): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Instructor/addCourse`,
+      value
+    );
+  }
 }

@@ -2,7 +2,7 @@
     <form [formGroup]="vqaForm" (ngSubmit)="handleSubmit()">
         <div class="grid grid-cols-2 gap-20">
             <div class="flex justify-between items-start flex-col">
-                <input type="file" (change)="onFileChange($event)" accept="image/*" class="mb-3 custom-file-input font-display lowercase" formControlName="image">
+                <input title="image loader" type="file" (change)="onFileChange($event)" accept="image/*" class="mb-3 custom-file-input font-display lowercase" formControlName="image">
                 <div *ngIf="fileValidationError">
                     <p class="text-normal font-regular text-red-500"> {{ fileValidationError }} </p>
                 </div>
