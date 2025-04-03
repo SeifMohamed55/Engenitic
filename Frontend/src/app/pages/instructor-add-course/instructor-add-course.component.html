@@ -1,110 +1,129 @@
+<!-- instructor-add-course.component.html -->
 <main>
-    <div class="container">
-        <h1 class="text-center text-header py-10 font-display">Course Creation</h1>
-        
-        <form (ngSubmit)="onSubmit()">
-          <!-- Basic Course Information -->
-          <div class="form-group">
-            <label for="title">Course Title</label>
-            <input
-              type="text"
-              id="title"
+  <div class="container">
+    <h1 class="text-center text-header py-10 font-display">Course Creation</h1>
 
-              name="title"
-              required
-            />
-          </div>
-  
-          <div class="form-group">
-            <label for="id">Course ID</label>
-            <input
-              type="text"
-              id="id"
-              name="id"
-              required
-            />
-          </div>
-  
-          <div class="form-group">
-            <label for="description">Course Description</label>
-            <textarea
-              id="description"
+    <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+      <!-- Basic Course Information -->
+      <div class="form-group">
+        <label for="title">Course Title</label>
+        <input type="text" id="title" formControlName="title" required />
+        <div *ngIf="courseForm.get('title')?.invalid && courseForm.get('title')?.touched" class="error">
+          Title is required
+        </div>
+      </div>
 
-              name="description"
-              required
-            ></textarea>
-          </div>
-  
-          <div class="form-group">
-            <label for="requirements">Course Requirements</label>
-            <textarea
-              id="requirements"
+      <div class="form-group">
+        <label for="description">Course Description</label>
+        <textarea id="description" formControlName="description" required></textarea>
+      </div>
 
-              name="requirements"
-              required
-            ></textarea>
-          </div>
-  
+      <div class="form-group">
+        <label for="requirements">Course Requirements</label>
+        <textarea id="requirements" formControlName="requirements" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="imageUrl">Course Image</label>
+        <input
+          id="imageUrl"
+          type="file"
+          accept="image/*"
+          (change)="onFileChange($event)"
+          class="mb-3 custom-file-input font-display lowercase"
+        />
+        <p *ngIf="fileValidationError" class="text-red-500">
+          {{ fileValidationError }}
+        </p>
+      </div>
+
+      <!-- Level Management -->
+      <h2 class="py-10 text-center font-display text-[40px]">Course Levels</h2>
+      <div class="level-navigation">
+        <button
+          class="btn-secondary"
+          type="button"
+          (click)="previousLevel()"
+          [disabled]="currentLevelIndex === 0"
+        >
+          Previous
+        </button>
+        <span>Level {{ currentLevelIndex + 1 }} of {{ levels.length }}</span>
+        <button
+          class="btn-secondary"
+          type="button"
+          (click)="nextLevel()"
+          [disabled]="currentLevelIndex === levels.length - 1"
+        >
+          Next
+        </button>
+        <button class="btn-primary" type="button" (click)="addLevel()">
+          Add Level
+        </button>
+        <button
+          type="button"
+          class="bg-red-500 text-white"
+          (click)="deleteLevel()"
+          [disabled]="levels.length <= 1"
+        >
+          Delete Level
+        </button>
+      </div>
+
+      <!-- Current Level Details -->
+      <div *ngIf="levels.length > 0" formArrayName="levels">
+        <div [formGroupName]="currentLevelIndex">
           <div class="form-group">
-            <label for="imageUrl">Course Image URL</label>
+            <label for="videoUrl-{{currentLevelIndex}}">Video URL</label>
             <input
               type="url"
-              id="imageUrl"
-
-              name="imageUrl"
+              id="videoUrl-{{currentLevelIndex}}"
+              formControlName="videoUrl"
               required
-              (input)="onImageUrlChange()"
             />
-            <img
-              *ngIf="course.imageUrl"
-              [src]="course.imageUrl"
-              alt="Course preview"
-              class="preview-image"
+            <div *ngIf="levels.at(currentLevelIndex).get('videoUrl')?.invalid && 
+                        levels.at(currentLevelIndex).get('videoUrl')?.touched" class="error">
+              Video URL is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="quiz-{{currentLevelIndex}}">Quiz Question</label>
+            <input 
+              type="text" 
+              id="quiz-{{currentLevelIndex}}" 
+              formControlName="quiz" 
+              required 
             />
           </div>
-  
-          <!-- Level Management -->
-          <h2>Course Levels</h2>
+
+          <h3 class="py-10 text-center font-display text-[40px]">Choose the correct answer</h3>
           
-          <div class="level-navigation">
-            <button type="button" class="btn-secondary" (click)="previousLevel()" [disabled]="currentLevelIndex === 0">
-              Previous Level
-            </button>
-            <span class="level-indicator">Level {{ currentLevelIndex + 1 }} of {{ course.levels.length }}</span>
-            <button type="button" class="btn-secondary" (click)="nextLevel()" [disabled]="currentLevelIndex === course.levels.length - 1">
-              Next Level
-            </button>
-            <button type="button" class="btn-primary" (click)="addLevel()">
-              Add New Level
-            </button>
-          </div>
-  
-          <!-- Current Level Details -->
-          <div *ngIf="course.levels.length > 0">
-            <div class="form-group">
-              <label for="videoUrl">Video URL for Level {{ currentLevelIndex + 1 }}</label>
-              <input
-                type="url"
-                id="videoUrl"
+          <div formArrayName="answers">
+            <div
+              *ngFor="let answer of getAnswers(currentLevelIndex).controls; let answerIndex = index"
+              [formGroupName]="answerIndex"
+            >
+              <div class="form-group">
+                <label>Choice {{ answerIndex + 1 }}</label>
+                <input type="text" formControlName="question" required />
 
-                name="videoUrl"
-                required
-              />
-            </div>
-  
-            <div class="form-group">
-              <label for="quizUrl">Quiz URL for Level {{ currentLevelIndex + 1 }}</label>
-              <input
-                type="url"
-                id="quizUrl"
-
-                name="quizUrl"
-                required
-              />
+                <div class="py-5">
+                  <input
+                    type="radio"
+                    [name]="'correctAnswer-' + currentLevelIndex"
+                    [checked]="answer.get('isCorrect')?.value"
+                    (change)="selectCorrectAnswer(currentLevelIndex, answerIndex)"
+                  />
+                  Correct
+                </div>
+              </div>
             </div>
           </div>
-  
-          <button type="submit" class="btn-primary">Create Course</button>
-        </form>
+        </div>
       </div>
+
+      <button class="btn-primary" type="submit">Create Course</button>
+    </form>
+  </div>
 </main>

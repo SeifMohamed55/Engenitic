@@ -1,67 +1,134 @@
-import { Component } from '@angular/core';
-import { bootstrapApplication } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+// instructor-add-course.component.ts
 import { CommonModule } from '@angular/common';
-
-interface Level {
-  videoUrl: string;
-  quizUrl: string;
-}
-
-interface Course {
-  title: string;
-  id: string;
-  description: string;
-  requirements: string;
-  imageUrl: string;
-  levels: Level[];
-}
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  FormArray,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-instructor-add-course',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './instructor-add-course.component.html',
-  styleUrl: './instructor-add-course.component.scss'
+  styleUrls: ['./instructor-add-course.component.scss'],
 })
-export class InstructorAddCourseComponent {
-  course: Course = {
-    title: '',
-    id: '',
-    description: '',
-    requirements: '',
-    imageUrl: '',
-    levels: []
-  };
-
+export class InstructorAddCourseComponent implements OnInit {
+  courseForm!: FormGroup;
+  selectedFile: File | null = null;
+  fileValidationError: string | null = null;
   currentLevelIndex = 0;
 
-  addLevel() {
-    this.course.levels.push({
-      videoUrl: '',
-      quizUrl: ''
+  constructor(private cdRef: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.initializeForm();
+    this.addLevel(); // Add first level by default
+  }
+
+  initializeForm() {
+    this.courseForm = new FormGroup({
+      title: new FormControl('', Validators.required),
+      description: new FormControl('', Validators.required),
+      requirements: new FormControl('', Validators.required),
+      imageUrl: new FormControl(null),
+      levels: new FormArray([]),
     });
-    this.currentLevelIndex = this.course.levels.length - 1;
+  }
+
+  get levels(): FormArray {
+    return this.courseForm.get('levels') as FormArray;
+  }
+
+  addLevel() {
+    const levelGroup = new FormGroup({
+      videoUrl: new FormControl('', [Validators.required]),
+      quiz: new FormControl('', [Validators.required]),
+      answers: new FormArray([
+        this.createAnswer(),
+        this.createAnswer(),
+        this.createAnswer(),
+        this.createAnswer(),
+      ]),
+    });
+
+    this.levels.push(levelGroup);
+    this.currentLevelIndex = this.levels.length - 1;
+    this.cdRef.detectChanges();
+  }
+
+  createAnswer(): FormGroup {
+    return new FormGroup({
+      question: new FormControl('', Validators.required),
+      isCorrect: new FormControl(false),
+    });
+  }
+
+  getAnswers(levelIndex: number): FormArray {
+    return this.levels.at(levelIndex).get('answers') as FormArray;
+  }
+
+  selectCorrectAnswer(levelIndex: number, answerIndex: number) {
+    const answers = this.getAnswers(levelIndex);
+    answers.controls.forEach((control, i) => {
+      control.get('isCorrect')?.setValue(i === answerIndex);
+    });
+  }
+
+  deleteLevel() {
+    if (this.levels.length > 1) {
+      this.levels.removeAt(this.currentLevelIndex);
+      this.currentLevelIndex = Math.max(0, this.currentLevelIndex - 1);
+      this.cdRef.detectChanges();
+    }
   }
 
   previousLevel() {
     if (this.currentLevelIndex > 0) {
       this.currentLevelIndex--;
+      this.cdRef.detectChanges();
     }
   }
 
   nextLevel() {
-    if (this.currentLevelIndex < this.course.levels.length - 1) {
+    if (this.currentLevelIndex < this.levels.length - 1) {
       this.currentLevelIndex++;
+      this.cdRef.detectChanges();
     }
   }
 
-  onImageUrlChange() {
-    // Image preview will be handled by the template
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.fileValidationError = null;
+
+    if (input.files?.length) {
+      const file = input.files[0];
+      const acceptableTypes = ['image/jpg', 'image/png', 'image/jpeg'];
+      const maxSize = 2 * 1024 * 1024; // 2MB
+
+      if (!acceptableTypes.includes(file.type)) {
+        this.fileValidationError = 'Invalid image type';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        this.fileValidationError = 'Image size must be less than 2MB';
+        return;
+      }
+
+      this.selectedFile = file;
+      this.courseForm.patchValue({ imageUrl: file });
+    }
   }
 
   onSubmit() {
-    // Here you would typically send the course data to your backend
-    console.log('Course data:', this.course);
-    alert('Course created successfully!');
+    if (this.courseForm.valid) {
+      console.log('Course data:', this.courseForm.value);
+    } else {
+      this.courseForm.markAllAsTouched();
+    }
   }
 }
