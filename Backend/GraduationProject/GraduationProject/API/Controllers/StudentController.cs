@@ -1,9 +1,11 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
+using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
 
@@ -17,10 +19,12 @@ namespace GraduationProject.API.Controllers
     {
 
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public StudentController(IUnitOfWork unitOfWork)
+        public StudentController(IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
+            _cloudinaryService = cloudinaryService;
         }
 
         // GET: /api/student/courses
@@ -44,6 +48,12 @@ namespace GraduationProject.API.Controllers
                     });
 
                 var courses = await _unitOfWork.EnrollmentRepo.GetStudentEnrolledCourses(parsedId, index);
+                courses.ForEach(x =>
+                {
+                    x.Course.Image.ImageURL = _cloudinaryService
+                     .GetImageUrl(x.Course.Image.ImageURL, x.Course.Image.Version);
+                });
+
                 if (courses.Count == 0)
                     return NotFound(new ErrorResponse()
                     {
@@ -86,16 +96,46 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid User.",
                     Code = HttpStatusCode.Unauthorized,
                 });
+            int enrollmentId = 0;
             try
             {
-                var dbEnrollment = await _unitOfWork.EnrollmentRepo.EnrollOnCourse(enrollment);
+                await _unitOfWork.EnrollmentRepo.EnrollOnCourse(enrollment);
                 await _unitOfWork.SaveChangesAsync();
+
+                var enrollmentDTO = await _unitOfWork.EnrollmentRepo
+                    .GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId);
+                if (enrollmentDTO == null)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "Enrollment Not Found.",
+                        Code = HttpStatusCode.NotFound,
+                    });
+
+                enrollmentDTO.Course.Image.ImageURL = _cloudinaryService
+                    .GetImageUrl(enrollmentDTO.Course.Image.ImageURL, enrollmentDTO.Course.Image.Version);
+
+                enrollmentId = enrollmentDTO.Id;
 
                 return Ok(new SuccessResponse()
                 {
                     Message = "Enrolled Successfully.",
-                    Data = new EnrollmentDTO(dbEnrollment),
+                    Data = enrollmentDTO,
                     Code = HttpStatusCode.OK,
+                });
+            }
+            catch (DbUpdateException)
+            {
+                var enrollmentDTO = await _unitOfWork.EnrollmentRepo
+                    .GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId) ?? new EnrollmentDTO();
+
+                enrollmentDTO.Course.Image.ImageURL = _cloudinaryService
+                    .GetImageUrl(enrollmentDTO.Course.Image.ImageURL, enrollmentDTO.Course.Image.Version);
+
+                return Ok(new SuccessResponse()
+                {
+                    Code = HttpStatusCode.OK,
+                    Message = "User Already Enrolled.",
+                    Data = enrollmentDTO
                 });
             }
             catch (Exception ex)

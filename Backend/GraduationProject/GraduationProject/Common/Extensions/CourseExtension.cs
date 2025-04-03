@@ -21,7 +21,13 @@ namespace GraduationProject.Common.Extensions
                     Requirements = x.Requirements,
                     Stages = x.Stages,
                     Title = x.Title,
-                    Image = new() { ImageURL = x.FileHash.PublicId, Name = "CourseImg", Hash = x.FileHash.Hash, Version = x.FileHash.Version }
+                    Image = new() 
+                    { 
+                        ImageURL = x.FileHash.PublicId,
+                        Name = "CourseImg",
+                        Hash = x.FileHash.Hash,
+                        Version = x.FileHash.Version
+                    }
                 });
         }
     }

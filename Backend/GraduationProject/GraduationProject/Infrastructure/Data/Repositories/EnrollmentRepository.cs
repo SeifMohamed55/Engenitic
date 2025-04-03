@@ -1,5 +1,6 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.Application.Services;
+using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     {
         Task<UserEnrollment> EnrollOnCourse(StudentEnrollmentRequest enrollment);
         Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
+        Task<EnrollmentDTO?> GetStudentEnrollment(int studentId, int courseId);
     }
     public class EnrollmentRepository : Repository<UserEnrollment>, IEnrollmentRepository
     {
@@ -23,7 +25,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         public async Task<UserEnrollment> EnrollOnCourse(StudentEnrollmentRequest enrollment)
         {
-
             var course = await _courses.Select(x => new { x.Stages, x.Id, x.hidden })
                 .FirstOrDefaultAsync(x => x.Id == enrollment.CourseId);
 
@@ -46,42 +47,22 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return dbEnrollment;
         }
 
+
         public async Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index)
         {
-            var query = _dbSet.Include(x => x.Course)
-                .ThenInclude(x => x.Instructor)
-                .Include(x => x.Course.FileHash)
+            var query = _dbSet
                 .Where(x => x.UserId == studentId)
-                .OrderBy(x => x.IsCompleted)
-                .ThenBy(x => x.Course.Title)
-                .Select(enrollment => new EnrollmentDTO()
-                {
-                    Id = enrollment.Id,
-                    EnrolledAt = enrollment.EnrolledAt,
-                    CurrentStage = enrollment.CurrentStage,
-                    IsCompleted = enrollment.IsCompleted,
-                    TotalStages = enrollment.TotalStages,
-                    Progress = (float)enrollment.CurrentStage / enrollment.TotalStages * 100,
-                    CourseId = enrollment.CourseId,
-                    Course = new CourseDTO()
-                    {
-                        Id = enrollment.Course.Id,
-                        Title = enrollment.Course.Title,
-                        Code = enrollment.Course.Code,
-                        Stages = enrollment.Course.Stages,
-                        Description = MyDbFunctions.ShortDescription(enrollment.Course.Description),
-                        InstructorName = enrollment.Course.Instructor.FullName,
-                        Requirements = enrollment.Course.Requirements,
-                        Image = new()
-                        {
-                            ImageURL = enrollment.Course.FileHash.PublicId,
-                            Name = "Course Image",
-                            Hash = enrollment.Course.FileHash.Hash
-                        }
-                    },
-                });
+                .DTOProjection();
+               
             return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);
+        }
 
+        public Task<EnrollmentDTO?> GetStudentEnrollment(int studentId, int courseId)
+        {
+            return _dbSet
+                .Where(x => x.UserId == studentId && x.CourseId == courseId)
+                .DTOProjection()
+                .FirstOrDefaultAsync();
         }
     }
 }

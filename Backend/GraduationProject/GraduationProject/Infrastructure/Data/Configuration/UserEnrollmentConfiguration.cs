@@ -11,6 +11,9 @@ namespace GraduationProject.Infrastructure.Data.Configuration
             builder.ToTable("UserEnrollments");
             builder.HasKey(u => u.Id);
 
+            builder.HasIndex(x=> new {x.CourseId, x.UserId })
+                .IsUnique();
+
             builder.Property(u => u.EnrolledAt)
                 .HasDefaultValueSql("now()");
 

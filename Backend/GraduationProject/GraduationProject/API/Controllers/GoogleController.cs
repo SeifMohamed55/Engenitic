@@ -159,12 +159,15 @@ namespace GraduationProject.API.Controllers
                 image = response?.Picture;
             }
 
-            if (email == null || name == null || image == null || googleId == null)
+            if (email == null || name == null || googleId == null)
                 return BadRequest(new ErrorResponse()
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
                     Message = "email or name or photo does not exist"
                 });
+
+            if(image == null)
+                image = ICloudinaryService.DefaultUserImagePublicId;
 
             AuthenticatedPayload payload = new()
             {
