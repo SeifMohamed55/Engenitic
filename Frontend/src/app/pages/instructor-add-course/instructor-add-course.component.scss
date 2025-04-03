@@ -11,6 +11,12 @@ label {
   color: #333;
 }
 
+.error { /* Add this to match your HTML */
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 input[type="text"],
 input[type="url"],
 textarea {
@@ -20,6 +26,7 @@ textarea {
   border-radius: 4px;
   font-size: 1rem;
 }
+
 
 textarea {
   min-height: 100px;
@@ -76,4 +83,16 @@ button {
   max-width: 200px;
   margin-top: 1rem;
   border-radius: 4px;
+}
+
+.radio-input {
+  box-shadow:  none !important;
+  border: none;
+  margin-right: 0.5rem;
+  accent-color: #2563eb;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

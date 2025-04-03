@@ -1,4 +1,3 @@
-// instructor-add-course.component.ts
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
@@ -7,6 +6,7 @@ import {
   FormArray,
   Validators,
   ReactiveFormsModule,
+  AbstractControl,
 } from '@angular/forms';
 
 @Component({
@@ -31,10 +31,10 @@ export class InstructorAddCourseComponent implements OnInit {
 
   initializeForm() {
     this.courseForm = new FormGroup({
-      title: new FormControl('', Validators.required),
-      description: new FormControl('', Validators.required),
-      requirements: new FormControl('', Validators.required),
-      imageUrl: new FormControl(null),
+      title: new FormControl('', [Validators.required]),
+      description: new FormControl('', [Validators.required]),
+      requirements: new FormControl('', [Validators.required]),
+      imageUrl: new FormControl(null, [Validators.required]),
       levels: new FormArray([]),
     });
   }
@@ -62,7 +62,7 @@ export class InstructorAddCourseComponent implements OnInit {
 
   createAnswer(): FormGroup {
     return new FormGroup({
-      question: new FormControl('', Validators.required),
+      answer: new FormControl('', Validators.required),
       isCorrect: new FormControl(false),
     });
   }
@@ -126,9 +126,10 @@ export class InstructorAddCourseComponent implements OnInit {
 
   onSubmit() {
     if (this.courseForm.valid) {
-      console.log('Course data:', this.courseForm.value);
+      console.log('Course data :', this.courseForm.value);
     } else {
       this.courseForm.markAllAsTouched();
+      console.log('Course error :', this.courseForm.value);
     }
   }
 }
