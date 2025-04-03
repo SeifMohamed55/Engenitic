@@ -30,7 +30,11 @@ namespace GraduationProject.Common.Extensions
                         Hash = x.FileHashes
                               .Where(z => z.Type == CloudinaryType.UserImage)
                               .Select(z => z.Hash)
-                              .FirstOrDefault()
+                              .FirstOrDefault(),
+                        Version = x.FileHashes
+                               .Where(z => z.Type == CloudinaryType.UserImage)
+                              .Select(z => z.Version)
+                              .FirstOrDefault() ?? ""
                     }
                 });
         }

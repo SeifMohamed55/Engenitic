@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using GraduationProject.API.Responses;
 using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
@@ -72,19 +73,20 @@ namespace GraduationProject.Application.Services
             var hash = await _hashingService.HashWithxxHash(stream);
             stream.Position = 0;
 
-            var publicId = await UploadAsync(stream, imageName, type);
-            if (publicId == null)
+            var uploadResult = await UploadAsync(stream, imageName, type);
+            if (uploadResult == null)
                 return null;
 
             return new FileHash
             {
                 Type = type,
-                PublicId = publicId,
-                Hash = hash
+                PublicId = uploadResult.PublicId,
+                Hash = hash,
+                Version = uploadResult.Version
             };
         }
 
-        private async Task<string?> UploadAsync(Stream image, string imageName, CloudinaryType type)
+        private async Task<CloudinaryUploadResult?> UploadAsync(Stream image, string imageName, CloudinaryType type)
         {
 
             var typePath = type.GetTypePath();
@@ -95,20 +97,21 @@ namespace GraduationProject.Application.Services
                 Overwrite = true,
                 PublicId = imageName,
                 Type = "authenticated",
+                Invalidate = true,
                 DisplayName = imageName
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            return uploadResult.PublicId;
+            return new CloudinaryUploadResult(uploadResult);
         }
 
         public async Task<FileHash?> UploadImageAsync(string imageUrl, string imageName, CloudinaryType type)
         {
-            var publicId = await UploadAsync(imageUrl, imageName, type);
-            if (publicId == null)
+            var uploadResult = await UploadAsync(imageUrl, imageName, type);
+            if (uploadResult == null)
                 return null;
 
-            await using var stream = await GetFileStreamAsync(publicId);
+            await using var stream = await GetFileStreamAsync(uploadResult.PublicId);
             if (stream == null)
                 throw new NoNullAllowedException("Uploaded file is null");
 
@@ -116,12 +119,13 @@ namespace GraduationProject.Application.Services
             return new FileHash
             {
                 Type = type,
-                PublicId = publicId,
-                Hash = await _hashingService.HashWithxxHash(stream)
+                PublicId = uploadResult.PublicId,
+                Hash = await _hashingService.HashWithxxHash(stream),
+                Version = uploadResult.Version
             };
         }
 
-        private async Task<string?> UploadAsync(string imageUrl, string imageName, CloudinaryType type)
+        private async Task<CloudinaryUploadResult?> UploadAsync(string imageUrl, string imageName, CloudinaryType type)
         {
             var typePath = type.GetTypePath();
             var uploadParams = new ImageUploadParams
@@ -131,11 +135,12 @@ namespace GraduationProject.Application.Services
                 Overwrite = true,
                 PublicId = $"{imageName}",
                 Type = "authenticated",
+                Invalidate = true,
                 DisplayName = imageName
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            return uploadResult.PublicId;
+            return new CloudinaryUploadResult(uploadResult);
         }
 
         private async Task<Stream?> GetFileStreamAsync(string publicId)

@@ -18,7 +18,8 @@ namespace GraduationProject.Domain.DTOs
             {
                 ImageURL = course.FileHash.PublicId,
                 Name = course.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
-                Hash = course.FileHash.Hash
+                Hash = course.FileHash.Hash,
+                Version = course.FileHash.Version
             };
         }
 

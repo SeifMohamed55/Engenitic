@@ -72,7 +72,7 @@ namespace GraduationProject.API.Controllers
                 });
 
 
-            var imageUrl = _cloudinary.GetImageUrl(appUser.Image.ImageURL);
+            var imageUrl = _cloudinary.GetImageUrl(appUser.Image.ImageURL, appUser.Image.Version);
             var imageName = imageUrl.Split('/').LastOrDefault() ?? "";
             appUser.Image.ImageURL = imageUrl;
             appUser.Image.Name = imageName;
@@ -314,7 +314,7 @@ namespace GraduationProject.API.Controllers
 
             try
             {
-                var user = await _userManager.FindByIdAsync(claimId);
+                var user = await _unitOfWork.UserRepo.GetUserWithFiles(id);
 
                 if(user == null)
                     return BadRequest(new ErrorResponse()
@@ -358,14 +358,19 @@ namespace GraduationProject.API.Controllers
                         PublicId = fileHash.PublicId,
                         Type = CloudinaryType.UserImage,
                         Hash = fileHash.Hash,
+                        Version = fileHash.Version
                     };
                     user.FileHashes.Add(dbFileHash);
                 }
                 else
                 {
-                    dbFileHash.Hash = fileHash.Hash;
-                    dbFileHash.Type = CloudinaryType.UserImage;
-                    dbFileHash.PublicId = fileHash.PublicId;
+                    if(dbFileHash.PublicId == ICloudinaryService.DefaultUserImagePublicId)
+                    {
+                        user.FileHashes.Remove(dbFileHash);
+                        user.FileHashes.Add(fileHash);
+                    }
+                    else
+                        dbFileHash.UpdateFromHash(fileHash);
                 }
                 await _unitOfWork.SaveChangesAsync();
 

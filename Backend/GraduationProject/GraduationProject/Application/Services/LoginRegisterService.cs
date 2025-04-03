@@ -148,7 +148,7 @@ namespace GraduationProject.Application.Services
                 user.FileHashes.Add(fileHash);
                 await _unitOfWork.SaveChangesAsync();
 
-                var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId);
+                var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId, fileHash.Version);
                 var imgName = imageUrl.Split('/').LastOrDefault() ?? "";
 
                 var data = new AppUserDTO
@@ -236,14 +236,23 @@ namespace GraduationProject.Application.Services
 
 
 
-                var publicId = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.PublicId;
+                var hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage);
+                string imgUrl = "";
+                string imgName = "";
 
-                if (publicId == null)
-                    publicId = ICloudinaryService.DefaultUserImagePublicId;
+                if (hash == null)
+                {
+                    imgUrl = _cloudinaryService.GetImageUrl(ICloudinaryService.DefaultUserImagePublicId, "1");
+                    imgName = "default"; 
+
+                }
+                else
+                {
+                     imgUrl = _cloudinaryService.GetImageUrl(hash.PublicId, hash.Version);
+                     imgName = hash.PublicId.Split('/').LastOrDefault() ?? "default";
+                }
 
 
-                string imgUrl = _cloudinaryService.GetImageUrl(publicId);
-                string imgName = publicId.Split('/').LastOrDefault() ?? "default";
 
                 var data = new LoginResponse
                 {
@@ -375,7 +384,7 @@ namespace GraduationProject.Application.Services
 
                     await _unitOfWork.SaveChangesAsync();
 
-                    var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId);
+                    var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId, fileHash.Version);
 
                     await _unitOfWork.SaveChangesAsync();
                 }
@@ -416,16 +425,22 @@ namespace GraduationProject.Application.Services
                 return (ServiceResult<LoginResponse>.Failure("An Error Occured, Try again later"), null);
             }
 
+            var hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage);
+            string imgUrl = "";
+            string imgName = "";
 
+            if (hash == null)
+            {
+                imgUrl = _cloudinaryService.GetImageUrl(ICloudinaryService.DefaultUserImagePublicId, "1");
+                imgName = "default";
 
+            }
+            else
+            {
+                imgUrl = _cloudinaryService.GetImageUrl(hash.PublicId, hash.Version);
+                imgName = hash.PublicId.Split('/').LastOrDefault() ?? "default";
+            }
 
-
-            string? publicIdimg = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.PublicId;
-            if (publicIdimg == null)
-                publicIdimg = ICloudinaryService.DefaultUserImagePublicId;
-
-            string imgUrl = _cloudinaryService.GetImageUrl(publicIdimg);
-            string imgName = publicIdimg.Split('/').LastOrDefault() ?? "default";
 
             var data = new LoginResponse
             {

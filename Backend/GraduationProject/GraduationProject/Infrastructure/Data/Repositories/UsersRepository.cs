@@ -22,6 +22,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         Task<AppUserDTO?> GetUserDTOByEmail(string email);
         Task<FileHash> GetUserImageHash(int id);
 
+        Task<AppUser?> GetUserWithFiles(int id);
+
         //Task<string?> GetUserImage(int id);
 
     }
@@ -108,5 +110,10 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         }
 
+        public async Task<AppUser?> GetUserWithFiles(int id)
+        {
+            return await _dbSet.Include(x => x.FileHashes)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

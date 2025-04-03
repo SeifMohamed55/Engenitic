@@ -21,7 +21,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddSingleton<ICloudinaryService, CloudinaryService>();
 
 
-            services.AddTransient<IGmailServiceHelper, GmailServiceHelper>();
+            services.AddScoped<IGmailServiceHelper, GmailServiceHelper>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserRepository, UsersRepository>();
@@ -32,6 +32,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<ITagsRepository, TagsRepository>();
             services.AddScoped<IFileHashRepository, FileHashRepository>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
             services.AddScoped<IUploadingService, UploadingService>();
             services.AddScoped<ILoginRegisterService, LoginRegisterService>();

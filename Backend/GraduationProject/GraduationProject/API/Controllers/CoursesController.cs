@@ -43,7 +43,7 @@ namespace GraduationProject.API.Controllers
                 {
                     x.Image = new ImageMetadata()
                     {
-                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL),
+                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version),
                         Name = nameFunc(x.Image.ImageURL),
                         Hash = x.Image.Hash
                     };
@@ -117,7 +117,7 @@ namespace GraduationProject.API.Controllers
                 {
                     x.Image = new ImageMetadata()
                     {
-                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL),
+                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version),
                         Name = nameFunc(x.Image.ImageURL),
                         Hash = x.Image.Hash,
                     };
@@ -158,7 +158,7 @@ namespace GraduationProject.API.Controllers
 
                 courses.ForEach(x =>
                 {
-                    x.Image.ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL);
+                    x.Image.ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version);
                 });
 
                 if (courses.TotalPages == 0)
@@ -209,7 +209,7 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.NotFound,
                     });
 
-                course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL);
+                course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL, course.Image.Version);
 
 
                 return Ok(new SuccessResponse()

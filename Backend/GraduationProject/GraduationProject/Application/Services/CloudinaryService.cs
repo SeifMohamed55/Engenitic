@@ -10,9 +10,9 @@ namespace GraduationProject.Application.Services
         public static string DefaultUserImagePublicId => "uploads/images/users/default";
         public static string DefaultCourseImagePublicId => "uploads/images/courses/default";
 
-        string GetImageUrl(string publicId);
-        string GetProfileImage(string publicId);
-        string GetPDF(string publicId);
+        string GetImageUrl(string publicId, string version);
+        string GetProfileImage(string publicId, string version);
+        string GetPDF(string publicId, string version);
 
     }
 
@@ -25,7 +25,7 @@ namespace GraduationProject.Application.Services
         }
 
 
-        public string GetImageUrl(string publicId)
+        public string GetImageUrl(string publicId, string version)
         {
             var link = _cloudinary.Api
                 .UrlImgUp
@@ -38,11 +38,12 @@ namespace GraduationProject.Application.Services
             else
                 return link.Signed(true)
                     .Type("authenticated")
+                    .Version(version)
                     .BuildUrl(publicId);
         }
 
 
-        public string GetProfileImage(string publicId)
+        public string GetProfileImage(string publicId, string version)
         {
             var link = _cloudinary.Api.UrlImgUp
                 .Transform(new Transformation()
@@ -58,10 +59,11 @@ namespace GraduationProject.Application.Services
             else
                 return link.Signed(true)
                     .Type("authenticated")
+                    .Version(version)
                     .BuildUrl(publicId);
         }
 
-        public string GetPDF(string publicId)
+        public string GetPDF(string publicId, string version)
         {
             return _cloudinary.Api
                 .Url
@@ -69,6 +71,7 @@ namespace GraduationProject.Application.Services
                 .Secure()
                 .Signed(true)
                 .Type("authenticated")
+                .Version(version)
                 .BuildUrl(publicId);
         }
     }

@@ -52,7 +52,8 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.FileHashes)
-                .WithMany(x => x.Users);
+                .WithMany(x => x.Users)
+                .UsingEntity("AppUserFileHash");
 
         }
     }

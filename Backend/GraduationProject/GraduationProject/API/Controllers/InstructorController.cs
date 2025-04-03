@@ -56,6 +56,19 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.Unauthorized,
                     });
                 var courses = await _unitOfWork.CourseRepo.GetInstructorCourses(parsedId, index);
+
+                Func<string, string> nameFunc = (url) => url.Split('/').LastOrDefault() ?? "";
+
+                courses.ForEach(x =>
+                {
+                    x.Image = new ImageMetadata()
+                    {
+                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version),
+                        Name = nameFunc(x.Image.ImageURL),
+                        Hash = x.Image.Hash
+                    };
+                });
+
                 if (courses.Count == 0)
                     return Ok(new SuccessResponse()
                     {
@@ -212,7 +225,7 @@ namespace GraduationProject.API.Controllers
                 await _unitOfWork.SaveChangesAsync();
 
                 var resp = new CourseDTO(addedCourse);
-                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL);
+                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
 
                 return Ok(new SuccessResponse()
                 {
@@ -269,12 +282,20 @@ namespace GraduationProject.API.Controllers
                 var hash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.CourseImage);
 
                 if (hash == null)
-                    hash = defaultCourseHash;
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Image Upload Failed.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
 
-                if (!_unitOfWork.FileHashRepo.IsDefaultCourseImageHash(addedCourse.FileHash))
-                    _unitOfWork.FileHashRepo.Delete(addedCourse.FileHash);
-
-                addedCourse.FileHash = hash;
+                if (_unitOfWork.FileHashRepo.IsDefaultCourseImageHash(addedCourse.FileHash))
+                {
+                    addedCourse.FileHash = hash;
+                }
+                else
+                {
+                    addedCourse.FileHash.UpdateFromHash(hash);
+                }
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -286,7 +307,7 @@ namespace GraduationProject.API.Controllers
                     {
                         Image = new ImageMetadata
                         {
-                            ImageURL = _cloudinary.GetImageUrl(addedCourse.FileHash.PublicId),
+                            ImageURL = _cloudinary.GetImageUrl(addedCourse.FileHash.PublicId, addedCourse.FileHash.Version),
                             Name = addedCourse.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
                             Hash = addedCourse.FileHash.Hash
                         }
