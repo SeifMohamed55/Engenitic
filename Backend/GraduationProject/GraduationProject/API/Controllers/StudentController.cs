@@ -54,12 +54,13 @@ namespace GraduationProject.API.Controllers
                      .GetImageUrl(x.Course.Image.ImageURL, x.Course.Image.Version);
                 });
 
-                if (courses.Count == 0)
+                /*if (courses.Count == 0)
                     return NotFound(new ErrorResponse()
                     {
                         Message = "No Courses Found.",
                         Code = HttpStatusCode.NotFound,
                     });
+                */
                 return Ok(new SuccessResponse()
                 {
                     Message = "Courses Retrieved Successfully.",
