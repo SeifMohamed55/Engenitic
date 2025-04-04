@@ -2,6 +2,7 @@
 using GraduationProject.Application.Services;
 using GraduationProject.Infrastructure.Data;
 using GraduationProject.Infrastructure.Data.Repositories;
+using static GraduationProject.Application.Services.ICoursesService;
 
 namespace GraduationProject.StartupConfigurations
 {
@@ -37,6 +38,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<IUploadingService, UploadingService>();
             services.AddScoped<ILoginRegisterService, LoginRegisterService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped <ICoursesService, CoursesService>();
 
             return services;
         }

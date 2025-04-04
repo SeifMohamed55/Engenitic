@@ -14,7 +14,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     public interface ICourseRepository : IRepository<Course>
     {
         Task<CourseDetailsResponse?> GetDetailsById(int id);
-        Task<Course?> GetById(int id);
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfHiddenCourses(int index = 1);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
@@ -26,7 +25,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         Task<Course> EditCourse(EditCourseRequest course);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
         Task AddCourseToTag(int courseId, List<TagDTO> tag);
-
+        Task<int?> GetCourseInstructorId(int courseId);
 
         //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
     }
@@ -60,7 +59,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         }
 
-        public async Task<Course?> GetById(int id)
+        public override async Task<Course?> GetByIdAsync(int id)
         {
             return await _dbSet
                 .Include(x => x.FileHash)
@@ -177,6 +176,17 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             course.Tags.AddRange(dbTags);
             Update(course);
 
+        }
+
+        public async Task<int?> GetCourseInstructorId(int courseId)
+        {
+            var res = await _dbSet.Select(x=> new { x.InstructorId , x.Id})
+                .FirstOrDefaultAsync(x => x.Id == courseId);
+
+            if (res == null)
+                return null;
+
+            return res.InstructorId;
         }
 
         /*        public async Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses)

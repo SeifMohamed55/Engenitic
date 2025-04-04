@@ -18,10 +18,7 @@ namespace GraduationProject.API.Controllers
     [Authorize(Roles = "instructor")]
     public class InstructorController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
-        private readonly ICloudinaryService _cloudinary;
-        private readonly IUploadingService _uploadingService;
         private readonly ICoursesService _coursesService;
         public InstructorController
             (
@@ -31,10 +28,7 @@ namespace GraduationProject.API.Controllers
             IUploadingService uploadingService,
             ICoursesService coursesService)
         {
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _cloudinary = cloudinary;
-            _uploadingService = uploadingService;
             _coursesService = coursesService;
         }
 
@@ -138,26 +132,7 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
 
-                var defaultCourseHash = await _unitOfWork.FileHashRepo.GetDefaultCourseImageAsync();
-
-                var addedCourse = await _unitOfWork.CourseRepo.MakeCourse(course, defaultCourseHash);
-                await _unitOfWork.SaveChangesAsync();
-
-                var imageName = "course_" + addedCourse.Id;
-
-                using var stream = course.Image.OpenReadStream();
-
-                var hash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.CourseImage);
-
-                if (hash == null)
-                    hash = defaultCourseHash;
-
-                addedCourse.FileHash = hash;
-
-                await _unitOfWork.SaveChangesAsync();
-
-                var dto = new CourseDTO(addedCourse);
-
+                var dto = await _coursesService.AddCourse(course);
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Added Successfully.",
@@ -205,16 +180,12 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
 
-                var addedCourse = await _unitOfWork.CourseRepo.EditCourse(course);
-                await _unitOfWork.SaveChangesAsync();
-
-                var resp = new CourseDTO(addedCourse);
-                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
+                var dto = await _coursesService.EditCourse(course);
 
                 return Ok(new SuccessResponse()
                 {
                     Message = "Course Edited Successfully.",
-                    Data = resp,
+                    Data = dto,
                     Code = HttpStatusCode.OK,
                 });
 
@@ -233,8 +204,8 @@ namespace GraduationProject.API.Controllers
         public async Task<IActionResult> EditCourseImage
             ([FromForm] IFormFile image, [FromForm] int courseId, [FromForm] int instructorId)
         {
-            var addedCourse = await _unitOfWork.CourseRepo.GetById(courseId);
-            if (addedCourse == null)
+            var courseInstructorId = await _coursesService.GetCourseInstructorId(courseId);
+            if (!courseInstructorId.HasValue)
                 return NotFound(new ErrorResponse()
                 {
                     Code = HttpStatusCode.NotFound,
@@ -243,12 +214,11 @@ namespace GraduationProject.API.Controllers
 
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-
             if (
                 claimId == null ||
                 !int.TryParse(claimId, out int parsedId) ||
                 parsedId != instructorId ||
-                parsedId != addedCourse.InstructorId
+                parsedId != courseInstructorId
                 )
                 return BadRequest(new ErrorResponse()
                 {
@@ -257,46 +227,19 @@ namespace GraduationProject.API.Controllers
                 });
             try
             {
-                var defaultCourseHash = await _unitOfWork.FileHashRepo.GetDefaultCourseImageAsync();
-
-                var imageName = "course_" + addedCourse.Id;
-
-                using var stream = image.OpenReadStream();
-
-                var hash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.CourseImage);
-
-                if (hash == null)
+                var res = await _coursesService.EditCourseImage(image, courseId);
+                if(res.IsSuccess)
+                    return Ok(new SuccessResponse()
+                    {
+                        Message = "Image updated successfully.",
+                        Code = HttpStatusCode.OK, 
+                    });
+                else
                     return BadRequest(new ErrorResponse()
                     {
-                        Message = "Image Upload Failed.",
+                        Message = res.Error ?? "An error occured",
                         Code = HttpStatusCode.BadRequest,
                     });
-
-                if (_unitOfWork.FileHashRepo.IsDefaultCourseImageHash(addedCourse.FileHash))
-                {
-                    addedCourse.FileHash = hash;
-                }
-                else
-                {
-                    addedCourse.FileHash.UpdateFromHash(hash);
-                }
-
-                await _unitOfWork.SaveChangesAsync();
-
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Image updated successfully.",
-                    Code = HttpStatusCode.OK,
-                    Data = new
-                    {
-                        Image = new ImageMetadata
-                        {
-                            ImageURL = _cloudinary.GetImageUrl(addedCourse.FileHash.PublicId, addedCourse.FileHash.Version),
-                            Name = addedCourse.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
-                            Hash = addedCourse.FileHash.Hash
-                        }
-                    }
-                });
             }
             catch
             {
@@ -313,17 +256,17 @@ namespace GraduationProject.API.Controllers
         [HttpDelete("deleteCourse")]
         public async Task<IActionResult> DeleteCourse(DeleteCourseRequest req)
         {
-            var course = await _unitOfWork.CourseRepo.GetById(req.CourseId);
+            var dbInstructorId = await _coursesService.GetCourseInstructorId(req.CourseId);
             var claimId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
-            if (claimId == null || !int.TryParse(claimId.Value, out int instructorId) || course == null)
+            if (claimId == null || !int.TryParse(claimId.Value, out int instructorId) || !dbInstructorId.HasValue)
                 return BadRequest(new ErrorResponse()
                 {
                     Code = HttpStatusCode.BadRequest,
                     Message = "Invalid User request."
                 });
 
-            if (course.InstructorId != instructorId || course.InstructorId != req.InstructorId)
+            if (dbInstructorId != instructorId || dbInstructorId != req.InstructorId)
                 return StatusCode(403, new ErrorResponse()
                 {
                     Code = HttpStatusCode.Forbidden,
@@ -331,8 +274,7 @@ namespace GraduationProject.API.Controllers
                 });
             try
             {
-                course.hidden = true;
-                await _unitOfWork.SaveChangesAsync();
+                await _coursesService.DeleteCourse(req.CourseId);
                 return Ok(new SuccessResponse()
                 {
                     Code = HttpStatusCode.OK,
