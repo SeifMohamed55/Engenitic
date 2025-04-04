@@ -13,7 +13,8 @@ namespace GraduationProject.Infrastructure.Data.Configuration
 
             builder.HasKey(x => x.Id);
 
-            builder.HasIndex(x => x.Value);
+            builder.HasIndex(x => x.Value)
+                .IsUnique();
 
             builder.Property(u => u.Value)
                  .IsRequired()
