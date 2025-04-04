@@ -1,4 +1,5 @@
-﻿using GraduationProject.Domain.Models;
+﻿using GraduationProject.Domain.DTOs;
+using GraduationProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
@@ -8,6 +9,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         Tag AddTag(string tag);
         Task<Tag?> GetTagByValueAsync(string value);
         Task<Tag> EditTagAsync(int id, string newValue);
+        Task<List<TagDTO>> GetTagsDTOAsync();
 
     }
 
@@ -48,6 +50,16 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return await GetAllAsync();
         }
 
-
+        public async Task<List<TagDTO>> GetTagsDTOAsync()
+        {
+            return await _dbSet
+                .Include(x => x.Courses)
+                .Select(x => new TagDTO
+                {
+                    Id = x.Id,
+                    Value = x.Value,
+                    Count = x.Courses.Count
+                }).ToListAsync();    
+        }
     }
 }

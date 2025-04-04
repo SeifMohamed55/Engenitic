@@ -22,17 +22,20 @@ namespace GraduationProject.API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ICloudinaryService _cloudinary;
         private readonly IUploadingService _uploadingService;
+        private readonly ICoursesService _coursesService;
         public InstructorController
             (
             IUnitOfWork unitOfWork,
             UserManager<AppUser> userManager,
             ICloudinaryService cloudinary,
-            IUploadingService uploadingService)
+            IUploadingService uploadingService,
+            ICoursesService coursesService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _cloudinary = cloudinary;
             _uploadingService = uploadingService;
+            _coursesService = coursesService;
         }
 
 
@@ -55,27 +58,8 @@ namespace GraduationProject.API.Controllers
                         Message = "Invalid User.",
                         Code = HttpStatusCode.Unauthorized,
                     });
-                var courses = await _unitOfWork.CourseRepo.GetInstructorCourses(parsedId, index);
+                var courses = await _coursesService.GetInstructorCourses(parsedId, index);
 
-                Func<string, string> nameFunc = (url) => url.Split('/').LastOrDefault() ?? "";
-
-                courses.ForEach(x =>
-                {
-                    x.Image = new ImageMetadata()
-                    {
-                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version),
-                        Name = nameFunc(x.Image.ImageURL),
-                        Hash = x.Image.Hash
-                    };
-                });
-
-                if (courses.Count == 0)
-                    return Ok(new SuccessResponse()
-                    {
-                        Message = "No Courses Found.",
-                        Code = HttpStatusCode.OK,
-                        Data = new PaginatedResponse<CourseDTO>(courses)
-                    });
                 return Ok(new SuccessResponse()
                 {
                     Message = "Courses Retrieved Successfully.",
@@ -100,7 +84,7 @@ namespace GraduationProject.API.Controllers
         {
             try
             {
-                var statistics = await _unitOfWork.CourseRepo.GetCourseStatistics(courseId);
+                var statistics = await _coursesService.GetCourseStatistics(courseId);
                 if (statistics == null)
                     return NotFound(new ErrorResponse()
                     {

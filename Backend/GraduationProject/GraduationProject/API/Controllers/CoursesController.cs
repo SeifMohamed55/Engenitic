@@ -13,14 +13,11 @@ namespace GraduationProject.API.Controllers
     [Route("api/[controller]")]
     public class CoursesController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ICloudinaryService _cloudinary;
+        private readonly ICoursesService _coursesService;
 
-        public CoursesController
-            (IUnitOfWork unitOfWork, ICloudinaryService cloudinary)
+        public CoursesController(ICoursesService coursesService)
         {
-            _unitOfWork = unitOfWork;
-            _cloudinary = cloudinary;
+            _coursesService = coursesService;
         }
 
 
@@ -35,27 +32,7 @@ namespace GraduationProject.API.Controllers
                 });
             try
             {
-                var courses = await _unitOfWork.CourseRepo.GetPageOfCourses(index);
-
-                Func<string, string> nameFunc = (url) => url.Split('/').LastOrDefault() ?? "";
-
-                courses.ForEach(x =>
-                {
-                    x.Image = new ImageMetadata()
-                    {
-                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version),
-                        Name = nameFunc(x.Image.ImageURL),
-                        Hash = x.Image.Hash
-                    };
-                });
-
-                if(courses.TotalPages == 0)
-                    return Ok(new SuccessResponse()
-                    {
-                        Message = "No Courses Found.",
-                        Data = new PaginatedResponse<CourseDTO>(courses),
-                        Code = HttpStatusCode.OK,
-                    });
+                var courses = await _coursesService.GetPageOfCourses(index);
 
                 if (index > courses.TotalPages)
                     return BadRequest(new ErrorResponse()
@@ -94,15 +71,7 @@ namespace GraduationProject.API.Controllers
                 });
             try
             {
-                var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesBySearching(search, index);
-
-                if (courses.TotalPages == 0)
-                    return Ok(new SuccessResponse()
-                    {
-                        Message = "No Courses Found.",
-                        Data = new PaginatedResponse<CourseDTO>(courses),
-                        Code = HttpStatusCode.OK,
-                    });
+                var courses = await _coursesService.SearchOnPageOfCourses(search, index);
 
                 if (index > courses.TotalPages)
                     return BadRequest(new ErrorResponse
@@ -110,18 +79,6 @@ namespace GraduationProject.API.Controllers
                         Message = "Invalid Page Number",
                         Code = HttpStatusCode.BadRequest,
                     });
-
-                Func<string, string> nameFunc = (url) => url.Split('/').LastOrDefault() ?? "";
-
-                courses.ForEach(x =>
-                {
-                    x.Image = new ImageMetadata()
-                    {
-                        ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version),
-                        Name = nameFunc(x.Image.ImageURL),
-                        Hash = x.Image.Hash,
-                    };
-                });
 
                 return Ok(new SuccessResponse
                 {
@@ -154,20 +111,7 @@ namespace GraduationProject.API.Controllers
                 });
             try
             {
-                var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesByTag(tag, index);
-
-                courses.ForEach(x =>
-                {
-                    x.Image.ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version);
-                });
-
-                if (courses.TotalPages == 0)
-                    return Ok(new SuccessResponse()
-                    {
-                        Message = "No Courses Found.",
-                        Data = new PaginatedResponse<CourseDTO>(courses),
-                        Code = HttpStatusCode.OK,
-                    });
+                var courses = await _coursesService.GetPageOfCoursesByTag(tag, index);
 
                 if (index > courses.TotalPages)
                     return BadRequest(new ErrorResponse
@@ -195,12 +139,36 @@ namespace GraduationProject.API.Controllers
         }
 
 
+        [HttpGet("tags")]
+        public async Task<IActionResult> GetTags()
+        {
+            try
+            {
+                var tags = await _coursesService.GetAllTagsAsync();
+
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Tags Retrieved Successfully.",
+                    Data = tags,
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.InternalServerError,
+                });
+            }
+        }
+
         [HttpGet("id/{courseId}")]
         public async Task<IActionResult> GetCourseById(int courseId)
         {
             try
             {
-                var course = await _unitOfWork.CourseRepo.GetDetailsById(courseId);
+                var course = await _coursesService.GetCourseDetailsById(courseId);
 
                 if (course == null)
                     return NotFound(new ErrorResponse
@@ -208,9 +176,6 @@ namespace GraduationProject.API.Controllers
                         Message = "Course Not Found.",
                         Code = HttpStatusCode.NotFound,
                     });
-
-                course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL, course.Image.Version);
-
 
                 return Ok(new SuccessResponse()
                 {
@@ -228,6 +193,7 @@ namespace GraduationProject.API.Controllers
                 });
             }
         }
+
 
         /*[HttpPost("dummyHashImage")]
         public async Task<IActionResult> HashDefaults()

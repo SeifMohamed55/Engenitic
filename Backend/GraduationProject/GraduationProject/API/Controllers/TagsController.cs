@@ -1,4 +1,5 @@
-﻿using GraduationProject.API.Responses;
+﻿using GraduationProject.API.Requests;
+using GraduationProject.API.Responses;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -17,19 +18,18 @@ namespace GraduationProject.API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTags()
-        {
-            var tags = await _unitOfWork.TagsRepo.GetAllAsync();
-            return Ok(tags);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> AddTag(string tag)
+        public async Task<IActionResult> AddTag(TagRequest tag)
         {
+            if(string.IsNullOrEmpty(tag.Tag))
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Tag cannot be empty."
+                }); 
             try
             {
-                var dbTag = _unitOfWork.TagsRepo.AddTag(tag);
+                var dbTag = _unitOfWork.TagsRepo.AddTag(tag.Tag);
                 await _unitOfWork.SaveChangesAsync();
                 return Ok(new SuccessResponse()
                 {
@@ -67,17 +67,17 @@ namespace GraduationProject.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditTag(int id, string newValue)
+        public async Task<IActionResult> EditTag(TagRequest tag)
         {
             try
             {
-                var dbTag = await _unitOfWork.TagsRepo.EditTagAsync(id, newValue);
+                var dbTag = await _unitOfWork.TagsRepo.EditTagAsync(tag.Id, tag.Tag);
                 await _unitOfWork.SaveChangesAsync();
                 return Ok(new SuccessResponse()
                 {
                     Code = System.Net.HttpStatusCode.OK,
                     Message = "Added Successfully",
-                    Data = new TagDTO() { Id = id, Value = newValue }
+                    Data = new TagDTO() { Id = dbTag.Id, Value = dbTag.Value}
                 });
             }
             catch

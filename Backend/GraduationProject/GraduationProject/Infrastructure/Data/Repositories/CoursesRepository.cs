@@ -120,6 +120,16 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         }
 
+        public Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index)
+        {
+            var query = _dbSet
+                            .Where(c => c.Tags.Any(t => t.Value == tag))
+                            .OrderBy(x => x.Title)
+                            .DTOProjection();
+
+            return PaginatedList<CourseDTO>.CreateAsync(query, index);
+        }
+
         public async Task<Course> MakeCourse(RegisterCourseRequest courseReq, FileHash hash)
         {
             var tags = await _tags
@@ -155,17 +165,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             dbCourse.UpdateFromRequest(courseReq, tags);
 
             return dbCourse;
-        }
-
-
-        public Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index)
-        {
-            var query = _dbSet
-                            .Where(c => c.Tags.Any(t => t.Value == tag))
-                            .OrderBy(x => x.Title)
-                            .DTOProjection();
-
-            return PaginatedList<CourseDTO>.CreateAsync(query, index);
         }
 
         public async Task AddCourseToTag(int courseId, List<TagDTO> tags)

@@ -69,8 +69,6 @@ namespace GraduationProject.Application.Services
             if (model.Password != model.ConfirmPassword)
                 return ServiceResult<AppUserDTO>.Failure("Passwords do not match.");
 
-
-
             string? RegionCode = null;
             if (model.PhoneNumber != null && model.PhoneRegion != null)
             {
@@ -83,7 +81,6 @@ namespace GraduationProject.Application.Services
                 }
                 else
                     return ServiceResult<AppUserDTO>.Failure("Invalid phone number");
-
             }
 
             var userRole = await _roleManager.FindByNameAsync(model.Role);
@@ -170,7 +167,6 @@ namespace GraduationProject.Application.Services
             }
             catch
             {
-
                 return ServiceResult<AppUserDTO>.Failure("Couldn't save image");
             }
         }
@@ -195,8 +191,6 @@ namespace GraduationProject.Application.Services
                 return defaultHash;
             }
         }
-
-
 
         public async Task<(ServiceResult<LoginResponse>, string?)> Login(LoginCustomRequest model)
         {
@@ -234,8 +228,6 @@ namespace GraduationProject.Application.Services
                 _userService.UpdateRefreshToken(user, refreshToken);
                 await _unitOfWork.SaveChangesAsync();
 
-
-
                 var hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage);
                 string imgUrl = "";
                 string imgName = "";
@@ -251,8 +243,6 @@ namespace GraduationProject.Application.Services
                      imgUrl = _cloudinaryService.GetImageUrl(hash.PublicId, hash.Version);
                      imgName = hash.PublicId.Split('/').LastOrDefault() ?? "default";
                 }
-
-
 
                 var data = new LoginResponse
                 {
@@ -272,7 +262,6 @@ namespace GraduationProject.Application.Services
                 };
 
                 return (ServiceResult<LoginResponse>.Success(data), raw);
-
             }
             catch
             {
