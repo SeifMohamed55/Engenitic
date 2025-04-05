@@ -6,7 +6,6 @@ import {
   FormArray,
   Validators,
   ReactiveFormsModule,
-  AbstractControl,
 } from '@angular/forms';
 
 @Component({
@@ -17,100 +16,158 @@ import {
   styleUrls: ['./instructor-add-course.component.scss'],
 })
 export class InstructorAddCourseComponent implements OnInit {
-  courseForm!: FormGroup;
   selectedFile: File | null = null;
   fileValidationError: string | null = null;
   currentLevelIndex = 0;
+  currentLevelIndexQuiz = 0;
 
-  constructor(private cdRef: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) {}
 
-  ngOnInit() {
-    this.initializeForm();
-    this.addLevel(); // Add first level by default
+  ngOnInit(): void {
+    this.addLevelCourse(); // Initialize with one level
   }
 
-  initializeForm() {
-    this.courseForm = new FormGroup({
-      title: new FormControl('', [Validators.required]),
-      description: new FormControl('', [Validators.required]),
-      requirements: new FormControl('', [Validators.required]),
-      imageUrl: new FormControl(null, [Validators.required]),
-      levels: new FormArray([]),
-    });
-  }
+  addingCourseForm = new FormGroup({
+    title: new FormControl('', [Validators.required]),
+    description: new FormControl('', [Validators.required]),
+    requirements: new FormControl('', [Validators.required]),
+    levels: new FormArray([]),
+  });
 
-  get levels(): FormArray {
-    return this.courseForm.get('levels') as FormArray;
-  }
-
-  createEmptyAnswer(): FormGroup {
-    return new FormGroup({
-      answer: new FormControl('', Validators.required),
-      isCorrect: new FormControl(false),
-    });
-  }
-
-  addLevel() {
-    const levelGroup = new FormGroup({
+  // Level management methods
+  addLevelCourse(): void {
+    const level = new FormGroup({
       videoUrl: new FormControl('', [Validators.required]),
-      quiz: new FormControl('', [Validators.required]),
-      answers: new FormArray([
-        this.createEmptyAnswer(),
-        this.createEmptyAnswer(),
-        this.createEmptyAnswer(),
-        this.createEmptyAnswer(),
+      quizzes: new FormArray([
+        this.createQuiz(), // Start with one quiz per level
       ]),
     });
-
-    this.levels.push(levelGroup);
+    (this.addingCourseForm.get('levels') as FormArray).push(level);
     this.currentLevelIndex = this.levels.length - 1;
-    this.cdRef.detectChanges();
+    this.cd.detectChanges();
   }
 
-  getAnswers(levelIndex: number): FormArray {
-    return this.levels.at(levelIndex).get('answers') as FormArray;
+  deleteLevelCourse(): void {
+    const levelArray = this.levels;
+    if (levelArray.length > 0) {
+      levelArray.removeAt(this.currentLevelIndex);
+      this.currentLevelIndex = Math.min(
+        this.currentLevelIndex,
+        levelArray.length - 1
+      );
+      this.cd.detectChanges();
+    }
   }
 
-  selectCorrectAnswer(levelIndex: number, answerIndex: number) {
-    const answers = this.getAnswers(levelIndex);
-    answers.controls.forEach((control, i) => {
-      control.get('isCorrect')?.setValue(i === answerIndex);
+  previousLevelCourse(): void {
+    if (this.currentLevelIndex > 0) this.currentLevelIndex--;
+  }
+
+  nextLevelCourse(): void {
+    if (this.currentLevelIndex < this.levels.length - 1)
+      this.currentLevelIndex++;
+  }
+
+  // Quiz management methods
+  createQuiz(): FormGroup {
+    return new FormGroup({
+      question: new FormControl('', [Validators.required]),
+      answer_1: new FormGroup({
+        answer: new FormControl('', [Validators.required]),
+        isCorrect: new FormControl(false),
+      }),
+      answer_2: new FormGroup({
+        answer: new FormControl('', [Validators.required]),
+        isCorrect: new FormControl(false),
+      }),
+      answer_3: new FormGroup({
+        answer: new FormControl('', [Validators.required]),
+        isCorrect: new FormControl(false),
+      }),
+      answer_4: new FormGroup({
+        answer: new FormControl('', [Validators.required]),
+        isCorrect: new FormControl(false),
+      }),
     });
   }
 
-  deleteLevel() {
-    if (this.levels.length > 1) {
-      this.levels.removeAt(this.currentLevelIndex);
-      this.currentLevelIndex = Math.max(0, this.currentLevelIndex - 1);
-      this.cdRef.detectChanges();
+  addLevelQuiz(): void {
+    const quizzes = this.currentLevel.get('quizzes') as FormArray;
+    quizzes.push(this.createQuiz());
+    this.currentLevelIndexQuiz = quizzes.length - 1;
+    this.cd.detectChanges();
+  }
+
+  deleteLevelQuiz(): void {
+    const quizzes = this.quizzes;
+    if (quizzes.length > 0) {
+      quizzes.removeAt(this.currentLevelIndexQuiz);
+      this.currentLevelIndexQuiz = Math.min(
+        this.currentLevelIndexQuiz,
+        quizzes.length - 1
+      );
+      this.cd.detectChanges();
     }
   }
 
-  previousLevel() {
-    if (this.currentLevelIndex > 0) {
-      this.currentLevelIndex--;
-      this.cdRef.detectChanges();
-    }
+  previousLevelQuiz(): void {
+    if (this.currentLevelIndexQuiz > 0) this.currentLevelIndexQuiz--;
   }
 
-  nextLevel() {
-    if (this.currentLevelIndex < this.levels.length - 1) {
-      this.currentLevelIndex++;
-      this.cdRef.detectChanges();
-    }
+  nextLevelQuiz(): void {
+    if (this.currentLevelIndexQuiz < this.quizzes.length - 1)
+      this.currentLevelIndexQuiz++;
   }
 
-  onFileChange(event: Event) {
+  // Form helpers
+  get levels(): FormArray {
+    return this.addingCourseForm.get('levels') as FormArray;
+  }
+
+  get currentLevel(): FormGroup {
+    return this.levels.at(this.currentLevelIndex) as FormGroup;
+  }
+
+  get quizzes(): FormArray {
+    return this.currentLevel.get('quizzes') as FormArray;
+  }
+
+  get currentQuiz(): FormGroup {
+    return this.quizzes.at(this.currentLevelIndexQuiz) as FormGroup;
+  }
+
+  answers(answer: string): FormGroup {
+    return this.currentQuiz.get(answer) as FormGroup;
+  }
+
+  // Correct answer handling
+  setCorrectAnswer(answerKey: string): void {
+    ['answer_1', 'answer_2', 'answer_3', 'answer_4'].forEach((key) => {
+      const control = this.answers(key).get('isCorrect');
+      control?.setValue(key === answerKey);
+    });
+    this.validateQuiz(this.currentQuiz);
+  }
+
+  validateQuiz(quiz: FormGroup): void {
+    const hasCorrect = ['answer_1', 'answer_2', 'answer_3', 'answer_4'].some(
+      (key) => quiz.get(key)?.get('isCorrect')?.value
+    );
+    quiz.setErrors(hasCorrect ? null : { noCorrectAnswer: true });
+  }
+
+  // File handling
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.fileValidationError = null;
 
     if (input.files?.length) {
       const file = input.files[0];
-      const acceptableTypes = ['image/jpg', 'image/png', 'image/jpeg'];
-      const maxSize = 2 * 1024 * 1024; // 2MB
+      const validTypes = ['image/jpg', 'image/png', 'image/jpeg'];
+      const maxSize = 2 * 1024 * 1024;
 
-      if (!acceptableTypes.includes(file.type)) {
-        this.fileValidationError = 'Invalid image type';
+      if (!validTypes.includes(file.type)) {
+        this.fileValidationError = 'Invalid image type (only JPG/PNG allowed)';
         return;
       }
 
@@ -118,18 +175,30 @@ export class InstructorAddCourseComponent implements OnInit {
         this.fileValidationError = 'Image size must be less than 2MB';
         return;
       }
-
       this.selectedFile = file;
-      this.courseForm.patchValue({ imageUrl: file });
     }
   }
 
-  onSubmit() {
-    if (this.courseForm.valid) {
-      console.log('Course data:', this.courseForm.value);
+  // Form submission
+  onSubmit(): void {
+    // Validate all quizzes
+    this.levels.controls.forEach((level) => {
+      const quizzes = (level as FormGroup).get('quizzes') as FormArray;
+      quizzes.controls.forEach((quiz) => this.validateQuiz(quiz as FormGroup));
+    });
+
+    if(!this.selectedFile){
+      this.fileValidationError = "Course image is required"
+      return ; 
+    }
+
+    if (this.addingCourseForm.valid) {
+      console.log('Form submitted:', this.addingCourseForm.value);
+      const submitCourse = new FormData();
+      // Handle form submission here
     } else {
-      this.courseForm.markAllAsTouched();
-      console.log('Course error:', this.courseForm.value);
+      this.addingCourseForm.markAllAsTouched();
+      console.warn('Form is invalid', this.addingCourseForm.value);
     }
   }
 }

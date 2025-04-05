@@ -59,7 +59,7 @@ export class LoginComponent implements OnDestroy {
           this.buttonDisabled = false;
           return;
         }
-        console.log(res);
+
         this.loginResponse = res.data;
         this._UserService.registered.next(this.loginResponse.accessToken);
         this._UserService.userId.next(this.loginResponse.id);
