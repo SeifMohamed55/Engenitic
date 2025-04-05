@@ -26,6 +26,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
         Task AddCourseToTag(int courseId, List<TagDTO> tag);
         Task<int?> GetCourseInstructorId(int courseId);
+        Task<Course?> GetCourseWithImageAndInstructor(int id);
+        Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
 
         //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
     }
@@ -33,9 +35,11 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     {
 
         private readonly DbSet<Tag> _tags;
+        private readonly AppDbContext _context;
         public CoursesRepository(AppDbContext context) : base(context)
         {
             _tags = context.Set<Tag>();
+            _context = context;
         }
 
         public async Task<CourseDetailsResponse?> GetDetailsById(int id)
@@ -59,7 +63,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         }
 
-        public override async Task<Course?> GetByIdAsync(int id)
+        public async Task<Course?> GetCourseWithImageAndInstructor(int id)
         {
             return await _dbSet
                 .Include(x => x.FileHash)
@@ -188,6 +192,57 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
             return res.InstructorId;
         }
+
+        public async Task<EditCourseRequest?> GetCourseWithQuizes(int courseId)
+        {
+            return await GetCourseWithQuizesCompiled(_context, courseId);
+        }
+
+
+
+        static readonly Func<AppDbContext, int, Task<EditCourseRequest?>> GetCourseWithQuizesCompiled =
+     EF.CompileAsyncQuery((AppDbContext context, int courseId) =>
+         context.Courses
+             .Include(x => x.Tags)
+             .Include(x => x.Quizes)
+                 .ThenInclude(x => x.Questions)
+                     .ThenInclude(q => q.Answers)
+             .AsSingleQuery()
+             .Select(x => new EditCourseRequest
+             {
+                 Id = x.Id,
+                 Code = x.Code,
+                 Title = x.Title,
+                 Description = x.Description,
+                 Requirements = x.Requirements,
+                 InstructorId = x.InstructorId,
+                 Tags = x.Tags.Select(t => new TagDTO
+                 {
+                     Id = t.Id,
+                     Value = t.Value
+                 }).ToList(),
+                 Quizes = x.Quizes.Select(q => new QuizDTO
+                 {
+                     Id = q.Id,
+                     Title = q.Title,
+                     Position = q.Position,
+                     Questions = q.Questions.Select(qq => new QuestionDTO
+                     {
+                         Id = qq.Id,
+                         QuestionText = qq.QuestionText,
+                         Position = qq.Position,
+                         Answers = qq.Answers.Select(a => new AnswerDTO
+                         {
+                             Id = a.Id,
+                             AnswerText = a.AnswerText,
+                             IsCorrect = a.IsCorrect,
+                             Position = a.Position
+                         }).OrderBy(x => x.Position).ToList()
+                     }).OrderBy(x => x.Position).ToList()
+                 }).OrderBy(x=> x.Position).ToList()
+             })
+             .FirstOrDefault(x => x.Id == courseId));
+
 
         /*        public async Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses)
                 {

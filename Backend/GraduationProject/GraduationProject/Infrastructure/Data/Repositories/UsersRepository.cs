@@ -13,16 +13,15 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
     public interface IUserRepository : IRepository<AppUser>
     {
-        Task<PaginatedList<AppUserDTO>> GetUsersDTO(int index);
-        Task<List<AppUser>> GetAllUsersAsync();
         Task<AppUserDTO?> GetAppUserDTO(int id);
         Task<AppUser?> GetUserWithTokenAndRoles(int id);
         Task<AppUser?> GetUserWithTokenAndRoles(string email);
         Task<RefreshToken?> GetUserRefreshToken(int id);
         Task<AppUserDTO?> GetUserDTOByEmail(string email);
         Task<FileHash> GetUserImageHash(int id);
-
         Task<AppUser?> GetUserWithFiles(int id);
+        Task<PaginatedList<AppUserDTO>> GetBannedUsersDTO(int index);
+        public Task<PaginatedList<AppUserDTO>> GetUsersInRolePage(int index, Role? role);
 
         //Task<string?> GetUserImage(int id);
 
@@ -41,10 +40,11 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return _dbSet
                 .Include(x => x.Roles)
                 .Include(x => x.RefreshToken)
-                .Include(x => x.FileHashes);
+                .Include(x => x.FileHashes)
+                .OrderBy(x=> x.FullName);
         }
 
-        public async Task<PaginatedList<AppUserDTO>> GetUsersDTO(int index)
+        private async Task<PaginatedList<AppUserDTO>> GetUsersDTOPageAsync(int index)
         {
             var query =  DefaultQuery()
                 .DTOProjection();
@@ -52,11 +52,28 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return await PaginatedList<AppUserDTO>.CreateAsync(query, index);
         }
 
-        public async Task<List<AppUser>> GetAllUsersAsync()
+        public async Task<PaginatedList<AppUserDTO>> GetUsersInRolePage(int index, Role? role)
         {
-            return await _dbSet
-                .ToListAsync();
+            if(role == null)
+                return await GetUsersDTOPageAsync(index);
+
+            var query = DefaultQuery()
+                .Where(x => x.Roles.Any(r => r.Id == role.Id))
+                .DTOProjection();
+
+            return await PaginatedList<AppUserDTO>.CreateAsync(query, index);
+
         }
+
+        public async Task<PaginatedList<AppUserDTO>> GetBannedUsersDTO(int index)
+        {
+            var query = DefaultQuery()
+                .Where(x=> x.Banned == true)
+                .DTOProjection();
+
+            return await PaginatedList<AppUserDTO>.CreateAsync(query, index);
+        }
+
 
         public async Task<AppUserDTO?> GetAppUserDTO(int id)
         {
@@ -115,5 +132,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return await _dbSet.Include(x => x.FileHashes)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+
     }
 }

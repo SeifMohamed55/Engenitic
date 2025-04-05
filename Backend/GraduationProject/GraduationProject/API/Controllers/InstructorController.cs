@@ -47,10 +47,10 @@ namespace GraduationProject.API.Controllers
             try
             {
                 if (!int.TryParse(claimId, out int parsedId) || parsedId != instructorId)
-                    return Unauthorized(new ErrorResponse()
+                    return BadRequest(new ErrorResponse()
                     {
                         Message = "Invalid User.",
-                        Code = HttpStatusCode.Unauthorized,
+                        Code = HttpStatusCode.BadRequest,
                     });
                 var courses = await _coursesService.GetInstructorCourses(parsedId, index);
 
@@ -118,10 +118,10 @@ namespace GraduationProject.API.Controllers
             try
             {
                 if (!int.TryParse(claimId, out int parsedId) || parsedId != course.InstructorId)
-                    return Unauthorized(new ErrorResponse()
+                    return BadRequest(new ErrorResponse()
                     {
                         Message = "Invalid User.",
-                        Code = HttpStatusCode.Unauthorized,
+                        Code = HttpStatusCode.BadRequest,
                     });
 
                 var instructor = await _userManager.FindByIdAsync(claimId);
@@ -251,7 +251,49 @@ namespace GraduationProject.API.Controllers
             }
         }
 
-        
+        [HttpGet("course-with-quizes")]
+        public async Task<IActionResult> GetCourseWithQuizes([FromQuery] int courseId)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            try
+            {
+                if (!int.TryParse(claimId, out int parsedId))
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid User.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
+                var course = await _coursesService.GetCourseWithQuizes(courseId);
+                if (course == null)
+                    return NotFound(new ErrorResponse()
+                    {
+                        Message = "Course was not found.",
+                        Code = HttpStatusCode.NotFound,
+                    });
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Course Retrieved Successfully.",
+                    Data = course,
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happened.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+        }
+
+
 
         [HttpDelete("deleteCourse")]
         public async Task<IActionResult> DeleteCourse(DeleteCourseRequest req)

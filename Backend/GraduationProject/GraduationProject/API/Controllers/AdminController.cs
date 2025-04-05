@@ -1,10 +1,9 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
-using GraduationProject.Domain.DTOs;
-using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Security;
 using System.Net;
 
 namespace GraduationProject.API.Controllers
@@ -14,19 +13,19 @@ namespace GraduationProject.API.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ILoginRegisterService _loginService;
+        private readonly IAdminService _adminService;
         public AdminController(
-            IUnitOfWork unitOfWork,
-            ILoginRegisterService loginRegisterService)
+            ILoginRegisterService loginRegisterService,
+            IAdminService adminService)
         {
             _loginService = loginRegisterService;
-            _unitOfWork = unitOfWork;
+            _adminService = adminService;
         }
 
 
         [HttpGet("users")]
-        public async Task<ActionResult> GetUsers([FromQuery] int index = 1)
+        public async Task<IActionResult> GetUsers([FromQuery] string? role, [FromQuery] int index = 1)
         {
             if (index < 1)
                 return BadRequest(new ErrorResponse()
@@ -37,7 +36,7 @@ namespace GraduationProject.API.Controllers
 
             try
             {
-                var data = await _unitOfWork.UserRepo.GetUsersDTO(index);
+                var data = await _adminService.GetUsersPage(index, role);
 
                 if (data.TotalPages < index)
                     return BadRequest(new ErrorResponse()
@@ -53,24 +52,31 @@ namespace GraduationProject.API.Controllers
                     Message = "Users retrieved successfully."
                 });
             }
+            catch (InvalidParameterException ex)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
             catch
             {
                 return BadRequest(new ErrorResponse()
                 {
                     Code = HttpStatusCode.BadRequest,
-                    Message = "No users found."
+                    Message = "Something Wrong occured"
                 });
             }
         }
 
-/*        // DELETE: api/admin/Users/5
-        [HttpDelete("{id}")]
+        // DELETE: api/admin/ban/5
+        [HttpDelete("ban/{id}")]
         public async Task<IActionResult> BanAppUser(int id)
         {
             try
             {
-                await _unitOfWork.UserRepo.BanAppUser(id);
-                await _unitOfWork.SaveChangesAsync();
+                await _adminService.BanUser(id);
 
                 return Ok(new SuccessResponse()
                 {
@@ -86,11 +92,34 @@ namespace GraduationProject.API.Controllers
                     Code = HttpStatusCode.BadRequest
                 });
             }
-
-
-
         }
-*/
+
+        // DELETE: api/admin/ban/5
+        [HttpDelete("unban/{id}")]
+        public async Task<IActionResult> UnbanAppUser(int id)
+        {
+            try
+            {
+                await _adminService.UnbanUser(id);
+
+                return Ok(new SuccessResponse()
+                {
+                    Message = "User has been banned.",
+                    Code = HttpStatusCode.OK
+                });
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "User not found.",
+                    Code = HttpStatusCode.BadRequest
+                });
+            }
+        }
+
+
+
         [HttpPost("register")]
         public async Task<IActionResult> AddAdmin([FromForm] RegisterCustomRequest model)
         {

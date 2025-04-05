@@ -20,6 +20,7 @@ namespace GraduationProject.Common.Extensions
                     UserName = x.FullName,
                     Banned = x.Banned,
                     IsExternal = x.IsExternal,
+                    IsEmailConfirmed = x.EmailConfirmed,
                     Image = new()
                     {
                         ImageURL = x.FileHashes

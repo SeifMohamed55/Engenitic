@@ -26,7 +26,7 @@ namespace GraduationProject.Application.Services
         Task DeleteCourse(int courseId);
         Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId);
         Task<int?> GetCourseInstructorId(int courseId);
-
+        Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
 
         public class CoursesService : ICoursesService
         {
@@ -140,7 +140,7 @@ namespace GraduationProject.Application.Services
 
             public async Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId)
             {
-                var addedCourse = await _unitOfWork.CourseRepo.GetByIdAsync(courseId);
+                var addedCourse = await _unitOfWork.CourseRepo.GetCourseWithImageAndInstructor(courseId);
                 if (addedCourse == null)
                     return ServiceResult<bool>.Failure("Course not found.");
 
@@ -178,12 +178,17 @@ namespace GraduationProject.Application.Services
 
             public async Task DeleteCourse(int courseId)
             {
-                var course = await _unitOfWork.CourseRepo.GetByIdAsync(courseId);
+                var course = await _unitOfWork.CourseRepo.GetCourseWithImageAndInstructor(courseId);
                 if(course == null)
                     throw new ArgumentNullException("course is not found");
 
                 course.hidden = true;
                 await _unitOfWork.SaveChangesAsync();
+            }
+
+            public async Task<EditCourseRequest?> GetCourseWithQuizes(int courseId)
+            {
+                return await _unitOfWork.CourseRepo.GetCourseWithQuizes(courseId);
             }
         }
     }
