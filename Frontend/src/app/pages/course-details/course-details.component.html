@@ -1,24 +1,48 @@
 <main class="container pt-10">
-    <div class="grid grid-cols-2 items-center gap-32">
-        <div class="flex justify-between items-start flex-col gap-10">
-            <h1 class="font-display text-header mb-6"> {{ courseDetailsResopnse.title }} </h1>
-            <p class="font-regular text-normal"> {{ courseDetailsResopnse.description }}</p>
-            <p class="font-regular text-normal"> made by   </p>
-            <p class="font-regular text-normal">requirements before taking the course : {{ courseDetailsResopnse.requirements }} </p>
-            <p class="font-regular text-normal">instructor name : {{ courseDetailsResopnse.instructorName }} </p>
-            <form class="w-full" [formGroup]="enrollForm" (ngSubmit)="handleSubmit()">
-                <button type="submit" class="engenitic-button w-full relative group inline-block hover:enginitic-main-color">
-                    <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
-                        enroll
-                    </span>
-                    <span class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-yellow-300">
-                        <i class="fa-solid fa-lightbulb"></i>
-                    </span>
-                </button>
-            </form>
-        </div>
-        <figure class="flex justify-center items-center w-[80%] h-[80%]">
-            <img [src]="courseDetailsResopnse.image.imageURL" class="object-contain rounded-2xl w-full" [alt]="courseDetailsResopnse.image.name">
-        </figure>
+  <div class="grid grid-cols-2 items-center gap-32">
+    <div class="flex justify-between items-start flex-col gap-10">
+      <h1 class="font-display text-header mb-6">
+        {{ courseDetailsResopnse.title }}
+      </h1>
+      <p class="font-regular text-normal">
+        {{ courseDetailsResopnse.description }}
+      </p>
+      <p class="font-regular text-normal">
+        course stages : {{ courseDetailsResopnse.stages }}
+      </p>
+      <p class="font-regular text-normal">
+        made by {{ courseDetailsResopnse.instructorName }}
+      </p>
+      <p class="font-regular text-normal">
+        requirements before taking the course :
+        {{ courseDetailsResopnse.requirements }}
+      </p>
+      <p class="font-regular text-normal">
+        instructor Email : {{ courseDetailsResopnse.instructorEmail }}
+      </p>
+      <button
+        type="submit"
+        class="engenitic-button w-full relative group inline-block hover:enginitic-main-color"
+      >
+        <span
+          class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
+        >
+          enroll
+        </span>
+        <span
+          class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-yellow-300"
+        >
+          <i class="fa-solid fa-lightbulb"></i>
+        </span>
+      </button>
     </div>
+    <figure class="flex justify-center items-center w-[80%] h-[80%]">
+      <img
+        title="{{ courseDetailsResopnse.title }}"
+        [src]="courseDetailsResopnse.image.imageURL"
+        class="object-contain rounded-2xl w-full"
+        [alt]="courseDetailsResopnse.image.name"
+      />
+    </figure>
+  </div>
 </main>
