@@ -191,7 +191,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
 
   // Form submission
   onSubmit(): void {
-    // Validate all quizzes
+
     const formValue = this.addingCourseForm.value;
 
     this.levels.controls.forEach((level) => {
@@ -256,7 +256,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
         })
       );
 
-      submitCourse.append('quizzes', JSON.stringify(quizzesData));
+      submitCourse.append('Quizes', JSON.stringify(quizzesData));
 
       this._CoursesService
         .addCourse(submitCourse)
