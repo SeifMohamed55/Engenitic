@@ -1,14 +1,16 @@
-export interface Login {
-    id: number
-    banned: boolean
-    name: string
-    roles: string[]
-    validTo: string
-    image: Image
-    accessToken: string
+export interface LoginData {
+  id: number;
+  banned: boolean;
+  name: string;
+  roles: string[];
+  validTo: string;
+  image: Image;
+  accessToken: string;
 }
 
-interface Image {
-    url: string
-    name: string
+export interface Image {
+  name: string;
+  imageURL: string;
+  hash: number;
+  version: any;
 }

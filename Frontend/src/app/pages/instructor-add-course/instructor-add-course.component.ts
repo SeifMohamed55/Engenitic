@@ -43,28 +43,28 @@ export class InstructorAddCourseComponent implements OnInit {
     return this.courseForm.get('levels') as FormArray;
   }
 
+  createEmptyAnswer(): FormGroup {
+    return new FormGroup({
+      answer: new FormControl('', Validators.required),
+      isCorrect: new FormControl(false),
+    });
+  }
+
   addLevel() {
     const levelGroup = new FormGroup({
       videoUrl: new FormControl('', [Validators.required]),
       quiz: new FormControl('', [Validators.required]),
       answers: new FormArray([
-        this.createAnswer(),
-        this.createAnswer(),
-        this.createAnswer(),
-        this.createAnswer(),
+        this.createEmptyAnswer(),
+        this.createEmptyAnswer(),
+        this.createEmptyAnswer(),
+        this.createEmptyAnswer(),
       ]),
     });
 
     this.levels.push(levelGroup);
     this.currentLevelIndex = this.levels.length - 1;
     this.cdRef.detectChanges();
-  }
-
-  createAnswer(): FormGroup {
-    return new FormGroup({
-      answer: new FormControl('', Validators.required),
-      isCorrect: new FormControl(false),
-    });
   }
 
   getAnswers(levelIndex: number): FormArray {
@@ -126,10 +126,10 @@ export class InstructorAddCourseComponent implements OnInit {
 
   onSubmit() {
     if (this.courseForm.valid) {
-      console.log('Course data :', this.courseForm.value);
+      console.log('Course data:', this.courseForm.value);
     } else {
       this.courseForm.markAllAsTouched();
-      console.log('Course error :', this.courseForm.value);
+      console.log('Course error:', this.courseForm.value);
     }
   }
 }

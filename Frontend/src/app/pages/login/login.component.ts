@@ -4,7 +4,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../feature/users/user.service';
-import { Login } from '../../interfaces/users/login';
+import { LoginData } from '../../interfaces/users/login';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -28,7 +28,7 @@ export class LoginComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
   private destroyImage$ = new Subject<void>();
-  loginResponse!: Login;
+  loginResponse!: LoginData;
   buttonDisabled: boolean = false;
 
   loginForm: FormGroup = new FormGroup({
@@ -59,39 +59,21 @@ export class LoginComponent implements OnDestroy {
           this.buttonDisabled = false;
           return;
         }
-  
+        console.log(res);
         this.loginResponse = res.data;
         this._UserService.registered.next(this.loginResponse.accessToken);
         this._UserService.userId.next(this.loginResponse.id);
         this._UserService.userName.next(this.loginResponse.name);
         this._UserService.role.next(this.loginResponse.roles[0]);
-        this._UserService.image.next(this.loginResponse.image.url);
+        this._UserService.image.next(this.loginResponse.image.imageURL);
 
         localStorage.setItem('Token', this.loginResponse.accessToken);
         localStorage.setItem('name', this.loginResponse.name);
         localStorage.setItem('id', String(this.loginResponse.id));
         localStorage.setItem('role', this.loginResponse.roles[0]);
-        localStorage.setItem('image_url', this.loginResponse.image.url);
+        localStorage.setItem('image_url', this.loginResponse.image.imageURL);
 
 
-        // // Fetch user image (Blob -> Base64 conversion)
-        // this._UserService.getUserImage(this.loginResponse.id).subscribe({
-        //   next: blob => {
-        //     if (blob.size === 0) {
-        //       console.warn("Empty image response received.");
-        //       return;
-        //     }
-        //     const reader = new FileReader();
-        //     reader.readAsDataURL(blob); // Convert Blob to Base64
-        //     reader.onloadend = () => {
-        //       const base64Image = reader.result as string; // Correct Base64
-        //       this._UserService.image.next(base64Image);
-        //       sessionStorage.setItem('image', base64Image); // Store Base64 safely in sessionStorage
-        //     };
-        //   },
-        //   error: err => console.error("Failed to fetch user image", err)
-        // });
-  
         this.toastr.success(res.message);
         this._Router.navigate(["/home"]);
       },
