@@ -1,27 +1,92 @@
-<nav class="w-full flex justify-center items-center ">
+<nav class="w-full flex justify-center items-center">
   <ul class="container flex justify-between items-center p-5">
-    <li *ngIf="!registered;else reg_logo">
-      <img src="assets/icons/logo-black.svg" alt="engenitics black logo" />
+    <li *ngIf="!registered; else reg_logo">
+      <a routerLink="/"
+        ><img src="assets/icons/logo-black.svg" alt="engenitics black logo"
+      /></a>
     </li>
-    <li><a routerLink="/home" class="duration-500 transition-all font-display capitalize hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]">home</a></li>
-    <li><a routerLink="/offered-courses" class="duration-500 transition-all font-display hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]">courses offered</a></li>
-    <li><a routerLink="/grammar" class="duration-500 transition-all font-display hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]">grammar help</a></li>
-    <li><a routerLink="/Q&A" class="duration-500 transition-all font-display hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]">Q & A</a></li>
-    <li><a routerLink="/listening" class="duration-500 transition-all font-display hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]">listening</a></li>
-    <li *ngIf="!registered;else user_info">
-      <span  class="flex justify-between items-center">
-        <div class="me-6"><a routerLink="login" class="engenitic-button hover:engenitic-success">log in</a></div>
-        <div class="ms-6"><a routerLink="register" class="engenitic-button hover:bg-yellow-400">register</a></div>
+    <li>
+      <a
+        routerLink="/home"
+        class="duration-500 transition-all font-display capitalize hover:text-[#58B6B8]"
+        routerLinkActive="text-[#58B6B8]"
+        >home</a
+      >
+    </li>
+    <li>
+      <a
+        routerLink="/offered-courses"
+        class="duration-500 transition-all font-display hover:text-[#58B6B8]"
+        routerLinkActive="text-[#58B6B8]"
+        >courses offered</a
+      >
+    </li>
+    <li>
+      <a
+        routerLink="/grammar"
+        class="duration-500 transition-all font-display hover:text-[#58B6B8]"
+        routerLinkActive="text-[#58B6B8]"
+        >grammar help</a
+      >
+    </li>
+    <li>
+      <a
+        routerLink="/Q&A"
+        class="duration-500 transition-all font-display hover:text-[#58B6B8]"
+        routerLinkActive="text-[#58B6B8]"
+        >Q & A</a
+      >
+    </li>
+    <li>
+      <a
+        routerLink="/listening"
+        class="duration-500 transition-all font-display hover:text-[#58B6B8]"
+        routerLinkActive="text-[#58B6B8]"
+        >listening</a
+      >
+    </li>
+    <li *ngIf="!registered; else user_info">
+      <span class="flex justify-between items-center">
+        <div class="me-6">
+          <a routerLink="login" class="engenitic-button hover:engenitic-success"
+            >log in</a
+          >
+        </div>
+        <div class="ms-6">
+          <a routerLink="register" class="engenitic-button hover:bg-yellow-400"
+            >register</a
+          >
+        </div>
       </span>
     </li>
   </ul>
   <ng-template #user_info>
     <span class="flex justify-between items-center">
-      <a [routerLink]="['/profile', userRole ,  userId, '1']" class="duration-500 transition-all me-6 flex justify-between items-center hover:text-[#58B6B8]" routerLinkActive="text-[#58B6B8]"><img [src]="userPicture" alt="user profile picture" class="w-[43px] h-[40px] object-cover rounded-full"> <p class="ms-4 font-display"> {{ userName }} </p></a>
-      <div class="ms-6"><a (click)="handleLogout()" class="engenitic-button hover:engenitic-danger cursor-pointer">log out</a></div>
+      <a
+        [routerLink]="['/profile', userRole, userId, '1']"
+        class="duration-500 transition-all me-6 flex justify-between items-center hover:text-[#58B6B8]"
+        routerLinkActive="text-[#58B6B8]"
+        ><img
+          [src]="userPicture"
+          alt="user profile picture"
+          class="w-[43px] h-[40px] object-cover rounded-full"
+        />
+        <p class="ms-4 font-display">{{ userName }}</p></a
+      >
+      <div class="ms-6">
+        <a
+          (click)="handleLogout()"
+          class="engenitic-button hover:engenitic-danger cursor-pointer"
+          >log out</a
+        >
+      </div>
     </span>
   </ng-template>
   <ng-template #reg_logo>
-    <img src="assets/icons/logo-gradient 1.svg" alt="engenitics gradient logo" />
+    <a routerLink="/"
+      ><img
+        src="assets/icons/logo-gradient 1.svg"
+        alt="engenitics gradient logo"
+    /></a>
   </ng-template>
 </nav>

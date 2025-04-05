@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { CoursesService } from '../../feature/courses/courses.service';
 import { Subject, takeUntil } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-instructor-add-course',
@@ -26,7 +27,8 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private _CoursesService: CoursesService
+    private _CoursesService: CoursesService,
+    private _ToastrService: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +56,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
     });
     (this.addingCourseForm.get('levels') as FormArray).push(level);
     this.currentLevelIndex = this.levels.length - 1;
+    this.currentLevelIndexQuiz = this.quizzes.length - 1;
     this.cd.detectChanges();
   }
 
@@ -67,15 +70,18 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
       );
       this.cd.detectChanges();
     }
+    this.currentLevelIndexQuiz = this.quizzes.length - 1;
   }
 
   previousLevelCourse(): void {
     if (this.currentLevelIndex > 0) this.currentLevelIndex--;
+    this.currentLevelIndexQuiz = this.quizzes.length - 1;
   }
 
   nextLevelCourse(): void {
     if (this.currentLevelIndex < this.levels.length - 1)
       this.currentLevelIndex++;
+    this.currentLevelIndexQuiz = this.quizzes.length - 1;
   }
 
   // Quiz management methods
@@ -191,7 +197,6 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
 
   // Form submission
   onSubmit(): void {
-
     const formValue = this.addingCourseForm.value;
 
     this.levels.controls.forEach((level) => {
@@ -266,13 +271,17 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (res) => {
-            console.log(res);
+            this._ToastrService.success(res.message);
           },
           error: (err) => {
-            console.log(err);
+            if(err.error.message) {
+              this._ToastrService.error(err.error.message);
+            }
+            else {
+              this._ToastrService.error("something went wrong try again later");
+            }
           },
         });
-
     } else {
       this.addingCourseForm.markAllAsTouched();
       console.warn('Form is invalid', this.addingCourseForm.value);

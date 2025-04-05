@@ -1,18 +1,83 @@
 <main class="grid grid-cols-2 items-center gap-10 container">
-    <figure class="flex justify-start">
-        <img src="./assets/images/login-main-pic.jpeg"  alt="" class="w-[450px] h-[400px]">
-    </figure>
-    <form class="grid grid-rows-3 gap-10 items-center" [formGroup]="loginForm" (ngSubmit)=" handleLogin() " >
-        <input #email type="email" class="engenitic-input" placeholder="  Email ..." formControlName="email">
-        <div *ngIf="loginForm.get('email')?.errors && (loginForm.get('email')?.touched || email.value.length > 0)">
-            <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('email')?.getError('required')">the email entity is required</p>
-            <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('email')?.getError('email')">email is not valid</p>
-        </div>
-        <input type="password" class="engenitic-input" placeholder="  Password ..." formControlName="password">
-        <div *ngIf="loginForm.get('password')?.errors && (loginForm.get('password')?.touched || email.value.length > 0)">
-            <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('password')?.getError('required')">the password entity is required</p>
-            <p class="text-normal font-regular text-red-500" *ngIf="loginForm.get('password')?.getError('minlength')">password must be more than 5 characters</p>
-        </div>
-        <button [disabled]="buttonDisabled" type="submit" class="engenitic-button w-fit mx-auto hover:enginitic-main-color hover:text-white">submit</button>
-    </form>
+  <figure class="flex justify-start">
+    <img
+      src="./assets/images/login-main-pic.jpeg"
+      alt=""
+      class="w-[450px] h-[400px]"
+    />
+  </figure>
+  <form
+    class="grid grid-rows-3 gap-10 items-center"
+    [formGroup]="loginForm"
+    (ngSubmit)="handleLogin()"
+  >
+    <input
+      #email
+      type="email"
+      class="engenitic-input"
+      placeholder="  Email ..."
+      formControlName="email"
+    />
+    <div
+      *ngIf="
+        loginForm.get('email')?.errors &&
+        (loginForm.get('email')?.touched || email.value.length > 0)
+      "
+    >
+      <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="loginForm.get('email')?.getError('required')"
+      >
+        the email entity is required
+      </p>
+      <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="loginForm.get('email')?.getError('email')"
+      >
+        email is not valid
+      </p>
+    </div>
+    <input
+      type="password"
+      class="engenitic-input"
+      placeholder="  Password ..."
+      formControlName="password"
+    />
+    <div
+      *ngIf="
+        loginForm.get('password')?.errors &&
+        (loginForm.get('password')?.touched || email.value.length > 0)
+      "
+    >
+      <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="loginForm.get('password')?.getError('required')"
+      >
+        the password entity is required
+      </p>
+      <p
+        class="text-normal font-regular text-red-500"
+        *ngIf="loginForm.get('password')?.getError('minlength')"
+      >
+        password must be more than 5 characters
+      </p>
+    </div>
+    <div class="flex justify-center gap-8 items-center">
+      <button
+        [disabled]="buttonDisabled"
+        type="submit"
+        class="engenitic-button w-fit hover:enginitic-main-color hover:text-white"
+      >
+        submit
+      </button>
+      <button
+        title="login using gmail"
+        (click)="googleLogin()"
+        type="button"
+        class="engenitic-button w-fit hover:enginitic-main-color hover:text-white"
+      >
+        <i class="fa-brands fa-google px-2 py-1"></i>
+      </button>
+    </div>
+  </form>
 </main>

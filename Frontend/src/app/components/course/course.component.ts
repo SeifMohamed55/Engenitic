@@ -21,6 +21,7 @@ export class CourseComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
+  navigated: boolean = true;
   courses: Course[] = [];
 
   constructor(
@@ -40,7 +41,7 @@ export class CourseComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((isActive) => {
         this.isSearchActivated = isActive;
-        if (isActive && this.currentPage !== 1) {
+        if (isActive && this.currentPage !== 1 && this.navigated) {
           this.navigateToPage(1);
         }
       });
@@ -87,7 +88,7 @@ export class CourseComponent implements OnInit, OnDestroy {
 
   private handleSearchResults(results: any): void {
     this.courses = results.data.paginatedList;
-    this.totalItems = results.totalItems;
+    this.totalItems = results.data.totalItems;
   }
 
   private fetchCourses(page: number): void {
@@ -113,12 +114,14 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   private navigateToPage(page: number): void {
+    this.navigated = false;
     this._Router.navigate(['/offered-courses', page]);
   }
 
   clearSearch(): void {
     this._CoursesService.clearSearchResults();
     this.navigateToPage(1);
+    this.navigated = true;
   }
 
   private handleError(err: any): void {
