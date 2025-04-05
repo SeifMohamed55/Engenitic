@@ -234,7 +234,10 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
       }
 
       if (localStorage.getItem('id')) {
-        submitCourse.append('image', localStorage.getItem('id') as string);
+        submitCourse.append(
+          'instructorId',
+          localStorage.getItem('id') as string
+        );
       }
 
       const quizzesData = formValue?.levels?.map(
