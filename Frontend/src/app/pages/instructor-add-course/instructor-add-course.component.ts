@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -7,6 +7,8 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { CoursesService } from '../../feature/courses/courses.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-instructor-add-course',
@@ -15,18 +17,26 @@ import {
   templateUrl: './instructor-add-course.component.html',
   styleUrls: ['./instructor-add-course.component.scss'],
 })
-export class InstructorAddCourseComponent implements OnInit {
+export class InstructorAddCourseComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
   fileValidationError: string | null = null;
   currentLevelIndex = 0;
   currentLevelIndexQuiz = 0;
+  private destroy$ = new Subject<void>();
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private _CoursesService: CoursesService
+  ) {}
 
   ngOnInit(): void {
     this.addLevelCourse(); // Initialize with one level
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   addingCourseForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
@@ -182,20 +192,84 @@ export class InstructorAddCourseComponent implements OnInit {
   // Form submission
   onSubmit(): void {
     // Validate all quizzes
+    const formValue = this.addingCourseForm.value;
+
     this.levels.controls.forEach((level) => {
       const quizzes = (level as FormGroup).get('quizzes') as FormArray;
       quizzes.controls.forEach((quiz) => this.validateQuiz(quiz as FormGroup));
     });
 
-    if(!this.selectedFile){
-      this.fileValidationError = "Course image is required"
-      return ; 
+    if (!this.selectedFile) {
+      this.fileValidationError = 'Course image is required';
+      return;
     }
 
     if (this.addingCourseForm.valid) {
       console.log('Form submitted:', this.addingCourseForm.value);
+
       const submitCourse = new FormData();
-      // Handle form submission here
+      if (this.addingCourseForm.get('title')?.value) {
+        submitCourse.append(
+          'title',
+          `${this.addingCourseForm.get('title')?.value}`
+        );
+      }
+
+      if (this.addingCourseForm.get('description')?.value) {
+        submitCourse.append(
+          'description',
+          `${this.addingCourseForm.get('description')?.value}`
+        );
+      }
+
+      if (this.addingCourseForm.get('requirements')?.value) {
+        submitCourse.append(
+          'requirements',
+          `${this.addingCourseForm.get('requirements')?.value}`
+        );
+      }
+
+      if (this.selectedFile) {
+        submitCourse.append('image', this.selectedFile);
+      }
+
+      if (localStorage.getItem('id')) {
+        submitCourse.append('image', localStorage.getItem('id') as string);
+      }
+
+      const quizzesData = formValue?.levels?.map(
+        (level: any, levelIndex: number) => ({
+          title: `Quiz${levelIndex + 1}`,
+          position: levelIndex + 1,
+          videoUrl: level.videoUrl,
+          questions: level.quizzes.map((quiz: any, quizIndex: number) => ({
+            questionText: quiz.question,
+            position: quizIndex + 1,
+            answers: ['answer_1', 'answer_2', 'answer_3', 'answer_4'].map(
+              (key, idx) => ({
+                answerText: quiz[key].answer,
+                position: idx + 1,
+                isCorrect: quiz[key].isCorrect,
+              })
+            ),
+          })),
+        })
+      );
+
+      submitCourse.append('quizzes', JSON.stringify(quizzesData));
+
+      this._CoursesService
+        .addCourse(submitCourse)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+
     } else {
       this.addingCourseForm.markAllAsTouched();
       console.warn('Form is invalid', this.addingCourseForm.value);
