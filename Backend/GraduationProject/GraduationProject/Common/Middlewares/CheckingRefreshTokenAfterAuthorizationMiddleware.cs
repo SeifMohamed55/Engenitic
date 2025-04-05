@@ -21,7 +21,7 @@ namespace GraduationProject.Common.Middlewares
                 var requestRefToken = context.Request.Cookies["refreshToken"];
                 if (requestRefToken == null)
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     await context.Response.WriteAsJsonAsync(new ErrorResponse
                     {
                         Message = "No Refresh Token Provided.",
