@@ -19,7 +19,7 @@ namespace GraduationProject.Application.Services
         string? ExtractJwtTokenFromContext(HttpContext context);
         DateTimeOffset GetAccessTokenExpiration(string accessToken);
         bool IsRefreshTokenExpired(RefreshToken refreshToken);
-        bool VerifyRefreshHmac(string raw, string hashed);
+        bool VerifyRefresh(string raw, string hashed);
     }
 
     public class JwtTokenService : IJwtTokenService
@@ -83,16 +83,28 @@ namespace GraduationProject.Application.Services
 
         public (RefreshToken, string) GenerateRefreshToken(AppUser appUser)
         {
-            var rawToken = GenerateSecureToken();
-            var encryptedToken = _encryptionService.HashWithHMAC(rawToken);
-            var refreshToken = new RefreshToken()
+            string rawToken;
+            RefreshToken refreshToken;
+
+            if (appUser.RefreshToken != null && !IsRefreshTokenExpired(appUser.RefreshToken))
             {
-                ExpiryDate = DateTimeOffset.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
-                Id = appUser.RefreshTokenId ?? 0,
-                LoginProvider = _jwtOptions.Issuer,
-                EncryptedToken = encryptedToken
-            };
+                refreshToken = appUser.RefreshToken;
+                rawToken = _encryptionService.AesDecrypt(refreshToken.EncryptedToken);
+            }
+            else
+            {
+                rawToken = GenerateSecureToken();
+                var encryptedToken = _encryptionService.AesEncrypt(rawToken);
+                refreshToken = new RefreshToken()
+                {
+                    ExpiryDate = DateTimeOffset.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
+                    Id = appUser.RefreshTokenId ?? 0,
+                    LoginProvider = _jwtOptions.Issuer,
+                    EncryptedToken = encryptedToken
+                };
+            }
             return (refreshToken, rawToken);
+           
         }
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
@@ -190,9 +202,9 @@ namespace GraduationProject.Application.Services
             return context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         }
 
-        public bool VerifyRefreshHmac(string raw, string hashed)
+        public bool VerifyRefresh(string raw, string hashed)
         {
-            return _encryptionService.VerifyHMAC(raw, hashed);
+            return _encryptionService.AesDecrypt(hashed) == raw;
         }
 
         public bool IsRefreshTokenExpired(RefreshToken refreshToken)

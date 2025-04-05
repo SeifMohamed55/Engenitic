@@ -35,7 +35,7 @@ namespace GraduationProject.API.Controllers
 
         // GET: /api/instructor/1
         [HttpGet("courses")]
-        public async Task<IActionResult> GetInstructorCourses([FromQuery] int index, [FromQuery] int instructorId)
+        public async Task<IActionResult> GetInstructorCourses([FromQuery] int instructorId, [FromQuery] int index = 1)
         {
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimId == null)
@@ -53,6 +53,13 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
                 var courses = await _coursesService.GetInstructorCourses(parsedId, index);
+
+                if (index > courses.TotalPages && courses.TotalPages != 0)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid Page Number",
+                        Code = HttpStatusCode.BadRequest,
+                    });
 
                 return Ok(new SuccessResponse()
                 {

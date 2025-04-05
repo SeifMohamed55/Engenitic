@@ -29,7 +29,7 @@ namespace GraduationProject.API.Controllers
 
         // GET: /api/student/courses
         [HttpGet("courses")]
-        public async Task<IActionResult> GetStudentCourses([FromQuery] int index, [FromQuery] int id)
+        public async Task<IActionResult> GetStudentCourses([FromQuery] int id, [FromQuery] int index = 1)
         {
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimId == null)
@@ -53,6 +53,13 @@ namespace GraduationProject.API.Controllers
                     x.Course.Image.ImageURL = _cloudinaryService
                      .GetImageUrl(x.Course.Image.ImageURL, x.Course.Image.Version);
                 });
+
+                if (index > courses.TotalPages && courses.TotalPages != 0)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "Invalid Page Number",
+                        Code = HttpStatusCode.BadRequest,
+                    });
 
                 /*if (courses.Count == 0)
                     return NotFound(new ErrorResponse()

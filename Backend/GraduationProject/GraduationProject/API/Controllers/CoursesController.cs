@@ -34,7 +34,7 @@ namespace GraduationProject.API.Controllers
             {
                 var courses = await _coursesService.GetPageOfCourses(index);
 
-                if (index > courses.TotalPages)
+                if (index > courses.TotalPages && courses.TotalPages != 0)
                     return BadRequest(new ErrorResponse()
                     {
                         Message = "Invalid Page Number",
@@ -73,7 +73,7 @@ namespace GraduationProject.API.Controllers
             {
                 var courses = await _coursesService.SearchOnPageOfCourses(search, index);
 
-                if (index > courses.TotalPages)
+                if (index > courses.TotalPages && courses.TotalPages != 0)
                     return BadRequest(new ErrorResponse
                     {
                         Message = "Invalid Page Number",
@@ -113,7 +113,7 @@ namespace GraduationProject.API.Controllers
             {
                 var courses = await _coursesService.GetPageOfCoursesByTag(tag, index);
 
-                if (index > courses.TotalPages)
+                if (index > courses.TotalPages && courses.TotalPages != 0)
                     return BadRequest(new ErrorResponse
                     {
                         Message = "Invalid Page Number",

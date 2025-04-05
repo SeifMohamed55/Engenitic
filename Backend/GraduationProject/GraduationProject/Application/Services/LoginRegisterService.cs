@@ -288,7 +288,7 @@ namespace GraduationProject.Application.Services
             if (dbRefreshToken is null)
                 return ServiceResult<string>.Failure("User is not Signed In");
 
-            if (!_tokenService.VerifyRefreshHmac(refreshToken, dbRefreshToken.EncryptedToken))
+            if (!_tokenService.VerifyRefresh(refreshToken, dbRefreshToken.EncryptedToken))
                 return ServiceResult<string>.Failure("Invalid refresh token.");
 
 

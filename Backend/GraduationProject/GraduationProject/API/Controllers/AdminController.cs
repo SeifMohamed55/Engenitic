@@ -1,6 +1,7 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
+using GraduationProject.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Security;
@@ -38,11 +39,11 @@ namespace GraduationProject.API.Controllers
             {
                 var data = await _adminService.GetUsersPage(index, role);
 
-                if (data.TotalPages < index)
+                if (index > data.TotalPages && data.TotalPages != 0)
                     return BadRequest(new ErrorResponse()
                     {
+                        Message = "Invalid Page Number",
                         Code = HttpStatusCode.BadRequest,
-                        Message = "Invalid Index"
                     });
 
                 return Ok(new SuccessResponse()

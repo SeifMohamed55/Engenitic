@@ -64,7 +64,7 @@ namespace GraduationProject.Application.Services
 
             try
             {
-                var isValid = _encryptionService.VerifyHMAC(requestRefToken, user.RefreshToken.EncryptedToken);
+                var isValid = _tokenService.VerifyRefresh(requestRefToken, user.RefreshToken.EncryptedToken);
 
                 if (!isValid)
                     return ServiceResult<string>.Failure("Invalid Refresh Token");
