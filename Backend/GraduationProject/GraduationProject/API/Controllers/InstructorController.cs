@@ -244,7 +244,7 @@ namespace GraduationProject.API.Controllers
                 else
                     return BadRequest(new ErrorResponse()
                     {
-                        Message = res.Error ?? "An error occured",
+                        Message = res.Message ?? "An error occured",
                         Code = HttpStatusCode.BadRequest,
                     });
             }

@@ -146,7 +146,7 @@ namespace GraduationProject.API.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     Code = HttpStatusCode.BadRequest,
-                    Message = adminResult.Error ?? "",
+                    Message = adminResult.Message ?? "",
                 });
         }
 

@@ -90,36 +90,105 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid User.",
                     Code = HttpStatusCode.BadRequest,
                 });
-            string msg = "Enrolled Successfully.";
-            try
-            {
-                await _studentService.EnrollOnCourse(enrollment);
-            }
-            catch (DbUpdateException)
-            {
-                msg = "User already enrolled.";
-            }
-            catch
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = "An error occured please try again later.",
-                    Code = HttpStatusCode.BadRequest,
-                });
-            }
 
-           var enrollmentDTO = await _studentService.GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId);
-            if (!enrollmentDTO.IsSuccess)
+            var enrollmentExists = await _studentService.EnrollmentExists(enrollment.StudentId, enrollment.CourseId);
+            if (!enrollmentExists)
+            {
+                try
+                {
+                    await _studentService.EnrollOnCourse(enrollment);
+                }
+                catch
+                {
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = "An error occured please try again later.",
+                        Code = HttpStatusCode.BadRequest,
+                    });
+                }
+            }
+               
+           var enrollmentResult = await _studentService.GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId);
+            if (!enrollmentResult.IsSuccess)
                 return NotFound(new ErrorResponse()
                 {
-                    Message = enrollmentDTO.Error ?? "",
+                    Message = enrollmentResult.Message ?? "",
                     Code = HttpStatusCode.NotFound,
                 });
 
             return Ok(new SuccessResponse()
             {
-                Message = msg,
-                Data = enrollmentDTO.Data,
+                Message = enrollmentExists ? "User already enrolled." : "User Enrolled Successfully",
+                Data = enrollmentResult.Data,
+                Code = HttpStatusCode.OK,
+            });
+        }
+
+        // GET: /api/student/enrollment/current-stage
+        [HttpGet("enrollment/current-stage")]
+        public async Task<IActionResult> GetCurrentStage([FromQuery] int studentId, [FromQuery] int enrollmentId)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            if (!int.TryParse(claimId, out int parsedId) || parsedId != studentId)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+            var enrollmentStage = await _studentService.GetEnrollmentCurrentStage(enrollmentId, studentId);
+            if(!enrollmentStage.IsSuccess)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = enrollmentStage.Message,
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+            return Ok(new SuccessResponse()
+            {
+                Message = "Current Stage Retrieved Successfully.",
+                Data = enrollmentStage.Data,
+                Code = HttpStatusCode.OK,
+            });
+        }
+
+        // GET: /api/student/enrollment
+        [HttpGet("enrollment")]
+        public async Task<IActionResult> GetCourseStage
+            ([FromQuery] int studentId, [FromQuery] int enrollmentId, [FromQuery]int stage)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            if (!int.TryParse(claimId, out int parsedId) || parsedId != studentId)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+            var enrollmentStage = await _studentService.GetEnrollmentStage(enrollmentId, stage, studentId);
+            if (!enrollmentStage.IsSuccess)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = enrollmentStage.Message,
+                    Code = HttpStatusCode.BadRequest,
+                });
+
+            return Ok(new SuccessResponse()
+            {
+                Message = "Current Stage Retrieved Successfully.",
+                Data = enrollmentStage.Data,
                 Code = HttpStatusCode.OK,
             });
         }

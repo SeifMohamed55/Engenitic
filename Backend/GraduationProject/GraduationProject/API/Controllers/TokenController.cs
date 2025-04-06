@@ -60,7 +60,7 @@ namespace GraduationProject.API.Controllers
             else
                 return BadRequest(new ErrorResponse
                 {
-                    Message = result.Error ?? "",
+                    Message = result.Message ?? "",
                     Code = System.Net.HttpStatusCode.BadRequest
                 });
 

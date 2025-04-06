@@ -12,7 +12,10 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     {
         Task<UserEnrollment> EnrollOnCourse(StudentEnrollmentRequest enrollment);
         Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
-        Task<EnrollmentDTO?> GetStudentEnrollment(int studentId, int courseId);
+        Task<EnrollmentDTO?> GetStudentEnrollmentDTO(int studentId, int courseId);
+        Task<UserEnrollment?> GetStudentEnrollment(int studentId, int courseId);
+        Task<bool> ExistsAsync(int studentId, int courseId);
+
     }
     public class EnrollmentRepository : Repository<UserEnrollment>, IEnrollmentRepository
     {
@@ -57,12 +60,24 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);
         }
 
-        public Task<EnrollmentDTO?> GetStudentEnrollment(int studentId, int courseId)
+        public Task<EnrollmentDTO?> GetStudentEnrollmentDTO(int studentId, int courseId)
         {
             return _dbSet
                 .Where(x => x.UserId == studentId && x.CourseId == courseId)
                 .DTOProjection()
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<UserEnrollment?> GetStudentEnrollment(int studentId, int courseId)
+        {
+            var enrollment = await _dbSet
+                .FirstOrDefaultAsync(x => x.UserId == studentId && x.CourseId == courseId);
+
+            return enrollment;
+        }
+        public async Task<bool> ExistsAsync(int studentId, int courseId)
+        {
+            return await _dbSet.AnyAsync(x => x.UserId == studentId && x.CourseId == courseId);
         }
     }
 }

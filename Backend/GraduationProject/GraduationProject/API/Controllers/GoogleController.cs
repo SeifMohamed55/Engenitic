@@ -221,7 +221,7 @@ namespace GraduationProject.API.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         Code = System.Net.HttpStatusCode.BadRequest,
-                        Message = res.Error ?? "Couldn't login user."
+                        Message = res.Message ?? "Couldn't login user."
                     });
             }
             catch

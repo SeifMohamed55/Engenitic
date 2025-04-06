@@ -58,7 +58,7 @@ namespace GraduationProject.API.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         Code = System.Net.HttpStatusCode.BadRequest,
-                        Message = res.Error ?? "Couldn't login user."
+                        Message = res.Message ?? "Couldn't login user."
                     });
             }
             catch
@@ -117,7 +117,7 @@ namespace GraduationProject.API.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
-                    Message = res.Error ?? "Couldn't logout user."
+                    Message = res.Message ?? "Couldn't logout user."
                 });
 
         }
@@ -155,7 +155,7 @@ namespace GraduationProject.API.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
-                    Message = res.Error ?? "Couldn't register user."
+                    Message = res.Message ?? "Couldn't register user."
                 });
 
         }
