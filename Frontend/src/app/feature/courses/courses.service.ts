@@ -52,6 +52,13 @@ export class CoursesService {
     });
   }
 
+  enrollCourseHandler(courseId : number, studentId : number) : Observable<any> {
+    return this._HttpClient.post(`https://localhost/api/student/enroll`, {
+      courseId,
+      studentId
+    });
+  }
+
   getCreatedCourses(
     collectionId: number,
     instructorId: number

@@ -11,7 +11,7 @@
         course stages : {{ courseDetailsResopnse.stages }}
       </p>
       <p class="font-regular text-normal">
-        made by {{ courseDetailsResopnse.instructorName }}
+        made by : {{ courseDetailsResopnse.instructorName }}
       </p>
       <p class="font-regular text-normal">
         requirements before taking the course :
@@ -21,7 +21,8 @@
         instructor Email : {{ courseDetailsResopnse.instructorEmail }}
       </p>
       <button
-        type="submit"
+        (click)="handleSubmit()"
+        type="button"
         class="engenitic-button w-full relative group inline-block hover:enginitic-main-color"
       >
         <span
