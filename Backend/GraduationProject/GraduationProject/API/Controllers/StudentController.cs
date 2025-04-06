@@ -18,13 +18,11 @@ namespace GraduationProject.API.Controllers
     public class StudentController : ControllerBase
     {
 
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ICloudinaryService _cloudinaryService;
+        private readonly IStudentService _studentService;
 
-        public StudentController(IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService)
+        public StudentController(IStudentService studentService)
         {
-            _unitOfWork = unitOfWork;
-            _cloudinaryService = cloudinaryService;
+            _studentService = studentService;
         }
 
         // GET: /api/student/courses
@@ -47,12 +45,7 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.Unauthorized,
                     });
 
-                var courses = await _unitOfWork.EnrollmentRepo.GetStudentEnrolledCourses(parsedId, index);
-                courses.ForEach(x =>
-                {
-                    x.Course.Image.ImageURL = _cloudinaryService
-                     .GetImageUrl(x.Course.Image.ImageURL, x.Course.Image.Version);
-                });
+                var courses = await _studentService.GetStudentEnrollments(id, index);
 
                 if (index > courses.TotalPages && courses.TotalPages != 0)
                     return BadRequest(new ErrorResponse()
@@ -61,13 +54,6 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.BadRequest,
                     });
 
-                /*if (courses.Count == 0)
-                    return NotFound(new ErrorResponse()
-                    {
-                        Message = "No Courses Found.",
-                        Code = HttpStatusCode.NotFound,
-                    });
-                */
                 return Ok(new SuccessResponse()
                 {
                     Message = "Courses Retrieved Successfully.",
@@ -99,62 +85,43 @@ namespace GraduationProject.API.Controllers
                 });
 
             if (!int.TryParse(claimId, out int parsedId) || parsedId != enrollment.StudentId)
-                return Unauthorized(new ErrorResponse()
+                return BadRequest(new ErrorResponse()
                 {
                     Message = "Invalid User.",
-                    Code = HttpStatusCode.Unauthorized,
+                    Code = HttpStatusCode.BadRequest,
                 });
-            int enrollmentId = 0;
+            string msg = "Enrolled Successfully.";
             try
             {
-                await _unitOfWork.EnrollmentRepo.EnrollOnCourse(enrollment);
-                await _unitOfWork.SaveChangesAsync();
-
-                var enrollmentDTO = await _unitOfWork.EnrollmentRepo
-                    .GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId);
-                if (enrollmentDTO == null)
-                    return NotFound(new ErrorResponse()
-                    {
-                        Message = "Enrollment Not Found.",
-                        Code = HttpStatusCode.NotFound,
-                    });
-
-                enrollmentDTO.Course.Image.ImageURL = _cloudinaryService
-                    .GetImageUrl(enrollmentDTO.Course.Image.ImageURL, enrollmentDTO.Course.Image.Version);
-
-                enrollmentId = enrollmentDTO.Id;
-
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Enrolled Successfully.",
-                    Data = enrollmentDTO,
-                    Code = HttpStatusCode.OK,
-                });
+                await _studentService.EnrollOnCourse(enrollment);
             }
             catch (DbUpdateException)
             {
-                var enrollmentDTO = await _unitOfWork.EnrollmentRepo
-                    .GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId) ?? new EnrollmentDTO();
-
-                enrollmentDTO.Course.Image.ImageURL = _cloudinaryService
-                    .GetImageUrl(enrollmentDTO.Course.Image.ImageURL, enrollmentDTO.Course.Image.Version);
-
-                return Ok(new SuccessResponse()
+                msg = "User already enrolled.";
+            }
+            catch
+            {
+                return BadRequest(new ErrorResponse()
                 {
-                    Code = HttpStatusCode.OK,
-                    Message = "User Already Enrolled.",
-                    Data = enrollmentDTO
+                    Message = "An error occured please try again later.",
+                    Code = HttpStatusCode.BadRequest,
                 });
             }
-            catch (Exception ex)
-            {
+
+           var enrollmentDTO = await _studentService.GetStudentEnrollment(enrollment.StudentId, enrollment.CourseId);
+            if (!enrollmentDTO.IsSuccess)
                 return NotFound(new ErrorResponse()
                 {
-                    Message = ex.Message,
+                    Message = enrollmentDTO.Error ?? "",
                     Code = HttpStatusCode.NotFound,
                 });
-            }
 
+            return Ok(new SuccessResponse()
+            {
+                Message = msg,
+                Data = enrollmentDTO.Data,
+                Code = HttpStatusCode.OK,
+            });
         }
 
     }
