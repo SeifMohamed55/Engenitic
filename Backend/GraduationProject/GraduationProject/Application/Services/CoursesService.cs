@@ -17,7 +17,7 @@ namespace GraduationProject.Application.Services
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index);
         Task<PaginatedList<CourseDTO>> SearchOnPageOfCourses(string search, int index);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
-        Task<CourseDetailsResponse?> GetCourseDetailsById(int id);
+        Task<CourseDetailsResponse?> GetCourseDetailsById(int courseId, int? studentId);
         Task<List<TagDTO>> GetAllTagsAsync();
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
@@ -79,13 +79,22 @@ namespace GraduationProject.Application.Services
                 return await _unitOfWork.TagsRepo.GetTagsDTOAsync();
             }
 
-            public async Task<CourseDetailsResponse?> GetCourseDetailsById(int id)
+            private async Task<bool>IsEnrolledAsync(int courseId, int studentId)
             {
-                var course = await _unitOfWork.CourseRepo.GetDetailsById(id);
+               return await _unitOfWork.EnrollmentRepo.ExistsAsync(studentId, courseId);
+            }
+
+            public async Task<CourseDetailsResponse?> GetCourseDetailsById(int courseId, int? studentId)
+            {
+                var course = await _unitOfWork.CourseRepo.GetDetailsById(courseId);
                 if (course == null)
                     return null;
 
                 course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL, course.Image.Version);
+
+                if(studentId.HasValue && await IsEnrolledAsync(courseId, studentId.Value))
+                    course.IsEnrolled = true;
+
                 return course;
 
             }

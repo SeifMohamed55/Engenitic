@@ -94,31 +94,31 @@ namespace GraduationProject.API.Controllers
 
             var res = await _loginService.Logout(accessToken, refreshToken);
 
-            if (res.IsSuccess)
+            var cookieOptions = new CookieOptions
             {
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
-                    Path = "/",
-                    Expires = DateTime.Now.AddDays(-1)
-                };
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/",
+                Expires = DateTime.Now.AddDays(-1)
+            };
 
-                HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+            HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
 
+            if (res.IsSuccess)           
                 return Ok(new SuccessResponse()
                 {
                     Code = System.Net.HttpStatusCode.OK,
                     Message = res.Data ?? "User logged out successfully."
                 });
-            }
-            else
+            
+            else           
                 return BadRequest(new ErrorResponse()
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
                     Message = res.Message ?? "Couldn't logout user."
                 });
+                      
 
         }
 

@@ -286,16 +286,17 @@ namespace GraduationProject.Application.Services
 
             var dbRefreshToken = await _unitOfWork.UserRepo.GetUserRefreshToken(id);
             if (dbRefreshToken is null)
-                return ServiceResult<string>.Failure("User is not Signed In");
+                return ServiceResult<string>.Success("User is not Signed In");
 
-            if (!_tokenService.VerifyRefresh(refreshToken, dbRefreshToken.EncryptedToken))
+/*            if (!_tokenService.VerifyRefresh(refreshToken, dbRefreshToken.EncryptedToken))
                 return ServiceResult<string>.Failure("Invalid refresh token.");
 
 
             if (accessJti != dbRefreshToken.LatestJwtAccessTokenJti)
-                return ServiceResult<string>.Failure("Latest AccessToken Doesn't match.");
+                return ServiceResult<string>.Failure("Latest AccessToken Doesn't match.");*/
 
             // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
+
             _tokenBlacklistService.BlacklistToken
                 (dbRefreshToken.LatestJwtAccessTokenJti, dbRefreshToken.LatestJwtAccessTokenExpiry);
 

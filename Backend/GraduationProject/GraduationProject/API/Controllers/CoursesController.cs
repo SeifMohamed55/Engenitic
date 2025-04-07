@@ -2,8 +2,10 @@
 using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace GraduationProject.API.Controllers
 {
@@ -166,9 +168,13 @@ namespace GraduationProject.API.Controllers
         [HttpGet("id/{courseId}")]
         public async Task<IActionResult> GetCourseById(int courseId)
         {
+            // extract userId from Context
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            int? studentId = int.TryParse(claimId, out var val) && User.IsInRole("student") ? val : null;
+
             try
             {
-                var course = await _coursesService.GetCourseDetailsById(courseId);
+                var course = await _coursesService.GetCourseDetailsById(courseId, studentId);
 
                 if (course == null)
                     return NotFound(new ErrorResponse
