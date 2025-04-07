@@ -16,6 +16,8 @@ import { InstructorMadeCoursesComponent } from './components/instructor-made-cou
 import { InstructorAddCourseComponent } from './pages/instructor-add-course/instructor-add-course.component';
 import { InstructorEditCourseComponent } from './pages/instructor-edit-course/instructor-edit-course.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { MainCourseComponent } from './pages/main-course/main-course.component';
+import { rolesGuard } from './guards/roles.guard';
 
 export const routes: Routes = [
     {path : "" , redirectTo : "home" , pathMatch : "full"},
@@ -24,27 +26,30 @@ export const routes: Routes = [
         {path : '', redirectTo : '1' , pathMatch : 'full'},
         {path : ':collectionNumber', component : CourseComponent },
     ]},
-    {path : 'course-details/:id' , component : CourseDetailsComponent},
+    {path : 'course-details/:courseId' , component : CourseDetailsComponent},
+    {path : 'main-course/:courseId', component : MainCourseComponent, data : {
+        roles : ['student']
+    } ,  canActivate : [rolesGuard]},
     {path : "grammar", component : GrammarHelpComponent},
     {path : "Q&A", component : VqaComponent},
     {path : "listening", component : ListeningComponent},
     {path : "login", component : LoginComponent},
     {path : "register", component : RegisterComponent},
     {path : "profile", component : ProfileComponent  , children : [
-        {path : 'student' , children : [
+        {path : 'student', data : { roles : ['student']}  ,  canActivate : [rolesGuard] ,children : [
             {path : '', redirectTo : '1/1', pathMatch : 'full'},
             {path : ':userId/:collectionId' , component : StudentEnrolledCoursesComponent},
             {path : '**' , component : NotFoundComponent}
         ]},
-        {path : 'instructor', children : [
+        {path : 'instructor', data : { roles : ['instructor'] }, canActivate : [rolesGuard], children : [
             {path : '', redirectTo : '1/1', pathMatch : 'full'},
             {path : ':userId/:collectionId', component : InstructorMadeCoursesComponent},
             {path : '**' , component : NotFoundComponent}
         ]},
-    {path : 'admin', component : AdminComponent},
+    {path : 'admin', data : {roles : ['admin']} , canActivate : [rolesGuard], component : AdminComponent},
     {path : '**' , component : NotFoundComponent}
     ]},
-    {path : 'courses', children : [
+    {path : 'courses', data : { roles : ['instructor'] } , canActivate : [rolesGuard] ,children : [
         {path : 'adding/:instructorId', component : InstructorAddCourseComponent},
         {path : 'editing/:instructorId/:courseId', component : InstructorEditCourseComponent},
         {path : '**' , component : NotFoundComponent}

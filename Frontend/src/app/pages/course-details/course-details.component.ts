@@ -30,29 +30,31 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   courseDetailsResopnse!: CourseDetails;
-  id!: number | null;
+  courseId!: number;
+  userId!: number;
 
   ngOnInit(): void {
+    this._UserService.userId.pipe(takeUntil(this.destroy$)).subscribe( userID => {
+      this.userId = Number(userID);
+    })
     this._ActivatedRoute.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
-        this.id = Number(params.get('id'));
+        this.courseId = Number(params.get('courseId'));
 
-        if (this.id) {
-          this._CoursesService
-            .getCourseDetails(this.id)
-            .subscribe({
-              next: (res) => {
-                this.courseDetailsResopnse = res.data;
-              },
-              error: (err) => {
-                console.log(err);
-                if (err.error.message) {
-                  this._ToastrService.error(err.error.message);
-                  this._Router.navigate(['/offered-courses']);
-                }
-              },
-            });
+        if (this.courseId) {
+          this._CoursesService.getCourseDetails(this.courseId).subscribe({
+            next: (res) => {
+              this.courseDetailsResopnse = res.data;
+            },
+            error: (err) => {
+              console.log(err);
+              if (err.error.message) {
+                this._ToastrService.error(err.error.message);
+                this._Router.navigate(['/offered-courses']);
+              }
+            },
+          });
         }
       });
   }
@@ -63,6 +65,28 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   }
 
   handleSubmit(): void {
-    console.log(this.id, this._UserService.userId.value);
+    console.log(this.userId);
+    if (!this.userId) {
+      this._ToastrService.warning('you must be user to enroll a course')
+      this._Router.navigate(['/login']);
+    }
+    this._CoursesService
+      .enrollCourseHandler(this.courseId, this.userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this._ToastrService.success(res.message);
+          this._Router.navigate(['main-course', this.courseId]);
+        },
+        error: (err) => {
+          if(err.error.message) {
+            this._ToastrService.error(err.error.message);
+          }
+          else {
+            this._ToastrService.error("an error has occured, try again later.");
+          }
+        },
+      });
   }
 }
