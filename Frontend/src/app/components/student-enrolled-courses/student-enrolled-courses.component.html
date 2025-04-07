@@ -1,67 +1,134 @@
 <div>
-    <h2 class="py-4 text-header font-display text-center">enrolled courses</h2>
-    <div>
-        <ul>
-            <li *ngFor="let course of userCourses.paginatedList | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems : totalItems }">
-            </li>
-        </ul>
-        <pagination-controls 
-            (pageChange)="onPageChange($event)" 
-            previousLabel="Previous"
-            nextLabel="Next"
-            [responsive]="true"
-            [maxSize]="10"
-            [autoHide]="true"
-        >
-        </pagination-controls>
-    </div>
+  <h2 class="py-4 text-header font-display text-center">enrolled courses</h2>
+  <div>
     <div class="flex flex-col justify-between">
-        <div *ngIf="userCourses.paginatedList.length > 0; else noCoursesFound">
-            <div class="grid grid-cols-5 py-10" *ngFor="let course of userCourses.paginatedList; trackBy: trackByCourse" >
-                <figure class="w-fit col-span-1">
-                    <img [src]="course.course.image.imageURL" [alt]="course.course.image.name" title="{{ course.course.image.name || 'Course Image' }}" class="object-cover w-[250px] h-[250px]">
-                </figure>
-                <article class="col-span-4 flex flex-col justify-between items-start">
-                    <h3 class="text-secondary-header font-display"> {{ course.course.title }} </h3>
-                    <div class="w-full h-[20px] engenitic-input overflow-hidden "><span class=""></span></div>
-                    <a *ngIf="!course.isCompleted; else finishedCourses" [routerLink]="" class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192] hover:text-white duration-500 transition-all ">
-                        <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
-                            continue
-                        </span>
-                        <span class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white">
-                            <i class="fa-solid fa-right-long"></i>
-                        </span>
-                    </a>
-                </article>
-                <ng-template #finishedCourses>
-                    <a [routerLink]="['/course-details', course.course.id]" class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192]">
-                        <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
-                            details
-                        </span>
-                        <span class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </span>
-                    </a>
-                </ng-template>
-            </div>
-        </div>
-        <ng-template #noCoursesFound >
-            <div class="flex justify-center items-center flex-col pt-10">
-                <p class="text-red-500 text-secondary-header font-normal">no courses found please press here to start learning !</p>
-                <i class="fa-solid fa-angles-down text-4xl fade-out-bottom my-10"></i>
-                <a class="my-3 engenitic-button hover:enginitic-main-color relative group inline-block text-center" routerLink="/offered-courses">
-                    <span class=" transition-opacity duration-500 opacity-100 group-hover:opacity-0">
-                        click me !
-                    </span>
-                    <span class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white">
-                        <i class="fa-solid fa-mug-hot"></i>
-                    </span>
-                </a>
-            </div>
-            <figure class="flex justify-center items-center w-full">
-                <img src="./assets/images/no-courses-found.jpeg" alt="" class="object-contain">
-            </figure>
-        </ng-template>
+      <div *ngIf="userCourses.paginatedList.length > 0; else noCoursesFound">
+        <div
+          class="grid grid-cols-5 py-10 gap-10 border-b"
+          *ngFor="
+            let course of userCourses.paginatedList
+              | paginate
+                : {
+                    itemsPerPage: itemsPerPage,
+                    currentPage: currentPage,
+                    totalItems: totalItems
+                  }
+          "
+        >
+          <figure class="w-fit col-span-1">
+            <img
+              [src]="course.course.image.imageURL"
+              [alt]="course.course.image.name"
+              title="{{ course.course.image.name || 'Course Image' }}"
+              class="object-contain w-[250px] h-[250px]"
+            />
+          </figure>
+          <article class="col-span-4 flex flex-col justify-between items-start">
+            <h3 class="text-secondary-header font-display">
+              {{ course.course.title }}
+            </h3>
+            <div
+              class="relative w-full h-[12px] flex items-center border border-black rounded-xl"
+            >
+              <span
+                class="absolute bottom-3 z-10 flex justify-between gap-0 flex-col  rounded-xl items-center transition-all duration-300"
+                [ngStyle]="{ left: 'calc(' + course.progress + '% - 16px)' }"
+              >
+                <p
+                  class="px-2 py-2 flex justify-center items-center border border-black rounded-full font-display bg-white text-xs"
+                >
+                  You
+                </p>
+                <i class="fa-solid fa-arrow-down text-xs"></i>
+              </span>
 
+              <span
+                class="enginitic-main-color h-[12px] -z-10 transition-all duration-300 rounded-xl"
+                [style.width]="course.progress + '%'"
+              ></span>
+
+              <span
+                class="absolute top-4 z-10 font-display text-xs transition-all duration-300"
+                [ngStyle]="{ left: 'calc(' + course.progress + '% - 6px)' }"
+              >
+                {{ course.progress.toFixed(0) }}%
+              </span>
+            </div>
+
+            <a
+              *ngIf="!course.isCompleted; else finishedCourses"
+              [routerLink]="['/main-course', userId, course.id]"
+              class="engenitic-button relative group inline-block text-center hover:enginitic-main-color hover:text-white duration-500 transition-all"
+            >
+              <span
+                class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
+              >
+                continue
+              </span>
+              <span
+                class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white"
+              >
+                <i class="fa-solid fa-right-long"></i>
+              </span>
+            </a>
+          </article>
+          <ng-template #finishedCourses>
+            <a
+              [routerLink]="['/course-details', course.course.id]"
+              class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192]"
+            >
+              <span
+                class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
+              >
+                details
+              </span>
+              <span
+                class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white"
+              >
+                <i class="fa-solid fa-thumbs-up"></i>
+              </span>
+            </a>
+          </ng-template>
+        </div>
+      </div>
+      <ng-template #noCoursesFound>
+        <div class="flex justify-center items-center flex-col pt-10">
+          <p class="text-red-500 text-secondary-header font-normal">
+            no courses found please press here to start learning !
+          </p>
+          <i class="fa-solid fa-angles-down text-4xl fade-out-bottom my-10"></i>
+          <a
+            class="my-3 engenitic-button hover:enginitic-main-color relative group inline-block text-center"
+            routerLink="/offered-courses"
+          >
+            <span
+              class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
+            >
+              click me !
+            </span>
+            <span
+              class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-white"
+            >
+              <i class="fa-solid fa-mug-hot"></i>
+            </span>
+          </a>
+        </div>
+        <figure class="flex justify-center items-center w-full">
+          <img
+            src="./assets/images/no-courses-found.jpeg"
+            alt="no course found"
+            class="object-contain"
+          />
+        </figure>
+      </ng-template>
     </div>
+    <pagination-controls
+      (pageChange)="onPageChange($event)"
+      previousLabel="Previous"
+      nextLabel="Next"
+      [responsive]="true"
+      [maxSize]="10"
+    >
+    </pagination-controls>
+  </div>
 </div>

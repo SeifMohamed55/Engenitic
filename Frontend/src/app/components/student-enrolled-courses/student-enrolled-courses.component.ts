@@ -4,12 +4,13 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { CoursesService } from '../../feature/courses/courses.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UserEnrolledCourses } from '../../interfaces/courses/user-enrolled-courses';
-import { Subject, takeUntil } from 'rxjs';
+import { pipe, Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-student-enrolled-courses',
   imports: [RouterModule, CommonModule, NgxPaginationModule],
+  providers : [],
   templateUrl: './student-enrolled-courses.component.html',
   styleUrl: './student-enrolled-courses.component.scss'
 })
@@ -25,14 +26,13 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
     paginatedList: []
   };
   currentPage: number = 1;
-  itemsPerPage: number = 6;
+  itemsPerPage: number = 10;
   totalItems: number = 0;
 
   constructor(
     private _ActivatedRouter: ActivatedRoute,
     private _CoursesService: CoursesService,
     private _Router: Router,
-    private _ToastrService:ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +61,7 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: res => {
+          console.log(res);
           this.userCourses = res.data ?? { 
             totalPages: 0,
             totalItems: 0,

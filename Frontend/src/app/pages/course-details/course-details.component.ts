@@ -29,14 +29,16 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   private destroy$ = new Subject<void>();
-  courseDetailsResopnse!: CourseDetails;
+  courseDetailsResopnse: CourseDetails = {} as CourseDetails;
   courseId!: number;
   userId!: number;
 
   ngOnInit(): void {
-    this._UserService.userId.pipe(takeUntil(this.destroy$)).subscribe( userID => {
-      this.userId = Number(userID);
-    })
+    this._UserService.userId
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((userID) => {
+        this.userId = Number(userID);
+      });
     this._ActivatedRoute.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
@@ -67,7 +69,7 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   handleSubmit(): void {
     console.log(this.userId);
     if (!this.userId) {
-      this._ToastrService.warning('you must be user to enroll a course')
+      this._ToastrService.warning('you must be user to enroll a course');
       this._Router.navigate(['/login']);
     }
     this._CoursesService
@@ -77,14 +79,17 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
         next: (res) => {
           console.log(res);
           this._ToastrService.success(res.message);
-          this._Router.navigate(['main-course', this.courseId]);
+          this._Router.navigate([
+            '/main-course',
+            this.userId,
+            this.courseDetailsResopnse.id,
+          ]);
         },
         error: (err) => {
-          if(err.error.message) {
+          if (err.error.message) {
             this._ToastrService.error(err.error.message);
-          }
-          else {
-            this._ToastrService.error("an error has occured, try again later.");
+          } else {
+            this._ToastrService.error('an error has occured, try again later.');
           }
         },
       });

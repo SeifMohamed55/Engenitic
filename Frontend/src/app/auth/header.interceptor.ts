@@ -12,15 +12,14 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Get the latest token dynamically
   const token = localStorage.getItem('Token') || '';
-  
+
   req = req.clone({
     withCredentials: true, // Always include credentials
-    setHeaders: token ? { Authorization: `Bearer ${token}` } : {} // Add token only if it exists
+    setHeaders: token ? { Authorization: `Bearer ${token}` } : {}, // Add token only if it exists
   });
 
   let retryCount = 0;
   const maxRetries = 1;
-
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -36,8 +35,9 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
             const newToken = res.data?.accessToken;
             if (!newToken) {
               console.error('Failed to get new access token');
-              _ToastrService.error("Session expired!");
+              _ToastrService.error('Session expired!');
               _UserService.registered.next('');
+              localStorage.clear();
               if (_Router.url !== '/login') {
                 _Router.navigate(['/login']);
               }
@@ -47,10 +47,12 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
             // Store new token and retry request
             localStorage.setItem('Token', newToken);
             const newReq = req.clone({
-              setHeaders: { Authorization: `Bearer ${newToken}` }
+              setHeaders: { Authorization: `Bearer ${newToken}` },
             });
 
-            return retryCount < maxRetries ? (retryCount++, next(newReq)) : throwError(() => new Error('Max retries reached'));
+            return retryCount < maxRetries
+              ? (retryCount++, next(newReq))
+              : throwError(() => new Error('Max retries reached'));
           }),
           catchError((error: HttpErrorResponse) => {
             console.error('Token refresh failed:', error);
@@ -58,7 +60,19 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
               switchMap(() => {
                 localStorage.clear();
                 _UserService.registered.next('');
-                _ToastrService.error("Session expired!");
+                _ToastrService.error('Session expired!');
+                if (_Router.url !== '/login') {
+                  _Router.navigate(['/login']);
+                }
+                return throwError(() => error);
+              }),
+              catchError((error: HttpErrorResponse) => {
+                console.log(
+                  "couldn't logout from the server due to error",
+                  error
+                );
+                localStorage.clear();
+                _UserService.registered.next('');
                 if (_Router.url !== '/login') {
                   _Router.navigate(['/login']);
                 }
@@ -68,7 +82,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
           })
         );
       } else if (error.status === 403) {
-        console.warn("Forbidden error:", error);
+        console.warn('Forbidden error:', error);
         return throwError(() => error);
       } else {
         return throwError(() => error);

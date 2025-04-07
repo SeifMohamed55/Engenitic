@@ -1,1 +1,21 @@
-<p>main-course works!</p>
+<main class="container">
+  <div
+    class="mx-auto w-full h-[600px] aspect-video bg-[url('/assets/profile-pic.jpg')] bg-cover bg-center relative"
+  >
+    <iframe title="course video" class="w-full h-full" src="" frameborder="0" allowfullscreen>
+    </iframe>
+  </div>
+  <div class="w-full flex justify-between items-center py-5">
+    <button type="button" (click)="handlePrevious()" class="engenitic-button">
+      Previous
+    </button>
+    <button type="button" (click)="handleNext()" class="engenitic-button">
+      Next
+    </button>
+  </div>
+  <div
+    class="w-full h-[12px] rounded-xl flex items-center overflow-hidden border border-black"
+  >
+    <span class="w-[50%] h-[12px] enginitic-main-color"></span>
+  </div>
+</main>
