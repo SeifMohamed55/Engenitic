@@ -35,7 +35,6 @@ namespace GraduationProject.API.Responses
         public string? InstructorPhone { get; set; }
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
-        public bool IsEnrolled { get; set; } = false;
         public ImageMetadata Image { get; set; }
     }
 }

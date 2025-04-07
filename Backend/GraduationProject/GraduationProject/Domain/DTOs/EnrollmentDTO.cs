@@ -5,17 +5,7 @@ namespace GraduationProject.Domain.DTOs
     public class EnrollmentDTO
     {
         public EnrollmentDTO() { }
-        public EnrollmentDTO(UserEnrollment enrollment)
-        {
-            Id = enrollment.Id;
-            EnrolledAt = enrollment.EnrolledAt;
-            CurrentStage = enrollment.CurrentStage;
-            IsCompleted = enrollment.IsCompleted;
-            TotalStages = enrollment.TotalStages;
-            Progress = (float)CurrentStage / TotalStages * 100;
-            CourseId = enrollment.CourseId;
-            Course = new CourseDTO(enrollment.Course);
-        }
+
         public int Id { get; set; }
         public DateTime EnrolledAt { get; set; }
         public int CurrentStage { get; set; }

@@ -22,7 +22,9 @@ namespace GraduationProject.Common.Extensions
                     CurrentStage = enrollment.CurrentStage,
                     IsCompleted = enrollment.IsCompleted,
                     TotalStages = enrollment.TotalStages,
-                    Progress = (float)enrollment.CurrentStage / enrollment.TotalStages * 100.0f,
+                    Progress = enrollment.IsCompleted ?
+                                    100.0f : 
+                                    Math.Clamp((float)(enrollment.CurrentStage - 1) / enrollment.TotalStages * 100.0f, 0, 100),
                     CourseId = enrollment.CourseId,
                     Course = new CourseDTO()
                     {

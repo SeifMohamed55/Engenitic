@@ -168,13 +168,13 @@ namespace GraduationProject.API.Controllers
         [HttpGet("id/{courseId}")]
         public async Task<IActionResult> GetCourseById(int courseId)
         {
-            // extract userId from Context
+/*            // extract userId from Context
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            int? studentId = int.TryParse(claimId, out var val) && User.IsInRole("student") ? val : null;
+            int? studentId = int.TryParse(claimId, out var val) && User.IsInRole("student") ? val : null;*/
 
             try
             {
-                var course = await _coursesService.GetCourseDetailsById(courseId, studentId);
+                var course = await _coursesService.GetCourseDetailsById(courseId);
 
                 if (course == null)
                     return NotFound(new ErrorResponse
