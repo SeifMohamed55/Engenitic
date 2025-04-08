@@ -331,7 +331,6 @@ namespace GraduationProject.Application.Services
                     IsExternal = true,
                 };
 
-
                 List<IdentityError> errors = new List<IdentityError>();
                 try
                 {
@@ -364,8 +363,14 @@ namespace GraduationProject.Application.Services
                     await _unitOfWork.CommitTransactionAsync();
 
                     var imageName = "user_" + user.Id;
-                    FileHash? fileHash = await _uploadingService.UploadImageAsync
-                                            (payload.ImageUrl, imageName, CloudinaryType.UserImage);
+
+                    FileHash? fileHash;
+
+                    if (payload.ImageUrl != ICloudinaryService.DefaultUserImagePublicId)
+                        fileHash = await _uploadingService.UploadImageAsync
+                                                (payload.ImageUrl, imageName, CloudinaryType.UserImage);
+                    else
+                        fileHash = defaultHash;
 
                     if (fileHash == null)
                         fileHash = defaultHash;
@@ -384,6 +389,15 @@ namespace GraduationProject.Application.Services
                     return (ServiceResult<LoginResponse>.Failure(errors.Select(x => x.Description).ToList()), null);
                 }
             }
+            IList<string> roles = new List<string>();
+            try
+            {
+                roles = await _userManager.GetRolesAsync(user);
+            }
+            catch
+            {
+            }
+
 
             var providerLogin = await _unitOfWork.UserLoginRepo.ContainsLoginProvider(user.Id, provider);
 
@@ -431,13 +445,12 @@ namespace GraduationProject.Application.Services
                 imgName = hash.PublicId.Split('/').LastOrDefault() ?? "default";
             }
 
-
             var data = new LoginResponse
             {
                 Id = user.Id,
                 Banned = user.Banned,
                 Name = user.FullName,
-                Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
+                Roles = roles.ToList(),
                 Image = new ImageMetadata
                 {
                     ImageURL = imgUrl,

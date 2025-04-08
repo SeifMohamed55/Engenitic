@@ -12,5 +12,8 @@ namespace GraduationProject.API.Requests
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
+
+        [Required]
+        public bool RememberMe { get; set; } = false;
     }
 }

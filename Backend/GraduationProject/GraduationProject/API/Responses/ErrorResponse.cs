@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace GraduationProject.API.Responses
 {
-    public class ErrorResponse
+    public class ErrorResponse : IResponse
     {
         [JsonPropertyName("status")]
         public string Status { get; set; } = "Error";

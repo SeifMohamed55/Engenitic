@@ -41,8 +41,12 @@ namespace GraduationProject.API.Controllers
                         Secure = true,
                         SameSite = SameSiteMode.None,
                         Path = "/",
-                        Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
+                        IsEssential = true
                     };
+
+                    if (model.RememberMe)
+                        cookieOptions.Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays));
+
 
                     HttpContext.Response.Cookies.Append("refreshToken", rawRefreshToken, cookieOptions);
 
@@ -100,7 +104,8 @@ namespace GraduationProject.API.Controllers
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Path = "/",
-                Expires = DateTime.Now.AddDays(-1)
+                Expires = DateTime.Now.AddDays(-1),
+                IsEssential = true
             };
 
             HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);

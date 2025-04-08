@@ -3,7 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace GraduationProject.API.Responses
 {
-    public class SuccessResponse
+
+    public interface IResponse
+    {
+
+    }
+
+    public class SuccessResponse : IResponse
     {
         [JsonPropertyName("status")]
         public string Status { get; set; } = "Success";

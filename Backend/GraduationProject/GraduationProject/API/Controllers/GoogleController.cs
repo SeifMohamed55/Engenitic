@@ -6,6 +6,7 @@ using GraduationProject.Application.Services;
 using GraduationProject.Domain.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -25,17 +26,20 @@ namespace GraduationProject.API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ILoginRegisterService _loginService;
         private readonly JwtOptions _jwtOptions;
+        private readonly ICloudinaryService _cloudinaryService;
         public GoogleController(
             IOptions<MailingOptions> options,
             UserManager<AppUser> userManager,
             ILoginRegisterService loginService,
-            IOptions<JwtOptions> jwtOptions
+            IOptions<JwtOptions> jwtOptions,
+            ICloudinaryService cloudinaryService
             )
         {
             _options = options.Value;
             _userManager = userManager;
             _loginService = loginService;
             _jwtOptions = jwtOptions.Value;
+            _cloudinaryService = cloudinaryService;
         }
 
 
@@ -151,6 +155,7 @@ namespace GraduationProject.API.Controllers
             var googleId = claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value; // Unique Google ID
             string? image = null;
 
+
             using (var client = new HttpClient())
             {
                 var response = await client.GetFromJsonAsync<GoogleProfileResponse>
@@ -158,6 +163,9 @@ namespace GraduationProject.API.Controllers
 
                 image = response?.Picture;
             }
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
 
             if (email == null || name == null || googleId == null)
                 return BadRequest(new ErrorResponse()
@@ -192,9 +200,48 @@ namespace GraduationProject.API.Controllers
 
                     HttpContext.Response.Cookies.Append("refreshToken", rawRefreshToken, cookieOptions);
 
-                    var jsonResponse = HttpUtility.JavaScriptStringEncode(JsonSerializer.Serialize(res.Data));
+                    return GetHtmlContent(new SuccessResponse()
+                    {
+                        Code = System.Net.HttpStatusCode.OK,
+                        Data = res.Data,
+                        Message = "User logged in successfully."
+                    });
 
-                    var htmlContent = $@"
+                }
+                else
+                    return GetHtmlContent(new ErrorResponse()
+                    {
+                        Code = System.Net.HttpStatusCode.BadRequest,
+                        Message = res.Message ?? "Couldn't login user."
+                    });
+            }
+            catch
+            {
+                return GetHtmlContent(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Couldn't login"
+                });
+            }
+
+        }
+
+        private ContentResult GetHtmlContent(IResponse response)
+        {
+            var errorResp = response as ErrorResponse;
+            var successResp = response as SuccessResponse;
+
+            string serializedResponse;
+
+            if(errorResp != null)
+                serializedResponse = JsonSerializer.Serialize(errorResp, JsonSerializerOptions.Default);
+            else
+                serializedResponse = JsonSerializer.Serialize(successResp, JsonSerializerOptions.Default);
+
+            var jsonResponse = HttpUtility.JavaScriptStringEncode(serializedResponse);
+
+
+            var html = $@"
                  <html>
                  <head>
                      <title>Authentication Successful</title>
@@ -212,26 +259,9 @@ namespace GraduationProject.API.Controllers
                      </script>
                      <p>Authentication successful. You can close this window.</p>
                  </body>
-                 </html>
-            ";
+                 </html>";
 
-                    return Content(htmlContent, "text/html");
-                }
-                else
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Code = System.Net.HttpStatusCode.BadRequest,
-                        Message = res.Message ?? "Couldn't login user."
-                    });
-            }
-            catch
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Code = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Couldn't login"
-                });
-            }
+            return Content(html, "text/html");
 
         }
 

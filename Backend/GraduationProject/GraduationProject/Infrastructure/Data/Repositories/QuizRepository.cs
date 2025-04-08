@@ -34,7 +34,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                         {
                             Id = a.Id,
                             AnswerText = a.AnswerText,
-                            IsCorrect = a.IsCorrect,
+                            IsCorrect = false,
                             Position = a.Position
                         }).ToList()
                     }).ToList()

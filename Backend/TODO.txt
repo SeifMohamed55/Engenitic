@@ -1,0 +1,5 @@
+Google:
+	Response : success and fail,
+	
+ProgressBar inside enrollment stage
+MenuBar in enrollment  (with current stage)
