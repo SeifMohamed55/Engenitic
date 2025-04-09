@@ -4,7 +4,7 @@
     </figure>
 
 
-    <form class="grid grid-cols-9 gap-10 my-5 " method="get" [formGroup]="searchForm" (ngSubmit)="onSearchCourses()">
+    <form class="flex justify-between items-center gap-10 my-5 " method="get" [formGroup]="searchForm" (ngSubmit)="onSearchCourses()">
         <input type="search" class="engenitic-input col-span-8" placeholder="  Search For a Course ...." formControlName="title"> 
         <button type="submit" class="engenitic-button  w-fit relative group inline-block hover:bg-yellow-500" >
             <span class="transition-opacity duration-300 opacity-100 group-hover:opacity-0">

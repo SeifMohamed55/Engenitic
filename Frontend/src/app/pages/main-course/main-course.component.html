@@ -1,21 +1,52 @@
 <main class="container">
-  <div
-    class="mx-auto w-full h-[600px] aspect-video bg-[url('/assets/profile-pic.jpg')] bg-cover bg-center relative"
-  >
-    <iframe title="course video" class="w-full h-full" src="" frameborder="0" allowfullscreen>
-    </iframe>
-  </div>
-  <div class="w-full flex justify-between items-center py-5">
-    <button type="button" (click)="handlePrevious()" class="engenitic-button">
-      Previous
-    </button>
-    <button type="button" (click)="handleNext()" class="engenitic-button">
-      Next
-    </button>
-  </div>
-  <div
-    class="w-full h-[12px] rounded-xl flex items-center overflow-hidden border border-black"
-  >
-    <span class="w-[50%] h-[12px] enginitic-main-color"></span>
-  </div>
+  <h1 class="font-display text-header py-3">course title</h1>
+  <section>
+    <div
+      class="mx-auto w-full h-[600px] aspect-video bg-[url('/assets/profile-pic.jpg')] bg-cover bg-center relative"
+    >
+      <iframe
+        title="course video"
+        class="w-full h-full rounded"
+        src="https://www.youtube.com/embed/2neIAEbwt0E"
+        frameborder="0"
+        allowfullscreen
+      >
+      </iframe>
+    </div>
+    <div class="w-full flex justify-between items-center py-5">
+      <button
+        type="button"
+        (click)="handlePrevious()"
+        class="engenitic-button hover:enginitic-main-color"
+      >
+        Previous
+      </button>
+      <button
+        type="button"
+        (click)="handleNext()"
+        class="engenitic-button hover:enginitic-main-color"
+      >
+        Next
+      </button>
+    </div>
+    <div
+      class="relative w-full h-[12px] rounded-xl flex items-center border border-black mb-20"
+    >
+      <!-- progress bar  -->
+      <span
+        class="w-[50%] h-[12px] rounded-xl -z-10 bg-gradient-to-r from-[#58B6B8] to-[#235e62]"
+      ></span>
+
+      <!-- percentage label  -->
+      <span
+        class="absolute left-[calc(50%-25px)] top-4 flex flex-col justify-between items-center"
+      >
+        <i class="fa-solid fa-angle-up"></i>
+        <p class="font-display border border-black px-3 py-2 rounded-full">
+          {{ "44%" }}
+        </p>
+      </span>
+    </div>
+  </section>
+  
 </main>

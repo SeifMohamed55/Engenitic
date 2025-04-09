@@ -50,6 +50,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
   addLevelCourse(): void {
     const level = new FormGroup({
       videoUrl: new FormControl('', [Validators.required]),
+      levelTitle : new FormControl('', [Validators.required]),
       quizzes: new FormArray([
         this.createQuiz(), // Start with one quiz per level
       ]),
@@ -247,7 +248,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
 
       const quizzesData = formValue?.levels?.map(
         (level: any, levelIndex: number) => ({
-          title: `Quiz${levelIndex + 1}`,
+          title: level.levelTitle,
           position: levelIndex + 1,
           videoUrl: level.videoUrl,
           questions: level.quizzes.map((quiz: any, quizIndex: number) => ({

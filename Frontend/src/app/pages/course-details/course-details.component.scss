@@ -1,0 +1,23 @@
+::ng-deep .my-carousel .owl-dots .owl-dot span {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  margin: 0 4px;
+  transition: background 0.3s;
+}
+
+::ng-deep .my-carousel .owl-dots .owl-dot.active span {
+  background: #58b6b8; /* active dot color */
+}
+
+::ng-deep .my-carousel .owl-dots  {
+  margin-top: 6rem !important;
+  display: flex !important;
+  justify-content: start !important;
+}
+
+::ng-deep .my-carousel .owl-dots .owl-dot {
+  display: inline-block !important;
+  margin: 0 4px;
+}

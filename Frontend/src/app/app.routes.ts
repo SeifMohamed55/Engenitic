@@ -18,6 +18,7 @@ import { InstructorEditCourseComponent } from './pages/instructor-edit-course/in
 import { ProfileComponent } from './pages/profile/profile.component';
 import { MainCourseComponent } from './pages/main-course/main-course.component';
 import { rolesGuard } from './guards/roles.guard';
+import { authRedirectGuardGuard } from './guards/auth-redirect-guard.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -42,8 +43,16 @@ export const routes: Routes = [
   { path: 'grammar', component: GrammarHelpComponent },
   { path: 'Q&A', component: VqaComponent },
   { path: 'listening', component: ListeningComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [authRedirectGuardGuard],
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    canActivate: [authRedirectGuardGuard],
+  },
   {
     path: 'profile',
     component: ProfileComponent,

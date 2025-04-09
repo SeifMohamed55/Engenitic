@@ -1,7 +1,10 @@
 <main class="container pt-10">
   <div class="grid grid-cols-2 items-center gap-32">
     <div *ngIf="!courseDetailsResopnse">Loading...</div>
-    <div *ngIf="courseDetailsResopnse" class="flex justify-between items-start flex-col gap-10">
+    <div
+      *ngIf="courseDetailsResopnse"
+      class="flex justify-between items-start flex-col gap-10"
+    >
       <h1 class="font-display text-header mb-6">
         {{ courseDetailsResopnse.title }}
       </h1>
@@ -12,39 +15,177 @@
         course stages : {{ courseDetailsResopnse.stages }}
       </p>
       <p class="font-regular text-normal">
-        made by : {{ courseDetailsResopnse.instructorName }}
-      </p>
-      <p class="font-regular text-normal">
         requirements before taking the course :
         {{ courseDetailsResopnse.requirements }}
       </p>
       <p class="font-regular text-normal">
+        made by : {{ courseDetailsResopnse.instructorName }}
+      </p>
+      <p class="font-regular text-normal">
         instructor Email : {{ courseDetailsResopnse.instructorEmail }}
       </p>
-      <button
-        (click)="handleSubmit()"
-        type="button"
-        class="engenitic-button w-full relative group inline-block hover:enginitic-main-color"
-      >
-        <span
-          class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
-        >
-          enroll
-        </span>
-        <span
-          class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-yellow-300"
-        >
-          <i class="fa-solid fa-lightbulb"></i>
-        </span>
-      </button>
     </div>
     <figure class="flex justify-center items-center w-[80%] h-[80%]">
       <img
         title="{{ courseDetailsResopnse.title }}"
-        [src]="courseDetailsResopnse.image.imageURL "
+        [src]="courseDetailsResopnse.image.imageURL"
         class="object-contain rounded-2xl w-full"
         [alt]="courseDetailsResopnse.image.name"
       />
     </figure>
   </div>
+  <section class="py-10 flex justify-between items-start gap-20">
+    <div class="flex flex-col justify-between gap-4">
+      <h3 class="font-display text-secondary-header">learner reviews</h3>
+      <p class="py-10">
+        <i class="fa-solid fa-star text-yellow-400"></i>
+        <span class="text-secondary-header font-semibold px-10">4.7</span>
+        <span class="text-sm opacity-80 font-regular">40 reviews</span>
+      </p>
+      <div class="grid grid-rows-5 gap-5">
+        <div class="flex justify-between items-center gap-5">
+          <p class="font-display w-[50px]">5 stars</p>
+          <div
+            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+          >
+            <span
+              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
+            ></span>
+          </div>
+          <span class="text-sm font-regular">79.19%</span>
+        </div>
+        <div class="flex justify-between items-center gap-5">
+          <p class="font-display w-[50px]">4 stars</p>
+          <div
+            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+          >
+            <span
+              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
+            ></span>
+          </div>
+          <span class="text-sm font-regular">79.19%</span>
+        </div>
+        <div class="flex justify-between items-center gap-5">
+          <p class="font-display w-[50px]">3 stars</p>
+          <div
+            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+          >
+            <span
+              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
+            ></span>
+          </div>
+          <span class="text-sm font-regular">79.19%</span>
+        </div>
+        <div class="flex justify-between items-center gap-5">
+          <p class="font-display w-[50px]">2 stars</p>
+          <div
+            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+          >
+            <span
+              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
+            ></span>
+          </div>
+          <span class="text-sm font-regular">79.19%</span>
+        </div>
+        <div class="flex justify-between items-center gap-5">
+          <p class="font-display w-[50px]">1 stars</p>
+          <div
+            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+          >
+            <span
+              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
+            ></span>
+          </div>
+          <span class="text-sm font-regular">79.19%</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-full flex justify-between flex-col gap-20">
+      <p class="opacity-60 font-regular">showing 3 of 40</p>
+      <owl-carousel-o [options]="customOptions" class="w-full my-carousel">
+        <ng-template
+          class="flex flex-col justify-between gap-20 w-full"
+          carouselSlide
+        >
+          <div class="border rounded-xl p-10 flex justify-between">
+            <div
+              class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
+            >
+              M
+            </div>
+            <div class="font-regular">
+              <p>
+                <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
+                reviewed on jul 7, 2024
+              </p>
+              <p>
+                The Project is well planned and well organized showing all the
+                usage with real time examples
+              </p>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template
+          class="flex flex-col justify-between gap-20 w-full"
+          carouselSlide
+        >
+          <div class="border rounded-xl p-10 flex justify-between">
+            <div
+              class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
+            >
+              M
+            </div>
+            <div class="font-regular">
+              <p>
+                <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
+                reviewed on jul 7, 2024
+              </p>
+              <p>
+                The Project is well planned and well organized showing all the
+                usage with real time examples
+              </p>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template
+          class="flex flex-col justify-between gap-20 w-full"
+          carouselSlide
+        >
+          <div class="border rounded-xl p-10 flex justify-between">
+            <div
+              class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
+            >
+              M
+            </div>
+            <div class="font-regular">
+              <p>
+                <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
+                reviewed on jul 7, 2024
+              </p>
+              <p>
+                The Project is well planned and well organized showing all the
+                usage with real time examples
+              </p>
+            </div>
+          </div>
+        </ng-template>
+      </owl-carousel-o>
+    </div>
+  </section>
+  <button
+    (click)="handleSubmit()"
+    type="button"
+    class="engenitic-button w-full relative group inline-block hover:enginitic-main-color"
+  >
+    <span
+      class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
+    >
+      enroll
+    </span>
+    <span
+      class="absolute inset-0 top-2 transition-opacity duration-500 opacity-0 group-hover:opacity-100 text-yellow-300"
+    >
+      <i class="fa-solid fa-lightbulb"></i>
+    </span>
+  </button>
 </main>

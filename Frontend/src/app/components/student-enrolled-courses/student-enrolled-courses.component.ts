@@ -10,20 +10,20 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-student-enrolled-courses',
   imports: [RouterModule, CommonModule, NgxPaginationModule],
-  providers : [],
+  providers: [],
   templateUrl: './student-enrolled-courses.component.html',
-  styleUrl: './student-enrolled-courses.component.scss'
+  styleUrl: './student-enrolled-courses.component.scss',
 })
 export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
-
   private destroy$ = new Subject<void>();
+  isInView: boolean = false;
   userId!: number;
   courseDone: boolean = false;
   userCourses: UserEnrolledCourses = {
     totalPages: 0,
     totalItems: 0,
     currentlyViewing: '',
-    paginatedList: []
+    paginatedList: [],
   };
   currentPage: number = 1;
   itemsPerPage: number = 10;
@@ -32,21 +32,21 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
   constructor(
     private _ActivatedRouter: ActivatedRoute,
     private _CoursesService: CoursesService,
-    private _Router: Router,
+    private _Router: Router
   ) {}
 
   ngOnInit(): void {
     this._ActivatedRouter.paramMap
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(params => {
-      const userIdParam = params.get('userId');
-      const pageParam = params.get('collectionId');
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        const userIdParam = params.get('userId');
+        const pageParam = params.get('collectionId');
 
-      this.userId = userIdParam ? Number.parseInt(userIdParam) : 0;
-      this.currentPage = pageParam ? Number.parseInt(pageParam) : 1;
+        this.userId = userIdParam ? Number.parseInt(userIdParam) : 0;
+        this.currentPage = pageParam ? Number.parseInt(pageParam) : 1;
 
-      this.fetchCollection();
-    });
+        this.fetchCollection();
+      });
   }
 
   ngOnDestroy(): void {
@@ -56,41 +56,41 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
 
   fetchCollection(): void {
     if (!this.userId) return;
-  
-    this._CoursesService.getEnrolledCourses(this.currentPage, this.userId)
+
+    this._CoursesService
+      .getEnrolledCourses(this.currentPage, this.userId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: res => {
+        next: (res) => {
           console.log(res);
-          this.userCourses = res.data ?? { 
+          this.userCourses = res.data ?? {
             totalPages: 0,
             totalItems: 0,
             currentlyViewing: '',
-            paginatedList: []
+            paginatedList: [],
           };
           this.totalItems = this.userCourses.totalItems;
         },
-        error: err => {
+        error: (err) => {
           console.log(err);
-          this.userCourses = { 
+          this.userCourses = {
             totalPages: 0,
             totalItems: 0,
             currentlyViewing: '',
-            paginatedList: []
+            paginatedList: [],
           };
-        }
+        },
       });
-  };
-  
-  
+  }
+
   trackByCourse(index: number, course: any): number {
     return course.course.id;
-  };
+  }
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this._Router.navigate(['/profile/student', this.userId, page])
-    .then(() => this.fetchCollection());
+    this._Router
+      .navigate(['/profile/student', this.userId, page])
+      .then(() => this.fetchCollection());
   }
 }
-

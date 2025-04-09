@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -12,10 +12,11 @@ import { CourseDetails } from '../../interfaces/courses/course-details';
 import { UserService } from '../../feature/users/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
+import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-course-details',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, CarouselModule],
   templateUrl: './course-details.component.html',
   styleUrl: './course-details.component.scss',
 })
@@ -32,6 +33,17 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   courseDetailsResopnse: CourseDetails = {} as CourseDetails;
   courseId!: number;
   userId!: number;
+  customOptions: OwlOptions = {
+    lazyLoad: true,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: true,
+    navSpeed: 1000,
+    items : 1,
+    center : true,
+    margin : 150,
+  };
 
   ngOnInit(): void {
     this._UserService.userId
@@ -79,11 +91,7 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
         next: (res) => {
           console.log(res);
           this._ToastrService.success(res.message);
-          this._Router.navigate([
-            '/main-course',
-            this.userId,
-            this.courseDetailsResopnse.id,
-          ]);
+          this._Router.navigate(['/main-course', this.userId, res?.data?.id]);
         },
         error: (err) => {
           if (err.error.message) {

@@ -30,8 +30,9 @@
             <div
               class="relative w-full h-[12px] flex items-center border border-black rounded-xl"
             >
+              <!-- you label -->
               <span
-                class="absolute bottom-3 z-10 flex justify-between gap-0 flex-col  rounded-xl items-center transition-all duration-300"
+                class="absolute bottom-3 z-10 flex justify-between gap-0 flex-col rounded-xl items-center transition-all duration-300"
                 [ngStyle]="{ left: 'calc(' + course.progress + '% - 16px)' }"
               >
                 <p
@@ -42,12 +43,15 @@
                 <i class="fa-solid fa-arrow-down text-xs"></i>
               </span>
 
+              <!-- bar color  -->
               <span
-                class="enginitic-main-color h-[12px] -z-10 transition-all duration-300 rounded-xl"
+                class="h-[12px] -z-10 transition-all duration-300 rounded-xl bg-gradient-to-r from-[#58B6B8] to-[#235e62]"
                 [style.width]="course.progress + '%'"
               ></span>
 
+              <!-- percentage label -->
               <span
+                [style.width]="isInView ? course.progress + '%' : '0%'"
                 class="absolute top-4 z-10 font-display text-xs transition-all duration-300"
                 [ngStyle]="{ left: 'calc(' + course.progress + '% - 6px)' }"
               >
@@ -75,7 +79,7 @@
           <ng-template #finishedCourses>
             <a
               [routerLink]="['/course-details', course.course.id]"
-              class="engenitic-button relative group inline-block text-center hover:bg-[#2E3192]"
+              class="engenitic-button relative group inline-block text-center hover:bg-[#27767a]"
             >
               <span
                 class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"

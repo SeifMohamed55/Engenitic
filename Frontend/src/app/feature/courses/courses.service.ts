@@ -52,10 +52,10 @@ export class CoursesService {
     });
   }
 
-  enrollCourseHandler(courseId : number, studentId : number) : Observable<any> {
+  enrollCourseHandler(courseId: number, studentId: number): Observable<any> {
     return this._HttpClient.post(`https://localhost/api/student/enroll`, {
       courseId,
-      studentId
+      studentId,
     });
   }
 
@@ -104,6 +104,18 @@ export class CoursesService {
     return this._HttpClient.post(
       `https://localhost/api/Instructor/addCourse`,
       value
+    );
+  }
+
+  getCurrentStage(studentId: number, enrollmentId: number): Observable<any> {
+    return this._HttpClient.get(
+      `https://localhost/api/Student/enrollment/current-stage`,
+      {
+        params: {
+          studentId,
+          enrollmentId
+        },
+      }
     );
   }
 }

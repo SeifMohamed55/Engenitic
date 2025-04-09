@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../feature/users/user.service';
@@ -14,13 +14,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnDestroy {
-  constructor(
-    private _UserService: UserService,
-    private toastr: ToastrService,
-    private _Router: Router
-  ) {}
-
+export class LoginComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private destroyImage$ = new Subject<void>();
   loginResponse!: LoginData;
@@ -34,7 +28,29 @@ export class LoginComponent implements OnDestroy {
     ]),
   });
 
+  constructor(
+    private _UserService: UserService,
+    private toastr: ToastrService,
+    private _Router: Router
+  ) {}
+
+  ngOnInit(): void {
+    // Listen for the message event from the popup window
+    if (typeof window !== 'undefined') {
+      window.addEventListener('message', this.receiveMessage.bind(this), false);
+    }
+  }
+
   ngOnDestroy(): void {
+    // Cleanup event listener
+    if (typeof window !== 'undefined') {
+      window.removeEventListener(
+        'message',
+        this.receiveMessage.bind(this),
+        false
+      );
+    }
+
     this.destroy$.next();
     this.destroy$.complete();
 
@@ -43,11 +59,47 @@ export class LoginComponent implements OnDestroy {
   }
 
   googleLogin(): void {
-    window.open(
+    const popup = window.open(
       'https://localhost/api/google/login',
       'PopupWindow',
       'width=800,height=600'
     );
+  }
+
+  receiveMessage(event: MessageEvent): void {
+    if (event.origin !== 'https://localhost') {
+      return;
+    }
+
+    const response = event.data;
+    console.log(response);
+    if (response.code === 200) {
+      this.handleGoogleLoginSuccess(response);
+    }
+    else if (response.code === 400) {
+      this.toastr.error(response.message);
+    }
+    else {
+      this.toastr.error("an error occured to the server try again later !");
+    }
+  }
+
+  handleGoogleLoginSuccess(response: any): void {
+    // Implement handling of successful Google login, similar to your normal login
+    this._UserService.registered.next(response.data.AccessToken);
+    this._UserService.userId.next(response.data.Id);
+    this._UserService.userName.next(response.data.Name);
+    this._UserService.role.next(response.data.Roles[0]);
+    this._UserService.image.next(response.data.Image.ImageURL);
+
+    localStorage.setItem('Token', response.data.AccessToken);
+    localStorage.setItem('name', response.data.Name);
+    localStorage.setItem('id', String(response.data.Id));
+    localStorage.setItem('role', response.data.Roles[0]);
+    localStorage.setItem('image_url', response.data.Image.ImageURL);
+
+    this.toastr.success(response.message);
+    this._Router.navigate(['/home']);
   }
 
   handleLogin() {

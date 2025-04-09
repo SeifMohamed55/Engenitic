@@ -1,187 +1,188 @@
 /* You can add global styles to this file, and also import other style files */
 
-@use 'ngx-toastr/toastr';
+@use "ngx-toastr/toastr";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @layer utilities {
+  .engenitic-input {
+    @apply w-full border-[1.5px] border-black rounded py-2 font-regular px-2;
+  }
 
-    .engenitic-input {
-        @apply w-full border-[1.5px] border-black rounded py-2 font-regular px-2 ;
-    }
+  .engenitic-button {
+    @apply font-display flex justify-center items-center;
+  }
 
-    .engenitic-button {
-        @apply font-display flex justify-center items-center ;
-    }
+  .gradient {
+    @apply bg-gradient-to-r from-[#58B6B8] to-[#2E3192];
+  }
 
-    .gradient {
-        @apply bg-gradient-to-r from-[#58B6B8] to-[#2E3192];
-    }
+  .enginitic-main-color {
+    @apply bg-[#58B6B8];
+  }
 
-    .enginitic-main-color {
-        @apply bg-[#58B6B8];
-    }
+  .engenitic-danger {
+    @apply bg-[#EC221F];
+  }
 
-    .engenitic-danger {
-        @apply bg-[#EC221F];
-    }
-
-    .engenitic-success {
-        @apply bg-[#14AE5C];
-    }
+  .engenitic-success {
+    @apply bg-[#14AE5C];
+  }
 }
 
 body {
-    text-transform: capitalize !important;
-    background-color: FFFFFF;
-    overflow-x: hidden;
+  text-transform: capitalize !important;
+  background-color: FFFFFF;
+  overflow-x: hidden;
+  ::selection {
+    background-color: #58b6b8;
+    color: white;
+  }
 }
 
 p {
-    line-height: 30px;
-
+  line-height: 30px;
 }
-
-
 
 // fade-out down ( for arrows if needed )
 
 .fade-out-bottom {
-    animation: fade-out-bottom 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s infinite both;
+  animation: fade-out-bottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s infinite
+    both;
 }
 
 @keyframes fade-out-bottom {
-    0% {
-        transform: translateY(0);
-        opacity: 1;
-    }
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 
-    100% {
-        transform: translateY(50px);
-        opacity: 0;
-    }
+  100% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
 }
 
 // animation light on header
 .animate-gradient {
-    background: #FFFFFF;
-    background: linear-gradient(-45deg, #000 40%, #fff 40%, #fff 60%, #000 60%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-size: 150% auto;
-    animation: animatedgradient 5s ease infinite alternate;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.493);
+  background: #ffffff;
+  background: linear-gradient(-45deg, #000 40%, #fff 40%, #fff 60%, #000 60%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-size: 150% auto;
+  animation: animatedgradient 5s ease infinite alternate;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.493);
 }
 
 @keyframes animatedgradient {
-    to {
-        background-position: 150% center;
-    }
+  to {
+    background-position: 150% center;
+  }
 }
 
 // shadow container for anything like containers or buttons
-.shadow-container{
-    border: 1px solid black;
-    box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black, 4px 4px 0px black, 5px 5px 0px black ;
-    transition: 0.3s;
-    &:hover {
-        box-shadow: 0px 0px 0px black;
-    }
+.shadow-container {
+  border: 1px solid black;
+  box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black,
+    4px 4px 0px black, 5px 5px 0px black;
+  transition: 0.3s;
+  &:hover {
+    box-shadow: 0px 0px 0px black;
+  }
 }
 
-input , textarea , select{
+input,
+textarea,
+select {
+  border: 1px solid black;
+  box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black;
+  transition: 0.3s;
+  &:focus {
+    outline: none;
     border: 1px solid black;
-    box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black ;
-    transition: 0.3s;
-    &:focus{
-        outline: none;
-        border: 1px solid black;
-        box-shadow: 1px 1px 0px black ;
-    }
+    box-shadow: 1px 1px 0px black;
+  }
 }
 
 // shadow container for buttons
 .engenitic-button {
-    border: 1px solid black;
-    padding: 5px 10px 7px 10px;
-    border-radius: 5px;
-    box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black ;
-    transition: 0.3s;
+  border: 1px solid black;
+  padding: 5px 10px 7px 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px black, 2px 2px 0px black, 3px 3px 0px black;
+  transition: 0.3s;
 
-    &:hover {
-        box-shadow: 0px 0px 0px black;
-    }
+  &:hover {
+    box-shadow: 0px 0px 0px black;
+  }
 }
 
 // (White) shadow container for buttons
-.engenitic-button-inverted{
-    border: 1px solid white;
-    padding: 5px 10px 7px 10px;
-    border-radius: 5px;
-    box-shadow: 1px 1px 0px white, 2px 2px 0px white, 3px 3px 0px white ;
-    transition: 0.3s;
+.engenitic-button-inverted {
+  border: 1px solid white;
+  padding: 5px 10px 7px 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px white, 2px 2px 0px white, 3px 3px 0px white;
+  transition: 0.3s;
 
-    &:hover {
-        box-shadow: 0px 0px 0px white;
-    }
+  &:hover {
+    box-shadow: 0px 0px 0px white;
+  }
 }
 
 .engenitic-button-disabled {
-    box-shadow: 0px 0px 0px black;
-    background-color: #66676E;
+  box-shadow: 0px 0px 0px black;
+  background-color: #66676e;
 }
 
 .custom-file-input {
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    color: #555;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #555;
 }
 
 .custom-file-input::-webkit-file-upload-button {
-    background-color: black;
-    color: white;
-    border: 1px solid white;
-    padding: 8px 12px;
-    margin-right: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 8px 12px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .course {
-    overflow: hidden;
+  overflow: hidden;
 
-    &:hover {
-        .course-button {
-            transform: translateY(0);
-            transition: all 1s;
-        }
+  &:hover {
+    .course-button {
+      transform: translateY(0);
+      transition: all 1s;
     }
+  }
 }
 
 .ngx-pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 
-    li {
-        margin: 0 5px;
+  li {
+    margin: 0 5px;
 
-        a {
-            text-decoration: none;
-            color: #000;
-        }
-
-        &.current {
-            background: #58B6B8;
-            color: white;
-        }
+    a {
+      text-decoration: none;
+      color: #000;
     }
-}
 
+    &.current {
+      background: #58b6b8;
+      color: white;
+    }
+  }
+}
