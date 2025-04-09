@@ -59,7 +59,25 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.destroyImage$.complete();
   }
 
-  handleRememberMe(event : Event): void {
+  handleData(res: any): void {
+    this.loginResponse = res.data;
+    this._UserService.registered.next(this.loginResponse.accessToken);
+    this._UserService.userId.next(this.loginResponse.id);
+    this._UserService.userName.next(this.loginResponse.name);
+    this._UserService.role.next(this.loginResponse.roles[0]);
+    this._UserService.image.next(this.loginResponse.image.imageURL);
+
+    localStorage.setItem('Token', this.loginResponse.accessToken);
+    localStorage.setItem('name', this.loginResponse.name);
+    localStorage.setItem('id', String(this.loginResponse.id));
+    localStorage.setItem('role', this.loginResponse.roles[0]);
+    localStorage.setItem('image_url', this.loginResponse.image.imageURL);
+
+    this.toastr.success(res.message);
+    this._Router.navigate(['/home']);
+  }
+
+  handleRememberMe(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     this.loginForm.get('rememberMe')?.patchValue(checked);
   }
@@ -78,32 +96,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     const response = event.data;
-    console.log(response);
     if (response.code === 200) {
-      this.handleGoogleLoginSuccess(response);
+      this.handleData(response);
     } else if (response.code === 400) {
       this.toastr.error(response.message);
     } else {
       this.toastr.error('an error occured to the server try again later !');
     }
-  }
-
-  handleGoogleLoginSuccess(response: any): void {
-    // Implement handling of successful Google login, similar to your normal login
-    this._UserService.registered.next(response.data.AccessToken);
-    this._UserService.userId.next(response.data.Id);
-    this._UserService.userName.next(response.data.Name);
-    this._UserService.role.next(response.data.Roles[0]);
-    this._UserService.image.next(response.data.Image.ImageURL);
-
-    localStorage.setItem('Token', response.data.AccessToken);
-    localStorage.setItem('name', response.data.Name);
-    localStorage.setItem('id', String(response.data.Id));
-    localStorage.setItem('role', response.data.Roles[0]);
-    localStorage.setItem('image_url', response.data.Image.ImageURL);
-
-    this.toastr.success(response.message);
-    this._Router.navigate(['/home']);
   }
 
   handleLogin() {
@@ -125,22 +124,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.buttonDisabled = false;
             return;
           }
-
-          this.loginResponse = res.data;
-          this._UserService.registered.next(this.loginResponse.accessToken);
-          this._UserService.userId.next(this.loginResponse.id);
-          this._UserService.userName.next(this.loginResponse.name);
-          this._UserService.role.next(this.loginResponse.roles[0]);
-          this._UserService.image.next(this.loginResponse.image.imageURL);
-
-          localStorage.setItem('Token', this.loginResponse.accessToken);
-          localStorage.setItem('name', this.loginResponse.name);
-          localStorage.setItem('id', String(this.loginResponse.id));
-          localStorage.setItem('role', this.loginResponse.roles[0]);
-          localStorage.setItem('image_url', this.loginResponse.image.imageURL);
-
-          this.toastr.success(res.message);
-          this._Router.navigate(['/home']);
+          this.handleData(res);
         },
         error: (err) => {
           const errorMessage =
