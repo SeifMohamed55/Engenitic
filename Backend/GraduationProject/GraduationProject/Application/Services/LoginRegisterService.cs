@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Net;
 
 namespace GraduationProject.Application.Services
 {
@@ -317,7 +318,7 @@ namespace GraduationProject.Application.Services
 
         public async Task<(ServiceResult<LoginResponse>, string?)> ExternalLogin(string provider, AuthenticatedPayload payload)
         {
-            var user = await _userManager.FindByEmailAsync(payload.Email);
+            var user = await _unitOfWork.UserRepo.GetUserWithTokenAndRoles(payload.Email);
 
             if (user == null)
             {
@@ -393,12 +394,14 @@ namespace GraduationProject.Application.Services
             try
             {
                 roles = (await _userManager.GetRolesAsync(user)).ToList();
+
+                //await SaveGooglePhoto(user, payload);
             }
             catch
             {
             }
 
-
+ 
             var providerLogin = await _unitOfWork.UserLoginRepo.ContainsLoginProvider(user.Id, provider);
 
             if (!providerLogin)
@@ -465,6 +468,32 @@ namespace GraduationProject.Application.Services
             return (ServiceResult<LoginResponse>.Success(data), raw);
 
 
+        }
+
+        private async Task SaveGooglePhoto(AppUser user, AuthenticatedPayload payload)
+        {
+            var dbFileHash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage) ??
+            throw new ArgumentNullException("invalid state");
+
+            if (!await _uploadingService.ImageHashMatches(dbFileHash, payload.ImageUrl))
+            {
+                var imageName = "user_" + user.Id;
+
+                FileHash? fileHash = await _uploadingService.UploadImageAsync(payload.ImageUrl, imageName, CloudinaryType.UserImage);
+
+                if (fileHash != null)
+                {
+                    if (dbFileHash.PublicId == ICloudinaryService.DefaultUserImagePublicId)
+                    {
+                        user.FileHashes.Remove(dbFileHash);
+                        user.FileHashes.Add(fileHash);
+                    }
+                    else
+                        dbFileHash.UpdateFromHash(fileHash);
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
         }
 
     }

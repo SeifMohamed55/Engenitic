@@ -148,7 +148,11 @@ namespace GraduationProject.API.Controllers
             var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
             if (!authenticateResult.Succeeded)
-                return BadRequest(); // Handle error
+                return GetHtmlContent(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Authentication failed"
+                }); // Handle error
 
             var claims = authenticateResult.Principal.Identities.FirstOrDefault()?.Claims;
 
@@ -171,7 +175,7 @@ namespace GraduationProject.API.Controllers
 
 
             if (email == null || name == null || googleId == null)
-                return BadRequest(new ErrorResponse()
+                return GetHtmlContent(new ErrorResponse()
                 {
                     Code = System.Net.HttpStatusCode.BadRequest,
                     Message = "email or name or photo does not exist"

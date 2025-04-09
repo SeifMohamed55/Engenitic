@@ -351,27 +351,15 @@ namespace GraduationProject.API.Controllers
                         Message = "Invalid Image, Failed to upload."
                     });
 
-                if (dbFileHash == null)
+
+                if(dbFileHash.PublicId == ICloudinaryService.DefaultUserImagePublicId)
                 {
-                    dbFileHash = new FileHash()
-                    {
-                        PublicId = fileHash.PublicId,
-                        Type = CloudinaryType.UserImage,
-                        Hash = fileHash.Hash,
-                        Version = fileHash.Version
-                    };
-                    user.FileHashes.Add(dbFileHash);
+                    user.FileHashes.Remove(dbFileHash);
+                    user.FileHashes.Add(fileHash);
                 }
                 else
-                {
-                    if(dbFileHash.PublicId == ICloudinaryService.DefaultUserImagePublicId)
-                    {
-                        user.FileHashes.Remove(dbFileHash);
-                        user.FileHashes.Add(fileHash);
-                    }
-                    else
-                        dbFileHash.UpdateFromHash(fileHash);
-                }
+                    dbFileHash.UpdateFromHash(fileHash);
+                
                 await _unitOfWork.SaveChangesAsync();
 
 

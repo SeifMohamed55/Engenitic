@@ -7,6 +7,7 @@ using GraduationProject.Domain.Models;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace GraduationProject.Application.Services
 {
@@ -15,6 +16,7 @@ namespace GraduationProject.Application.Services
     {
         Task<FileHash?> UploadImageAsync(string imageUrl, string imageName, CloudinaryType type);
         Task<FileHash?> UploadImageAsync(Stream stream, string imageName, CloudinaryType type);
+        Task<bool> ImageHashMatches(FileHash? fileHash, string imgUrl);
     }
 
     public class UploadingService : IUploadingService
@@ -111,7 +113,7 @@ namespace GraduationProject.Application.Services
             if (uploadResult == null)
                 return null;
 
-            await using var stream = await GetFileStreamAsync(uploadResult.PublicId);
+            await using var stream = await GetFileStreamAsync(uploadResult);
             if (stream == null)
                 throw new NoNullAllowedException("Uploaded file is null");
 
@@ -143,9 +145,13 @@ namespace GraduationProject.Application.Services
             return new CloudinaryUploadResult(uploadResult);
         }
 
-        private async Task<Stream?> GetFileStreamAsync(string publicId)
+        private async Task<Stream?> GetFileStreamAsync(CloudinaryUploadResult result)
         {
-            var resource = await _cloudinary.GetResourceAsync(new GetResourceParams(publicId));
+            var param = new GetResourceParams(result.PublicId);
+            if(!result.PublicId.ToLower().Contains("default"))
+                param.Type = "authenticated";
+
+            var resource = await _cloudinary.GetResourceAsync(param);
 
             if (resource == null || string.IsNullOrEmpty(resource.Url))
             {
@@ -161,6 +167,28 @@ namespace GraduationProject.Application.Services
             }
 
             return await response.Content.ReadAsStreamAsync();
+
+        }
+
+        public async Task<bool> ImageHashMatches(FileHash? fileHash, string imgUrl)
+        {
+            if (fileHash == null)
+                return false;
+
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Send a GET request to the image URL and get the image stream
+                using (Stream stream = await client.GetStreamAsync(imgUrl))
+                {
+                    if (stream == null)
+                        return false;
+
+                    var hash = await _hashingService.HashWithxxHash(stream);
+                    return hash == fileHash.Hash;
+                    
+                }
+            }
 
         }
 
