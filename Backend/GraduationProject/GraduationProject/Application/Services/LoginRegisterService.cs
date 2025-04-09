@@ -218,7 +218,7 @@ namespace GraduationProject.Application.Services
             await _userManager.ResetAccessFailedCountAsync(user);
             (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
-            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user);
+            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x=> x.Name).ToList());
 
             refreshToken.LatestJwtAccessTokenJti = jti;
             refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
@@ -389,10 +389,10 @@ namespace GraduationProject.Application.Services
                     return (ServiceResult<LoginResponse>.Failure(errors.Select(x => x.Description).ToList()), null);
                 }
             }
-            IList<string> roles = new List<string>();
+            List<string> roles = new List<string>();
             try
             {
-                roles = await _userManager.GetRolesAsync(user);
+                roles = (await _userManager.GetRolesAsync(user)).ToList();
             }
             catch
             {
@@ -413,7 +413,7 @@ namespace GraduationProject.Application.Services
 
             (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
-            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user);
+            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, roles.ToList());
 
             refreshToken.LatestJwtAccessTokenJti = jti;
             refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes

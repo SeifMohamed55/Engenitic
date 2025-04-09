@@ -21,11 +21,11 @@ namespace GraduationProject.Common.Middlewares
                 var requestRefToken = context.Request.Cookies["refreshToken"];
                 if (requestRefToken == null)
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     await context.Response.WriteAsJsonAsync(new ErrorResponse
                     {
                         Message = "No Refresh Token Provided.",
-                        Code = HttpStatusCode.BadRequest
+                        Code = HttpStatusCode.Unauthorized
                     });
                     return;
                 }

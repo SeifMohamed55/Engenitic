@@ -69,7 +69,7 @@ namespace GraduationProject.Application.Services
                 if (!isValid)
                     return ServiceResult<string>.Failure("Invalid Refresh Token");
 
-                (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user);
+                (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x=> x.Name).ToList());
 
                 _userService.UpdateUserLatestToken(user, newJti);
                 await _unitOfWork.SaveChangesAsync();

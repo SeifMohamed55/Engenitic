@@ -27,12 +27,14 @@ namespace GraduationProject.API.Controllers
         private readonly ILoginRegisterService _loginService;
         private readonly JwtOptions _jwtOptions;
         private readonly ICloudinaryService _cloudinaryService;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
         public GoogleController(
             IOptions<MailingOptions> options,
             UserManager<AppUser> userManager,
             ILoginRegisterService loginService,
             IOptions<JwtOptions> jwtOptions,
-            ICloudinaryService cloudinaryService
+            ICloudinaryService cloudinaryService,
+            IOptions<JsonOptions> jsonOptions
             )
         {
             _options = options.Value;
@@ -40,6 +42,7 @@ namespace GraduationProject.API.Controllers
             _loginService = loginService;
             _jwtOptions = jwtOptions.Value;
             _cloudinaryService = cloudinaryService;
+            _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
         }
 
 
@@ -195,7 +198,7 @@ namespace GraduationProject.API.Controllers
                         Secure = true,
                         SameSite = SameSiteMode.None,
                         Path = "/",
-                        Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays))
+                        IsEssential = true
                     };
 
                     HttpContext.Response.Cookies.Append("refreshToken", rawRefreshToken, cookieOptions);
@@ -234,9 +237,9 @@ namespace GraduationProject.API.Controllers
             string serializedResponse;
 
             if(errorResp != null)
-                serializedResponse = JsonSerializer.Serialize(errorResp, JsonSerializerOptions.Default);
+                serializedResponse = JsonSerializer.Serialize(errorResp, _jsonSerializerOptions);
             else
-                serializedResponse = JsonSerializer.Serialize(successResp, JsonSerializerOptions.Default);
+                serializedResponse = JsonSerializer.Serialize(successResp, _jsonSerializerOptions);
 
             var jsonResponse = HttpUtility.JavaScriptStringEncode(serializedResponse);
 

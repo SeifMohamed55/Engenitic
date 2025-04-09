@@ -13,7 +13,7 @@ namespace GraduationProject.Application.Services
     public interface IJwtTokenService
     {
         (RefreshToken, string) GenerateRefreshToken(AppUser appUser);
-        (string, string) GenerateJwtToken(AppUser userWithTokenAndRoles);
+        (string, string) GenerateJwtToken(AppUser userWithTokenAndRoles, List<string> roles);
         (int, string) ExtractIdAndJtiFromExpiredToken(string token);
         bool IsAccessTokenValid(string token);
         string? ExtractJwtTokenFromContext(HttpContext context);
@@ -40,7 +40,7 @@ namespace GraduationProject.Application.Services
         }
 
         // user included with roles and refreshToken
-        public (string, string) GenerateJwtToken(AppUser user)
+        public (string, string) GenerateJwtToken(AppUser user, List<string> roles)
         {
 
             var key = new SymmetricSecurityKey(_jwtKey);
@@ -53,9 +53,9 @@ namespace GraduationProject.Application.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Jti)
             };
 
-            foreach (var role in user.Roles)
+            foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var token = new JwtSecurityToken(
