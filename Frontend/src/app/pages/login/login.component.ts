@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       Validators.minLength(5),
       Validators.required,
     ]),
+    rememberMe: new FormControl(false, [Validators.required]),
   });
 
   constructor(
@@ -58,6 +59,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.destroyImage$.complete();
   }
 
+  handleRememberMe(event : Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.loginForm.get('rememberMe')?.patchValue(checked);
+  }
+
   googleLogin(): void {
     const popup = window.open(
       'https://localhost/api/google/login',
@@ -75,12 +81,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log(response);
     if (response.code === 200) {
       this.handleGoogleLoginSuccess(response);
-    }
-    else if (response.code === 400) {
+    } else if (response.code === 400) {
       this.toastr.error(response.message);
-    }
-    else {
-      this.toastr.error("an error occured to the server try again later !");
+    } else {
+      this.toastr.error('an error occured to the server try again later !');
     }
   }
 
@@ -108,6 +112,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log(this.loginForm.value);
     this.buttonDisabled = true;
 
     this._UserService

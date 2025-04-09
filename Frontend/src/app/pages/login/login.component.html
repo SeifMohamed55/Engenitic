@@ -1,4 +1,4 @@
-<main class="grid grid-cols-2 items-center gap-10 container">
+<main class="grid grid-cols-2 items-center py-10 gap-10 container">
   <figure class="flex justify-start">
     <img
       src="./assets/images/login-main-pic.jpeg"
@@ -7,7 +7,7 @@
     />
   </figure>
   <form
-    class="grid grid-rows-3 gap-10 items-center"
+    class="grid grid-rows-1 gap-6 items-center"
     [formGroup]="loginForm"
     (ngSubmit)="handleLogin()"
   >
@@ -61,6 +61,16 @@
       >
         password must be more than 5 characters
       </p>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        id="remember-me"
+        class="w-fit me-5 shadow-none hover:shadow-none"
+        [checked]="loginForm.get('rememberMe')?.value"
+        (change)="handleRememberMe($event)"
+      />
+      <label for="remember-me" class="font-display">remember me</label>
     </div>
     <div class="flex justify-center gap-8 items-center">
       <button
