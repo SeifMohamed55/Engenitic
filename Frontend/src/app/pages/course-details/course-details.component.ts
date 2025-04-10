@@ -30,7 +30,7 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   private destroy$ = new Subject<void>();
-  courseDetailsResopnse: CourseDetails = {} as CourseDetails;
+  courseDetailsResopnse : CourseDetails = {} as CourseDetails;
   courseId!: number;
   userId!: number;
   customOptions: OwlOptions = {
