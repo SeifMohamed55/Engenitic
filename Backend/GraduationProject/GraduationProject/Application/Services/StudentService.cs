@@ -72,8 +72,8 @@ namespace GraduationProject.Application.Services
 
             if (enrollmentResult.TryGetData(out var enrollment))
             {
-                if(stage > enrollment.CurrentStage || stage < 0)
-                    return ServiceResult<QuizDTO>.Failure("Invalid Stage");
+                if(stage > enrollment.CurrentStage || stage <= 0)
+                    return ServiceResult<QuizDTO>.Failure($"You must finish Stage {enrollment.CurrentStage} first.");
 
                 return await GetQuizForStage(enrollment.CourseId, stage);
             }
@@ -123,6 +123,8 @@ namespace GraduationProject.Application.Services
 
             return ServiceResult<QuizDTO>.Success(quizDTO);
         }
+
+      
     }
 
 }

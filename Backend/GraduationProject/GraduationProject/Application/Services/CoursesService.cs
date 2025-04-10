@@ -27,6 +27,8 @@ namespace GraduationProject.Application.Services
         Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId);
         Task<int?> GetCourseInstructorId(int courseId);
         Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
+        Task<ServiceResult<List<QuizTitleResponse>>> GetQuizesTitles(int courseId);
+
 
         public class CoursesService : ICoursesService
         {
@@ -191,6 +193,19 @@ namespace GraduationProject.Application.Services
             public async Task<EditCourseRequest?> GetCourseWithQuizes(int courseId)
             {
                 return await _unitOfWork.CourseRepo.GetCourseWithQuizes(courseId);
+            }
+
+            public async Task<ServiceResult<List<QuizTitleResponse>>> GetQuizesTitles(int courseId)
+            {
+                try
+                {
+                    var res = await _unitOfWork.QuizRepo.GetQuizesTitle(courseId);
+                    return ServiceResult<List<QuizTitleResponse>>.Success(res); 
+                }
+                catch
+                {
+                    return ServiceResult<List<QuizTitleResponse>>.Failure("Error in getting titles");
+                }
             }
         }
     }

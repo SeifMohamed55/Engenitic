@@ -1,4 +1,5 @@
 ﻿using GraduationProject.API.Requests;
+using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
@@ -79,5 +80,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         {
             return await _dbSet.AnyAsync(x => x.UserId == studentId && x.CourseId == courseId);
         }
+
     }
 }

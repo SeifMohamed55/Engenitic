@@ -1,4 +1,5 @@
-﻿using GraduationProject.Domain.DTOs;
+﻿using GraduationProject.API.Responses;
+using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     {
         Task<QuizDTO?> GetQuizByCourseAndPosition(int courseId, int position);
         Task<bool> AddUserQuizAttempt(UserQuizAttemptDTO userQuizAttempt); // TODO: Implement this method
+        Task<List<QuizTitleResponse>> GetQuizesTitle(int courseId);
+
     }
     public class QuizRepository : Repository<Quiz>, IQuizRepository
     {
@@ -94,6 +97,22 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             {
                 return false;
             }
+        }
+
+        public async Task<List<QuizTitleResponse>> GetQuizesTitle(int courseId)
+        {
+            return await _dbSet
+                .Where(x=> x.CourseId == courseId)
+                .AsNoTracking()
+                .Select(x => new QuizTitleResponse()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Position = x.Position
+                })
+                .OrderBy(x=> x.Position)
+                .ToListAsync();
+
         }
     }
 }

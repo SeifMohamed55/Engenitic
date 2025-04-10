@@ -1,8 +1,6 @@
 ﻿using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
-using GraduationProject.Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
@@ -198,6 +196,26 @@ namespace GraduationProject.API.Controllers
                     Code = HttpStatusCode.InternalServerError,
                 });
             }
+        }
+
+        // GET: /api/courses/quizzes-title
+        [HttpGet("quizzes-title")]
+        public async Task<IActionResult> GetCourseQuizesTiltles
+            ([FromQuery] int courseId)
+        {
+            var quizesTitle = await _coursesService.GetQuizesTitles(courseId);
+            if (!quizesTitle.IsSuccess)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = quizesTitle.Message,
+                    Code = HttpStatusCode.BadRequest,   
+                });
+            return Ok(new SuccessResponse()
+            {
+                Message = "Quizes Titles Retrieved Successfully.",
+                Data = quizesTitle.Data,
+                Code = HttpStatusCode.OK,
+            });
         }
 
 
