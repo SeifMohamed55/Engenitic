@@ -13,8 +13,8 @@ namespace GraduationProject.Application.Services
         Task<PaginatedList<EnrollmentDTO>> GetStudentEnrollments(int studentId, int index);
         Task EnrollOnCourse(StudentEnrollmentRequest enrollment);
         Task<ServiceResult<EnrollmentDTO>> GetStudentEnrollment(int studentId, int courseId);
-        Task<ServiceResult<QuizDTO>> GetEnrollmentStage(int enrollmentId, int stage, int studentId);
-        Task<ServiceResult<QuizDTO>> GetEnrollmentCurrentStage(int enrollmentId, int studentId);
+        Task<ServiceResult<StageResponse>> GetEnrollmentStage(int enrollmentId, int stage, int studentId);
+        Task<ServiceResult<StageResponse>> GetEnrollmentCurrentStage(int enrollmentId, int studentId);
         Task<bool> EnrollmentExists(int studentId, int courseId);
     }
 
@@ -66,50 +66,64 @@ namespace GraduationProject.Application.Services
             return ServiceResult<EnrollmentDTO>.Success(enrollmentDTO);
         }
 
-        public async Task<ServiceResult<QuizDTO>> GetEnrollmentStage(int enrollmentId, int stage, int studentId)
+        public async Task<ServiceResult<StageResponse>> GetEnrollmentStage(int enrollmentId, int stage, int studentId)
         {
             var enrollmentResult = await GetAndValidateEnrollment(enrollmentId, studentId);
 
             if (enrollmentResult.TryGetData(out var enrollment))
             {
                 if(stage > enrollment.CurrentStage || stage <= 0)
-                    return ServiceResult<QuizDTO>.Failure($"You must finish Stage {enrollment.CurrentStage} first.");
+                    return ServiceResult<StageResponse>.Failure($"You must finish Stage {enrollment.CurrentStage} first.");
 
-                return await GetQuizForStage(enrollment.CourseId, stage);
+                float progress = GetProgress(enrollment);
+                var quiz = await GetQuizForStage(enrollment.CourseId, enrollment.CurrentStage);
+
+                if (quiz.TryGetData(out var quizData))
+                    return ServiceResult<StageResponse>.Success(new StageResponse(quizData, enrollment.CurrentStage, progress));
+                else
+                    return ServiceResult<StageResponse>.Failure(quiz.Message);
             }
             else
-                return ServiceResult<QuizDTO>.Failure(enrollmentResult.Message);
+                return ServiceResult<StageResponse>.Failure(enrollmentResult.Message);
 
         }
 
-        public async Task<ServiceResult<QuizDTO>> GetEnrollmentCurrentStage(int enrollmentId, int studentId)
+        public async Task<ServiceResult<StageResponse>> GetEnrollmentCurrentStage(int enrollmentId, int studentId)
         {
             var enrollmentResult = await GetAndValidateEnrollment(enrollmentId, studentId);
 
             if (enrollmentResult.TryGetData(out var enrollment))
-                return await GetQuizForStage(enrollment.CourseId, enrollment.CurrentStage);
+            {
+                float progress = GetProgress(enrollment);
+                var quiz =  await GetQuizForStage(enrollment.CourseId, enrollment.CurrentStage);
+
+                if (quiz.TryGetData(out var quizData))
+                    return ServiceResult<StageResponse>.Success(new StageResponse(quizData, enrollment.CurrentStage, progress));
+                else
+                    return ServiceResult<StageResponse>.Failure(quiz.Message);
+            }
             
             else
-                return ServiceResult<QuizDTO>.Failure(enrollmentResult.Message);
+                return ServiceResult<StageResponse>.Failure(enrollmentResult.Message);
         }
 
         // Helper method 
         private async Task<ServiceResult<UserEnrollment>> GetAndValidateEnrollment(int enrollmentId, int studentId)
         {
             var enrollment = await _unitOfWork.EnrollmentRepo.GetByIdAsync(enrollmentId);
-
+            
             if (enrollment == null)
                 return ServiceResult<UserEnrollment>.Failure("Enrollment not found");
 
             if(enrollment.UserId != studentId)
                 return ServiceResult<UserEnrollment>.Failure("You are not authorized to access this enrollment");
 
+
             if (enrollment.CurrentStage == 0)
             {
                 enrollment.CurrentStage = 1;
                 await _unitOfWork.SaveChangesAsync();
-            }
-
+            }            
             return ServiceResult<UserEnrollment>.Success(enrollment);
         }
 
@@ -124,7 +138,14 @@ namespace GraduationProject.Application.Services
             return ServiceResult<QuizDTO>.Success(quizDTO);
         }
 
-      
+        private float GetProgress(UserEnrollment enrollment)
+        {
+            return enrollment.IsCompleted ?
+                100.0f :
+                Math.Clamp((float)(enrollment.CurrentStage - 1) / enrollment.TotalStages * 100.0f, 0, 100);
+        }
+
+
     }
 
 }

@@ -11,6 +11,10 @@ namespace GraduationProject.Domain.DTOs
         [StringLength(100)]
         [NotEmptyOrWhiteSpace]
         public string Title { get; set; } = null!;
+        [Required]
+        [NotEmptyOrWhiteSpace]
+        [StringLength(1000)]
+        public string Description { get; set; } = null!;    
         public int Position { get; set; }
         [Required]
         [NotEmptyOrWhiteSpace]

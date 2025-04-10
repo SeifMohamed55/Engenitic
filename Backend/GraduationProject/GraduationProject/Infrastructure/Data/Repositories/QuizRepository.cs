@@ -102,17 +102,17 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         public async Task<List<QuizTitleResponse>> GetQuizesTitle(int courseId)
         {
             return await _dbSet
-                .Where(x=> x.CourseId == courseId)
+                .Where(x => x.CourseId == courseId)
                 .AsNoTracking()
                 .Select(x => new QuizTitleResponse()
                 {
                     Id = x.Id,
                     Title = x.Title,
-                    Position = x.Position
+                    Position = x.Position,
+                    Description = x.Description
                 })
                 .OrderBy(x=> x.Position)
                 .ToListAsync();
-
         }
     }
 }

@@ -19,9 +19,14 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .HasDefaultValue(null)
                 .IsRequired();
 
-            builder.HasIndex(u => u.Position);
+            builder.Property(x => x.Description)
+                .IsUnicode()
+                .IsRequired()
+                .HasMaxLength(1000);
 
             builder.HasIndex(u => u.CourseId);
+            builder.HasIndex(u => new { u.CourseId, u.Position });
+
 
             builder.HasMany(q => q.Questions)
                 .WithOne(qq => qq.Quiz)
