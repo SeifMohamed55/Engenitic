@@ -16,6 +16,7 @@ namespace GraduationProject.Application.Services
         Task<ServiceResult<StageResponse>> GetEnrollmentStage(int enrollmentId, int stage, int studentId);
         Task<ServiceResult<StageResponse>> GetEnrollmentCurrentStage(int enrollmentId, int studentId);
         Task<bool> EnrollmentExists(int studentId, int courseId);
+        Task<ServiceResult<UserQuizAttemptDTO>> AttemptQuiz(UserQuizAttemptDTO quizAttempt);
     }
 
     public class StudentService : IStudentService
@@ -145,7 +146,32 @@ namespace GraduationProject.Application.Services
                 Math.Clamp((float)(enrollment.CurrentStage - 1) / enrollment.TotalStages * 100.0f, 0, 100);
         }
 
+        public async Task<ServiceResult<UserQuizAttemptDTO>> AttemptQuiz(UserQuizAttemptDTO quizAttempt)
+        {
+            var enrollment = await GetAndValidateEnrollment(quizAttempt.EnrollmentId, quizAttempt.UserId);
+            if (enrollment.TryGetData(out var userEnrollment))
+            {
+                var quizDict = await _unitOfWork.QuizQuestionRepository.GetQuizWithQuestionsByIdAsync(quizAttempt.QuizId);
 
+                foreach(var userAnswer in quizAttempt.UserAnswers)
+                {
+                    if(quizDict.TryGetValue(userAnswer.QuestionId, out var dbQuestion))
+                    {
+                        if(dbQuestion.AnswerId == userAnswer.AnswerId)
+                            userAnswer.IsCorrect = true;
+                    }
+                }
+
+                await _unitOfWork.QuizRepo.AddUserQuizAttempt(quizAttempt);
+                await _unitOfWork.SaveChangesAsync();
+                return ServiceResult<UserQuizAttemptDTO>.Success(quizAttempt);
+            }
+            else
+            {
+                return ServiceResult<UserQuizAttemptDTO>.Failure(enrollment.Message);
+            }
+
+        }
     }
 
 }

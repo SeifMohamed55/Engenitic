@@ -14,6 +14,7 @@
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
         public IFileHashRepository FileHashRepo { get; }
+        public IQuizQuestionRepository QuizQuestionRepository { get; set; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();
@@ -36,6 +37,8 @@
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
         public IFileHashRepository FileHashRepo { get; }
+        public IQuizQuestionRepository QuizQuestionRepository { get; set; }
+
 
 
         public UnitOfWork
@@ -48,7 +51,8 @@
             IQuizRepository quizRepository,
             ITagsRepository tagsRepository,
             IUserLoginRepository userLoginRepository,
-            IFileHashRepository fileHashRepository
+            IFileHashRepository fileHashRepository,
+            IQuizQuestionRepository quizQuestionRepository
             )
         {
             _context = context;
@@ -60,6 +64,7 @@
             TagsRepo = tagsRepository;
             UserLoginRepo = userLoginRepository;
             FileHashRepo = fileHashRepository;
+            QuizQuestionRepository = quizQuestionRepository;
         }
 
         public async Task SaveChangesAsync()

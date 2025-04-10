@@ -11,13 +11,12 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         Task<QuizDTO?> GetQuizByCourseAndPosition(int courseId, int position);
         Task<bool> AddUserQuizAttempt(UserQuizAttemptDTO userQuizAttempt); // TODO: Implement this method
         Task<List<QuizTitleResponse>> GetQuizesTitle(int courseId);
-
     }
     public class QuizRepository : Repository<Quiz>, IQuizRepository
     {
         private AppDbContext _context { get; set; }
 
-        private static readonly Func<AppDbContext, int, int, Task<QuizDTO?>> GetQuizAsync =
+        private static readonly Func<AppDbContext, int, int, Task<QuizDTO?>> GetQuizWithNoAnswerAsync =
         EF.CompileAsyncQuery((AppDbContext dbContext, int courseId, int position) =>
             dbContext.Quizzes
                 .Include(x => x.Questions)
@@ -45,9 +44,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 .AsSingleQuery()
                 .FirstOrDefault());
 
-
-
-
         public QuizRepository(AppDbContext context) : base(context)
         {
             _context = context;
@@ -55,7 +51,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         public async Task<QuizDTO?> GetQuizByCourseAndPosition(int courseId, int position)
         {
-            return await GetQuizAsync(_context, courseId, position);
+            return await GetQuizWithNoAnswerAsync(_context, courseId, position);
         }
 
         public async Task<bool> AddUserQuizAttempt(UserQuizAttemptDTO userQuizAttempt)

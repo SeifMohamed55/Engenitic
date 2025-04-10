@@ -34,6 +34,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<ITagsRepository, TagsRepository>();
             services.AddScoped<IFileHashRepository, FileHashRepository>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            services.AddScoped<IQuizQuestionRepository, QuizQuestionRepository>();
 
             services.AddScoped<IUploadingService, UploadingService>();
             services.AddScoped<ILoginRegisterService, LoginRegisterService>();

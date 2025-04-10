@@ -192,7 +192,39 @@ namespace GraduationProject.API.Controllers
                 Code = HttpStatusCode.OK,
             });
         }
-       
+
+        // GET: /api/student/enrollment/attempt-quiz
+        [HttpPost("enrollment/attempt-quiz")]
+        public async Task<IActionResult> AttemptQuiz(UserQuizAttemptDTO userQuizAttempt)
+        {
+            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimId == null)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            if (!int.TryParse(claimId, out int parsedId) || parsedId != userQuizAttempt.UserId)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Invalid User.",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            var quizAttempt = await _studentService.AttemptQuiz(userQuizAttempt);
+            if (!quizAttempt.IsSuccess)
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = quizAttempt.Message,
+                    Code = HttpStatusCode.BadRequest,
+                });
+            return Ok(new SuccessResponse()
+            {
+                Message = "Quiz Attempted Successfully.",
+                Data = quizAttempt.Data,
+                Code = HttpStatusCode.OK,
+            });
+        }
+
 
     }
 }
