@@ -141,6 +141,24 @@
                 level title is required
               </div>
             </div>
+            <div class="form-group">
+              <label [for]="'description-for-level-' + i">level Description</label>
+              <input
+                [id]="'description-for-level-' + i"
+                type="text"
+                formControlName="levelDescription"
+                required
+              />
+              <div
+                *ngIf="
+                  levels.at(i).get('levelDescription')?.invalid &&
+                  levels.at(i).get('levelDescription')?.touched
+                "
+                class="error"
+              >
+                level Description is required
+              </div>
+            </div>
 
             <h3 class="py-10 text-center font-display text-[40px]">Quizzes</h3>
 

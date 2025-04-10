@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   googleLogin(): void {
-    const popup = window.open(
+    window.open(
       'https://localhost/api/google/login',
       'PopupWindow',
       'width=800,height=600'

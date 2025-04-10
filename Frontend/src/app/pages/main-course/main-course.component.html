@@ -48,5 +48,164 @@
       </span>
     </div>
   </section>
-  
+  <section
+    class="border-2 px-10 py-20 rounded flex flex-col justify-between gap-10"
+  >
+    <div class="border-b pb-2">
+      <div
+        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
+      >
+        <h2
+          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
+          (click)="handleArrow($event)"
+        >
+          <i
+            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
+          ></i>
+          course stage
+        </h2>
+        <p
+          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
+        >
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
+          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
+          ipsam id.
+        </p>
+      </div>
+    </div>
+    <div class="border-b pb-2">
+      <div
+        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
+      >
+        <h2
+          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
+          (click)="handleArrow($event)"
+        >
+          <i
+            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
+          ></i>
+          course stage
+        </h2>
+        <p
+          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
+        >
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
+          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
+          ipsam id.
+        </p>
+      </div>
+    </div>
+    <div class="border-b pb-2">
+      <div
+        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
+      >
+        <h2
+          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
+          (click)="handleArrow($event)"
+        >
+          <i
+            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
+          ></i>
+          course stage
+        </h2>
+        <p
+          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
+        >
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
+          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
+          ipsam id.
+        </p>
+      </div>
+    </div>
+    <div class="border-b pb-2">
+      <div
+        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
+      >
+        <h2
+          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
+          (click)="handleArrow($event)"
+        >
+          <i
+            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
+          ></i>
+          course stage
+        </h2>
+        <p
+          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
+        >
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
+          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
+          ipsam id.
+        </p>
+      </div>
+    </div>
+  </section>
 </main>
+<div
+  [ngClass]="[
+    displayQuiz
+      ? 'opacity-100 pointer-events-auto visible'
+      : 'opacity-0 pointer-events-none invisible'
+  ]"
+  class="fixed z-[9999] top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,0.9)] flex justify-center items-center transition-opacity duration-500 ease-in-out"
+>
+  <div class="w-[400px] h-[700px] bg-white rounded-2xl p-5">
+    <div class="flex justify-between gap-10">
+      <button
+        title="back to the main course button"
+        type="button"
+        class="rounded px-3 border border-[#58B6B8] transition-colors duration-500 hover:enginitic-main-color hover:text-white"
+        (click)="handleClosingQuiz()"
+      >
+        <i class="fa-solid fa-caret-left"></i>
+      </button>
+      <p class="font-display">Quiz header</p>
+    </div>
+
+    <div class="w-full h-2 mt-4 border rounded flex">
+      <span class="enginitic-main-color w-12 rounded"></span>
+    </div>
+    <h3 class="font-display mt-5 mb-2">Questions 1 of 3</h3>
+    <h4 class="font-regular text-sm pb-4">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, corporis
+      veritatis nostrum voluptatem, tempora nihil expedita, cumque impedit nobis
+      eius voluptatum?
+    </h4>
+    <form class="flex justify-between flex-col gap-20">
+      <div class="grid grid-rows-4 gap-6 my-5">
+        <div
+          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
+        >
+          <p class="font-display">answer 1</p>
+          <input title="answer-1" type="radio" class="radio-input" />
+        </div>
+        <div
+          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
+        >
+          <p class="font-display">answer 1</p>
+          <input title="answer-2" type="radio" class="radio-input" />
+        </div>
+        <div
+          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
+        >
+          <p class="font-display">answer 1</p>
+          <input title="answer-3" type="radio" class="radio-input" />
+        </div>
+        <div
+          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
+        >
+          <p class="font-display">answer 1</p>
+          <input title="answer-4" type="radio" class="radio-input" />
+        </div>
+      </div>
+      <div>
+        <button
+          type="submit"
+          class="engenitic-button w-full hover:bg-black hover:text-white"
+        >
+          next <i class="fa-solid fa-arrow-right ms-4"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
