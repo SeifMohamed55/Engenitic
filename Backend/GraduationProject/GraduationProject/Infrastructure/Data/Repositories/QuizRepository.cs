@@ -27,6 +27,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                     Id = q.Id,
                     Title = q.Title,
                     Position = q.Position,
+                    VideoUrl = q.VideoUrl,
+                    Description = q.Description,
                     Questions = q.Questions.OrderBy(x => x.Position).Select(qq => new QuestionDTO()
                     {
                         Id = qq.Id,
