@@ -113,9 +113,27 @@ export class CoursesService {
       {
         params: {
           studentId,
-          enrollmentId
+          enrollmentId,
         },
       }
     );
+  }
+
+  getEnrollmentStage(studentId : number, enrollmentId : number, stage : number): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Student/enrollment`, {
+      params : {
+        studentId,
+        enrollmentId,
+        stage
+      }
+    });
+  }
+
+  getQuizTitles(courseId : number) : Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/courses/quizzes-title`, {
+      params : {
+        courseId
+      }
+    });
   }
 }

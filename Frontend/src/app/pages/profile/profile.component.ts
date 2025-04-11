@@ -187,7 +187,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.disableButtonImage = true;
       },
       error: err => {
-        console.error(err);
+        if(err.error) {
+          this._ToastrService.error(err.error.message);
+        }
+        else {
+          this._ToastrService.error("an error happened to the server try again later");
+        }
       }
     });
   }

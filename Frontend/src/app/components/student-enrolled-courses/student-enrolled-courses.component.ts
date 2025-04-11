@@ -62,7 +62,6 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.userCourses = res.data ?? {
             totalPages: 0,
             totalItems: 0,

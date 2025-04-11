@@ -61,7 +61,7 @@
 
             <a
               *ngIf="!course.isCompleted; else finishedCourses"
-              [routerLink]="['/main-course', userId, course.id]"
+              [routerLink]="['/main-course', userId, course.id, course.courseId]"
               class="engenitic-button relative group inline-block text-center hover:enginitic-main-color hover:text-white duration-500 transition-all"
             >
               <span

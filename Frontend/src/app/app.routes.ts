@@ -33,7 +33,7 @@ export const routes: Routes = [
   },
   { path: 'course-details/:courseId', component: CourseDetailsComponent },
   {
-    path: 'main-course/:studentId/:enrollmentId',
+    path: 'main-course/:studentId/:enrollmentId/:courseId',
     component: MainCourseComponent,
     data: {
       roles: ['student'],

@@ -1,5 +1,8 @@
 <main class="container">
-  <h1 class="font-display text-header py-3">course title</h1>
+  <h1 class="font-display text-header py-3">{{ mainCourseResponse.title }}</h1>
+  <h2 class="font-regular">
+    in this stage you will learn : {{ mainCourseResponse.description }}
+  </h2>
   <section>
     <div
       class="mx-auto w-full h-[600px] aspect-video bg-[url('/assets/profile-pic.jpg')] bg-cover bg-center relative"
@@ -7,7 +10,7 @@
       <iframe
         title="course video"
         class="w-full h-full rounded"
-        src="https://www.youtube.com/embed/2neIAEbwt0E"
+        [src]="mainCourseResponse.videoUrl ?? ''"
         frameborder="0"
         allowfullscreen
       >
@@ -15,6 +18,7 @@
     </div>
     <div class="w-full flex justify-between items-center py-5">
       <button
+        [disabled]="!(mainCourseResponse.position - 1)"
         type="button"
         (click)="handlePrevious()"
         class="engenitic-button hover:enginitic-main-color"
@@ -34,16 +38,22 @@
     >
       <!-- progress bar  -->
       <span
-        class="w-[50%] h-[12px] rounded-xl -z-10 bg-gradient-to-r from-[#58B6B8] to-[#235e62]"
+        class="h-[12px] rounded-xl -z-10 bg-gradient-to-r from-[#58B6B8] to-[#235e62]"
+        [style.width]="mainCourseResponse.progress + '%'"
       ></span>
 
       <!-- percentage label  -->
       <span
-        class="absolute left-[calc(50%-25px)] top-4 flex flex-col justify-between items-center"
+        class="absolute top-4 flex flex-col justify-between items-center"
+        [ngStyle]="{
+          left: 'calc(' + mainCourseResponse.progress + '% - 20px)'
+        }"
       >
         <i class="fa-solid fa-angle-up"></i>
-        <p class="font-display border border-black px-3 py-2 rounded-full">
-          {{ "44%" }}
+        <p
+          class="font-display border border-black w-12 h-12 flex justify-center items-center rounded-full"
+        >
+          {{ mainCourseResponse.progress }}%
         </p>
       </span>
     </div>
@@ -51,7 +61,7 @@
   <section
     class="border-2 px-10 py-20 rounded flex flex-col justify-between gap-10"
   >
-    <div class="border-b pb-2">
+    <div class="border-b pb-2" *ngFor="let level of levelsTitles; index as idx">
       <div
         class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
       >
@@ -62,86 +72,21 @@
           <i
             class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
           ></i>
-          course stage
+          {{ level.title }}
         </h2>
-        <p
+        <div
           class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
         >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
-          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
-          ipsam id.
-        </p>
-      </div>
-    </div>
-    <div class="border-b pb-2">
-      <div
-        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
-      >
-        <h2
-          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
-          (click)="handleArrow($event)"
-        >
-          <i
-            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
-          ></i>
-          course stage
-        </h2>
-        <p
-          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
-        >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
-          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
-          ipsam id.
-        </p>
-      </div>
-    </div>
-    <div class="border-b pb-2">
-      <div
-        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
-      >
-        <h2
-          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
-          (click)="handleArrow($event)"
-        >
-          <i
-            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
-          ></i>
-          course stage
-        </h2>
-        <p
-          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
-        >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
-          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
-          ipsam id.
-        </p>
-      </div>
-    </div>
-    <div class="border-b pb-2">
-      <div
-        class="stage border border-[#ffff] hover:border-[#58B6B8] rounded transition-all duration-500 flex justify-between items-start flex-col"
-      >
-        <h2
-          class="cursor-pointer font-display text-secondary-header transition-colors duration-500 p-4 w-full"
-          (click)="handleArrow($event)"
-        >
-          <i
-            class="fa-solid fa-caret-right me-3 myArrow transition-transform duration-500"
-          ></i>
-          course stage
-        </h2>
-        <p
-          class="font-regular text-sm ps-4 overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out"
-        >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur
-          nesciunt nulla animi illo pariatur, dicta vel aut unde a repudiandae
-          ipsam id.
-        </p>
+          <p>
+            {{ level.description }}
+          </p>
+          <button title="open stage" type="button" class="engenitic-button mx-3"><i class="fa-solid fa-play"></i></button>
+        </div>
       </div>
     </div>
   </section>
 </main>
-<div
+<form
   [ngClass]="[
     displayQuiz
       ? 'opacity-100 pointer-events-auto visible'
@@ -171,7 +116,7 @@
       veritatis nostrum voluptatem, tempora nihil expedita, cumque impedit nobis
       eius voluptatum?
     </h4>
-    <form class="flex justify-between flex-col gap-20">
+    <div class="flex justify-between flex-col gap-20">
       <div class="grid grid-rows-4 gap-6 my-5">
         <div
           class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
@@ -206,6 +151,6 @@
           next <i class="fa-solid fa-arrow-right ms-4"></i>
         </button>
       </div>
-    </form>
+    </div>
   </div>
-</div>
+</form>

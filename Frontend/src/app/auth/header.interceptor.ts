@@ -60,6 +60,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
               switchMap(() => {
                 localStorage.clear();
                 _UserService.registered.next('');
+                _UserService.role.next('');
                 _ToastrService.error('Session expired!');
                 if (_Router.url !== '/login') {
                   _Router.navigate(['/login']);
@@ -73,6 +74,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
                 );
                 localStorage.clear();
                 _UserService.registered.next('');
+                _UserService.role.next('');
                 if (_Router.url !== '/login') {
                   _Router.navigate(['/login']);
                 }

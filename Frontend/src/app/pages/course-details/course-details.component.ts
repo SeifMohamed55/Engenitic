@@ -91,7 +91,7 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
         next: (res) => {
           console.log(res);
           this._ToastrService.success(res.message);
-          this._Router.navigate(['/main-course', this.userId, res?.data?.id]);
+          this._Router.navigate(['/main-course', this.userId, res?.data?.id, this.courseId]);
         },
         error: (err) => {
           if (err.error.message) {

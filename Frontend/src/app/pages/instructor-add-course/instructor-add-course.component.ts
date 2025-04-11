@@ -281,6 +281,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
               this._ToastrService.error(err.error.message);
             }
             else {
+              console.log(err);
               this._ToastrService.error("something went wrong try again later");
             }
           },

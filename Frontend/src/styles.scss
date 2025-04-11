@@ -193,3 +193,12 @@ select {
   margin-right: 0.5rem;
   accent-color: #2563eb;
 }
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  &:hover {
+    background-color: transparent;
+  }
+}
