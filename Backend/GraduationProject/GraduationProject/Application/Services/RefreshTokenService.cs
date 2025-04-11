@@ -17,18 +17,15 @@ namespace GraduationProject.Application.Services
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly IJwtTokenService _tokenService;
-        private readonly IEncryptionService _encryptionService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserService _userService;
         public RefreshTokenService
             (IJwtTokenService tokenService,
             IUnitOfWork unitOfWork,
-            IEncryptionService encryptionService,
             IUserService userService)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
-            _encryptionService = encryptionService;
             _userService = userService;
         }
 
@@ -37,7 +34,6 @@ namespace GraduationProject.Application.Services
 
             if (_tokenService.IsAccessTokenValid(oldAccessToken))
                 return ServiceResult<string>.Failure("Access token is still valid.");
-
 
             int extractedId; string jti;
             try

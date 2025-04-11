@@ -30,6 +30,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
 
         //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
+
+        Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses);
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
@@ -198,7 +200,15 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return await GetCourseWithQuizesCompiled(_context, courseId);
         }
 
+        public Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses)
+        {
+            var courses = GetCoursesQuery()
+                .OrderBy(x => EF.Functions.Random())
+                .Take(numberOfCourses)
+                .DTOProjection();
+            return courses.ToListAsync();
 
+        }
 
         static readonly Func<AppDbContext, int, Task<EditCourseRequest?>> GetCourseWithQuizesCompiled =
      EF.CompileAsyncQuery((AppDbContext context, int courseId) =>

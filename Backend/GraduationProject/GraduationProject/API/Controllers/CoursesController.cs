@@ -219,6 +219,26 @@ namespace GraduationProject.API.Controllers
         }
 
 
+        // GET: /api/courses/random4
+        [HttpGet("random4")]
+        public async Task<IActionResult> GetRandomCourses()
+        {
+            var courses = await _coursesService.GetRandomCourses(4);
+            if (courses == null)
+                return NotFound(new ErrorResponse()
+                {
+                    Message = "No Courses Found.",
+                    Code = HttpStatusCode.NotFound,
+                });
+            return Ok(new SuccessResponse()
+            {
+                Message = "Courses Retrieved Successfully.",
+                Data = courses,
+                Code = HttpStatusCode.OK,
+            });
+        }
+
+
         /*[HttpPost("dummyHashImage")]
         public async Task<IActionResult> HashDefaults()
         {

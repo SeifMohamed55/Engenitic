@@ -28,7 +28,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 })
                 .AsSingleQuery()
                 .ToDictionaryAsync((x) => x.QuestionId);
-
         }
     }
 }

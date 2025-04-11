@@ -28,7 +28,7 @@ namespace GraduationProject.Application.Services
         Task<int?> GetCourseInstructorId(int courseId);
         Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
         Task<ServiceResult<List<QuizTitleResponse>>> GetQuizesTitles(int courseId);
-
+        Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses);
 
         public class CoursesService : ICoursesService
         {
@@ -206,6 +206,11 @@ namespace GraduationProject.Application.Services
                 {
                     return ServiceResult<List<QuizTitleResponse>>.Failure("Error in getting titles");
                 }
+            }
+
+            public async Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses)
+            {
+                return await _unitOfWork.CourseRepo.GetRandomCourses(numberOfCourses);
             }
         }
     }
