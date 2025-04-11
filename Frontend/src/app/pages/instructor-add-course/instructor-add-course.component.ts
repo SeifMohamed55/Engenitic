@@ -212,7 +212,6 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
     }
 
     if (this.addingCourseForm.valid) {
-      console.log('Form submitted:', this.addingCourseForm.value);
 
       const submitCourse = new FormData();
       if (this.addingCourseForm.get('title')?.value) {
@@ -252,7 +251,7 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
           title: level.levelTitle,
           position: levelIndex + 1,
           videoUrl: level.videoUrl,
-          description : level.levelDescribtion,
+          description : level.levelDescription,
           questions: level.quizzes.map((quiz: any, quizIndex: number) => ({
             questionText: quiz.question,
             position: quizIndex + 1,
@@ -269,6 +268,10 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
 
       submitCourse.append('Quizes', JSON.stringify(quizzesData));
 
+      submitCourse.forEach(el => {
+        console.log(el);
+      })
+
       this._CoursesService
         .addCourse(submitCourse)
         .pipe(takeUntil(this.destroy$))
@@ -277,11 +280,11 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
             this._ToastrService.success(res.message);
           },
           error: (err) => {
+            console.log(err);
             if(err.error.message) {
               this._ToastrService.error(err.error.message);
             }
             else {
-              console.log(err);
               this._ToastrService.error("something went wrong try again later");
             }
           },
