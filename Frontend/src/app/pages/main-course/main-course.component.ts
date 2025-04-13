@@ -225,7 +225,17 @@ export class MainCourseComponent implements OnInit, OnDestroy {
 
   // submit quiz handler
   handleSubmitQuiz(): void {
-    const quizSubmition: QuizSubmit[] = [] as QuizSubmit[];
+    const quizSubmition: {
+      userId: number;
+      quizId: number;
+      enrollmentId: number;
+      userAnswers: QuizSubmit[];
+    } = {
+      userId: this.studentId,
+      quizId: this.mainCourseResponse.id,
+      enrollmentId: this.enrollmentId,
+      userAnswers: [] as QuizSubmit[],
+    };
     for (let i = 0; i < this.questionsArray.length; i++) {
       const questionGroup = this.questionsArray.at(i) as FormGroup;
       // Reset all answers to false
@@ -233,19 +243,32 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         if (
           questionGroup.get(`answer_${n}`)?.get('isCorrect')?.value === true
         ) {
-          quizSubmition.push({
+          quizSubmition.userAnswers.push({
             questionId: questionGroup.get('question_id')?.value,
             answerId: questionGroup.get(`answer_${n}`)?.get('answer_id')?.value,
           });
         }
       });
     }
-    if (quizSubmition.length === this.mainCourseResponse.questions.length) {
+    if (
+      quizSubmition.userAnswers.length ===
+      this.mainCourseResponse.questions.length
+    ) {
       console.log(quizSubmition);
-      this.errorString = '';
+      this._CoursesService
+        .submitQuiz(quizSubmition)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            this.errorString = '';
+          },
+          error: (err) => {
+            console.warn(err);
+          },
+        });
     } else {
-      this.errorString =
-        'you must complete the quiz in order to submit';
+      this.errorString = 'you must complete the quiz in order to submit';
     }
   }
 }

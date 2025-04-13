@@ -119,21 +119,32 @@ export class CoursesService {
     );
   }
 
-  getEnrollmentStage(studentId : number, enrollmentId : number, stage : number): Observable<any> {
+  getEnrollmentStage(
+    studentId: number,
+    enrollmentId: number,
+    stage: number
+  ): Observable<any> {
     return this._HttpClient.get(`https://localhost/api/Student/enrollment`, {
-      params : {
+      params: {
         studentId,
         enrollmentId,
-        stage
-      }
+        stage,
+      },
     });
   }
 
-  getQuizTitles(courseId : number) : Observable<any> {
+  getQuizTitles(courseId: number): Observable<any> {
     return this._HttpClient.get(`https://localhost/api/courses/quizzes-title`, {
-      params : {
-        courseId
-      }
+      params: {
+        courseId,
+      },
     });
+  }
+
+  submitQuiz(value: any): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/student/enrollment/attempt-quiz`,
+      value
+    );
   }
 }

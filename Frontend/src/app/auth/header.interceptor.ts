@@ -9,9 +9,11 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
   const _UserService = inject(UserService);
   const _Router = inject(Router);
   const _ToastrService = inject(ToastrService);
+  let token!: string;
 
-  // Get the latest token dynamically
-  const token = localStorage.getItem('Token') || '';
+  if (typeof localStorage !== 'undefined') {
+    token = localStorage.getItem('Token') || '';
+  }
 
   req = req.clone({
     withCredentials: true, // Always include credentials
@@ -24,7 +26,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Prevent infinite logout loop on login page
+
         if (_Router.url === '/login') {
           return throwError(() => error);
         }
