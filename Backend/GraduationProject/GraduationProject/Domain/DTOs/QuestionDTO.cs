@@ -15,7 +15,7 @@ namespace GraduationProject.Domain.DTOs
         [Required]
         [UniquePostition]
         [NotEmptyCollection]
-        [MinLength(4)]
+        [MinLength(2)]
         public List<AnswerDTO> Answers { get; set; } = new List<AnswerDTO>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

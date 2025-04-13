@@ -272,7 +272,7 @@ namespace GraduationProject.Application.Services
         }
 
 
-        public async Task<ServiceResult<string>> Logout(string accessToken, string refreshToken)
+        public async Task<ServiceResult<string>> Logout(string accessToken, string? refreshToken)
         {
             int id; string accessJti;
             try
@@ -286,7 +286,7 @@ namespace GraduationProject.Application.Services
 
 
             var dbRefreshToken = await _unitOfWork.UserRepo.GetUserRefreshToken(id);
-            if (dbRefreshToken is null)
+            if (dbRefreshToken is null || refreshToken is null)
                 return ServiceResult<string>.Success("User is not Signed In");
 
 /*            if (!_tokenService.VerifyRefresh(refreshToken, dbRefreshToken.EncryptedToken))
