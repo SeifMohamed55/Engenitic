@@ -5,7 +5,7 @@ import { CoursesService } from '../../feature/courses/courses.service';
 import { Course } from '../../interfaces/courses/course';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-course',
@@ -21,8 +21,8 @@ export class CourseComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
-  navigatedFirstTime: boolean = false;
   courses: Course[] = [];
+  private initialSearchNavigation = true;
 
   constructor(
     private _ActivatedRoute: ActivatedRoute,
@@ -41,63 +41,75 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   private setupSubscriptions(): void {
-    // Handle search activation state
-    this._CoursesService.isSearchActive
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((isActive) => {
-        this.isSearchActivated = isActive;
-        if (isActive) {
-          this.navigatedFirstTime = true; 
+    combineLatest([
+      this._ActivatedRoute.paramMap,
+      this._CoursesService.isSearchActive,
+    ])
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged((prev, curr) => {
+          // Compare page numbers and search state
+          return (
+            prev[0].get('collectionNumber') ===
+              curr[0].get('collectionNumber') && prev[1] === curr[1]
+          );
+        })
+      )
+      .subscribe(([params, isSearchActive]) => {
+        const page = Number(params.get('collectionNumber')) || 1;
+        this.currentPage = page;
+        this.isSearchActivated = isSearchActive;
+
+        if (isSearchActive) {
+          this.handleSearchNavigation(page);
+        } else {
+          this.handleNormalNavigation(page);
         }
       });
 
-    // Handle route parameters
-    this._ActivatedRoute.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params) => {
-        const page = Number(params.get('collectionNumber')) || 1;
-        this.currentPage = page;
-        this.loadData();
-      });
-
-    // Handle search results
     this._CoursesService.currentSearchResults
       .pipe(takeUntil(this.destroy$))
       .subscribe((results) => {
         if (results) {
-          this.handleSearchResults(results);
-        } else {
-          this.fetchCourses(this.currentPage);
+          this.courses = results.data.paginatedList;
+          this.totalItems = results.data.totalItems;
         }
       });
   }
 
-  private loadData(): void {
-    if (this.isSearchActivated) {
-      // If in search mode, trigger search for the current page
-      this._CoursesService
-        .searchForCourseCollection(
-          this._CoursesService.currentSearchQuery,
-          this.currentPage
-        )
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res) => this._CoursesService.updateSearchResults(res),
-          error: (err) => this.handleError(err),
-        });
-    } else {
-      // Normal course fetch
-      this.fetchCourses(this.currentPage);
+  private handleSearchNavigation(page: number): void {
+    if (this.initialSearchNavigation && page !== 1) {
+      this.initialSearchNavigation = false;
+      this.navigateToPage(1);
+      return;
+    }
+
+    this.initialSearchNavigation = false;
+    this.loadSearchData(page);
+  }
+
+  private handleNormalNavigation(page: number): void {
+    this.initialSearchNavigation = true;
+    if (!this.isSearchActivated) {
+      this.fetchCourses(page);
     }
   }
 
-  private handleSearchResults(results: any): void {
-    this.courses = results.data.paginatedList;
-    this.totalItems = results.data.totalItems;
-    if (this.isSearchActivated && this.currentPage !== 1 && this.navigatedFirstTime) {
-      this.navigateToPage(1);
-      this.navigatedFirstTime = false;
-    }
+  private loadSearchData(page: number): void {
+    this.isLoading = true;
+    this._CoursesService
+      .searchForCourseCollection(this._CoursesService.currentSearchQuery, page)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this._CoursesService.updateSearchResults(res);
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.handleError(err);
+          this.isLoading = false;
+        },
+      });
   }
 
   private fetchCourses(page: number): void {
@@ -123,16 +135,25 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   private navigateToPage(page: number): void {
-    this._Router.navigate(['/offered-courses', page]);
+    if (this.currentPage !== page) {
+      this._Router.navigate(['/offered-courses', page], {
+        replaceUrl: true, // Critical fix for history stack
+      });
+    }
   }
 
   clearSearch(): void {
     this._CoursesService.clearSearchResults();
-    this.navigatedFirstTime = true;
-    this.navigateToPage(1);
+    this.initialSearchNavigation = true;
+    if (this.currentPage !== 1) {
+      this.navigateToPage(1);
+    } else {
+      this.fetchCourses(1);
+    }
   }
 
   private handleError(err: any): void {
+    this.isLoading = false;
     console.error('Error:', err);
     this._ToastrService.error(err.error?.message || 'An error occurred');
     this._Router.navigate(['/home']);

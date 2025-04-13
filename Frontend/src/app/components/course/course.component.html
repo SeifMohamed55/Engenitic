@@ -1,154 +1,93 @@
 <main class="py-10">
-  <ng-container *ngIf="!isSearchActivated">
-    <div class="py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-      <div
-        *ngFor="
-          let course of courses
-            | paginate
-              : {
-                  itemsPerPage: itemsPerPage,
-                  currentPage: currentPage,
-                  totalItems: totalItems
-                }
-        "
-      >
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 items-center border border-black rounded-lg p-5 shadow-container course"
-        >
-          <div class="grid grid-rows-4 gap-5 md:gap-10">
-            <h3 class="font-display text-secondary-header">
-              {{ course.title }}
-            </h3>
-            <p class="text-normal font-regular line-clamp-2">
-              {{ course.description }}
-            </p>
-            <p class="text-normal font-regular">
-              Made by: {{ course.instructorName }}
-            </p>
-            <a
-              [routerLink]="['/course-details', course.id]"
-              class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color"
-            >
-              <span
-                class="transition-opacity duration-300 opacity-100 group-hover:opacity-0 flex justify-center items-center"
-              >
-                View details
-              </span>
-              <span
-                class="absolute inset-0 top-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex justify-center items-center"
-              >
-                <i class="fa-solid fa-arrow-pointer"></i>
-              </span>
-            </a>
-          </div>
-          <figure class="w-full flex justify-center items-center">
-            <img
-              title="course image"
-              [src]="
-                course.image.imageURL ||
-                './assets/images/course-placeholder.png'
-              "
-              [alt]="course.image.name ? course.image.name : 'course image'"
-              class="w-full h-48 object-cover rounded-lg"
-            />
-          </figure>
-        </div>
+  <!-- Search Header (Conditional) -->
+  <div *ngIf="isSearchActivated" class="flex justify-between items-center mb-6">
+    <h2 class="text-center font-display py-10 text-2xl">Search Results</h2>
+    <button
+      (click)="clearSearch()"
+      class="engenitic-button flex items-center gap-2"
+    >
+      <i class="fa-solid fa-arrow-left"></i>
+      Back to all courses
+    </button>
+  </div>
+
+  <!-- Course List -->
+  <div class="py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <!-- No Results Message -->
+    <ng-container *ngIf="courses.length === 0">
+      <div class="text-center py-10 col-span-full">
+        <p class="text-lg">
+          {{
+            isSearchActivated
+              ? "No courses found matching your search."
+              : "No courses available at the moment."
+          }}
+        </p>
       </div>
-    </div>
-    <pagination-controls
-      (pageChange)="onPageChange($event)"
-      previousLabel="Previous"
-      nextLabel="Next"
-      [responsive]="true"
-      [maxSize]="10"
-    ></pagination-controls>
-  </ng-container>
+    </ng-container>
 
-  <ng-container *ngIf="isSearchActivated">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-center font-display py-10 text-2xl">Search Results</h2>
-      <button
-        (click)="clearSearch()"
-        class="engenitic-button flex items-center gap-2"
-      >
-        <i class="fa-solid fa-arrow-left"></i>
-        Back to all courses
-      </button>
-    </div>
-
+    <!-- Course Cards -->
     <div
-      *ngIf="courses.length > 0; else noResults"
-      class="py-10 grid grid-cols-1 md:grid-cols-2 gap-10"
+      *ngFor="
+        let course of courses
+          | paginate
+            : {
+                itemsPerPage: itemsPerPage,
+                currentPage: currentPage,
+                totalItems: totalItems
+              }
+      "
     >
       <div
-        *ngFor="
-          let course of courses
-            | paginate
-              : {
-                  itemsPerPage: itemsPerPage,
-                  currentPage: currentPage,
-                  totalItems: totalItems
-                }
-        "
+        class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 items-center border border-black rounded-lg p-5 shadow-container course"
       >
-        <!-- Reuse the same course card template -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 items-center border border-black rounded-lg p-5 shadow-container course"
-        >
-          <div class="grid grid-rows-4 gap-5 md:gap-10">
-            <h3 class="font-display text-secondary-header">
-              {{ course.title }}
-            </h3>
-            <p class="text-normal font-regular line-clamp-2">
-              {{ course.description }}
-            </p>
-            <p class="text-normal font-regular">
-              Made by: {{ course.instructorName }}
-            </p>
-            <a
-              [routerLink]="['/course-details', course.id]"
-              class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color"
+        <div class="grid grid-rows-4 gap-5 md:gap-10">
+          <h3 class="font-display text-secondary-header">
+            {{ course.title }}
+          </h3>
+          <p class="text-normal font-regular line-clamp-2">
+            {{ course.description }}
+          </p>
+          <p class="text-normal font-regular">
+            Made by: {{ course.instructorName }}
+          </p>
+          <a
+            [routerLink]="['/course-details', course.id]"
+            class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color"
+          >
+            <span
+              class="transition-opacity duration-300 opacity-100 group-hover:opacity-0 flex justify-center items-center"
             >
-              <span
-                class="transition-opacity duration-300 opacity-100 group-hover:opacity-0 flex justify-center items-center"
-              >
-                View details
-              </span>
-              <span
-                class="absolute inset-0 top-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex justify-center items-center"
-              >
-                <i class="fa-solid fa-arrow-pointer"></i>
-              </span>
-            </a>
-          </div>
-          <figure class="w-full flex justify-center items-center">
-            <img
-              title="course image"
-              [src]="
-                course.image.imageURL ||
-                './assets/images/course-placeholder.png'
-              "
-              [alt]="course.image.name ? course.image.name : 'course image'"
-              class="w-full h-48 object-cover rounded-lg"
-            />
-          </figure>
+              View details
+            </span>
+            <span
+              class="absolute inset-0 top-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex justify-center items-center"
+            >
+              <i class="fa-solid fa-arrow-pointer"></i>
+            </span>
+          </a>
         </div>
+        <figure class="w-full flex justify-center items-center">
+          <img
+            title="course image"
+            [src]="
+              course.image.imageURL || './assets/images/course-placeholder.png'
+            "
+            [alt]="course.image.name ? course.image.name : 'course image'"
+            class="w-full h-48 object-cover rounded-lg"
+          />
+        </figure>
       </div>
     </div>
+  </div>
 
-    <ng-template #noResults>
-      <div class="text-center py-10">
-        <p class="text-lg">No courses found matching your search.</p>
-      </div>
-    </ng-template>
-
-    <pagination-controls
-      *ngIf="courses.length > 0"
-      (pageChange)="onPageChange($event)"
-      previousLabel="Previous"
-      nextLabel="Next"
-      [responsive]="true"
-      [maxSize]="10"
-    ></pagination-controls>
-  </ng-container>
+  <!-- Pagination (Conditional) -->
+  <pagination-controls
+    *ngIf="courses.length > 0"
+    (pageChange)="onPageChange($event)"
+    previousLabel="Previous"
+    nextLabel="Next"
+    [responsive]="true"
+    [maxSize]="10"
+  ></pagination-controls>
 </main>
