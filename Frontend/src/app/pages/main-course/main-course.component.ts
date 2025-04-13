@@ -13,6 +13,12 @@ import {
 import { MainCourse } from '../../interfaces/courses/main-course';
 import { Levels } from '../../interfaces/courses/levels';
 import { ToastrService } from 'ngx-toastr';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+export interface QuizSubmit {
+  questionId: number;
+  answerId: number;
+}
 
 @Component({
   selector: 'app-main-course',
@@ -28,15 +34,21 @@ export class MainCourseComponent implements OnInit, OnDestroy {
   mainCourseResponse: MainCourse = {} as MainCourse;
   levelsTitles: Levels[] = [] as Levels[];
   displayQuiz: boolean = false;
-  quizForm: FormArray = new FormArray<any>([]);
+  safeUrl!: SafeResourceUrl;
+  errorString: string = '';
+  quizFormGroup = new FormGroup({
+    questions: new FormArray<any>([]),
+  });
 
   constructor(
     private _ActivatedRoute: ActivatedRoute,
     private _CoursesService: CoursesService,
-    private _ToastrService: ToastrService
+    private _ToastrService: ToastrService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
+    // getting params
     this._ActivatedRoute.paramMap
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
@@ -45,6 +57,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         this.courseId = Number(params.get('courseId')) ?? 0;
       });
 
+    // current stage fetch
     this._CoursesService
       .getCurrentStage(this.studentId, this.enrollmentId)
       .pipe(takeUntil(this.destroy$))
@@ -52,6 +65,10 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         next: (res) => {
           console.log(res);
           this.mainCourseResponse = res.data;
+          this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            this.mainCourseResponse.videoUrl
+          );
+          this.creatingAnswers(this.mainCourseResponse);
         },
         error: (err) => {
           if (err.error) {
@@ -64,6 +81,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         },
       });
 
+    // quiz titles fetch
     this._CoursesService
       .getQuizTitles(this.courseId)
       .pipe(takeUntil(this.destroy$))
@@ -89,38 +107,69 @@ export class MainCourseComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  creatingAnswers(questions: any[]): void {
-    for (let i = 0; i < questions.length; i++) {
-      this.quizForm.push(
-        new FormGroup({
-          question_id: new FormControl('', [Validators.required]),
-          answer_1: new FormGroup({
-            isCorrect: new FormControl(false, [Validators.required]),
-            answer_id: new FormControl('', [Validators.required]),
-          }),
-          answer_2: new FormGroup({
-            isCorrect: new FormControl(false, [Validators.required]),
-            answer_id: new FormControl('', [Validators.required]),
-          }),
-          answer_3: new FormGroup({
-            isCorrect: new FormControl(false, [Validators.required]),
-            answer_id: new FormControl('', [Validators.required]),
-          }),
-          answer_4: new FormGroup({
-            isCorrect: new FormControl(false, [Validators.required]),
-            answer_id: new FormControl('', [Validators.required]),
-          }),
-        })
-      );
-
-      this.quizForm.at(i).get('question_id')?.patchValue('asdsad');
-      this.quizForm.at(i).get('answer1')?.get('answer_id')?.patchValue(1);
-      this.quizForm.at(i).get('answer2')?.get('answer_id')?.patchValue(2);
-      this.quizForm.at(i).get('answer3')?.get('answer_id')?.patchValue(3);
-      this.quizForm.at(i).get('answer4')?.get('answer_id')?.patchValue(4);
-    }
+  // view stage
+  handleStageClick(position: number): void {
+    console.log(position, this.mainCourseResponse.latestStage);
+  }
+  // getter for the questions array
+  get questionsArray(): FormArray {
+    return this.quizFormGroup.get('questions') as FormArray;
   }
 
+  // adding ids to our answers
+  creatingAnswers(MainResponse: MainCourse): void {
+    this.questionsArray.clear();
+
+    for (let i = 0; i < MainResponse.questions.length; i++) {
+      const questionGroup = new FormGroup({
+        question_id: new FormControl(MainResponse.questions[i].id, [
+          Validators.required,
+        ]),
+        answer_1: new FormGroup({
+          isCorrect: new FormControl(false, [Validators.required]),
+          answer_id: new FormControl(MainResponse.questions[i].answers[0].id, [
+            Validators.required,
+          ]),
+        }),
+        answer_2: new FormGroup({
+          isCorrect: new FormControl(false, [Validators.required]),
+          answer_id: new FormControl(MainResponse.questions[i].answers[1].id, [
+            Validators.required,
+          ]),
+        }),
+        answer_3: new FormGroup({
+          isCorrect: new FormControl(false, [Validators.required]),
+          answer_id: new FormControl(MainResponse.questions[i].answers[2].id, [
+            Validators.required,
+          ]),
+        }),
+        answer_4: new FormGroup({
+          isCorrect: new FormControl(false, [Validators.required]),
+          answer_id: new FormControl(MainResponse.questions[i].answers[3].id, [
+            Validators.required,
+          ]),
+        }),
+      });
+      this.questionsArray.push(questionGroup);
+    }
+  }
+  // checking button handler
+  handleChecking(questionIdx: number, answerNumber: number): void {
+    const questionGroup = this.questionsArray.at(questionIdx) as FormGroup;
+
+    // Reset all answers to false
+    [1, 2, 3, 4].forEach((n) => {
+      questionGroup.get(`answer_${n}`)?.get('isCorrect')?.patchValue(false);
+    });
+
+    // Set selected answer to true
+    questionGroup
+      .get(`answer_${answerNumber}`)
+      ?.get('isCorrect')
+      ?.patchValue(true);
+  }
+
+  // drop menu handler
   handleArrow(event: Event): void {
     const element = event.currentTarget as HTMLDivElement;
 
@@ -142,6 +191,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
     }
   }
 
+  // handle previous button
   handlePrevious(): void {
     console.log(this.mainCourseResponse.position - 1);
     this._CoursesService
@@ -161,13 +211,41 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       });
   }
 
+  // handling next button
   handleNext(): void {
     document.body.style.overflow = 'hidden';
     this.displayQuiz = true;
   }
 
+  // handling quiz closing
   handleClosingQuiz(): void {
     document.body.style.overflow = 'auto';
     this.displayQuiz = false;
+  }
+
+  // submit quiz handler
+  handleSubmitQuiz(): void {
+    const quizSubmition: QuizSubmit[] = [] as QuizSubmit[];
+    for (let i = 0; i < this.questionsArray.length; i++) {
+      const questionGroup = this.questionsArray.at(i) as FormGroup;
+      // Reset all answers to false
+      [1, 2, 3, 4].forEach((n) => {
+        if (
+          questionGroup.get(`answer_${n}`)?.get('isCorrect')?.value === true
+        ) {
+          quizSubmition.push({
+            questionId: questionGroup.get('question_id')?.value,
+            answerId: questionGroup.get(`answer_${n}`)?.get('answer_id')?.value,
+          });
+        }
+      });
+    }
+    if (quizSubmition.length === this.mainCourseResponse.questions.length) {
+      console.log(quizSubmition);
+      this.errorString = '';
+    } else {
+      this.errorString =
+        'you must complete the quiz in order to submit';
+    }
   }
 }

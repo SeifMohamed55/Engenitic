@@ -1,8 +1,9 @@
 <main class="container">
   <h1 class="font-display text-header py-3">{{ mainCourseResponse.title }}</h1>
-  <h2 class="font-regular">
+  <h2 class="font-regular pb-5">
     in this stage you will learn : {{ mainCourseResponse.description }}
   </h2>
+  <!-- video section  -->
   <section>
     <div
       class="mx-auto w-full h-[600px] aspect-video bg-[url('/assets/profile-pic.jpg')] bg-cover bg-center relative"
@@ -10,7 +11,7 @@
       <iframe
         title="course video"
         class="w-full h-full rounded"
-        [src]="mainCourseResponse.videoUrl ?? ''"
+        [src]="safeUrl"
         frameborder="0"
         allowfullscreen
       >
@@ -58,6 +59,8 @@
       </span>
     </div>
   </section>
+
+  <!-- course Stages  -->
   <section
     class="border-2 px-10 py-20 rounded flex flex-col justify-between gap-10"
   >
@@ -80,13 +83,24 @@
           <p>
             {{ level.description }}
           </p>
-          <button title="open stage" type="button" class="engenitic-button mx-3"><i class="fa-solid fa-play"></i></button>
+          <button
+            *ngIf="level.position <= mainCourseResponse.latestStage"
+            title="open stage"
+            type="button"
+            class="engenitic-button me-3 mt-3 px-3 hover:bg-red-600 hover:text-white block"
+            (click)="handleStageClick(level.position)"
+          >
+            <i class="fa-solid fa-play"></i>
+          </button>
         </div>
       </div>
     </div>
   </section>
 </main>
+<!-- quiz form  -->
 <form
+  (ngSubmit)="handleSubmitQuiz()"
+  [formGroup]="quizFormGroup"
   [ngClass]="[
     displayQuiz
       ? 'opacity-100 pointer-events-auto visible'
@@ -94,61 +108,70 @@
   ]"
   class="fixed z-[9999] top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,0.9)] flex justify-center items-center transition-opacity duration-500 ease-in-out"
 >
-  <div class="w-[400px] h-[700px] bg-white rounded-2xl p-5">
-    <div class="flex justify-between gap-10">
+  <div class="rounded-xl overflow-hidden">
+    <div
+      class="w-[500px] h-[700px] bg-white rounded-2xl p-6 overflow-y-scroll flex flex-col justify-between gap-10"
+      formArrayName="questions"
+    >
       <button
         title="back to the main course button"
         type="button"
-        class="rounded px-3 border border-[#58B6B8] transition-colors duration-500 hover:enginitic-main-color hover:text-white"
+        class="rounded px-3 border border-[#58B6B8] transition-colors duration-500 hover:enginitic-main-color hover:text-white w-fit"
         (click)="handleClosingQuiz()"
       >
         <i class="fa-solid fa-caret-left"></i>
       </button>
-      <p class="font-display">Quiz header</p>
-    </div>
 
-    <div class="w-full h-2 mt-4 border rounded flex">
-      <span class="enginitic-main-color w-12 rounded"></span>
-    </div>
-    <h3 class="font-display mt-5 mb-2">Questions 1 of 3</h3>
-    <h4 class="font-regular text-sm pb-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, corporis
-      veritatis nostrum voluptatem, tempora nihil expedita, cumque impedit nobis
-      eius voluptatum?
-    </h4>
-    <div class="flex justify-between flex-col gap-20">
-      <div class="grid grid-rows-4 gap-6 my-5">
-        <div
-          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
-        >
-          <p class="font-display">answer 1</p>
-          <input title="answer-1" type="radio" class="radio-input" />
+      <div
+        *ngFor="let questionControl of questionsArray.controls; index as idx"
+        [formGroupName]="idx"
+      >
+        <h3 class="font-display mt-5 mb-2">
+          Question {{ idx + 1 }} of {{ mainCourseResponse.questions.length }}
+        </h3>
+
+        <div class="flex justify-between gap-10">
+          <p class="font-display">
+            {{ mainCourseResponse.questions[idx].questionText }}
+          </p>
         </div>
-        <div
-          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
-        >
-          <p class="font-display">answer 1</p>
-          <input title="answer-2" type="radio" class="radio-input" />
-        </div>
-        <div
-          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
-        >
-          <p class="font-display">answer 1</p>
-          <input title="answer-3" type="radio" class="radio-input" />
-        </div>
-        <div
-          class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
-        >
-          <p class="font-display">answer 1</p>
-          <input title="answer-4" type="radio" class="radio-input" />
+
+        <h4 class="font-regular text-sm pb-4">
+          {{ mainCourseResponse.questions[idx].questionText }}
+        </h4>
+
+        <div class="flex justify-between flex-col gap-10">
+          <div class="grid grid-rows-4 gap-6 my-5">
+            <label
+              *ngFor="
+                let answer of mainCourseResponse.questions[idx].answers;
+                index as i
+              "
+              [formGroupName]="'answer_' + (i + 1)"
+              class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
+            >
+              <p class="font-display">{{ answer.answerText }}</p>
+              <input
+                type="radio"
+                [value]="true"
+                formControlName="isCorrect"
+                (change)="handleChecking(idx, i + 1)"
+                [title]="'answer-' + (i + 1)"
+                class="radio-input"
+              />
+            </label>
+          </div>
         </div>
       </div>
       <div>
+                <div class="text-sm text-center pb-10 text-red-500 font-regular">
+          {{ errorString }}
+        </div>
         <button
           type="submit"
           class="engenitic-button w-full hover:bg-black hover:text-white"
         >
-          next <i class="fa-solid fa-arrow-right ms-4"></i>
+          Submit <i class="fa-solid fa-arrow-right ms-4"></i>
         </button>
       </div>
     </div>
