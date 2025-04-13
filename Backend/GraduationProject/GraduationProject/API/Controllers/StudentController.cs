@@ -4,6 +4,7 @@ using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
 
@@ -208,19 +209,39 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid User.",
                     Code = HttpStatusCode.BadRequest,
                 });
-            var quizAttempt = await _studentService.AttemptQuiz(userQuizAttempt);
-            if (!quizAttempt.IsSuccess)
+            try
+            {
+                var quizAttempt = await _studentService.AttemptQuiz(userQuizAttempt);
+                if (!quizAttempt.IsSuccess)
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = quizAttempt.Message,
+                        Code = HttpStatusCode.BadRequest,
+                    });
+                return Ok(new SuccessResponse()
+                {
+                    Message = "Quiz Attempted Successfully.",
+                    Data = quizAttempt.Data,
+                    Code = HttpStatusCode.OK,
+                });
+            }
+            catch(DbUpdateException)
+            {
                 return BadRequest(new ErrorResponse()
                 {
-                    Message = quizAttempt.Message,
+                    Message = "Invalid Quiz Structure",
                     Code = HttpStatusCode.BadRequest,
                 });
-            return Ok(new SuccessResponse()
+            }
+            catch
             {
-                Message = "Quiz Attempted Successfully.",
-                Data = quizAttempt.Data,
-                Code = HttpStatusCode.OK,
-            });
+                return BadRequest(new ErrorResponse()
+                {
+                    Message = "Something Wrong Happend",
+                    Code = HttpStatusCode.BadRequest,
+                });
+            }
+
         }
 
 

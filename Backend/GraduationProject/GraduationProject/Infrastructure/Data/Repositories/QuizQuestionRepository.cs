@@ -1,4 +1,5 @@
-﻿using GraduationProject.Domain.DTOs;
+﻿using GraduationProject.Common.Extensions;
+using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,11 +22,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return await _dbSet
                 .Include(q => q.Answers)
                 .Where(x => x.QuizId == quizId)
-                .Select(q => new UserAnswerDTO()
-                {
-                    QuestionId = q.Id,
-                    AnswerId = q.Answers.Where(x => x.IsCorrect).Select(x=> x.Id).FirstOrDefault(),
-                })
+                .QuestionWithAnswer()
                 .AsSingleQuery()
                 .ToDictionaryAsync((x) => x.QuestionId);
         }

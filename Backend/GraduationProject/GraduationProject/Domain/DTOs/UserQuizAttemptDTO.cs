@@ -16,5 +16,6 @@ namespace GraduationProject.Domain.DTOs
         public List<UserAnswerDTO> UserAnswers { get; set; } = new List<UserAnswerDTO>();
 
         public bool IsPassed { get; set; } = false;
+        public string Score { get; set; } = string.Empty;
     }
 }

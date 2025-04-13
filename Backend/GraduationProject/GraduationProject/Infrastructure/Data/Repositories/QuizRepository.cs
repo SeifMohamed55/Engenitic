@@ -1,4 +1,5 @@
 ﻿using GraduationProject.API.Responses;
+using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -58,26 +59,12 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         public async Task<bool> AddUserQuizAttempt(UserQuizAttemptDTO userQuizAttempt)
         {
-            var userAnswers = await _context.QuizAnswers
-                .Include(x => x.Question)
-                .Where(x => userQuizAttempt.UserAnswers.Select(x => x.AnswerId).Contains(x.Id))
-                .Join(userQuizAttempt.UserAnswers,
-                    quizAnswer => quizAnswer.Id,
-                    userAnswer => userAnswer.AnswerId,
-                    (quizAnswer, userAnswer) => new UserAnswerDTO
-                    {
-                        AnswerId = userAnswer.AnswerId,
-                        QuestionId = quizAnswer.QuestionId,
-                        IsCorrect = quizAnswer.IsCorrect
-                    })
-                .ToListAsync();
-
             var userQuizAttemptEntity = new UserQuizAttempt()
             {
                 QuizId = userQuizAttempt.QuizId,
                 UserEnrollmentId = userQuizAttempt.EnrollmentId,
-                UserScore = userAnswers.Count(x => x.IsCorrect),
-                UserAnswers = userAnswers.Select(x => new UserAnswer()
+                UserScore = userQuizAttempt.UserAnswers.Select(x=> x.IsCorrect).Count(),
+                UserAnswers = userQuizAttempt.UserAnswers.Select(x => new UserAnswer()
                 {
                     AnswerId = x.AnswerId,
                     QuestionId = x.QuestionId,
