@@ -2,10 +2,8 @@
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
-using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Claims;
 

@@ -152,18 +152,25 @@ namespace GraduationProject.Application.Services
             if (enrollment.TryGetData(out var userEnrollment))
             {
                 var quizDict = await _unitOfWork.QuizQuestionRepository.GetQuizWithQuestionsByIdAsync(quizAttempt.QuizId);
+                int count = 0;
 
                 foreach(var userAnswer in quizAttempt.UserAnswers)
                 {
                     if(quizDict.TryGetValue(userAnswer.QuestionId, out var dbQuestion))
                     {
                         if(dbQuestion.AnswerId == userAnswer.AnswerId)
+                        {
                             userAnswer.IsCorrect = true;
+                            count++;
+                        }
                     }
                 }
 
                 await _unitOfWork.QuizRepo.AddUserQuizAttempt(quizAttempt);
                 await _unitOfWork.SaveChangesAsync();
+
+                if (count == quizDict.Count)
+                    quizAttempt.IsPassed = true;
                 return ServiceResult<UserQuizAttemptDTO>.Success(quizAttempt);
             }
             else
