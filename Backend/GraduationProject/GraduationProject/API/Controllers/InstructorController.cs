@@ -160,7 +160,7 @@ namespace GraduationProject.API.Controllers
 
 
         [HttpPost("editCourse")]
-        public async Task<IActionResult> EditCourse([FromForm] EditCourseRequest course)
+        public async Task<IActionResult> EditCourse([FromBody] EditCourseRequest course)
         {
 
             var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;

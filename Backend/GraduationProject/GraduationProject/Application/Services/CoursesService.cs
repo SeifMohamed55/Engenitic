@@ -22,7 +22,7 @@ namespace GraduationProject.Application.Services
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
         Task<CourseDTO> AddCourse(RegisterCourseRequest course);
-        Task<CourseDTO> EditCourse(EditCourseRequest course);
+        Task<CourseDetailsResponse> EditCourse(EditCourseRequest course);
         Task DeleteCourse(int courseId);
         Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId);
         Task<int?> GetCourseInstructorId(int courseId);
@@ -131,13 +131,15 @@ namespace GraduationProject.Application.Services
                 return dto;
             }
 
-            public async Task<CourseDTO> EditCourse(EditCourseRequest course)
+            public async Task<CourseDetailsResponse> EditCourse(EditCourseRequest course)
             {
                 var addedCourse = await _unitOfWork.CourseRepo.EditCourse(course);
                 await _unitOfWork.SaveChangesAsync();
 
-                var resp = new CourseDTO(addedCourse);
+
+                var resp = new CourseDetailsResponse(addedCourse);
                 resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
+
 
                 return resp;
             }
