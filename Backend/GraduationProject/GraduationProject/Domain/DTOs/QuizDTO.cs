@@ -23,6 +23,7 @@ namespace GraduationProject.Domain.DTOs
         [Required]
         [UniquePostition]
         [NotEmptyCollection]
+        [MinLength(1)]
         public List<QuestionDTO> Questions { get; set; } = new List<QuestionDTO>();
 
 

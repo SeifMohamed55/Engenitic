@@ -10,9 +10,7 @@ namespace GraduationProject.Domain.DTOs
         [StringLength(600)]
         [NotEmptyOrWhiteSpace]
         public string QuestionText { get; set; } = null!;
-
         public int Position { get; set; }
-
 
         [Required]
         [UniquePostition]
