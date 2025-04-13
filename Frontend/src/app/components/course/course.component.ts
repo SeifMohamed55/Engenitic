@@ -21,7 +21,7 @@ export class CourseComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
-  navigated: boolean = true;
+  navigatedFirstTime: boolean = false;
   courses: Course[] = [];
 
   constructor(
@@ -35,14 +35,19 @@ export class CourseComponent implements OnInit, OnDestroy {
     this.setupSubscriptions();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private setupSubscriptions(): void {
     // Handle search activation state
     this._CoursesService.isSearchActive
       .pipe(takeUntil(this.destroy$))
       .subscribe((isActive) => {
         this.isSearchActivated = isActive;
-        if (isActive && this.currentPage !== 1 && this.navigated) {
-          this.navigateToPage(1);
+        if (isActive) {
+          this.navigatedFirstTime = true; 
         }
       });
 
@@ -89,6 +94,10 @@ export class CourseComponent implements OnInit, OnDestroy {
   private handleSearchResults(results: any): void {
     this.courses = results.data.paginatedList;
     this.totalItems = results.data.totalItems;
+    if (this.isSearchActivated && this.currentPage !== 1 && this.navigatedFirstTime) {
+      this.navigateToPage(1);
+      this.navigatedFirstTime = false;
+    }
   }
 
   private fetchCourses(page: number): void {
@@ -114,24 +123,18 @@ export class CourseComponent implements OnInit, OnDestroy {
   }
 
   private navigateToPage(page: number): void {
-    this.navigated = false;
     this._Router.navigate(['/offered-courses', page]);
   }
 
   clearSearch(): void {
     this._CoursesService.clearSearchResults();
+    this.navigatedFirstTime = true;
     this.navigateToPage(1);
-    this.navigated = true;
   }
 
   private handleError(err: any): void {
     console.error('Error:', err);
     this._ToastrService.error(err.error?.message || 'An error occurred');
     this._Router.navigate(['/home']);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -2,6 +2,8 @@
   "name": "engenitics",
   "version": "0.0.0",
   "scripts": {
+    "dev": "ng serve",
+    "dev-secure": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 ng serve",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -47,6 +49,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
