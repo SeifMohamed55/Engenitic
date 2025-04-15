@@ -100,6 +100,24 @@ export class CoursesService {
     );
   }
 
+  editCourseImage(value: any): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Instructor/editCourseImage`,
+      value
+    );
+  }
+
+  getCourseWithQuizzes(courseId: number): Observable<any> {
+    return this._HttpClient.get(
+      `https://localhost/api/Instructor/course-with-quizes`,
+      {
+        params: {
+          courseId,
+        },
+      }
+    );
+  }
+
   addCourse(value: any): Observable<any> {
     return this._HttpClient.post(
       `https://localhost/api/Instructor/addCourse`,

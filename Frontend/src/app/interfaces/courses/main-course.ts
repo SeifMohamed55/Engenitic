@@ -1,6 +1,6 @@
 export interface MainCourse {
-  latestStage: number;
-  progress: number;
+  latestStage ?: number;
+  progress ?: number;
   id: number;
   title: string;
   description: any;

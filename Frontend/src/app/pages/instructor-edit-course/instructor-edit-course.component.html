@@ -1,252 +1,385 @@
-<main>
-  <div class="container">
-    <h1 class="text-center text-header py-10 font-display">Course Creation</h1>
+<main class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">
+    Edit Course: {{ courseData?.title || "Loading..." }}
+  </h1>
 
-    <form [formGroup]="addingCourseForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="imageUrl">Course Image</label>
-        <input
-          id="imageUrl"
-          type="file"
-          accept="image/*"
-          (change)="onFileChange($event)"
-          class="mb-3 custom-file-input font-display lowercase"
-        />
-        <p *ngIf="fileValidationError" class="text-red-500">
-          {{ fileValidationError }}
-        </p>
+  <form
+    [formGroup]="courseForm"
+    (ngSubmit)="onSubmitEditCourse()"
+    class="space-y-8"
+    *ngIf="courseForm"
+  >
+    <!-- Course Basics Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4">Course Details</h2>
+
+      <div class="space-y-4">
+        <!-- Title -->
+        <div>
+          <label for="title" class="block text-sm font-medium mb-1"
+            >Title</label
+          >
+          <input
+            id="title"
+            type="text"
+            formControlName="title"
+            class="w-full p-2 border rounded-md"
+          />
+          <div
+            *ngIf="
+              courseForm.get('title')?.invalid &&
+              courseForm.get('title')?.touched
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            Title is required
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-medium mb-1"
+            >Description</label
+          >
+          <textarea
+            title="description"
+            formControlName="description"
+            class="w-full p-2 border rounded-md h-32"
+          ></textarea>
+          <div
+            *ngIf="
+              courseForm.get('description')?.invalid &&
+              courseForm.get('description')?.touched
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            Description is required
+          </div>
+        </div>
+
+        <!-- Requirements -->
+        <div>
+          <label for="requirements" class="block text-sm font-medium mb-1"
+            >Requirements</label
+          >
+          <textarea
+            id="requirements"
+            formControlName="requirements"
+            class="w-full p-2 border rounded-md h-32"
+          ></textarea>
+          <div
+            *ngIf="
+              courseForm.get('requirements')?.invalid &&
+              courseForm.get('requirements')?.touched
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            Requirements are required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quizzes Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md" formArrayName="quizes">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold">Levels</h2>
         <button
-          type="submit"
-          [ngClass]="{ 'engenitic-button-disabled': disableButtonImage }"
-          [disabled]="disableButtonImage"
-          class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all mt-4"
-          (click)="handleImageSubmit()"
+          type="button"
+          (click)="addQuiz()"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
         >
-          update
+          Add Level
         </button>
       </div>
-      <!-- Basic Course Information -->
-      <div class="form-group">
-        <label for="title">Course Title</label>
-        <input type="text" id="title" formControlName="title" required />
-        <div
-          *ngIf="
-            addingCourseForm.get('title')?.invalid &&
-            addingCourseForm.get('title')?.touched
-          "
-          class="error"
-        >
-          Title is required
-        </div>
-      </div>
 
-      <div class="form-group">
-        <label for="description">Course Description</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          required
-        ></textarea>
-        <div
-          *ngIf="
-            addingCourseForm.get('description')?.invalid &&
-            addingCourseForm.get('description')?.touched
-          "
-          class="error"
-        >
-          description is required
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="requirements">Course Requirements</label>
-        <textarea
-          id="requirements"
-          formControlName="requirements"
-          required
-        ></textarea>
-        <div
-          *ngIf="
-            addingCourseForm.get('requirements')?.invalid &&
-            addingCourseForm.get('requirements')?.touched
-          "
-          class="error"
-        >
-          requirements is required
-        </div>
-      </div>
-
-      <!-- Level Management -->
-      <h2 class="py-10 text-center font-display text-[40px]">Course Levels</h2>
-      <div class="level-navigation">
+      <!-- Quiz Navigation -->
+      <div
+        *ngIf="quizes.controls.length > 0"
+        class="mb-6 flex items-center gap-4"
+      >
         <button
-          class="btn-secondary"
           type="button"
           (click)="previousLevelCourse()"
           [disabled]="currentLevelIndex === 0"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
         >
           Previous
         </button>
-        <span>Level {{ currentLevelIndex + 1 }} of {{ levels.length }}</span>
+
+        <span
+          >Level {{ currentLevelIndex + 1 }} of
+          {{ quizes.controls.length }}</span
+        >
+
         <button
-          class="btn-secondary"
           type="button"
           (click)="nextLevelCourse()"
-          [disabled]="currentLevelIndex === levels.length - 1"
+          [disabled]="currentLevelIndex === quizes.controls.length - 1"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
         >
           Next
         </button>
-        <button class="btn-primary" type="button" (click)="addLevelCourse()">
-          Add Level
-        </button>
+
         <button
           type="button"
-          class="bg-red-500 text-white"
-          (click)="deleteLevelCourse()"
-          [disabled]="levels.length <= 1"
+          (click)="deleteQuiz()"
+          [disabled]="quizes.controls.length <= 1"
+          class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
         >
           Delete Level
         </button>
       </div>
 
-      <!-- Current Level Details -->
-      <div formArrayName="levels">
-        <div *ngFor="let level of levels.controls; let i = index">
-          <div *ngIf="i === currentLevelIndex" [formGroupName]="i">
-            <div class="form-group">
-              <label [for]="'videoUrl-' + i">Video URL</label>
-              <input
-                [id]="'videoUrl-' + i"
-                type="url"
-                formControlName="videoUrl"
-                required
-              />
-              <div
-                *ngIf="
-                  levels.at(i).get('videoUrl')?.invalid &&
-                  levels.at(i).get('videoUrl')?.touched
-                "
-                class="error"
+      <!-- Current Quiz -->
+      <ng-container *ngFor="let quiz of quizes.controls; index as i">
+        <div
+          class="space-y-4"
+          [formGroupName]="i"
+          *ngIf="i === currentLevelIndex"
+        >
+          <!-- Quiz Title -->
+          <div>
+            <label
+              [for]="'quiz' + i + 'title'"
+              class="block text-sm font-medium mb-1"
+              >Level Title</label
+            >
+            <input
+              [id]="'quiz' + i + 'title'"
+              type="text"
+              formControlName="title"
+              class="w-full p-2 border rounded-md"
+            />
+            <div
+              *ngIf="
+                currentQuiz.get('title')?.invalid &&
+                currentQuiz.get('title')?.touched
+              "
+              class="text-red-500 text-sm mt-1"
+            >
+              Quiz title is required
+            </div>
+          </div>
+
+          <!-- Video URL -->
+          <div>
+            <label
+              [for]="'video' + i + 'url'"
+              class="block text-sm font-medium mb-1"
+              >Video URL</label
+            >
+            <input
+              [id]="'video' + i + 'url'"
+              type="url"
+              formControlName="videoUrl"
+              class="w-full p-2 border rounded-md"
+            />
+            <div
+              *ngIf="
+                currentQuiz.get('videoUrl')?.invalid &&
+                currentQuiz.get('videoUrl')?.touched
+              "
+              class="text-red-500 text-sm mt-1"
+            >
+              videoUrl is required
+            </div>
+          </div>
+          <!-- Description -->
+          <div>
+            <label
+              [for]="'description-' + i"
+              class="block text-sm font-medium mb-1"
+              >Description</label
+            >
+            <input
+              [id]="'description-' + i"
+              type="text"
+              formControlName="description"
+              class="w-full p-2 border rounded-md"
+            />
+            <div
+              *ngIf="
+                currentQuiz.get('description')?.invalid &&
+                currentQuiz.get('description')?.touched
+              "
+              class="text-red-500 text-sm mt-1"
+            >
+              description is required
+            </div>
+          </div>
+
+          <!-- Questions Section -->
+          <div class="mt-6" formArrayName="questions">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-semibold">Questions</h3>
+              <button
+                type="button"
+                (click)="addQuestion()"
+                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
               >
-                Video URL is required
-              </div>
+                Add Question
+              </button>
             </div>
 
-            <h3 class="py-10 text-center font-display text-[40px]">Quizzes</h3>
-
-            <div class="level-navigation">
+            <!-- Question Navigation -->
+            <div
+              *ngIf="questions.controls.length > 0"
+              class="mb-6 flex items-center gap-4"
+            >
               <button
-                class="btn-secondary"
                 type="button"
                 (click)="previousLevelQuiz()"
-                [disabled]="currentLevelIndexQuiz === 0"
+                [disabled]="currentQuestionIndex === 0"
+                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
               >
                 Previous
               </button>
+
               <span
-                >Quiz {{ currentLevelIndexQuiz + 1 }} of
-                {{ quizzes.length }}</span
+                >Question {{ currentQuestionIndex + 1 }} of
+                {{ questions.controls.length }}</span
               >
+
               <button
-                class="btn-secondary"
                 type="button"
                 (click)="nextLevelQuiz()"
-                [disabled]="currentLevelIndexQuiz === quizzes.length - 1"
+                [disabled]="
+                  currentQuestionIndex === questions.controls.length - 1
+                "
+                class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
               >
                 Next
               </button>
-              <button
-                class="btn-primary"
-                type="button"
-                (click)="addLevelQuiz()"
-              >
-                Add Quiz
-              </button>
+
               <button
                 type="button"
-                class="bg-red-500 text-white"
-                (click)="deleteLevelQuiz()"
-                [disabled]="quizzes.length <= 1"
+                (click)="deleteQuestion()"
+                [disabled]="questions.controls.length <= 1"
+                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
               >
-                Delete Quiz
+                Delete Question
               </button>
             </div>
 
-            <div formArrayName="quizzes">
-              <div *ngFor="let quiz of quizzes.controls; let j = index">
-                <div *ngIf="j === currentLevelIndexQuiz" [formGroupName]="j">
-                  <div class="form-group">
-                    <label [for]="'question-' + j">Question {{ j + 1 }}</label>
-                    <input
-                      [id]="'question-' + j"
-                      type="text"
-                      formControlName="question"
-                      required
-                    />
-                    <div
-                      *ngIf="
-                        quizzes.at(j).get('question')?.invalid &&
-                        quizzes.at(j).get('question')?.touched
-                      "
-                      class="error"
-                    >
-                      Question is required
-                    </div>
+            <!-- Current Question -->
+            <ng-container
+              *ngFor="let question of questions.controls; index as j"
+            >
+              <div
+                class="space-y-4"
+                [formGroupName]="j"
+                *ngIf="j === currentQuestionIndex"
+              >
+                <!-- Question Text -->
+                <div>
+                  <label
+                    [for]="'level' + i + 'question' + j"
+                    class="block text-sm font-medium mb-1"
+                    >Question Text</label
+                  >
+                  <input
+                    [id]="'level' + i + 'question' + j"
+                    type="text"
+                    formControlName="questionText"
+                    class="w-full p-2 border rounded-md"
+                  />
+                  <div
+                    *ngIf="currentQuestion?.errors?.['noCorrectAnswer']"
+                    class="text-red-500 mt-2"
+                  >
+                    Please select at least one correct answer for this question
+                  </div>
+                  <div
+                    *ngIf="
+                      currentQuestion.get('questionText')?.invalid &&
+                      currentQuestion.get('questionText')?.touched
+                    "
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    Question text is required
+                  </div>
+                </div>
 
-                    <h3 class="py-10 text-center font-display text-[40px]">
-                      Fill answers and choose the correct one
-                    </h3>
+                <!-- Answers Section -->
+                <div class="mt-4" formArrayName="answers">
+                  <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-medium">Answers</h4>
+                  </div>
 
+                  <div class="space-y-4">
                     <div
                       *ngFor="
-                        let answer of [
-                          'answer_1',
-                          'answer_2',
-                          'answer_3',
-                          'answer_4'
-                        ];
-                        let ai = index
+                        let answer of answers.controls;
+                        let k = index;
+                        trackBy: trackByIndex
                       "
+                      [formGroupName]="k"
+                      class="border p-4 rounded-md"
                     >
-                      <div class="py-5" [formGroupName]="answer">
-                        <label [for]="'answer-' + j + '-' + ai">{{
-                          answer.replace("_", " ")
-                        }}</label>
-                        <input
-                          [id]="'answer-' + j + '-' + ai"
-                          type="text"
-                          formControlName="answer"
-                          required
-                        />
-                        <input
-                          class="radio-input my-5"
-                          title="is answer {{ ai }} correct ?"
-                          type="radio"
-                          [name]="'correctAnswer-' + i + '-' + j"
-                          [checked]="answers(answer).get('isCorrect')?.value"
-                          (click)="setCorrectAnswer(answer)"
-                        />
-                        Correct
+                      <div class="flex items-center gap-4">
+                        <!-- Answer Text -->
+                        <div class="flex-1">
+                          <input
+                            type="text"
+                            formControlName="answerText"
+                            class="w-full p-2 border rounded-md"
+                            placeholder="Answer text"
+                          />
+                          <div
+                            *ngIf="
+                              answers.at(k).get('answerText')?.invalid &&
+                              answers.at(k).get('answerText')?.touched
+                            "
+                            class="text-red-500 text-sm mt-1"
+                          >
+                            Answer text is required
+                          </div>
+                        </div>
+
+                        <!-- Correct Answer -->
+                        <div class="flex items-center gap-2">
+                          <label class="text-sm">
+                            <input
+                              title="is answer correct?"
+                              type="radio"
+                              [checked]="answer.get('isCorrect')?.value"
+                              (click)="setCorrectAnswer(j, k)"
+                              class="radio-input"
+                            />
+                            Correct Answer
+                          </label>
+                        </div>
                         <div
-                          *ngIf="
-                            answers(answer).get('answer')?.invalid &&
-                            answers(answer).get('answer')?.touched
-                          "
-                          class="error"
+                          *ngIf="currentQuiz?.errors?.['invalidQuizzes']"
+                          class="text-red-500 mt-2"
                         >
-                          Answer is required
+                          Some questions in this quiz are incomplete
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
-      </div>
+      </ng-container>
+    </div>
 
-      <button class="btn-primary" type="submit">Create Course</button>
-    </form>
-  </div>
+    <!-- Submit Button -->
+    <div class="mt-8">
+      <button
+        type="submit"
+        class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600"
+      >
+        Save Changes
+      </button>
+    </div>
+  </form>
+  <form
+    (ngSubmit)="onSubmitEditImage()"
+    *ngIf="ImageForm"
+    [formGroup]="ImageForm"
+  ></form>
 </main>

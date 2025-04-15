@@ -84,7 +84,7 @@
             {{ level.description }}
           </p>
           <button
-            *ngIf="level.position <= mainCourseResponse.latestStage"
+            *ngIf="level.position <= (mainCourseResponse.latestStage || 0)"
             title="open stage"
             type="button"
             class="engenitic-button me-3 mt-3 px-3 hover:bg-red-600 hover:text-white block"
