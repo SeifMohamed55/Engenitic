@@ -1,7 +1,9 @@
 ﻿using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
+using GraduationProject.Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Bcpg;
 using System.Net;
 using System.Security.Claims;
 
@@ -14,10 +16,16 @@ namespace GraduationProject.API.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly ICoursesService _coursesService;
+        private readonly IStudentService  _studentService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public CoursesController(ICoursesService coursesService)
+        public CoursesController
+            (ICoursesService coursesService, IStudentService studentService, IJwtTokenService jwtTokenService)
         {
             _coursesService = coursesService;
+            _studentService = studentService;
+            _jwtTokenService = jwtTokenService;
+
         }
 
 
@@ -166,12 +174,17 @@ namespace GraduationProject.API.Controllers
         [HttpGet("id/{courseId}")]
         public async Task<IActionResult> GetCourseById(int courseId)
         {
-/*            // extract userId from Context
-            var claimId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            int? studentId = int.TryParse(claimId, out var val) && User.IsInRole("student") ? val : null;*/
+            // extract userId from Authorization
+            int userId = 0;
+            string? oldAccessToken = _jwtTokenService.ExtractJwtTokenFromContext(HttpContext);
+
+            if(oldAccessToken != null)
+                (userId, _) = _jwtTokenService.ExtractIdAndJtiFromExpiredToken(oldAccessToken);
 
             try
             {
+                var isEnrolled = await _studentService.EnrollmentExists(userId, courseId);
+
                 var course = await _coursesService.GetCourseDetailsById(courseId);
 
                 if (course == null)
@@ -180,6 +193,8 @@ namespace GraduationProject.API.Controllers
                         Message = "Course Not Found.",
                         Code = HttpStatusCode.NotFound,
                     });
+
+                course.IsEnrolled = isEnrolled;
 
                 return Ok(new SuccessResponse()
                 {
