@@ -54,7 +54,7 @@
         <p
           class="font-display border border-black w-12 h-12 flex justify-center items-center rounded-full"
         >
-          {{ mainCourseResponse.progress }}%
+          {{ mainCourseResponse.progress?.toFixed(2) }}%
         </p>
       </span>
     </div>

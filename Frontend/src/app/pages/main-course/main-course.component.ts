@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { CoursesService } from './../../feature/courses/courses.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import {
   FormArray,
   FormControl,
@@ -42,57 +42,43 @@ export class MainCourseComponent implements OnInit, OnDestroy {
   constructor(
     private _ActivatedRoute: ActivatedRoute,
     private _CoursesService: CoursesService,
-    private _ToastrService: ToastrService,
+    private _ToastrService: ToastrService
   ) {}
 
   ngOnInit(): void {
     // getting params
     this._ActivatedRoute.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params) => {
-        this.studentId = Number(params.get('studentId')) ?? 0;
-        this.enrollmentId = Number(params.get('enrollmentId')) ?? 0;
-        this.courseId = Number(params.get('courseId')) ?? 0;
-      });
-
-    // current stage fetch
-    this._CoursesService
-      .getCurrentStage(this.studentId, this.enrollmentId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        tap((params) => {
+          this.studentId = Number(params.get('studentId')) ?? 0;
+          this.enrollmentId = Number(params.get('enrollmentId')) ?? 0;
+          this.courseId = Number(params.get('courseId')) ?? 0;
+        }),
+        switchMap(() => {
+          return forkJoin({
+            stage: this._CoursesService.getCurrentStage(
+              this.studentId,
+              this.enrollmentId
+            ),
+            quizTitles: this._CoursesService.getQuizTitles(this.courseId),
+          });
+        })
+      )
       .subscribe({
-        next: (res) => {
-          console.log(res);
-          this.mainCourseResponse = res.data;
+        next: ({ stage, quizTitles }) => {
+          console.log(stage, quizTitles);
+
+          this.mainCourseResponse = stage.data;
           this.creatingAnswers(this.mainCourseResponse);
-        },
-        error: (err) => {
-          if (err.error) {
-            this._ToastrService.error(err.error.message);
-          } else {
-            this._ToastrService.error(
-              'an error happened retrieving the course try again later'
-            );
-          }
-        },
-      });
 
-    // quiz titles fetch
-    this._CoursesService
-      .getQuizTitles(this.courseId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          console.log(res);
-          this.levelsTitles = res.data;
+          this.levelsTitles = quizTitles.data;
         },
         error: (err) => {
-          if (err.error) {
-            this._ToastrService.error(err.error.message);
-          } else {
-            this._ToastrService.error(
-              'an error happened retrieving the levels details try again later'
-            );
-          }
+          const msg =
+            err?.error?.message ??
+            'an error happened retrieving the course data, try again later';
+          this._ToastrService.error(msg);
         },
       });
   }

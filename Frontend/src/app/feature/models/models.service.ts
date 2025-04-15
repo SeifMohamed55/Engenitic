@@ -6,11 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ModelsService {
-  
   constructor(private _HttpClient: HttpClient) {}
 
-  VqaModel(value : any) : Observable<any> {
+  VqaModel(value: any): Observable<any> {
     return this._HttpClient.post(`https://localhost/api/Vqa/predict`, value);
   }
-  
+
+  grammarCorrection(sentence: string): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/GrammarCorrection/correct`,
+      { sentence }
+    );
+  }
 }
