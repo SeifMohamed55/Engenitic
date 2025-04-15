@@ -15,6 +15,7 @@ public class RefreshToken
     public required string LoginProvider { get; set; } = null!;
     public string LatestJwtAccessTokenJti { get; set; } = null!;
     public DateTimeOffset LatestJwtAccessTokenExpiry { get; set; }
+    public bool RememberMe { get; set; } = false;
 
     public int UserId{ get; set; }
     public AppUser AppUser { get; set; } = null!;

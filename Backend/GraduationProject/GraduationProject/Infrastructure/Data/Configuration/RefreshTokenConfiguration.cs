@@ -10,7 +10,7 @@ namespace GraduationProject.Infrastructure.Data.Configuration
         {
             builder.ToTable("RefreshTokens");
 
-            builder.HasKey(x => x.DeviceId);
+            builder.HasKey(x => new { x.DeviceId, x.UserId });
 
             builder.Property(x => x.DeviceId)
                 .ValueGeneratedNever();

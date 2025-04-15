@@ -5,8 +5,10 @@ using GraduationProject.Domain.DTOs;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace GraduationProject.API.Controllers
 {
@@ -76,7 +78,7 @@ namespace GraduationProject.API.Controllers
 
                     HttpContext.Response.Cookies.Append("refreshToken", data.RefreshToken.Token.ToString(), cookieOptions);
 
-                    cookieOptions.Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays));
+                    cookieOptions.Expires = DateTime.UtcNow.AddDays(30);
                     HttpContext.Response.Cookies.Append("device_id", data.RefreshToken.DeviceId.ToString(), cookieOptions);
 
 
@@ -111,9 +113,24 @@ namespace GraduationProject.API.Controllers
         public async Task<IActionResult> Revoke()
         {
             var deviceId = HttpContext.Request.Cookies["device_id"];
-            if(Guid.TryParse(deviceId, out var guid))
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (Guid.TryParse(deviceId, out var guid))
             {
-                var res = await _loginService.Logout(guid);
+               if(!int.TryParse(userId, out int currentUserId))
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Code = System.Net.HttpStatusCode.BadRequest,
+                        Message = "Invalid user id."
+                    });
+                var res = await _loginService.Logout(guid, currentUserId);
+
+                if(!res.TryGetData(out var data))
+                    return Ok(new SuccessResponse()
+                    {
+                        Code = System.Net.HttpStatusCode.OK,
+                        Message = "User logged out successfully."
+                    });
 
                 var cookieOptions = new CookieOptions
                 {
@@ -121,17 +138,25 @@ namespace GraduationProject.API.Controllers
                     Secure = true,
                     SameSite = SameSiteMode.None,
                     Path = "/",
-                    Expires = DateTime.Now.AddDays(-1),
                     IsEssential = true
                 };
-
-                HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+                if (data.RememberMe)
+                {
+                    cookieOptions.Expires = DateTime.Now.AddDays(-1);
+                    HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+                }
+                else
+                {
+                    Response.Cookies.Delete("refreshToken", cookieOptions);
+                }
 
                 return Ok(new SuccessResponse()
                 {
                     Code = System.Net.HttpStatusCode.OK,
-                    Message = res.Data ?? "User logged out successfully."
+                    Message = "User logged out successfully."
                 });
+                
+
 
             }
             else

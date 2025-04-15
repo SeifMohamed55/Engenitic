@@ -11,7 +11,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     public interface ITokenRepository : IRepository<RefreshToken>
     {
         void DeleteRefreshToken(Guid deviceId);
-        Task<RefreshToken?> GetUserRefreshToken(Guid deviceId);
+        Task<RefreshToken?> GetUserRefreshToken(Guid deviceId, int userId);
         RefreshToken GenerateRefreshToken(int userId, DeviceInfo deviceInfo);
 
         Task RemoveRevokedOrExpiredByUserId(int id);
@@ -57,9 +57,9 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             Delete(deviceId);
         }
 
-        public async Task<RefreshToken?> GetUserRefreshToken(Guid deviceId)
+        public async Task<RefreshToken?> GetUserRefreshToken(Guid deviceId, int userId)
         {
-            return await _dbSet.FirstOrDefaultAsync(rt => rt.DeviceId == deviceId);
+            return await _dbSet.FirstOrDefaultAsync(rt => rt.DeviceId == deviceId && rt.UserId == userId);
         }
 
         public async Task RemoveRevokedOrExpiredByUserId(int id)

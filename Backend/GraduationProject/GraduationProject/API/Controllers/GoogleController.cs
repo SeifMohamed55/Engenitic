@@ -231,6 +231,9 @@ namespace GraduationProject.API.Controllers
 
                     HttpContext.Response.Cookies.Append("refreshToken", data.RefreshToken.Token.ToString(), cookieOptions);
 
+                    cookieOptions.Expires = DateTime.UtcNow.AddDays(30);
+                    HttpContext.Response.Cookies.Append("device_id", data.RefreshToken.DeviceId.ToString(), cookieOptions);
+
                     return GetHtmlContent(new SuccessResponse()
                     {
                         Code = System.Net.HttpStatusCode.OK,

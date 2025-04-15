@@ -49,7 +49,7 @@ namespace GraduationProject.Application.Services
             }
 
 
-            var refreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId);
+            var refreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId, extractedId);
             if(refreshToken == null)
                 return ServiceResult<string>.Failure("Provided token is invalid Sign In again");
 
@@ -59,7 +59,6 @@ namespace GraduationProject.Application.Services
             if (_tokenService.IsRefreshTokenExpired(refreshToken) || jti != refreshToken.LatestJwtAccessTokenJti)            
                 return ServiceResult<string>.Failure("Session Expired.");
             
-
             try
             {
                 var user = await _unitOfWork.UserRepo.GetUserWithRoles(extractedId);

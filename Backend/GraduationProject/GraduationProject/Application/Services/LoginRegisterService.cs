@@ -18,7 +18,7 @@ namespace GraduationProject.Application.Services
     public interface ILoginRegisterService
     {
         Task<ServiceResult<LoginWithCookies>> Login(LoginCustomRequest model, DeviceInfo deviceInfo);
-        Task<ServiceResult<string>> Logout(Guid deviceId);
+        Task<ServiceResult<RefreshToken>> Logout(Guid deviceId, int userId);
         Task<ServiceResult<LoginWithCookies>> ExternalLogin(string provider, AuthenticatedPayload payload);
         Task<ServiceResult<AppUserDTO>> Register(RegisterCustomRequest model, bool isExternal);
     }
@@ -218,20 +218,17 @@ namespace GraduationProject.Application.Services
             {
                 await _unitOfWork.TokenRepo.RemoveRevokedOrExpiredByUserId(user.Id);
 
-                var dbToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceInfo.DeviceId);
+                var dbToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceInfo.DeviceId, user.Id);
 
                 if (dbToken == null)
                     dbToken = _unitOfWork.TokenRepo.GenerateRefreshToken(user.Id, deviceInfo);
-                else if(dbToken.UserId != user.Id)
-                {
-                    return ServiceResult<LoginWithCookies>.Failure("Invalid User Login!");
-                }
 
                 (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x => x.Name).ToList());
 
                 dbToken.LatestJwtAccessTokenJti = jti;
                 dbToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
                     (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
+                dbToken.RememberMe = model.RememberMe;
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -282,12 +279,12 @@ namespace GraduationProject.Application.Services
         }
 
 
-        public async Task<ServiceResult<string>> Logout(Guid deviceId)
+        public async Task<ServiceResult<RefreshToken>> Logout(Guid deviceId, int userId)
         {
 
-            var dbRefreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId);
+            var dbRefreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId, userId);
             if (dbRefreshToken is null)
-                return ServiceResult<string>.Success("User is not Signed In");
+                return ServiceResult<RefreshToken>.Failure("User is not Signed In");
 
 
             _tokenBlacklistService.BlacklistToken
@@ -302,7 +299,7 @@ namespace GraduationProject.Application.Services
             {
             }
 
-            return ServiceResult<string>.Success("User Logged Out successfully");
+            return ServiceResult<RefreshToken>.Success(dbRefreshToken);
 
         }
 
@@ -409,15 +406,11 @@ namespace GraduationProject.Application.Services
             {
                 await _unitOfWork.TokenRepo.RemoveRevokedOrExpiredByUserId(user.Id);
 
-                var dbToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(payload.DeviceInfo.DeviceId);
+                var dbToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(payload.DeviceInfo.DeviceId, user.Id);
 
                 if (dbToken == null)
                     dbToken = _unitOfWork.TokenRepo.GenerateRefreshToken(user.Id, payload.DeviceInfo);
-                else if (dbToken.UserId != user.Id)
-                {
-                    return ServiceResult<LoginWithCookies>.Failure("Invalid User Login!");
-                }
-
+                
                 (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x => x.Name).ToList());
 
                 dbToken.LatestJwtAccessTokenJti = jti;
