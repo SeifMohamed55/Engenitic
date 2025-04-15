@@ -41,16 +41,13 @@ builder.Services
 
 builder.Services.AddHttpClient<IGrammarCorrectionService, GrammarCorrectionService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:8001/"); // Python FastAPI server
+    client.BaseAddress = new Uri("http://localhost:8001/");
 });
 
 builder.Services.AddHttpClient<IVqaService, VqaService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:8000/"); // Python FastAPI server
+    client.BaseAddress = new Uri("http://localhost:8000/");
 });
-
-
-
 
 var vqaSection = builder.Configuration.GetSection("VQA");
 var jwtSection = builder.Configuration.GetSection("Jwt");
@@ -87,7 +84,6 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
             return accumlator;
         }).TrimEnd('\n');
 
-
         return new BadRequestObjectResult(new ErrorResponse()
         {
             Code = System.Net.HttpStatusCode.BadRequest,
@@ -113,10 +109,9 @@ builder.Services.AddCors(options =>
 
 
 
-builder.Services.AddRateLimiting(); // Add Rate Limiting Configuration
+builder.Services.AddRateLimiting();
 
 var app = builder.Build();
-
 
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
