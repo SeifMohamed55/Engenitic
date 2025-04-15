@@ -58,13 +58,14 @@ interface CourseEditing {
 })
 export class InstructorEditCourseComponent implements OnInit, OnDestroy {
   courseForm!: FormGroup;
-  ImageForm !: FormGroup;
   currentLevelIndex = 0;
   currentQuestionIndex = 0;
   courseData?: CourseEditing;
   courseId!: number;
   instructorId!: number;
   private destroy$ = new Subject<void>();
+  selectedFile: File | null = null;
+  fileValidationError: string | null = null;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -364,7 +365,48 @@ export class InstructorEditCourseComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSubmitEditImage() : void {
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.fileValidationError = null;
 
+    if (input.files?.length) {
+      const file = input.files[0];
+      const validTypes = ['image/jpg', 'image/png', 'image/jpeg'];
+      const maxSize = 2 * 1024 * 1024;
+
+      if (!validTypes.includes(file.type)) {
+        this.fileValidationError = 'Invalid image type (only JPG/PNG allowed)';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        this.fileValidationError = 'Image size must be less than 2MB';
+        return;
+      }
+      this.selectedFile = file;
+    }
+  }
+
+  onSubmitEditImage(event: Event): void {
+    event.preventDefault();
+    const submitCourse: FormData = new FormData();
+    if (this.selectedFile) {
+      submitCourse.append('image', this.selectedFile);
+      submitCourse.append('courseId', String(this.courseId));
+      submitCourse.append('instructorId', String(this.instructorId));
+      this.coursesService
+        .editCourseImage(submitCourse)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.warn(err);
+          },
+        });
+    } else {
+      this.fileValidationError = 'image field is required';
+    }
   }
 }

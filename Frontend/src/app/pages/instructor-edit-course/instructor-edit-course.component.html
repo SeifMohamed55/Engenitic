@@ -371,15 +371,28 @@
     <div class="mt-8">
       <button
         type="submit"
-        class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600"
+        class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 font-regular"
       >
         Save Changes
       </button>
     </div>
   </form>
   <form
-    (ngSubmit)="onSubmitEditImage()"
-    *ngIf="ImageForm"
-    [formGroup]="ImageForm"
-  ></form>
+    class=" my-10"
+  >
+    <div class="form-group">
+      <label for="imageUrl">Course Image</label>
+      <input
+        id="imageUrl"
+        type="file"
+        accept="image/*"
+        (change)="onFileChange($event)"
+        class="mb-3 custom-file-input font-display lowercase"
+      />
+      <p *ngIf="fileValidationError" class="text-red-500">
+        {{ fileValidationError }}
+      </p>
+    </div>
+    <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 font-regular" (click)="onSubmitEditImage($event)">submit image</button>
+  </form>
 </main>
