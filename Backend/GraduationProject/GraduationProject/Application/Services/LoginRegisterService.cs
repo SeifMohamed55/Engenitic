@@ -382,13 +382,11 @@ namespace GraduationProject.Application.Services
             try
             {
                 roles = (await _userManager.GetRolesAsync(user)).ToList();
-
                 //await SaveGooglePhoto(user, payload);
             }
             catch
             {
             }
-
  
             var providerLogin = await _unitOfWork.UserLoginRepo.ContainsLoginProvider(user.Id, provider);
 
