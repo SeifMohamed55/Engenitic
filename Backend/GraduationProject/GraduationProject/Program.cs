@@ -38,15 +38,17 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-/*builder.Services.Configure<ApiBehaviorOptions>(options =>
+
+builder.Services.AddHttpClient<IGrammarCorrectionService, GrammarCorrectionService>(client =>
 {
-    options.SuppressModelStateInvalidFilter = true;
-});*/
+    client.BaseAddress = new Uri("http://localhost:8001/"); // Python FastAPI server
+});
 
 builder.Services.AddHttpClient<IVqaService, VqaService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:8000/"); // Python FastAPI server
 });
+
 
 
 
@@ -59,7 +61,7 @@ if (!jwtSection.Exists() || !vqaSection.Exists() || !mailingSection.Exists())
     throw new InvalidOperationException("Configuration section is missing.");
 }
 
-builder.Services.Configure<VqaApiKeyOption>(vqaSection);
+builder.Services.Configure<ApiKeyOption>(vqaSection);
 builder.Services.Configure<JwtOptions>(jwtSection);
 builder.Services.Configure<MailingOptions>(mailingSection);
 

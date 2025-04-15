@@ -39,7 +39,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<IUploadingService, UploadingService>();
             services.AddScoped<ILoginRegisterService, LoginRegisterService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped <ICoursesService, CoursesService>();
+            services.AddScoped<ICoursesService, CoursesService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IStudentService, StudentService>();
 

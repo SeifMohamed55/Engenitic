@@ -17,7 +17,7 @@ namespace GraduationProject.Application.Services
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
 
-        public VqaService(HttpClient httpClient, IOptions<VqaApiKeyOption> options)
+        public VqaService(HttpClient httpClient, IOptions<ApiKeyOption> options)
         {
             _httpClient = httpClient;
             _apiKey = options.Value.ApiKey;
