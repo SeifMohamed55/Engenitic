@@ -13,8 +13,8 @@ using System.Security.Claims;
 
 namespace GraduationProject.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Authorize(Roles = "instructor")]
     public class InstructorController : ControllerBase
     {
@@ -189,12 +189,19 @@ namespace GraduationProject.API.Controllers
 
                 var dto = await _coursesService.EditCourse(course);
 
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Course Edited Successfully.",
-                    Data = dto,
-                    Code = HttpStatusCode.OK,
-                });
+                if(dto.TryGetData(out var data))
+                    return Ok(new SuccessResponse()
+                    {
+                        Message = "Course Edited Successfully.",
+                        Data = data,
+                        Code = HttpStatusCode.OK,
+                    });
+                else
+                    return BadRequest(new ErrorResponse()
+                    {
+                        Message = dto.Message ?? "An error occured",
+                        Code = HttpStatusCode.BadRequest,
+                    });
 
             }
             catch

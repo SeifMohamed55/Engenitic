@@ -1,4 +1,5 @@
-﻿using GraduationProject.API.Responses;
+﻿using Google.Apis.Auth.OAuth2.Requests;
+using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Mvc;
@@ -27,41 +28,56 @@ namespace GraduationProject.API.Controllers
         {
             // add latest true accesstoken to database and check it
             var requestRefToken = HttpContext.Request.Cookies["refreshToken"];
-            if (requestRefToken == null)
-                return BadRequest(new ErrorResponse
+            if (string.IsNullOrEmpty(requestRefToken))
+                return Unauthorized(new ErrorResponse
                 {
                     Message = "No Refresh Token Provided.",
-                    Code = System.Net.HttpStatusCode.BadRequest
+                    Code = System.Net.HttpStatusCode.Unauthorized
                 });
 
             string? oldAccessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (oldAccessToken == null)
-                return BadRequest(new ErrorResponse
+            if (string.IsNullOrEmpty(oldAccessToken))
+                return Unauthorized(new ErrorResponse
                 {
                     Message = "No Access Token Provided.",
-                    Code = System.Net.HttpStatusCode.BadRequest
+                    Code = System.Net.HttpStatusCode.Unauthorized
                 });
 
-            var result = await _tokenService.Refresh(oldAccessToken, requestRefToken);
+            string? deviceId = HttpContext.Request.Cookies["device_id"];
+            if (string.IsNullOrEmpty(deviceId))
+                return Unauthorized(new ErrorResponse
+                {
+                    Message = "No Device ID Provided.",
+                    Code = System.Net.HttpStatusCode.Unauthorized
+                });
 
-            if (result.IsSuccess && result.Data != null)
+            if(!Guid.TryParse(deviceId, out var guid))
+                return Unauthorized(new ErrorResponse
+                {
+                    Message = "Provided DeviceID is Invalid .",
+                    Code = System.Net.HttpStatusCode.Unauthorized
+                });
+
+            var result = await _tokenService.Refresh(oldAccessToken, requestRefToken, guid);
+
+            if (result.TryGetData(out var data))
                 return Ok(new SuccessResponse
                 {
                     Message = "Token Refreshed Successfully",
                     Code = System.Net.HttpStatusCode.OK,
                     Data = new AccessTokenResponse
                     {
-                        AccessToken = result.Data,
+                        AccessToken = data,
                         ValidTo = DateTime.UtcNow
                                     .AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes))
                                     .ToString("f", CultureInfo.InvariantCulture)
                     }
                 });
             else
-                return BadRequest(new ErrorResponse
+                return Unauthorized(new ErrorResponse
                 {
                     Message = result.Message ?? "",
-                    Code = System.Net.HttpStatusCode.BadRequest
+                    Code = System.Net.HttpStatusCode.Unauthorized
                 });
 
         }

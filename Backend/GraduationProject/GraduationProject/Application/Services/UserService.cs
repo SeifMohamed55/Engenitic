@@ -9,9 +9,6 @@ namespace GraduationProject.Application.Services
 
     public interface IUserService
     {
-        void UpdateUserLatestToken(AppUser user, string latestToken);
-        void UpdateRefreshToken(AppUser appUser, RefreshToken token);
-
     }
 
     public class UserService : IUserService
@@ -43,24 +40,6 @@ namespace GraduationProject.Application.Services
             _uploadingService = uploadingService;
             _hashingService = hashingService;
         }
-
-        public void UpdateRefreshToken(AppUser appUser, RefreshToken token)
-        {
-            if(appUser.RefreshToken != null)
-                _unitOfWork.TokenRepo.Detach(appUser.RefreshToken);
-            appUser.RefreshToken = token;
-        }
-
-        public void UpdateUserLatestToken(AppUser user, string latestJti)
-        {
-            if (user.RefreshToken == null)
-                throw new ArgumentNullException();
-
-            user.RefreshToken.LatestJwtAccessTokenJti = latestJti;
-            user.RefreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
-                                                        (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
-        }
-
 
     }
 }

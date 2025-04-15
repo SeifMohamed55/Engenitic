@@ -10,16 +10,18 @@ namespace GraduationProject.Infrastructure.Data.Configuration
         {
             builder.ToTable("RefreshTokens");
 
-            builder.HasKey(x => x.Id);
+            builder.HasKey(x => x.DeviceId);
+
+            builder.Property(x => x.DeviceId)
+                .ValueGeneratedNever();
+
+            builder.Property(x=> x.IssuedAt)
+                .HasDefaultValueSql("NOW()");
+
 
             builder.Property(u => u.LoginProvider)
                  .IsRequired()
                 .HasMaxLength(120);
-
-            builder.Property(u => u.EncryptedToken)
-                .IsRequired()
-                .HasMaxLength(120);
-
 
         }
     }

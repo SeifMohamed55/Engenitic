@@ -1,4 +1,5 @@
-﻿using GraduationProject.API.Requests;
+﻿using AngleSharp.Common;
+using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Common.Extensions;
@@ -6,6 +7,7 @@ using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
+using System.Collections.Frozen;
 using System.Data;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
@@ -32,6 +34,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
 
         Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses);
+        Task<QuizQuestionAnswerIds?> GetQuizesQuestionAndAnswerIds(int courseId);
     }
     public class CoursesRepository : Repository<Course>, ICourseRepository
     {
@@ -169,6 +172,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
             dbCourse.UpdateFromRequest(courseReq, tags);
 
+            Update(dbCourse);
+
             return dbCourse;
         }
 
@@ -210,7 +215,35 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         }
 
-        static readonly Func<AppDbContext, int, Task<EditCourseRequest?>> GetCourseWithQuizesCompiled =
+        public async Task<QuizQuestionAnswerIds?> GetQuizesQuestionAndAnswerIds(int courseId)
+        {      
+            var dbIds = await _dbSet
+                .Include(q => q.Quizes)
+                    .ThenInclude(q => q.Questions)
+                        .ThenInclude(q => q.Answers)
+                .Where(x=> x.Id == courseId)
+                .Select(x => new 
+                {
+                    QuestionIds = x.Quizes.SelectMany(q => q.Questions).Select(q => q.Id).ToList(),
+
+                    AnswerIds = x.Quizes.SelectMany(q => q.Questions).SelectMany(q => q.Answers)
+                    .Select(a => a.Id).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (dbIds == null)
+                return null;
+
+            return new QuizQuestionAnswerIds()
+            {
+                QuestionIds = dbIds.QuestionIds.ToFrozenSet(),
+                AnswerIds = dbIds.AnswerIds.ToFrozenSet()
+            };
+
+
+        }
+
+        private static readonly Func<AppDbContext, int, Task<EditCourseRequest?>> GetCourseWithQuizesCompiled =
      EF.CompileAsyncQuery((AppDbContext context, int courseId) =>
          context.Courses
              .Include(x => x.Tags)
@@ -235,6 +268,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                  {
                      Id = q.Id,
                      Title = q.Title,
+                     Description = q.Description,
+                     VideoUrl = q.VideoUrl,
                      Position = q.Position,
                      Questions = q.Questions.Select(qq => new QuestionDTO
                      {

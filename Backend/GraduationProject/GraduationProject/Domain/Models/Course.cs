@@ -39,7 +39,6 @@ namespace GraduationProject.Domain.Models
         public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>();
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
-
         public void UpdateFromRequest(EditCourseRequest course, List<Tag> tags)
         {
             Code = course.Code;

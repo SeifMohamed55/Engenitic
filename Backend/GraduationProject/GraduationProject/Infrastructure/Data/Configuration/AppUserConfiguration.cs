@@ -36,10 +36,10 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .WithMany(x => x.Users)
                 .UsingEntity<IdentityUserRole<int>>();
 
-            builder.HasOne(x => x.RefreshToken)
+            builder.HasMany(x => x.RefreshTokens)
                 .WithOne(x => x.AppUser)
-                .HasForeignKey<AppUser>(x => x.RefreshTokenId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.Courses)
                 .WithOne(x => x.Instructor)

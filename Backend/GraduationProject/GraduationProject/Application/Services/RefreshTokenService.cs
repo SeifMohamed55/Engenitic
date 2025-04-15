@@ -1,4 +1,6 @@
 ﻿using GraduationProject.Infrastructure.Data;
+using GraduationProject.StartupConfigurations;
+using Microsoft.Extensions.Options;
 
 namespace GraduationProject.Application.Services
 {
@@ -11,25 +13,26 @@ namespace GraduationProject.Application.Services
         /// <returns>
         /// The new Access Token
         /// </returns>
-        Task<ServiceResult<string>> Refresh(string oldAccessToken, string requestRefToken);
+        Task<ServiceResult<string>> Refresh(string oldAccessToken, string requestRefToken, Guid deviceId);
     }
 
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly IJwtTokenService _tokenService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
+        private readonly JwtOptions _jwtOptions;
         public RefreshTokenService
             (IJwtTokenService tokenService,
             IUnitOfWork unitOfWork,
-            IUserService userService)
+            IUserService userService,
+            IOptions<JwtOptions> jwtOptions)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
-            _userService = userService;
+            _jwtOptions = jwtOptions.Value;
         }
 
-        public async Task<ServiceResult<string>> Refresh(string oldAccessToken, string requestRefToken)
+        public async Task<ServiceResult<string>> Refresh(string oldAccessToken, string requestRefToken, Guid deviceId)
         {
 
             if (_tokenService.IsAccessTokenValid(oldAccessToken))
@@ -46,28 +49,29 @@ namespace GraduationProject.Application.Services
             }
 
 
-            var user = await _unitOfWork.UserRepo.GetUserWithTokenAndRoles(extractedId);
-
-            if (
-                    user == null ||
-                    user.RefreshToken == null ||
-                    _tokenService.IsRefreshTokenExpired(user.RefreshToken) || // expired
-                    jti != user.RefreshToken.LatestJwtAccessTokenJti
-                )
-            {
+            var refreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId);
+            if(refreshToken == null)
                 return ServiceResult<string>.Failure("Provided token is invalid Sign In again");
-            }
+
+            if (refreshToken.UserId != extractedId || refreshToken.Token.ToString() != requestRefToken)
+                return ServiceResult<string>.Failure("Invalid User request.");
+
+            if (_tokenService.IsRefreshTokenExpired(refreshToken) || jti != refreshToken.LatestJwtAccessTokenJti)            
+                return ServiceResult<string>.Failure("Session Expired.");
+            
 
             try
             {
-                var isValid = _tokenService.VerifyRefresh(requestRefToken, user.RefreshToken.EncryptedToken);
+                var user = await _unitOfWork.UserRepo.GetUserWithRoles(extractedId);
+                if(user == null)
+                    return ServiceResult<string>.Failure("User not found.");
 
-                if (!isValid)
-                    return ServiceResult<string>.Failure("Invalid Refresh Token");
+                (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x => x.Name).ToList());
 
-                (string newAccessToken, string newJti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x=> x.Name).ToList());
+                refreshToken.LatestJwtAccessTokenJti = newJti;
+                refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                    (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
 
-                _userService.UpdateUserLatestToken(user, newJti);
                 await _unitOfWork.SaveChangesAsync();
 
                 return ServiceResult<string>.Success(newAccessToken);

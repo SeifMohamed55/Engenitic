@@ -7,6 +7,7 @@ namespace GraduationProject.Domain.Models
         public Quiz() { }
         public Quiz(QuizDTO quiz)
         {
+            Id = quiz.Id;
             Title = quiz.Title;
             VideoUrl = quiz.VideoUrl;
             Position = quiz.Position;

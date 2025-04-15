@@ -6,6 +6,7 @@ using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Net;
 
@@ -22,7 +23,7 @@ namespace GraduationProject.Application.Services
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
         Task<CourseDTO> AddCourse(RegisterCourseRequest course);
-        Task<CourseDetailsResponse> EditCourse(EditCourseRequest course);
+        Task<ServiceResult<CourseDetailsResponse>> EditCourse(EditCourseRequest course);
         Task DeleteCourse(int courseId);
         Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId);
         Task<int?> GetCourseInstructorId(int courseId);
@@ -131,17 +132,41 @@ namespace GraduationProject.Application.Services
                 return dto;
             }
 
-            public async Task<CourseDetailsResponse> EditCourse(EditCourseRequest course)
+            public async Task<ServiceResult<CourseDetailsResponse>> EditCourse(EditCourseRequest course)
             {
-                var addedCourse = await _unitOfWork.CourseRepo.EditCourse(course);
-                await _unitOfWork.SaveChangesAsync();
+                var usersQuestionIds = course.Quizes.SelectMany(x => x.Questions)
+                    .Select(x => x.Id)
+                    .ToFrozenSet();
 
+                var usersAnswerIds = course.Quizes.SelectMany(x => x.Questions)
+                    .SelectMany(x => x.Answers)
+                    .Select(x=> x.Id)
+                    .ToFrozenSet();
 
-                var resp = new CourseDetailsResponse(addedCourse);
-                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
+                var dbQuestionsWithAnswers = await _unitOfWork.CourseRepo.GetQuizesQuestionAndAnswerIds(course.Id);
+                if (dbQuestionsWithAnswers == null)
+                   return ServiceResult<CourseDetailsResponse>.Failure("course quizzes is not found");
 
+                var userQuestionsInDb = dbQuestionsWithAnswers.QuestionIds.IsSupersetOf(usersQuestionIds);
+                var userAnswersInDb = dbQuestionsWithAnswers.AnswerIds.IsSupersetOf(usersAnswerIds);
 
-                return resp;
+                if(userQuestionsInDb && userAnswersInDb)
+                {
+                    var addedCourse = await _unitOfWork.CourseRepo.EditCourse(course);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var resp = new CourseDetailsResponse(addedCourse);
+                    resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
+
+                    return ServiceResult<CourseDetailsResponse>.Success(resp);
+                }
+                else
+                {
+                    return ServiceResult<CourseDetailsResponse>
+                        .Failure("Invalid Request Questions or answers don't match");
+                }
+
+               
             }
 
             public async Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId)

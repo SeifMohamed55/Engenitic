@@ -1,9 +1,12 @@
+using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Common.Middlewares;
 using GraduationProject.Domain.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,7 +70,29 @@ builder.Services.AddDependencies(builder.Configuration);
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errorMessage = context.ModelState.Aggregate("", (accumlator, modelEntry) =>
+        {
+            if (modelEntry.Value is null)
+                return accumlator;
+            foreach (var item in modelEntry.Value.Errors)
+            {
+                accumlator += $"{modelEntry.Key}: {item.ErrorMessage}\n";
+            }
+            return accumlator;
+        }).TrimEnd('\n');
+
+
+        return new BadRequestObjectResult(new ErrorResponse()
+        {
+            Code = System.Net.HttpStatusCode.BadRequest,
+            Message = errorMessage,
+        });
+    };
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

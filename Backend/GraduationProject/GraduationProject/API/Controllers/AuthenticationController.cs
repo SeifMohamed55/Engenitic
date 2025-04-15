@@ -1,9 +1,12 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
+using GraduationProject.Domain.DTOs;
 using GraduationProject.StartupConfigurations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GraduationProject.API.Controllers
 {
@@ -31,9 +34,33 @@ namespace GraduationProject.API.Controllers
                 });
             try
             {
-                (ServiceResult<LoginResponse> res, string? rawRefreshToken) = await _loginService.Login(model);
 
-                if (res.IsSuccess && rawRefreshToken != null)
+                if (model.DeviceId == null)
+                {
+                    if(Guid.TryParse(HttpContext.Request.Cookies["device_id"], out var guid))
+                    {
+                        model.DeviceId = guid;
+                    }
+                    else
+                    {
+                        model.DeviceId = Guid.NewGuid();
+                    }
+
+                }
+                // (for IP) HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                // At production if behind a proxy
+                               
+                var deviceInfo = new DeviceInfo
+                {
+                    DeviceId =  model.DeviceId.Value,
+                    IpAddress =  HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                    UserAgent = HttpContext.Request.Headers["User-Agent"].FirstOrDefault() ?? "Unknown"
+                };
+
+
+                ServiceResult<LoginWithCookies> res = await _loginService.Login(model, deviceInfo);
+
+                if (res.TryGetData(out var data))
                 {
                     var cookieOptions = new CookieOptions
                     {
@@ -47,13 +74,16 @@ namespace GraduationProject.API.Controllers
                     if (model.RememberMe)
                         cookieOptions.Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays));
 
+                    HttpContext.Response.Cookies.Append("refreshToken", data.RefreshToken.Token.ToString(), cookieOptions);
 
-                    HttpContext.Response.Cookies.Append("refreshToken", rawRefreshToken, cookieOptions);
+                    cookieOptions.Expires = DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays));
+                    HttpContext.Response.Cookies.Append("device_id", data.RefreshToken.DeviceId.ToString(), cookieOptions);
+
 
                     return Ok(new SuccessResponse()
                     {
                         Code = System.Net.HttpStatusCode.OK,
-                        Data = res.Data,
+                        Data = data.LoginResponse,
                         Message = "User logged in successfully."
                     });
 
@@ -76,55 +106,40 @@ namespace GraduationProject.API.Controllers
         }
 
 
-        // not authorized endpoint
         [HttpPost("logout")]
+        [Authorize]
         public async Task<IActionResult> Revoke()
         {
-            string? refreshToken = HttpContext.Request.Cookies["refreshToken"];
-            if (refreshToken == null)
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = "RefreshToken is not found",
-                    Code = System.Net.HttpStatusCode.BadRequest
-                });
-
-            string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (accessToken is null)
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = "Jwt Token not found",
-                    Code = System.Net.HttpStatusCode.BadRequest
-                });
-
-            var res = await _loginService.Logout(accessToken, refreshToken);
-
-            var cookieOptions = new CookieOptions
+            var deviceId = HttpContext.Request.Cookies["device_id"];
+            if(Guid.TryParse(deviceId, out var guid))
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Path = "/",
-                Expires = DateTime.Now.AddDays(-1),
-                IsEssential = true
-            };
+                var res = await _loginService.Logout(guid);
 
-            HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Path = "/",
+                    Expires = DateTime.Now.AddDays(-1),
+                    IsEssential = true
+                };
 
-            if (res.IsSuccess)           
+                HttpContext.Response.Cookies.Append("refreshToken", "", cookieOptions);
+
                 return Ok(new SuccessResponse()
                 {
                     Code = System.Net.HttpStatusCode.OK,
                     Message = res.Data ?? "User logged out successfully."
                 });
-            
-            else           
-                return BadRequest(new ErrorResponse()
-                {
-                    Code = System.Net.HttpStatusCode.BadRequest,
-                    Message = res.Message ?? "Couldn't logout user."
-                });
-                      
 
+            }
+            else
+                return Ok(new SuccessResponse()
+                {
+                    Code = System.Net.HttpStatusCode.OK,
+                    Message = "User logged out successfully."
+                });
         }
 
 

@@ -31,14 +31,12 @@ namespace GraduationProject.API.Requests
 
 
         [Required]
-        //[BindProperty(BinderType = typeof(JsonModelBinder))]
         public List<TagDTO> Tags { get; set; } = new List<TagDTO>();
 
 
         [Required]
         [UniquePostition]
         [NotEmptyCollection]
-        //[BindProperty(BinderType = typeof(JsonModelBinder))]
         public ICollection<QuizDTO> Quizes { get; set; } = new List<QuizDTO>();
 
     }

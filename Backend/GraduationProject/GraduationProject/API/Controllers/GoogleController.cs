@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Gmail.v1;
+using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Domain.Models;
@@ -184,17 +185,40 @@ namespace GraduationProject.API.Controllers
             if(image == null)
                 image = ICloudinaryService.DefaultUserImagePublicId;
 
+            Guid deviceId;
+
+            if (Guid.TryParse(HttpContext.Request.Cookies["device_id"], out var guid))
+            {
+                deviceId = guid;
+            }
+            else
+            {
+                deviceId = Guid.NewGuid();
+            }
+
+            
+            // (for IP) HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+            // At production if behind a proxy
+
+            var deviceInfo = new DeviceInfo
+            {
+                DeviceId = deviceId,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                UserAgent = HttpContext.Request.Headers["User-Agent"].FirstOrDefault() ?? "Unknown"
+            };
+
             AuthenticatedPayload payload = new()
             {
                 Email = email,
                 Name = name,
                 UniqueId = googleId,
                 ImageUrl = image,
+                DeviceInfo = deviceInfo
             };
             try
             {
-                (ServiceResult<LoginResponse> res, string? rawRefreshToken) = await _loginService.ExternalLogin(GoogleDefaults.DisplayName, payload);
-                if (res.IsSuccess && rawRefreshToken != null)
+                var res = await _loginService.ExternalLogin(GoogleDefaults.DisplayName, payload);
+                if (res.TryGetData(out var data))
                 {
                     var cookieOptions = new CookieOptions
                     {
@@ -205,12 +229,12 @@ namespace GraduationProject.API.Controllers
                         IsEssential = true
                     };
 
-                    HttpContext.Response.Cookies.Append("refreshToken", rawRefreshToken, cookieOptions);
+                    HttpContext.Response.Cookies.Append("refreshToken", data.RefreshToken.Token.ToString(), cookieOptions);
 
                     return GetHtmlContent(new SuccessResponse()
                     {
                         Code = System.Net.HttpStatusCode.OK,
-                        Data = res.Data,
+                        Data = data.LoginResponse,
                         Message = "User logged in successfully."
                     });
 

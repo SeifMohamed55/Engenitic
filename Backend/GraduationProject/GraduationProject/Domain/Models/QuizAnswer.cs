@@ -7,6 +7,7 @@ namespace GraduationProject.Domain.Models
         public QuizAnswer() { }
         public QuizAnswer(AnswerDTO answer)
         {
+            Id = answer.Id;
             AnswerText = answer.AnswerText;
             IsCorrect = answer.IsCorrect;
             Position = answer.Position;

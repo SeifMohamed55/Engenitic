@@ -44,6 +44,7 @@ namespace GraduationProject.StartupConfigurations
              .AddJwtBearer(options =>
              {
                  options.TokenValidationParameters = tokenValidationParameters;
+                 options.SaveToken = true;
 
                  options.Events = new JwtBearerEvents
                  {

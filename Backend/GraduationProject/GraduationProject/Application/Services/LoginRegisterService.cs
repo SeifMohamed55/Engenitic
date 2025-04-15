@@ -7,6 +7,7 @@ using GraduationProject.Infrastructure.Data;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -16,9 +17,9 @@ namespace GraduationProject.Application.Services
 {
     public interface ILoginRegisterService
     {
-        Task<(ServiceResult<LoginResponse>, string?)> Login(LoginCustomRequest model);
-        Task<ServiceResult<string>> Logout(string accessToken, string refreshToken);
-        Task<(ServiceResult<LoginResponse>, string?)> ExternalLogin(string provider, AuthenticatedPayload payload);
+        Task<ServiceResult<LoginWithCookies>> Login(LoginCustomRequest model, DeviceInfo deviceInfo);
+        Task<ServiceResult<string>> Logout(Guid deviceId);
+        Task<ServiceResult<LoginWithCookies>> ExternalLogin(string provider, AuthenticatedPayload payload);
         Task<ServiceResult<AppUserDTO>> Register(RegisterCustomRequest model, bool isExternal);
     }
     public class LoginRegisterService : ILoginRegisterService
@@ -193,40 +194,45 @@ namespace GraduationProject.Application.Services
             }
         }
 
-        public async Task<(ServiceResult<LoginResponse>, string?)> Login(LoginCustomRequest model)
+        public async Task<ServiceResult<LoginWithCookies>> Login(LoginCustomRequest model, DeviceInfo deviceInfo)
         {
-            var user = await _unitOfWork.UserRepo.GetUserWithTokenAndRoles(model.Email);
+            var user = await _unitOfWork.UserRepo.GetUserWithRoles(model.Email);
             if (user == null)
-                return (ServiceResult<LoginResponse>.Failure("Email does not exist"), null);
-
-
-            if (user.RefreshToken != null)
-                _tokenBlacklistService.BlacklistToken
-                    (user.RefreshToken.LatestJwtAccessTokenJti, user.RefreshToken.LatestJwtAccessTokenExpiry);
+                return ServiceResult<LoginWithCookies>.Failure("Email does not exist");
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
 
             if (result.IsLockedOut)
-                return (ServiceResult<LoginResponse>.Failure("User is LockedOut Try again in 5 minutes"), null);
+                return ServiceResult<LoginWithCookies>.Failure("User is LockedOut Try again in 5 minutes");
 
             if (!result.Succeeded)
             {
                 await _userManager.AccessFailedAsync(user);
-                return (ServiceResult<LoginResponse>.Failure("Password is incorrect!"), null);
+                return ServiceResult<LoginWithCookies>.Failure("Password is incorrect!");
             }
 
             await _userManager.ResetAccessFailedCountAsync(user);
-            (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
 
-            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x=> x.Name).ToList());
-
-            refreshToken.LatestJwtAccessTokenJti = jti;
-            refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
-                (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
             try
             {
-                _userService.UpdateRefreshToken(user, refreshToken);
+                await _unitOfWork.TokenRepo.RemoveRevokedOrExpiredByUserId(user.Id);
+
+                var dbToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceInfo.DeviceId);
+
+                if (dbToken == null)
+                    dbToken = _unitOfWork.TokenRepo.GenerateRefreshToken(user.Id, deviceInfo);
+                else if(dbToken.UserId != user.Id)
+                {
+                    return ServiceResult<LoginWithCookies>.Failure("Invalid User Login!");
+                }
+
+                (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x => x.Name).ToList());
+
+                dbToken.LatestJwtAccessTokenJti = jti;
+                dbToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                    (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
+
                 await _unitOfWork.SaveChangesAsync();
 
                 var hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage);
@@ -262,53 +268,38 @@ namespace GraduationProject.Application.Services
                     AccessToken = accessToken
                 };
 
-                return (ServiceResult<LoginResponse>.Success(data), raw);
+                return ServiceResult<LoginWithCookies>.Success(new LoginWithCookies()
+                {
+                    LoginResponse = data,
+                    RefreshToken = dbToken,
+                });
             }
             catch
             {
-                return (ServiceResult<LoginResponse>.Failure("Couldn't SignIn."), null);
+                return ServiceResult<LoginWithCookies>.Failure("Couldn't SignIn.");
             }
 
         }
 
 
-        public async Task<ServiceResult<string>> Logout(string accessToken, string? refreshToken)
+        public async Task<ServiceResult<string>> Logout(Guid deviceId)
         {
-            int id; string accessJti;
-            try
-            {
-                (id, accessJti) = _tokenService.ExtractIdAndJtiFromExpiredToken(accessToken); // allow expired token to signout
-            }
-            catch
-            {
-                return ServiceResult<string>.Failure("Invalid access token.");
-            }
 
-
-            var dbRefreshToken = await _unitOfWork.UserRepo.GetUserRefreshToken(id);
-            if (dbRefreshToken is null || refreshToken is null)
+            var dbRefreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId);
+            if (dbRefreshToken is null)
                 return ServiceResult<string>.Success("User is not Signed In");
 
-/*            if (!_tokenService.VerifyRefresh(refreshToken, dbRefreshToken.EncryptedToken))
-                return ServiceResult<string>.Failure("Invalid refresh token.");
-
-
-            if (accessJti != dbRefreshToken.LatestJwtAccessTokenJti)
-                return ServiceResult<string>.Failure("Latest AccessToken Doesn't match.");*/
-
-            // Get Latest Access Token (from database) and Blacklist it if it's the one sent else ignore it
 
             _tokenBlacklistService.BlacklistToken
                 (dbRefreshToken.LatestJwtAccessTokenJti, dbRefreshToken.LatestJwtAccessTokenExpiry);
 
             try
             {
-                _unitOfWork.TokenRepo.DeleteRefreshToken(dbRefreshToken.Id);
+                dbRefreshToken.IsRevoked = true;
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
             {
-                return ServiceResult<string>.Failure("An error occured.");
             }
 
             return ServiceResult<string>.Success("User Logged Out successfully");
@@ -316,9 +307,9 @@ namespace GraduationProject.Application.Services
         }
 
 
-        public async Task<(ServiceResult<LoginResponse>, string?)> ExternalLogin(string provider, AuthenticatedPayload payload)
+        public async Task<ServiceResult<LoginWithCookies>> ExternalLogin(string provider, AuthenticatedPayload payload)
         {
-            var user = await _unitOfWork.UserRepo.GetUserWithTokenAndRoles(payload.Email);
+            var user = await _unitOfWork.UserRepo.GetUserWithRoles(payload.Email);
 
             if (user == null)
             {
@@ -387,7 +378,7 @@ namespace GraduationProject.Application.Services
                 catch (Exception)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
-                    return (ServiceResult<LoginResponse>.Failure(errors.Select(x => x.Description).ToList()), null);
+                    return (ServiceResult<LoginWithCookies>.Failure(errors.Select(x => x.Description).ToList()));
                 }
             }
             List<string> roles = new List<string>();
@@ -411,61 +402,75 @@ namespace GraduationProject.Application.Services
 
                 var result = await _userManager.AddLoginAsync(user, loginInfo);
                 if (!result.Succeeded)
-                    return (ServiceResult<LoginResponse>.Failure(result.Errors.Select(x => x.Description).ToList()), null);
+                    return ServiceResult<LoginWithCookies>.Failure(result.Errors.Select(x => x.Description).ToList());
             }
-
-            (RefreshToken refreshToken, string raw) = _tokenService.GenerateRefreshToken(user);
-
-            (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, roles.ToList());
-
-            refreshToken.LatestJwtAccessTokenJti = jti;
-            refreshToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
-                (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
 
             try
             {
-                _userService.UpdateRefreshToken(user, refreshToken);
+                await _unitOfWork.TokenRepo.RemoveRevokedOrExpiredByUserId(user.Id);
+
+                var dbToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(payload.DeviceInfo.DeviceId);
+
+                if (dbToken == null)
+                    dbToken = _unitOfWork.TokenRepo.GenerateRefreshToken(user.Id, payload.DeviceInfo);
+                else if (dbToken.UserId != user.Id)
+                {
+                    return ServiceResult<LoginWithCookies>.Failure("Invalid User Login!");
+                }
+
+                (string accessToken, string jti) = _tokenService.GenerateJwtToken(user, user.Roles.Select(x => x.Name).ToList());
+
+                dbToken.LatestJwtAccessTokenJti = jti;
+                dbToken.LatestJwtAccessTokenExpiry = DateTime.UtcNow.AddMinutes
+                    (double.Parse(_jwtOptions.AccessTokenValidityMinutes));
+
                 await _unitOfWork.SaveChangesAsync();
+
+                var hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage);
+                string imgUrl = "";
+                string imgName = "";
+
+                if (hash == null)
+                {
+                    imgUrl = _cloudinaryService.GetImageUrl(ICloudinaryService.DefaultUserImagePublicId, "1");
+                    imgName = "default";
+
+                }
+                else
+                {
+                    imgUrl = _cloudinaryService.GetImageUrl(hash.PublicId, hash.Version);
+                    imgName = hash.PublicId.Split('/').LastOrDefault() ?? "default";
+                }
+
+                var data = new LoginResponse
+                {
+                    Id = user.Id,
+                    Banned = user.Banned,
+                    Name = user.FullName,
+                    Roles = roles.ToList(),
+                    Image = new ImageMetadata
+                    {
+                        ImageURL = imgUrl,
+                        Name = imgName,
+                        Hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.Hash ?? 0
+                    },
+                    ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes))
+                        .ToString("f", CultureInfo.InvariantCulture),
+                    AccessToken = accessToken
+                };
+
+                return ServiceResult<LoginWithCookies>.Success(new LoginWithCookies()
+                {
+                    LoginResponse = data,
+                    RefreshToken = dbToken,
+                });
             }
             catch
             {
-                return (ServiceResult<LoginResponse>.Failure("An Error Occured, Try again later"), null);
+                return ServiceResult<LoginWithCookies>.Failure("An Error Occured, Try again later");
             }
 
-            var hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage);
-            string imgUrl = "";
-            string imgName = "";
-
-            if (hash == null)
-            {
-                imgUrl = _cloudinaryService.GetImageUrl(ICloudinaryService.DefaultUserImagePublicId, "1");
-                imgName = "default";
-
-            }
-            else
-            {
-                imgUrl = _cloudinaryService.GetImageUrl(hash.PublicId, hash.Version);
-                imgName = hash.PublicId.Split('/').LastOrDefault() ?? "default";
-            }
-
-            var data = new LoginResponse
-            {
-                Id = user.Id,
-                Banned = user.Banned,
-                Name = user.FullName,
-                Roles = roles.ToList(),
-                Image = new ImageMetadata
-                {
-                    ImageURL = imgUrl,
-                    Name = imgName,
-                    Hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.Hash ?? 0
-                },
-                ValidTo = DateTime.UtcNow.AddMinutes(double.Parse(_jwtOptions.AccessTokenValidityMinutes))
-                    .ToString("f", CultureInfo.InvariantCulture),
-                AccessToken = accessToken
-            };
-
-            return (ServiceResult<LoginResponse>.Success(data), raw);
+            
 
 
         }

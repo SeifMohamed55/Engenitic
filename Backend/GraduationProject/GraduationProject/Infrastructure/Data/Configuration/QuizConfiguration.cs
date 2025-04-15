@@ -27,7 +27,6 @@ namespace GraduationProject.Infrastructure.Data.Configuration
             builder.HasIndex(u => u.CourseId);
             builder.HasIndex(u => new { u.CourseId, u.Position });
 
-
             builder.HasMany(q => q.Questions)
                 .WithOne(qq => qq.Quiz)
                 .HasForeignKey(qq => qq.QuizId)

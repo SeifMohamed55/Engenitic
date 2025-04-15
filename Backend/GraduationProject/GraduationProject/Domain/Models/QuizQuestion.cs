@@ -7,6 +7,7 @@ namespace GraduationProject.Domain.Models
         public QuizQuestion() { }
         public QuizQuestion(QuestionDTO question)
         {
+            Id = question.Id;
             QuestionText = question.QuestionText;
             Position = question.Position;
             Answers = question.Answers.Select(x => new QuizAnswer(x)).ToList();

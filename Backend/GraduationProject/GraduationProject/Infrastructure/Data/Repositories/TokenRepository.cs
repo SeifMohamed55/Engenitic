@@ -1,32 +1,72 @@
-﻿using GraduationProject.Domain.Models;
+﻿using GraduationProject.API.Requests;
+using GraduationProject.Domain.Models;
+using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Security.Cryptography;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
 
     public interface ITokenRepository : IRepository<RefreshToken>
     {
-        void DeleteRefreshToken(int tokenId);
-        Task<RefreshToken?> GetUserRefreshToken(int tokenId);
+        void DeleteRefreshToken(Guid deviceId);
+        Task<RefreshToken?> GetUserRefreshToken(Guid deviceId);
+        RefreshToken GenerateRefreshToken(int userId, DeviceInfo deviceInfo);
 
+        Task RemoveRevokedOrExpiredByUserId(int id);
     }
 
     public class TokenRepository : Repository<RefreshToken>, ITokenRepository
     {
-        public TokenRepository(AppDbContext context) : base(context)
+        private readonly JwtOptions _jwtOptions;
+        public TokenRepository(AppDbContext context, IOptions<JwtOptions>jwtOptions) : base(context)
         {
-
+            _jwtOptions = jwtOptions.Value;
         }
 
-        public void DeleteRefreshToken(int tokenId)
+        private Guid GenerateSecureToken()
         {
-            Delete(tokenId);
+            var randomNumber = new byte[16];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+            return new Guid(randomNumber);
         }
 
-        public async Task<RefreshToken?> GetUserRefreshToken(int tokenId)
+        public RefreshToken GenerateRefreshToken(int userId, DeviceInfo deviceInfo)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == tokenId);
+            var refreshToken =  new RefreshToken()
+            {
+                DeviceId = deviceInfo.DeviceId,
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
+                LoginProvider = _jwtOptions.Issuer,
+                Token = GenerateSecureToken(),
+                IpAddress = deviceInfo.IpAddress,
+                UserAgent = deviceInfo.UserAgent,
+                UserId = userId,
+            };
+
+            _dbSet.Add(refreshToken);
+            return refreshToken;
         }
 
+        public void DeleteRefreshToken(Guid deviceId)
+        {
+            Delete(deviceId);
+        }
+
+        public async Task<RefreshToken?> GetUserRefreshToken(Guid deviceId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(rt => rt.DeviceId == deviceId);
+        }
+
+        public async Task RemoveRevokedOrExpiredByUserId(int id)
+        {
+            await _dbSet
+                .Where(x => x.UserId == id && (x.IsRevoked || x.ExpiresAt < DateTimeOffset.UtcNow))
+                .ExecuteDeleteAsync();
+        }
     }
 }

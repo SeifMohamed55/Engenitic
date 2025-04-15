@@ -14,10 +14,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     public interface IUserRepository : IRepository<AppUser>
     {
         Task<AppUserDTO?> GetAppUserDTO(int id);
-        Task<AppUser?> GetUserWithTokenAndRoles(int id);
-        Task<AppUser?> GetUserWithTokenAndRoles(string email);
-        Task<RefreshToken?> GetUserRefreshToken(int id);
-        Task<AppUserDTO?> GetUserDTOByEmail(string email);
+        Task<AppUser?> GetUserWithRoles(int id);
+        Task<AppUser?> GetUserWithRoles(string email);
         Task<FileHash> GetUserImageHash(int id);
         Task<AppUser?> GetUserWithFiles(int id);
         Task<PaginatedList<AppUserDTO>> GetBannedUsersDTO(int index);
@@ -39,7 +37,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         {
             return _dbSet
                 .Include(x => x.Roles)
-                .Include(x => x.RefreshToken)
                 .Include(x => x.FileHashes)
                 .OrderBy(x=> x.FullName);
         }
@@ -82,32 +79,15 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<AppUser?> GetUserWithTokenAndRoles(int id)
+        public async Task<AppUser?> GetUserWithRoles(int id)
         {
             return await DefaultQuery()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<AppUser?> GetUserWithTokenAndRoles(string email)
+        public async Task<AppUser?> GetUserWithRoles(string email)
         {
             return await DefaultQuery()
-                .FirstOrDefaultAsync(x => x.Email == email);
-        }
-
-        public async Task<RefreshToken?> GetUserRefreshToken(int id)
-        {
-            return (await _dbSet
-                .Include(x => x.RefreshToken)
-                .FirstOrDefaultAsync(x => x.Id == id))?.RefreshToken;
-        }
-
-
-        public async Task<AppUserDTO?> GetUserDTOByEmail(string email)
-        {
-            return await _dbSet
-                .Include(x => x.Roles)
-                .Include(x => x.RefreshToken)
-                .DTOProjection()
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 

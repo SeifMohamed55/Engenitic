@@ -1,4 +1,5 @@
-﻿using GraduationProject.Domain.Models;
+﻿using GraduationProject.API.Requests;
+using GraduationProject.Domain.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +13,6 @@ namespace GraduationProject.Application.Services
 {
     public interface IJwtTokenService
     {
-        (RefreshToken, string) GenerateRefreshToken(AppUser appUser);
         (string, string) GenerateJwtToken(AppUser userWithTokenAndRoles, List<string> roles);
         (int, string) ExtractIdAndJtiFromExpiredToken(string token);
         bool IsAccessTokenValid(string token);
@@ -70,42 +70,6 @@ namespace GraduationProject.Application.Services
             return (strToken, Jti);
         }
 
-
-        private string GenerateSecureToken()
-        {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-            }
-            return Convert.ToBase64String(randomNumber);
-        }
-
-        public (RefreshToken, string) GenerateRefreshToken(AppUser appUser)
-        {
-            string rawToken;
-            RefreshToken refreshToken;
-
-            if (appUser.RefreshToken != null && !IsRefreshTokenExpired(appUser.RefreshToken))
-            {
-                refreshToken = appUser.RefreshToken;
-                rawToken = _encryptionService.AesDecrypt(refreshToken.EncryptedToken);
-            }
-            else
-            {
-                rawToken = GenerateSecureToken();
-                var encryptedToken = _encryptionService.AesEncrypt(rawToken);
-                refreshToken = new RefreshToken()
-                {
-                    ExpiryDate = DateTimeOffset.UtcNow.AddDays(double.Parse(_jwtOptions.RefreshTokenValidityDays)),
-                    Id = appUser.RefreshTokenId ?? 0,
-                    LoginProvider = _jwtOptions.Issuer,
-                    EncryptedToken = encryptedToken
-                };
-            }
-            return (refreshToken, rawToken);
-           
-        }
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
@@ -209,7 +173,7 @@ namespace GraduationProject.Application.Services
 
         public bool IsRefreshTokenExpired(RefreshToken refreshToken)
         {
-            return refreshToken.ExpiryDate.ToUniversalTime() <= DateTimeOffset.UtcNow;
+            return refreshToken.ExpiresAt.ToUniversalTime() <= DateTimeOffset.UtcNow;
         }
     }
 }

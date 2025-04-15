@@ -15,5 +15,7 @@ namespace GraduationProject.API.Requests
 
         [Required]
         public bool RememberMe { get; set; } = false;
+
+        public Guid? DeviceId { get; set; }
     }
 }
