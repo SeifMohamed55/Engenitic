@@ -34,7 +34,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
   mainCourseResponse: MainCourse = {} as MainCourse;
   levelsTitles: Levels[] = [] as Levels[];
   displayQuiz: boolean = false;
-  safeUrl!: SafeResourceUrl;
   errorString: string = '';
   quizFormGroup = new FormGroup({
     questions: new FormArray<any>([]),
@@ -44,7 +43,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
     private _ActivatedRoute: ActivatedRoute,
     private _CoursesService: CoursesService,
     private _ToastrService: ToastrService,
-    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -65,9 +63,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         next: (res) => {
           console.log(res);
           this.mainCourseResponse = res.data;
-          this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.mainCourseResponse.videoUrl
-          );
           this.creatingAnswers(this.mainCourseResponse);
         },
         error: (err) => {

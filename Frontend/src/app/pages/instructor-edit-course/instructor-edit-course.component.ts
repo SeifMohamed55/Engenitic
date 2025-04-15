@@ -400,9 +400,13 @@ export class InstructorEditCourseComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (res) => {
             console.log(res);
+            this.toastr.success(res.message);
           },
           error: (err) => {
             console.warn(err);
+            err.error
+              ? this.toastr.error(err.error.message)
+              : this.toastr.error(err);
           },
         });
     } else {

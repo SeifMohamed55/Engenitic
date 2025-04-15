@@ -377,9 +377,7 @@
       </button>
     </div>
   </form>
-  <form
-    class=" my-10"
-  >
+  <form class="my-10">
     <div class="form-group">
       <label for="imageUrl">Course Image</label>
       <input
@@ -393,6 +391,12 @@
         {{ fileValidationError }}
       </p>
     </div>
-    <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 font-regular" (click)="onSubmitEditImage($event)">submit image</button>
+    <button
+      type="submit"
+      class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 font-regular"
+      (click)="onSubmitEditImage($event)"
+    >
+      submit image
+    </button>
   </form>
 </main>
