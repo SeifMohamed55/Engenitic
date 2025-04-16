@@ -178,7 +178,15 @@
     type="button"
     class="engenitic-button w-full relative group inline-block hover:enginitic-main-color"
   >
+    <ng-template #continue>
+      <span
+        class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
+      >
+        continue
+      </span>
+    </ng-template>
     <span
+      *ngIf="!isEnrolled; else continue"
       class="transition-opacity duration-500 opacity-100 group-hover:opacity-0"
     >
       enroll

@@ -11,7 +11,15 @@ import { CoursesService } from '../../feature/courses/courses.service';
 import { CourseDetails } from '../../interfaces/courses/course-details';
 import { UserService } from '../../feature/users/user.service';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, takeUntil } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 
 @Component({
@@ -30,9 +38,10 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   private destroy$ = new Subject<void>();
-  courseDetailsResopnse : CourseDetails = {} as CourseDetails;
+  courseDetailsResopnse: CourseDetails = {} as CourseDetails;
   courseId!: number;
   userId!: number;
+  isEnrolled: boolean = false;
   customOptions: OwlOptions = {
     lazyLoad: true,
     mouseDrag: true,
@@ -40,37 +49,44 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
     pullDrag: true,
     dots: true,
     navSpeed: 1000,
-    items : 1,
-    center : true,
-    margin : 150,
+    items: 1,
+    center: true,
+    margin: 150,
   };
 
   ngOnInit(): void {
-    this._UserService.userId
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((userID) => {
-        this.userId = Number(userID);
-      });
-    this._ActivatedRoute.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params) => {
-        this.courseId = Number(params.get('courseId'));
+    combineLatest([this._UserService.userId, this._ActivatedRoute.paramMap])
+      .pipe(
+        takeUntil(this.destroy$),
+        tap(([userID, params]) => {
+          this.userId = Number(userID);
+          this.courseId = Number(params.get('courseId'));
+        }),
+        switchMap(([_, params]) => {
+          const courseId = Number(params.get('courseId'));
+          if (!courseId) return of(null); // or EMPTY if you want to skip entirely
 
-        if (this.courseId) {
-          this._CoursesService.getCourseDetails(this.courseId).subscribe({
-            next: (res) => {
+          return this._CoursesService.getCourseDetails(courseId).pipe(
+            tap((res) => {
               this.courseDetailsResopnse = res.data;
-            },
-            error: (err) => {
+              this.isEnrolled = res.data.isEnrolled || false;
+            }),
+            catchError((err) => {
               console.log(err);
-              if (err.error.message) {
+              if (err.error?.message) {
                 this._ToastrService.error(err.error.message);
-                this._Router.navigate(['/offered-courses']);
+              } else {
+                this._ToastrService.error(
+                  'An error occurred on the server, try again later'
+                );
               }
-            },
-          });
-        }
-      });
+              this._Router.navigate(['/offered-courses']);
+              return of(null); // return a fallback value so the stream doesn't break
+            })
+          );
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -91,7 +107,12 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
         next: (res) => {
           console.log(res);
           this._ToastrService.success(res.message);
-          this._Router.navigate(['/main-course', this.userId, res?.data?.id, this.courseId]);
+          this._Router.navigate([
+            '/main-course',
+            this.userId,
+            res?.data?.id,
+            this.courseId,
+          ]);
         },
         error: (err) => {
           if (err.error.message) {

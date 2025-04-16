@@ -26,7 +26,6 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-
         if (_Router.url === '/login') {
           return throwError(() => error);
         }
