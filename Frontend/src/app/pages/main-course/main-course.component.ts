@@ -2,7 +2,16 @@ import { CommonModule } from '@angular/common';
 import { CoursesService } from './../../feature/courses/courses.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { forkJoin, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+  throwError,
+} from 'rxjs';
 import {
   FormArray,
   FormControl,
@@ -67,8 +76,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: ({ stage, quizTitles }) => {
-          console.log(stage, quizTitles);
-
           this.mainCourseResponse = stage.data;
           this.creatingAnswers(this.mainCourseResponse);
 
@@ -185,17 +192,26 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           console.log(res);
+          this.mainCourseResponse = res.data;
         },
         error: (err) => {
-          console.warn(err);
+          err.error
+            ? this._ToastrService.error(err.error.message)
+            : this._ToastrService.error(
+                'an error has occured try again later !'
+              );
         },
       });
   }
 
   // handling next button
   handleNext(): void {
-    document.body.style.overflow = 'hidden';
-    this.displayQuiz = true;
+    if (
+      this.mainCourseResponse.latestStage === this.mainCourseResponse.position
+    ) {
+      document.body.style.overflow = 'hidden';
+      this.displayQuiz = true;
+    }
   }
 
   // handling quiz closing
@@ -235,19 +251,49 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       quizSubmition.userAnswers.length ===
       this.mainCourseResponse.questions.length
     ) {
-      console.log(quizSubmition);
       this._CoursesService
         .submitQuiz(quizSubmition)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res) => {
-            console.log(res);
+        .pipe(
+          takeUntil(this.destroy$),
+          switchMap((res) => {
             this.errorString = '';
-          },
-          error: (err) => {
-            console.warn(err);
-          },
-        });
+            if (res.data.isPassed) {
+              this._ToastrService.success(res.message);
+              return this._CoursesService
+                .getCurrentStage(this.studentId, this.enrollmentId)
+                .pipe(
+                  tap((res) => {
+                    this.handleClosingQuiz();
+                    this.mainCourseResponse = res.data;
+                  }),
+                  catchError((err) => {
+                    if (err.error?.message) {
+                      this._ToastrService.error(err.error.message);
+                    } else {
+                      this._ToastrService.error(
+                        'An error occurred on the server, try again later'
+                      );
+                    }
+                    return of(null);
+                  })
+                );
+            } else {
+              this._ToastrService.error(res.message);
+              return of(null);
+            }
+          }),
+          catchError((err) => {
+            if (err.error?.message) {
+              this._ToastrService.error(err.error.message);
+            } else {
+              this._ToastrService.error(
+                'An error occurred on the server, try again later'
+              );
+            }
+            return of(null);
+          })
+        )
+        .subscribe();
     } else {
       this.errorString = 'you must complete the quiz in order to submit';
     }
