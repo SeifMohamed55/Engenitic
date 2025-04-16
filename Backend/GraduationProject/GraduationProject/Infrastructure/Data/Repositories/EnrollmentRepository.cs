@@ -55,7 +55,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         public async Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index)
         {
             var query = _dbSet
-                .Where(x => x.UserId == studentId)
+                .Where(x => x.UserId == studentId && !x.Course.hidden)
                 .DTOProjection();
                
             return await PaginatedList<EnrollmentDTO>.CreateAsync(query, index);
