@@ -77,7 +77,7 @@ namespace GraduationProject.Application.Services
                     return ServiceResult<StageResponse>.Failure($"You must finish Stage {enrollment.CurrentStage} first.");
 
                 float progress = GetProgress(enrollment);
-                var quiz = await GetQuizForStage(enrollment.CourseId, enrollment.CurrentStage);
+                var quiz = await GetQuizForStage(enrollment.CourseId, stage);
 
                 if (quiz.TryGetData(out var quizData))
                     return ServiceResult<StageResponse>.Success(new StageResponse(quizData, enrollment.CurrentStage, progress));
