@@ -18,10 +18,12 @@ namespace GraduationProject.API.Controllers
     {
         private readonly ILoginRegisterService _loginService;
         private readonly JwtOptions _jwtOptions;
-        public AuthenticationController(ILoginRegisterService loginService, IOptions<JwtOptions> options)
+        private readonly IJwtTokenService _jwtTokenService;
+        public AuthenticationController(ILoginRegisterService loginService, IOptions<JwtOptions> options, IJwtTokenService jwtTokenService)
         {
             _loginService = loginService;
             _jwtOptions = options.Value;
+            _jwtTokenService = jwtTokenService;
         }
 
         [HttpPost("login")]
@@ -109,21 +111,17 @@ namespace GraduationProject.API.Controllers
 
 
         [HttpPost("logout")]
-        [Authorize]
         public async Task<IActionResult> Revoke()
         {
             var deviceId = HttpContext.Request.Cookies["device_id"];
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var jwt = _jwtTokenService.ExtractJwtTokenFromContext(HttpContext);
 
-            if (Guid.TryParse(deviceId, out var guid))
+
+            if (Guid.TryParse(deviceId, out var guid) && jwt != null)
             {
-               if(!int.TryParse(userId, out int currentUserId))
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Code = System.Net.HttpStatusCode.BadRequest,
-                        Message = "Invalid user id."
-                    });
-                var res = await _loginService.Logout(guid, currentUserId);
+                (int userId, string jti) = _jwtTokenService.ExtractIdAndJtiFromExpiredToken(jwt);
+
+                var res = await _loginService.Logout(guid, userId);
 
                 if(!res.TryGetData(out var data))
                     return Ok(new SuccessResponse()
@@ -155,9 +153,6 @@ namespace GraduationProject.API.Controllers
                     Code = System.Net.HttpStatusCode.OK,
                     Message = "User logged out successfully."
                 });
-                
-
-
             }
             else
                 return Ok(new SuccessResponse()

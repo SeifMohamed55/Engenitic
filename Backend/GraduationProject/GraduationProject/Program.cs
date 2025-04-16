@@ -130,8 +130,6 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<CheckingRefreshTokenAfterAuthorizationMiddleware>();
-
 app.MapControllers();
 
 app.Run();

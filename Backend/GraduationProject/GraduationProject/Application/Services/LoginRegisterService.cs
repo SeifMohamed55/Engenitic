@@ -281,7 +281,7 @@ namespace GraduationProject.Application.Services
 
         public async Task<ServiceResult<RefreshToken>> Logout(Guid deviceId, int userId)
         {
-
+            
             var dbRefreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId, userId);
             if (dbRefreshToken is null)
                 return ServiceResult<RefreshToken>.Failure("User is not Signed In");
@@ -298,7 +298,6 @@ namespace GraduationProject.Application.Services
             catch
             {
             }
-
             return ServiceResult<RefreshToken>.Success(dbRefreshToken);
 
         }
