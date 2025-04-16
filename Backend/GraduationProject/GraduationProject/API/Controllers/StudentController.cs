@@ -212,21 +212,21 @@ namespace GraduationProject.API.Controllers
             try
             {
                 var quizAttempt = await _studentService.AttemptQuiz(userQuizAttempt);
-                if (!quizAttempt.IsSuccess)
+                if (!quizAttempt.TryGetData(out var data))
                     return BadRequest(new ErrorResponse()
                     {
                         Message = quizAttempt.Message,
                         Code = HttpStatusCode.BadRequest,
                     });
 
-                var msg = quizAttempt.Data?.IsPassed != null ? 
+                var msg = data.IsPassed ? 
                     "Congratulations, you have passed the exam." :
                     "YOU HAVE FAILED!";
 
                 return Ok(new SuccessResponse()
                 {
                     Message = msg,
-                    Data = quizAttempt.Data,
+                    Data = data,
                     Code = HttpStatusCode.OK,
                 });
             }
