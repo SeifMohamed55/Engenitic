@@ -122,7 +122,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         public async Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index)
         {
             var query = GetCoursesQuery()
-                .Where(x => x.InstructorId == instructorId)
+                .Where(x => x.InstructorId == instructorId && x.hidden == false)
                 .DTOProjection();
             return await PaginatedList<CourseDTO>.CreateAsync(query, index);
 

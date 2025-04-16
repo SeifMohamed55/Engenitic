@@ -33,7 +33,6 @@ namespace GraduationProject.Common.Middlewares
                 return;
             }
 
-
             await _next(context);
         }
     }

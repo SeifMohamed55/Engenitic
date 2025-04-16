@@ -218,9 +218,14 @@ namespace GraduationProject.API.Controllers
                         Message = quizAttempt.Message,
                         Code = HttpStatusCode.BadRequest,
                     });
+
+                var msg = quizAttempt.Data?.IsPassed != null ? 
+                    "Congratulations, you have passed the exam." :
+                    "YOU HAVE FAILED!";
+
                 return Ok(new SuccessResponse()
                 {
-                    Message = "Quiz Attempted Successfully.",
+                    Message = msg,
                     Data = quizAttempt.Data,
                     Code = HttpStatusCode.OK,
                 });
