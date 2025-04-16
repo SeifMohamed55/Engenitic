@@ -29,7 +29,7 @@ def verify_api_key(api_key: str = Header(...)):
 # Query the API
 def query(input_text):
     payload = {
-        "inputs": f"Fix grammatical and semantic errors in this sentence: {input_text}"
+        "inputs": f"Fix grammatical errors in this sentence: {input_text}"
     }
     response = requests.post(API_URL, headers=headers, json=payload)
     result = response.json()
