@@ -97,7 +97,22 @@ export class MainCourseComponent implements OnInit, OnDestroy {
 
   // view stage
   handleStageClick(position: number): void {
-    console.log(position, this.mainCourseResponse.latestStage);
+    this._CoursesService
+      .getEnrollmentStage(this.studentId, this.enrollmentId, position)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.mainCourseResponse = res.data;
+        },
+        error: (err) => {
+          err.error
+            ? this._ToastrService.error(err.error.message)
+            : this._ToastrService.error(
+                'an error has occured try again later !'
+              );
+        },
+      });
   }
   // getter for the questions array
   get questionsArray(): FormArray {
@@ -181,7 +196,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
 
   // handle previous button
   handlePrevious(): void {
-    console.log(this.mainCourseResponse.position - 1);
     this._CoursesService
       .getEnrollmentStage(
         this.studentId,
@@ -211,6 +225,27 @@ export class MainCourseComponent implements OnInit, OnDestroy {
     ) {
       document.body.style.overflow = 'hidden';
       this.displayQuiz = true;
+    } else {
+      this._CoursesService
+        .getEnrollmentStage(
+          this.studentId,
+          this.enrollmentId,
+          this.mainCourseResponse.position + 1
+        )
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            this.mainCourseResponse = res.data;
+          },
+          error: (err) => {
+            err.error
+              ? this._ToastrService.error(err.error.message)
+              : this._ToastrService.error(
+                  'an error has occured try again later !'
+                );
+          },
+        });
     }
   }
 
