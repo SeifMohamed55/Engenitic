@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserService } from '../feature/users/user.service';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, switchMap, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -58,7 +58,7 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
           catchError((error: HttpErrorResponse) => {
             console.error('Token refresh failed:', error);
             return _UserService.logoutConfirmation().pipe(
-              switchMap(() => {
+              tap(() => {
                 localStorage.clear();
                 _UserService.registered.next('');
                 _UserService.role.next('');

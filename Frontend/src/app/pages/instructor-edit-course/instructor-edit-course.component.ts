@@ -240,6 +240,9 @@ export class InstructorEditCourseComponent implements OnInit, OnDestroy {
   deleteQuiz(): void {
     if (this.quizes.length > 0) {
       this.quizes.removeAt(this.currentLevelIndex);
+      this.quizes.controls.forEach((quiz, index) => {
+        quiz.get('position')?.setValue(index + 1);
+      });
       this.currentLevelIndex = Math.max(0, this.currentLevelIndex - 1);
     }
     this.currentQuestionIndex = this.questions.length - 1;
@@ -248,8 +251,11 @@ export class InstructorEditCourseComponent implements OnInit, OnDestroy {
   deleteQuestion(): void {
     if (this.questions.length > 0) {
       this.questions.removeAt(this.currentQuestionIndex);
-      this.currentQuestionIndex = Math.max(0, this.currentQuestionIndex - 1);
+      this.questions.controls.forEach((question, index) => {
+        question.get('position')?.setValue(index + 1);
+      });
     }
+    this.currentQuestionIndex = Math.max(0, this.currentQuestionIndex - 1);
   }
 
   previousLevelCourse(): void {

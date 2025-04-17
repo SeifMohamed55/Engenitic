@@ -205,7 +205,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.mainCourseResponse = res.data;
         },
         error: (err) => {
@@ -293,6 +292,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
           switchMap((res) => {
             this.errorString = '';
             if (res.data.isPassed) {
+              // if he passed the exam
               this._ToastrService.success(res.message);
               return this._CoursesService
                 .getCurrentStage(this.studentId, this.enrollmentId)
@@ -313,6 +313,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
                   })
                 );
             } else {
+              // if failed
               this._ToastrService.error(res.message);
               return of(null);
             }
