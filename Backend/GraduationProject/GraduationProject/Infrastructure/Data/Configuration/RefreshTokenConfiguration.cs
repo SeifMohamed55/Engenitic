@@ -13,6 +13,9 @@ namespace GraduationProject.Infrastructure.Data.Configuration
             builder.HasKey(x => new { x.DeviceId, x.UserId });
 
             builder.Property(x => x.DeviceId)
+                .HasColumnName("DeviceId");
+
+            builder.Property(x => x.DeviceId)
                 .ValueGeneratedNever();
 
             builder.Property(x=> x.IssuedAt)

@@ -49,6 +49,12 @@ builder.Services.AddHttpClient<IVqaService, VqaService>(client =>
     client.BaseAddress = new Uri("http://localhost:8000/");
 });
 
+builder.Services.AddHttpClient<IMediaValidator, MediaValidator>(client =>
+{
+    client.DefaultRequestHeaders.Add("User-Agent", "MediaValidator");
+    client.Timeout = TimeSpan.FromSeconds(10); // Note: Increase timeout for cloud services
+});
+
 var vqaSection = builder.Configuration.GetSection("VQA");
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var mailingSection = builder.Configuration.GetSection("Authentication").GetSection("Mailing");

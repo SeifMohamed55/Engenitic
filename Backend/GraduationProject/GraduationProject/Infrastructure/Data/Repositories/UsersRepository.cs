@@ -3,6 +3,7 @@ using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
 
-    public interface IUserRepository : IRepository<AppUser>
+    public interface IUserRepository : IBulkRepository<AppUser, int>
     {
         Task<AppUserDTO?> GetAppUserDTO(int id);
         Task<AppUser?> GetUserWithRoles(int id);
@@ -25,7 +26,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
     }
 
-    public class UsersRepository : Repository<AppUser>, IUserRepository
+    public class UsersRepository : BulkRepository<AppUser, int>, IUserRepository
     {
 
 

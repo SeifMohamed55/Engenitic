@@ -61,7 +61,6 @@ namespace GraduationProject.API.Controllers
                     UserAgent = HttpContext.Request.Headers["User-Agent"].FirstOrDefault() ?? "Unknown"
                 };
 
-
                 ServiceResult<LoginWithCookies> res = await _loginService.Login(model, deviceInfo);
 
                 if (res.TryGetData(out var data))

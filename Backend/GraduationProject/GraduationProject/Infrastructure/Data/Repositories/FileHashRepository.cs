@@ -1,18 +1,19 @@
 ﻿using GraduationProject.Application.Services;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
 
-    public interface IFileHashRepository : IRepository<FileHash>
+    public interface IFileHashRepository : IBulkRepository<FileHash, int>
     {
         Task<FileHash> GetDefaultUserImageAsync();
         Task<FileHash> GetDefaultCourseImageAsync();
         bool IsDefaultCourseImageHash(FileHash hash);
         bool IsDefaultUserImageHash(FileHash hash);
     }
-    public class FileHashRepository : Repository<FileHash>, IFileHashRepository
+    public class FileHashRepository : BulkRepository<FileHash, int>, IFileHashRepository
     {
         public FileHashRepository(AppDbContext context) : base(context)
         {

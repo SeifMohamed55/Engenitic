@@ -1,6 +1,8 @@
 ﻿namespace GraduationProject.Infrastructure.Data
 {
+    using GraduationProject.Domain.Models;
     using GraduationProject.Infrastructure.Data.Repositories;
+    using GraduationProject.Infrastructure.Data.Repositories.Base;
     using Microsoft.EntityFrameworkCore.Storage;
     using System;
 
@@ -14,7 +16,9 @@
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
         public IFileHashRepository FileHashRepo { get; }
-        public IQuizQuestionRepository QuizQuestionRepository { get; set; }
+        public IQuizQuestionRepository QuizQuestionRepo { get; set; }
+        public IBulkRepository<QuizAnswer,int> QuizAnswerRepo { get; set; }
+        public IReviewRepository ReviewRepository { get; set; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();
@@ -37,7 +41,9 @@
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
         public IFileHashRepository FileHashRepo { get; }
-        public IQuizQuestionRepository QuizQuestionRepository { get; set; }
+        public IQuizQuestionRepository QuizQuestionRepo { get; set; }
+        public IBulkRepository<QuizAnswer, int> QuizAnswerRepo { get; set; }
+        public IReviewRepository ReviewRepository { get; set; }
 
 
 
@@ -52,7 +58,9 @@
             ITagsRepository tagsRepository,
             IUserLoginRepository userLoginRepository,
             IFileHashRepository fileHashRepository,
-            IQuizQuestionRepository quizQuestionRepository
+            IQuizQuestionRepository quizQuestionRepository,
+            IReviewRepository reviewRepository,
+            IBulkRepository<QuizAnswer, int> quizAnswerRepo
             )
         {
             _context = context;
@@ -64,7 +72,9 @@
             TagsRepo = tagsRepository;
             UserLoginRepo = userLoginRepository;
             FileHashRepo = fileHashRepository;
-            QuizQuestionRepository = quizQuestionRepository;
+            QuizQuestionRepo = quizQuestionRepository;
+            ReviewRepository = reviewRepository;
+            QuizAnswerRepo = quizAnswerRepo;    
         }
 
         public async Task SaveChangesAsync()

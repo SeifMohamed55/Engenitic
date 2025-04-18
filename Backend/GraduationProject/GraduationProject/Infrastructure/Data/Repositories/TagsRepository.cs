@@ -1,10 +1,11 @@
 ﻿using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-    public interface ITagsRepository : IRepository<Tag>
+    public interface ITagsRepository : IBulkRepository<Tag, int>
     {
         Tag AddTag(string tag);
         Task<Tag?> GetTagByValueAsync(string value);
@@ -13,7 +14,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
     }
 
-    public class TagsRepository : Repository<Tag>, ITagsRepository
+    public class TagsRepository : BulkRepository<Tag, int>, ITagsRepository
     {
         public TagsRepository(AppDbContext context) : base(context)
         {

@@ -1,6 +1,6 @@
 ﻿namespace GraduationProject.Domain.Models
 {
-    public class UserEnrollment
+    public class UserEnrollment : IEntity<int>
     {
         public int Id { get; set; }
         public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;

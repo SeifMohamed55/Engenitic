@@ -1,13 +1,13 @@
 ﻿namespace GraduationProject.Domain.Models
 {
-    public class UserQuizAttempt
+    public class UserQuizAttempt : IEntity<int>
     {
         public int Id { get; set; }
         public int UserScore { get; set; }
         public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
 
-        public int QuizId { get; set; }
-        public Quiz Quiz { get; set; } = null!;
+        public int? QuizId { get; set; }
+        public Quiz? Quiz { get; set; } = null!;
 
         public int UserEnrollmentId { get; set; }
         public UserEnrollment UserEnrollment { get; set; } = null!;

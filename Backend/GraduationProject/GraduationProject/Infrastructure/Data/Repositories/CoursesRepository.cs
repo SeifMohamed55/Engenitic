@@ -5,6 +5,7 @@ using GraduationProject.Application.Services;
 using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using System.Collections.Frozen;
@@ -13,7 +14,7 @@ using System.Data;
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
 
-    public interface ICourseRepository : IRepository<Course>
+    public interface ICourseRepository : IBulkRepository<Course, int>
     {
         Task<CourseDetailsResponse?> GetDetailsById(int id);
         Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
@@ -24,19 +25,19 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         // Edit, Add, Remove
         Task<Course> MakeCourse(RegisterCourseRequest course, FileHash hash);
-        Task<Course> EditCourse(EditCourseRequest course);
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
         Task AddCourseToTag(int courseId, List<TagDTO> tag);
         Task<int?> GetCourseInstructorId(int courseId);
         Task<Course?> GetCourseWithImageAndInstructor(int id);
-        Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
+        Task<EditCourseRequest?> GetEditCourseRequestWithQuizes(int courseId);
+        Task<Course?> GetCourseWithQuizes(int courseId);
 
         //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
 
         Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses);
         Task<QuizQuestionAnswerIds?> GetQuizesQuestionAndAnswerIds(int courseId);
     }
-    public class CoursesRepository : Repository<Course>, ICourseRepository
+    public class CoursesRepository : BulkRepository<Course, int>, ICourseRepository
     {
 
         private readonly DbSet<Tag> _tags;
@@ -151,32 +152,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return courseDb;
         }
 
-        public async Task<Course> EditCourse(EditCourseRequest courseReq)
-        {
-            var tags = await _tags
-                .Where(t => courseReq.Tags.Select(x => x.Id).Contains(t.Id))
-                .ToListAsync();
-
-            var dbCourse = await _dbSet
-                .Include(c => c.Quizes)
-                .Include(c => c.Tags)
-                .Include(c => c.FileHash)
-                .Include(c => c.Instructor)
-                .FirstOrDefaultAsync(x => x.Id == courseReq.Id);
-
-            if (dbCourse == null)
-                throw new Exception();
-
-            dbCourse.Quizes.Clear();
-            dbCourse.Tags.Clear();
-
-            dbCourse.UpdateFromRequest(courseReq, tags);
-
-            Update(dbCourse);
-
-            return dbCourse;
-        }
-
         public async Task AddCourseToTag(int courseId, List<TagDTO> tags)
         {
             var course = await _dbSet.FirstOrDefaultAsync(x => x.Id == courseId);
@@ -200,7 +175,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return res.InstructorId;
         }
 
-        public async Task<EditCourseRequest?> GetCourseWithQuizes(int courseId)
+        public async Task<EditCourseRequest?> GetEditCourseRequestWithQuizes(int courseId)
         {
             return await GetCourseWithQuizesCompiled(_context, courseId);
         }
@@ -218,29 +193,42 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         public async Task<QuizQuestionAnswerIds?> GetQuizesQuestionAndAnswerIds(int courseId)
         {      
             var dbIds = await _dbSet
-                .Include(q => q.Quizes)
-                    .ThenInclude(q => q.Questions)
-                        .ThenInclude(q => q.Answers)
                 .Where(x=> x.Id == courseId)
                 .Select(x => new 
                 {
                     QuestionIds = x.Quizes.SelectMany(q => q.Questions).Select(q => q.Id).ToList(),
 
                     AnswerIds = x.Quizes.SelectMany(q => q.Questions).SelectMany(q => q.Answers)
-                    .Select(a => a.Id).ToList()
+                        .Select(a => a.Id).ToList(),
+
+                    QuizzesIds = x.Quizes.Select(x=> x.Id).ToList()
                 })
                 .FirstOrDefaultAsync();
 
             if (dbIds == null)
                 return null;
 
+            dbIds.QuestionIds.Add(0);
+            dbIds.AnswerIds.Add(0);
+            dbIds.QuizzesIds.Add(0);
+
             return new QuizQuestionAnswerIds()
             {
-                QuestionIds = dbIds.QuestionIds.ToFrozenSet(),
-                AnswerIds = dbIds.AnswerIds.ToFrozenSet()
+                QuestionIds = dbIds.QuestionIds.ToHashSet(),
+                AnswerIds = dbIds.AnswerIds.ToHashSet(),
+                QuizzesIds = dbIds.QuizzesIds.ToHashSet()
             };
 
 
+        }
+
+        public async Task<Course?> GetCourseWithQuizes(int courseId)
+        {
+            return await _dbSet
+                .Include(x => x.Quizes)
+                    .ThenInclude(x => x.Questions)
+                        .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(x => x.Id == courseId);
         }
 
         private static readonly Func<AppDbContext, int, Task<EditCourseRequest?>> GetCourseWithQuizesCompiled =

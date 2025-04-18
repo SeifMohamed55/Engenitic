@@ -5,7 +5,7 @@ namespace GraduationProject.Domain.Models;
 
 public class RefreshToken
 {
-    public required Guid DeviceId { get; set; }
+    public required Guid DeviceId { get; set; } // DeviceId
     public required Guid Token { get; set; }
     public required string IpAddress { get; set; } = null!;
     public required string UserAgent { get; set; } = null!;

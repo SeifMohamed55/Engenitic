@@ -3,7 +3,7 @@
 namespace GraduationProject.Domain.Models
 {
     // TODO: Add Stages, Requirements and Tags
-    public class Course
+    public class Course : IEntity<int>
     {
         public Course() { }
         public Course(RegisterCourseRequest course, List<Tag> tags, FileHash hash)
@@ -28,6 +28,7 @@ namespace GraduationProject.Domain.Models
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public double AverageRating { get; set; }
 
         public int InstructorId { get; set; }
         public AppUser Instructor { get; set; } = null!;
@@ -38,16 +39,15 @@ namespace GraduationProject.Domain.Models
         public ICollection<Quiz> Quizes { get; set; } = new List<Quiz>();
         public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>();
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
-        public void UpdateFromRequest(EditCourseRequest course, List<Tag> tags)
+        public void UpdateFromRequest(EditCourseRequest course)
         {
             Code = course.Code;
             Title = course.Title;
             Description = course.Description;
             Requirements = course.Requirements;
-            Quizes = course.Quizes.Select(x => new Quiz(x)).ToList();
             Stages = Quizes.Count;
-            Tags = tags;
         }
 
     }

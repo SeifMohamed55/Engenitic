@@ -2,7 +2,7 @@
 
 namespace GraduationProject.Domain.Models
 {
-    public class QuizQuestion
+    public class QuizQuestion : IEntity<int>
     {
         public QuizQuestion() { }
         public QuizQuestion(QuestionDTO question)
@@ -21,6 +21,12 @@ namespace GraduationProject.Domain.Models
         public Quiz Quiz { get; set; } = null!;
 
         public ICollection<QuizAnswer> Answers { get; set; } = null!;
+
+        public void UpdateFromDto(QuestionDTO question)
+        {
+            QuestionText = question.QuestionText;
+            Position = question.Position;
+        }
     }
 
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GraduationProject.Domain.Models
 {
-    public class AppUser : IdentityUser<int>
+    public class AppUser : IdentityUser<int>, IEntity<int>
     {
         [ProtectedPersonalData]
         public override string Email { get; set; } = null!;
@@ -17,9 +17,10 @@ namespace GraduationProject.Domain.Models
         public ICollection<Course> Courses { get; set; } = new List<Course>(); // Course Maker
         public ICollection<UserEnrollment> Enrollments { get; set; } = new List<UserEnrollment>(); // Student
         public ICollection<FileHash> FileHashes { get; set; } = new List<FileHash>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         public void UpdateFromDTO(AppUserDTO dto)
-        {
+        { 
             Id = dto.Id;
             Email = dto.Email;
             PhoneNumber = dto.PhoneNumber;

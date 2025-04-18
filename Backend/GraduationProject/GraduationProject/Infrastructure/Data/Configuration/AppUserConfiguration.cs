@@ -55,6 +55,12 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .WithMany(x => x.Users)
                 .UsingEntity("AppUserFileHash");
 
+            builder.HasMany(x => x.Reviews)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 
