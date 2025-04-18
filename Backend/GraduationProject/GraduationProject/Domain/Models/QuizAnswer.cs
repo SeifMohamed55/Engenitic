@@ -2,7 +2,7 @@
 
 namespace GraduationProject.Domain.Models
 {
-    public class QuizAnswer // each question has 1 answer
+    public class QuizAnswer : IEntity<int> // each question has 1 correct answer
     {
         public QuizAnswer() { }
         public QuizAnswer(AnswerDTO answer)
@@ -19,6 +19,13 @@ namespace GraduationProject.Domain.Models
 
         public int QuestionId { get; set; }
         public QuizQuestion Question { get; set; } = null!;
+
+        public void UpdateFromDto(AnswerDTO answer)
+        {
+            AnswerText = answer.AnswerText;
+            IsCorrect = answer.IsCorrect;
+            Position = answer.Position;
+        }
     }
 
 

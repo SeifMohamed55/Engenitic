@@ -1,5 +1,6 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

@@ -2,7 +2,7 @@
 
 namespace GraduationProject.Domain.Models
 {
-    public class Tag
+    public class Tag : IEntity<int>
     {
         public Tag(TagDTO dto)
         {

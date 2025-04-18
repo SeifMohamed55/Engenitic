@@ -2,7 +2,7 @@
 
 namespace GraduationProject.Domain.Models
 {
-    public class Quiz
+    public class Quiz : IEntity<int>
     {
         public Quiz() { }
         public Quiz(QuizDTO quiz)
@@ -26,6 +26,14 @@ namespace GraduationProject.Domain.Models
         public Course Course { get; set; } = null!;
 
         public ICollection<QuizQuestion> Questions { get; set; } = new List<QuizQuestion>();
+
+        public void UpdateFromRequest(QuizDTO quiz)
+        {
+            Title = quiz.Title;
+            VideoUrl = quiz.VideoUrl;
+            Position = quiz.Position;
+            Description = quiz.Description;
+        }
     }
 
 

@@ -50,6 +50,12 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .WithMany(x => x.Courses)
                 .HasForeignKey(x => x.HashId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(c => c.Reviews)
+                .WithOne(s => s.Course)
+                .HasForeignKey(s => s.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 

@@ -1,7 +1,9 @@
 ﻿using CloudinaryDotNet;
 using GraduationProject.Application.Services;
+using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data;
 using GraduationProject.Infrastructure.Data.Repositories;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using static GraduationProject.Application.Services.ICoursesService;
 
 namespace GraduationProject.StartupConfigurations
@@ -25,6 +27,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<IGmailServiceHelper, GmailServiceHelper>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBulkRepository<QuizAnswer, int>, BulkRepository<QuizAnswer, int>>();
             services.AddScoped<IUserRepository, UsersRepository>();
             services.AddScoped<IQuizRepository, QuizRepository>();
             services.AddScoped<ICourseRepository, CoursesRepository>();
@@ -35,6 +38,8 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<IFileHashRepository, FileHashRepository>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IQuizQuestionRepository, QuizQuestionRepository>();
+            services.AddScoped<IReviewRepository, ReviewsRepository>();
+
 
             services.AddScoped<IUploadingService, UploadingService>();
             services.AddScoped<ILoginRegisterService, LoginRegisterService>();
@@ -42,6 +47,7 @@ namespace GraduationProject.StartupConfigurations
             services.AddScoped<ICoursesService, CoursesService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
             return services;
         }

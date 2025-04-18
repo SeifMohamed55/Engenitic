@@ -2,7 +2,7 @@
 
 namespace GraduationProject.Domain.Models
 {
-    public class FileHash
+    public class FileHash : IEntity<int>
     {
         public int Id { get; set; }
         public string PublicId { get; set; } = null!;

@@ -17,8 +17,6 @@ namespace GraduationProject.Infrastructure.Data.Configuration
 
             builder.HasIndex(u => u.Position);
 
-
-
         }
     }
 

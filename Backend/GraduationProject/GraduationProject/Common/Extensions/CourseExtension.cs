@@ -10,8 +10,6 @@ namespace GraduationProject.Common.Extensions
         public static IQueryable<CourseDTO> DTOProjection(this IQueryable<Course> query)
         {
             return query
-                .Include(x => x.FileHash)
-                .Include(x => x.Instructor)
                 .Select(x => new CourseDTO()
                 {
                     Code = x.Code,

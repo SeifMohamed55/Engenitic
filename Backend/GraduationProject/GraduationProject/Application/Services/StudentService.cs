@@ -151,7 +151,7 @@ namespace GraduationProject.Application.Services
             var enrollment = await GetAndValidateEnrollment(quizAttempt.EnrollmentId, quizAttempt.UserId);
             if (enrollment.TryGetData(out var userEnrollment))
             {
-                var quizDict = await _unitOfWork.QuizQuestionRepository.GetQuizWithQuestionsByIdAsync(quizAttempt.QuizId);
+                var quizDict = await _unitOfWork.QuizQuestionRepo.GetQuizWithQuestionsByIdAsync(quizAttempt.QuizId);
                 int passCount = 0;
 
                 var userQuestionIds = quizAttempt.UserAnswers.Select(x => x.QuestionId).OrderBy(x => x).ToList();

@@ -22,7 +22,6 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .WithOne(x => x.Question)
                 .HasForeignKey(x => x.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GraduationProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250416171602_AddingReviewsAndComments")]
+    partial class AddingReviewsAndComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace GraduationProject.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AppUserFileHash", (string)null);
+                    b.ToTable("AppUserFileHash");
                 });
 
             modelBuilder.Entity("CourseTag", b =>
@@ -140,7 +143,7 @@ namespace GraduationProject.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("GraduationProject.Domain.Models.Course", b =>
+            modelBuilder.Entity("GraduationProject.Domain.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,8 +151,48 @@ namespace GraduationProject.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("AverageRating")
-                        .HasColumnType("double precision");
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .IsUnicode(true)
+                        .HasColumnType("citext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Depth")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReviewId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments", (string)null);
+                });
+
+            modelBuilder.Entity("GraduationProject.Domain.Models.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasMaxLength(10)
@@ -414,6 +457,12 @@ namespace GraduationProject.Migrations
 
                     b.Property<byte>("Rating")
                         .HasColumnType("smallint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .IsUnicode(true)
+                        .HasColumnType("citext");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -715,6 +764,32 @@ namespace GraduationProject.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GraduationProject.Domain.Models.Comment", b =>
+                {
+                    b.HasOne("GraduationProject.Domain.Models.Comment", "Parent")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GraduationProject.Domain.Models.Review", "Review")
+                        .WithMany("Comments")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GraduationProject.Domain.Models.AppUser", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Review");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GraduationProject.Domain.Models.Course", b =>
                 {
                     b.HasOne("GraduationProject.Domain.Models.FileHash", "FileHash")
@@ -913,6 +988,8 @@ namespace GraduationProject.Migrations
 
             modelBuilder.Entity("GraduationProject.Domain.Models.AppUser", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Courses");
 
                     b.Navigation("Enrollments");
@@ -920,6 +997,11 @@ namespace GraduationProject.Migrations
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("GraduationProject.Domain.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Models.Course", b =>
@@ -944,6 +1026,11 @@ namespace GraduationProject.Migrations
             modelBuilder.Entity("GraduationProject.Domain.Models.QuizQuestion", b =>
                 {
                     b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("GraduationProject.Domain.Models.Review", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("GraduationProject.Domain.Models.UserEnrollment", b =>

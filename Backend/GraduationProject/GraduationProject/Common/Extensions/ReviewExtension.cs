@@ -6,38 +6,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Common.Extensions
 {
-    public static class AppUserExtension
+    public static class ReviewExtensions
     {
-        public static IQueryable<AppUserDTO> DTOProjection(this IQueryable<AppUser> query)
+        public static IQueryable<ReviewDTO> DTOProjection(this IQueryable<Review> query)
         {
             return query
-                .Include(x => x.FileHashes)
-                .Select(x => new AppUserDTO
+                .Include(x => x.User)
+                    .ThenInclude(x=> x.FileHashes)
+                .Select(x => new ReviewDTO
                 {
-                    Id = x.Id,
-                    Email = x.Email,
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneRegionCode = x.PhoneRegionCode,
-                    UserName = x.FullName,
-                    Banned = x.Banned,
-                    IsExternal = x.IsExternal,
-                    IsEmailConfirmed = x.EmailConfirmed,
-                    Image = new()
+                    ReviewId = x.Id,
+                    Content = x.Content,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    UserId = x.UserId,
+                    CourseId = x.CourseId,
+                    FullName = x.User.FullName,
+                    ImageMetadata = new()
                     {
-                        ImageURL = x.FileHashes
+                        ImageURL = x.User.FileHashes
                               .Where(z => z.Type == CloudinaryType.UserImage)
                               .Select(z => z.PublicId)
                               .FirstOrDefault() ?? ICloudinaryService.DefaultUserImagePublicId,
                         Name = "user image",
-                        Hash = x.FileHashes
+                        Hash = x.User.FileHashes
                               .Where(z => z.Type == CloudinaryType.UserImage)
                               .Select(z => z.Hash)
                               .FirstOrDefault(),
-                        Version = x.FileHashes
+                        Version = x.User.FileHashes
                                .Where(z => z.Type == CloudinaryType.UserImage)
                               .Select(z => z.Version)
                               .FirstOrDefault() ?? "1"
-                    }
+                    },
+                    Rating = x.Rating,
                 });
         }
     }

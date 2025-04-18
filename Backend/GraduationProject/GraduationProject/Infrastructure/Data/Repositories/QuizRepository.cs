@@ -1,19 +1,22 @@
-﻿using GraduationProject.API.Responses;
+﻿using GraduationProject.API.Requests;
+using GraduationProject.API.Responses;
 using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Frozen;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
 
-    public interface IQuizRepository : IRepository<Quiz>
+    public interface IQuizRepository : IBulkRepository<Quiz, int>
     {
         Task<QuizDTO?> GetQuizByCourseAndPosition(int courseId, int position);
         Task<bool> AddUserQuizAttempt(UserQuizAttemptDTO userQuizAttempt); // TODO: Implement this method
         Task<List<QuizTitleResponse>> GetQuizesTitle(int courseId);
     }
-    public class QuizRepository : Repository<Quiz>, IQuizRepository
+    public class QuizRepository : BulkRepository<Quiz, int>, IQuizRepository
     {
         private AppDbContext _context { get; set; }
 
@@ -46,6 +49,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 })
                 .AsSingleQuery()
                 .FirstOrDefault());
+
 
         public QuizRepository(AppDbContext context) : base(context)
         {
@@ -99,5 +103,6 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 .OrderBy(x=> x.Position)
                 .ToListAsync();
         }
+
     }
 }
