@@ -1,8 +1,8 @@
 <main class="container pt-10">
   <div class="grid grid-cols-2 items-center gap-32">
-    <div *ngIf="!courseDetailsResopnse">Loading...</div>
+    <ng-template #loading>Loading...</ng-template>
     <div
-      *ngIf="courseDetailsResopnse"
+      *ngIf="courseDetailsResopnse; else loading"
       class="flex justify-between items-start flex-col gap-10"
     >
       <h1 class="font-display text-header mb-6">
@@ -35,7 +35,7 @@
       />
     </figure>
   </div>
-  <section class="py-10 flex justify-between items-start gap-20">
+  <section class="py-10 grid grid-cols-1 items-start gap-20">
     <div class="flex flex-col justify-between gap-4">
       <h3 class="font-display text-secondary-header">learner reviews</h3>
       <p class="py-10">
@@ -47,7 +47,7 @@
         <div class="flex justify-between items-center gap-5">
           <p class="font-display w-[50px]">5 stars</p>
           <div
-            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+            class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
             <span
               class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
@@ -58,7 +58,7 @@
         <div class="flex justify-between items-center gap-5">
           <p class="font-display w-[50px]">4 stars</p>
           <div
-            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+            class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
             <span
               class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
@@ -69,7 +69,7 @@
         <div class="flex justify-between items-center gap-5">
           <p class="font-display w-[50px]">3 stars</p>
           <div
-            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+            class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
             <span
               class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
@@ -80,7 +80,7 @@
         <div class="flex justify-between items-center gap-5">
           <p class="font-display w-[50px]">2 stars</p>
           <div
-            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+            class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
             <span
               class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
@@ -91,7 +91,7 @@
         <div class="flex justify-between items-center gap-5">
           <p class="font-display w-[50px]">1 stars</p>
           <div
-            class="w-[300px] h-[7px] border rounded relative flex overflow-hidden"
+            class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
             <span
               class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
@@ -108,7 +108,7 @@
           class="flex flex-col justify-between gap-20 w-full"
           carouselSlide
         >
-          <div class="border rounded-xl p-10 flex justify-between gap-10">
+          <div class="border rounded-xl p-10 flex justify-start gap-10">
             <div
               class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
             >
@@ -130,7 +130,7 @@
           class="flex flex-col justify-between gap-20 w-full"
           carouselSlide
         >
-          <div class="border rounded-xl p-10 flex justify-between gap-10">
+          <div class="border rounded-xl p-10 flex justify-start gap-10">
             <div
               class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
             >
@@ -152,7 +152,7 @@
           class="flex flex-col justify-between gap-20 w-full"
           carouselSlide
         >
-          <div class="border rounded-xl p-10 flex justify-between gap-10">
+          <div class="border rounded-xl p-10 flex justify-start gap-10">
             <div
               class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
             >
@@ -171,6 +171,39 @@
           </div>
         </ng-template>
       </owl-carousel-o>
+    </div>
+  </section>
+  <section>
+    <h2 class="font-display text-[42px]">some recommended courses :</h2>
+    <div
+      class="py-10 grid md:grid-cols-2 xl:grid-cols-4 gap-10"
+      *ngIf="randomCourses; else loading"
+    >
+      <div
+        class="image-zoom shadow-container rounded-xl overflow-hidden border flex justify-between flex-col items-start"
+        *ngFor="let course of randomCourses"
+      >
+        <figure class="w-full" title="courseImage">
+          <img
+            [src]="course.image.imageURL"
+            [alt]="course.image.name"
+            class="w-full h-[200px] object-cover"
+          />
+        </figure>
+        <article class="p-4">
+          <h3 class="font-display py-3 text-[24px] font-bold tracking-wider">
+            {{ course.title }}
+          </h3>
+          <p class="font-regular text-sm">
+            {{ course.description }}
+          </p>
+          <a
+            [routerLink]="['/course-details', course.id]"
+            class="py-3 text-[#58B6B8] block"
+            >Read more <i class="fa-solid fa-arrow-right-long opacity-0"></i
+          ></a>
+        </article>
+      </div>
     </div>
   </section>
   <button

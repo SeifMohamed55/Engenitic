@@ -11,13 +11,34 @@
   background: #58b6b8; /* active dot color */
 }
 
-::ng-deep .my-carousel .owl-dots  {
-  margin-top: 6rem !important;
+::ng-deep .my-carousel .owl-dots {
+  margin-top: 3rem !important;
   display: flex !important;
-  justify-content: start !important;
+  justify-content: center !important;
 }
 
 ::ng-deep .my-carousel .owl-dots .owl-dot {
   display: inline-block !important;
   margin: 0 4px;
+}
+
+.image-zoom {
+  & > figure > img {
+    transition-property: transform;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+  }
+  & > article > a > i {
+    transition: transform 400ms ease-in, opacity 400ms ease-in-out;
+  }
+  &:hover {
+    & > figure > img {
+      transform: scale(1.2);
+    }
+
+    & > article > a > i {
+      transform: translate(10px);
+      opacity: 100;
+    }
+  }
 }

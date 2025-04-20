@@ -165,4 +165,8 @@ export class CoursesService {
       value
     );
   }
+
+  GetRandomCourses() : Observable <any> {
+    return this._HttpClient.get(`https://localhost/api/courses/random4`);
+  }
 }

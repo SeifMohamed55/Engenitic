@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CoursesService } from '../../feature/courses/courses.service';
 import { CourseDetails } from '../../interfaces/courses/course-details';
 import { UserService } from '../../feature/users/user.service';
@@ -15,16 +15,19 @@ import {
   catchError,
   combineLatest,
   of,
+  startWith,
   Subject,
   switchMap,
+  take,
   takeUntil,
   tap,
 } from 'rxjs';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
+import { Course } from '../../interfaces/courses/course';
 
 @Component({
   selector: 'app-course-details',
-  imports: [ReactiveFormsModule, CommonModule, CarouselModule],
+  imports: [ReactiveFormsModule, CommonModule, CarouselModule, RouterModule],
   templateUrl: './course-details.component.html',
   styleUrl: './course-details.component.scss',
 })
@@ -38,7 +41,9 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   private destroy$ = new Subject<void>();
+  private refreshRandomCourses$ = new Subject<void>();
   courseDetailsResopnse: CourseDetails = {} as CourseDetails;
+  randomCourses: Course[] = [];
   courseId!: number;
   userId!: number;
   isEnrolled: boolean = false;
@@ -55,16 +60,27 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    combineLatest([this._UserService.userId, this._ActivatedRoute.paramMap])
+    combineLatest([
+      this._UserService.userId,
+      this._ActivatedRoute.paramMap,
+      // Use the refresh trigger to force refetch
+      this.refreshRandomCourses$.pipe(
+        startWith(void 0), // Initial fetch
+        switchMap(() => this._CoursesService.GetRandomCourses())
+      ),
+    ])
       .pipe(
         takeUntil(this.destroy$),
-        tap(([userID, params]) => {
+        tap(([userID, params, courses]) => {
           this.userId = Number(userID);
           this.courseId = Number(params.get('courseId'));
+          if (courses) {
+            this.randomCourses = courses.data;
+          }
         }),
         switchMap(([_, params]) => {
           const courseId = Number(params.get('courseId'));
-          if (!courseId) return of(null); // or EMPTY if you want to skip entirely
+          if (!courseId) return of(null);
 
           return this._CoursesService.getCourseDetails(courseId).pipe(
             tap((res) => {
@@ -72,21 +88,28 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
               this.isEnrolled = res.data.isEnrolled || false;
             }),
             catchError((err) => {
-              console.log(err);
-              if (err.error?.message) {
-                this._ToastrService.error(err.error.message);
-              } else {
-                this._ToastrService.error(
-                  'An error occurred on the server, try again later'
-                );
-              }
-              this._Router.navigate(['/offered-courses']);
-              return of(null); // return a fallback value so the stream doesn't break
+              this.handleError(err);
+              return of(null);
             })
           );
         })
       )
       .subscribe();
+
+    // Trigger refresh when route params change
+    this._ActivatedRoute.paramMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.refreshRandomCourses$.next();
+      });
+  }
+
+  private handleError(err: any): void {
+    console.error(err);
+    const errorMessage =
+      err.error?.message || 'An error occurred on the server, try again later';
+    this._ToastrService.error(errorMessage);
+    this._Router.navigate(['/offered-courses']);
   }
 
   ngOnDestroy(): void {
