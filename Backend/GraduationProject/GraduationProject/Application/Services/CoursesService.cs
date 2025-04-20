@@ -98,6 +98,12 @@ namespace GraduationProject.Application.Services
 
                 course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL, course.Image.Version);
 
+                var stats = await _unitOfWork.ReviewRepository.GetCourseRatingStats(courseId);
+                if (stats == null)
+                    return null;
+                
+                course.RatingStats = stats;
+                
                 return course;
 
             }

@@ -16,7 +16,6 @@ namespace GraduationProject.API.Responses
             Description = course.Description;
             InstructorName = course.Instructor.FullName;
             InstructorEmail = course.Instructor.Email;
-            InstructorPhone = course.Instructor.PhoneNumber;
             Requirements = course.Requirements;
             Image = new()
             {
@@ -24,6 +23,7 @@ namespace GraduationProject.API.Responses
                 Name = nameFunc(course.FileHash.PublicId),
                 Hash = course.FileHash.Hash,
             };
+            RatingStats = new RatingStats();
         }
 
         public int Id { get; set; }
@@ -32,10 +32,10 @@ namespace GraduationProject.API.Responses
         public string Description { get; set; } = null!;
         public string InstructorName { get; set; } = null!;
         public string InstructorEmail { get; set; } = null!;
-        public string? InstructorPhone { get; set; }
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
         public bool IsEnrolled { get; set; } = false;
         public ImageMetadata Image { get; set; }
+        public RatingStats RatingStats { get; set; }
     }
 }

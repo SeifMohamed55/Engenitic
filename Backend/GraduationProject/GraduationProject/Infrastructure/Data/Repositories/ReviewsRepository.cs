@@ -25,6 +25,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     {
         public ReviewsRepository(AppDbContext context) : base(context)
         {
+
         }
 
         public async Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int? userId, int index)
@@ -38,15 +39,16 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
             PaginatedList<ReviewDTO> finalList;
 
-            if (userReview == null)
-            {
-                finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index);
-            }
-            else
+            if (userReview != null && index == 1)
             {
                 finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index, 9);
                 finalList.Prepend(userReview);
             }
+            else
+            {
+                finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index);
+            }
+
             return finalList;
         }
 
@@ -64,7 +66,14 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 })
                 .FirstOrDefaultAsync();
 
-            var dict = grouped?.Ratings.ToFrozenDictionary(x => x.Rating, x => x.Count) ?? FrozenDictionary<byte, int>.Empty;
+            var dict = grouped?.Ratings.ToDictionary(x => x.Rating, x => x.Count) ?? new Dictionary<byte, int>();
+            for (byte i = 1; i <= 5; i++)
+            {
+                if (!dict.ContainsKey(i))
+                {
+                    dict[i] = 0;
+                }
+            }
             return new RatingStats(grouped?.Avg ?? 0.0, dict);
         }
 

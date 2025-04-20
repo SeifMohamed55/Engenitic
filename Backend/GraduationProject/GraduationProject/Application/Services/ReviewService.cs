@@ -16,9 +16,12 @@ namespace GraduationProject.Application.Services
     public class ReviewService : IReviewService
     {
         private IUnitOfWork _unitOfWork;
-        public ReviewService(IUnitOfWork unitOfWork)
+        private readonly ICloudinaryService _cloudinaryService;
+        public ReviewService(IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
+            _cloudinaryService = cloudinaryService;
+
         }
 
         private async Task<bool> UpdateCourseAvg(int courseId)
@@ -96,6 +99,11 @@ namespace GraduationProject.Application.Services
             try
             {
                 var list = await _unitOfWork.ReviewRepository.GetReviewsByCourseIdAsync(courseId, userId, index);
+                list.ForEach(x =>
+                {
+                    x.ImageMetadata.ImageURL = _cloudinaryService
+                        .GetImageUrl(x.ImageMetadata.ImageURL, x.ImageMetadata.Version);
+                });
                 return ServiceResult<PaginatedList<ReviewDTO>>.Success(list);
             }
             catch

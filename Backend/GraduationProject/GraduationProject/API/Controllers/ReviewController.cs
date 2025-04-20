@@ -1,6 +1,7 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
+using GraduationProject.Domain.DTOs;
 using GraduationProject.Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ namespace GraduationProject.API.Controllers
                 return Ok(new SuccessResponse()
                 {
                     Message = "Reviews retrieved successfully",
-                    Data = data,
+                    Data = new PaginatedResponse<ReviewDTO>(data),
                     Code = HttpStatusCode.OK,
                 });
             return BadRequest(new ErrorResponse()
