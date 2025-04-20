@@ -110,8 +110,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loginForm.markAllAsTouched();
       return;
     }
-
-    console.log(this.loginForm.value);
     this.buttonDisabled = true;
 
     this._UserService
