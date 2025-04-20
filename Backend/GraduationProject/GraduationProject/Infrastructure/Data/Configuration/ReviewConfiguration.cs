@@ -12,6 +12,11 @@ namespace GraduationProject.Infrastructure.Data.Configuration
 
             builder.HasKey(r => r.Id);
 
+            builder.HasIndex(x=> new { x.UserId, x.CourseId })
+                .IsUnique();
+
+            builder.HasIndex(x => x.Rating);
+
             builder.Property(r => r.Content)
                 .IsRequired()
                 .HasMaxLength(4096)

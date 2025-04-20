@@ -39,18 +39,15 @@ namespace GraduationProject.API.Controllers
             try
             {
 
-                if (model.DeviceId == null)
+                if(Guid.TryParse(HttpContext.Request.Cookies["device_id"], out var guid))
                 {
-                    if(Guid.TryParse(HttpContext.Request.Cookies["device_id"], out var guid))
-                    {
-                        model.DeviceId = guid;
-                    }
-                    else
-                    {
-                        model.DeviceId = Guid.NewGuid();
-                    }
-
+                    model.DeviceId = guid;
                 }
+                else
+                {
+                    model.DeviceId = Guid.NewGuid();
+                }
+    
                 // (for IP) HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
                 // At production if behind a proxy
                                

@@ -11,13 +11,10 @@ namespace GraduationProject.Common.Extensions
         public static IQueryable<ReviewDTO> DTOProjection(this IQueryable<Review> query)
         {
             return query
-                .Include(x => x.User)
-                    .ThenInclude(x=> x.FileHashes)
                 .Select(x => new ReviewDTO
                 {
                     ReviewId = x.Id,
                     Content = x.Content,
-                    CreatedAt = x.CreatedAt,
                     UpdatedAt = x.UpdatedAt,
                     UserId = x.UserId,
                     CourseId = x.CourseId,
@@ -39,7 +36,8 @@ namespace GraduationProject.Common.Extensions
                               .FirstOrDefault() ?? "1"
                     },
                     Rating = x.Rating,
-                });
+                })
+                .OrderBy(x=> x.Rating);
         }
     }
 }

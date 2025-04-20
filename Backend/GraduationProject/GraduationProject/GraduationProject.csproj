@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Helpers\" />
+    <Folder Include="Common\Exceptions\" />
   </ItemGroup>
 
 </Project>

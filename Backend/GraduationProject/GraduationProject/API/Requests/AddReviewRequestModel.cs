@@ -6,8 +6,6 @@ namespace GraduationProject.API.Requests
     public class AddReviewRequestModel
     {
         [Required]
-        public int UserId { get; set; }
-        [Required]
         public int CourseId { get; set; }
         [Required]
         [StringLength(4096, ErrorMessage = "Content cannot be longer than 4096 characters.")]

@@ -35,6 +35,11 @@ namespace GraduationProject.Application.Services
             }
         }
 
+        public void Prepend(T item)
+        {
+            Insert(0, item);
+        }
+
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize = 10)
         {
             var totalCount = await source.CountAsync();

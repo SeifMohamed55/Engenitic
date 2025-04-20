@@ -91,7 +91,7 @@ namespace GraduationProject.API.Controllers
                 });
 
             var enrollmentExists = await _studentService.EnrollmentExists(enrollment.StudentId, enrollment.CourseId);
-            if (!enrollmentExists)
+            if (!enrollmentExists.Data)
             {
                 try
                 {
@@ -117,7 +117,7 @@ namespace GraduationProject.API.Controllers
 
             return Ok(new SuccessResponse()
             {
-                Message = enrollmentExists ? "User already enrolled." : "User Enrolled Successfully",
+                Message = enrollmentExists.Data ? "User already enrolled." : "User Enrolled Successfully",
                 Data = enrollmentResult.Data,
                 Code = HttpStatusCode.OK,
             });

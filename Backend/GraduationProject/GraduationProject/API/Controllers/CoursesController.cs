@@ -194,7 +194,7 @@ namespace GraduationProject.API.Controllers
                         Code = HttpStatusCode.NotFound,
                     });
 
-                course.IsEnrolled = isEnrolled;
+                course.IsEnrolled = isEnrolled.Data;
 
                 return Ok(new SuccessResponse()
                 {

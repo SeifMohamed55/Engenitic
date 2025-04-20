@@ -8,7 +8,6 @@ namespace GraduationProject.Domain.DTOs
         public int UserId { get; set; }
         public int CourseId { get; set; }
         public string Content { get; set; } = null!;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public byte Rating { get; set; }
         public string FullName { get; set; } = null!;

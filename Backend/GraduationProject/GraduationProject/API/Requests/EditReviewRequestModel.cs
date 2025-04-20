@@ -4,11 +4,10 @@ namespace GraduationProject.API.Requests
 {
     public class EditReviewRequestModel
     {
+
         [Required]
         public int ReviewId { get; set; }
 
-        [Required]  
-        public int CourseId { get; set; }
         [Required]
         [StringLength(4096, ErrorMessage = "Content cannot be longer than 4096 characters.")]
         public string Content { get; set; } = null!;

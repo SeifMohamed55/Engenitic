@@ -14,10 +14,11 @@ namespace GraduationProject.Infrastructure.Data.Repositories
     public interface IReviewRepository : IBulkRepository<Review, int>
     {
         Task<RatingStats> GetCourseRatingStats(int courseId);
-        Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int page);
-        void AddReview(AddReviewRequestModel review);
+        Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int? userId, int page);
+        void AddReview(int userId, AddReviewRequestModel review);
         Task<double> GetAverageCourseRatingAsync(int courseId);
-        void EditReview(EditReviewRequestModel review);
+        int EditReview(int userId, EditReviewRequestModel review);
+        Task<bool> ReviewExist(int userId, int courseId);
     }
 
     public class ReviewsRepository : BulkRepository<Review, int>, IReviewRepository
@@ -26,13 +27,27 @@ namespace GraduationProject.Infrastructure.Data.Repositories
         {
         }
 
-        public Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int index)
+        public async Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int? userId, int index)
         {
+            var userReview = userId != null
+                ? await _dbSet.DTOProjection().FirstOrDefaultAsync(x => x.UserId == userId && x.CourseId == courseId)
+                : null;
+
             var query = _dbSet
-                .Include(x => x.User) // only top-level
                 .DTOProjection();
 
-            return PaginatedList<ReviewDTO>.CreateAsync(query, index);
+            PaginatedList<ReviewDTO> finalList;
+
+            if (userReview == null)
+            {
+                finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index);
+            }
+            else
+            {
+                finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index, 9);
+                finalList.Prepend(userReview);
+            }
+            return finalList;
         }
 
         public async Task<RatingStats> GetCourseRatingStats(int courseId)
@@ -53,20 +68,25 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return new RatingStats(grouped?.Avg ?? 0.0, dict);
         }
 
-        public void AddReview(AddReviewRequestModel review)
+        public void AddReview(int userId, AddReviewRequestModel review)
         {
-            var reviewDb = new Review(review);
+            var reviewDb = new Review(userId, review);
             Insert(reviewDb);
         }
 
-        public void EditReview(EditReviewRequestModel review)
+        public int EditReview(int userId, EditReviewRequestModel review)
         {
             var reviewDb = _dbSet.Find(review.ReviewId);
             if(reviewDb == null)
             {
-                throw new ArgumentNullException("Review not found");
+                throw new ArgumentException("Review not found");
+            }
+            if(reviewDb.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to edit this review");
             }
             reviewDb.UpdateFromRequest(reviewDb.Content, review.Rating);
+            return reviewDb.CourseId;
         }
 
         public async Task<double> GetAverageCourseRatingAsync(int courseId)
@@ -76,6 +96,11 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 .AverageAsync(r => (double?)r.Rating) ?? 0.0;
         }
 
+        public async Task<bool> ReviewExist(int userId, int courseId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.UserId == userId && x.CourseId == courseId) != null;
+
+        }
     }
 
 }

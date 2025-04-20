@@ -7,13 +7,13 @@ namespace GraduationProject.Domain.Models
     {
         public Review() { }
 
-        public Review(AddReviewRequestModel req)
+        public Review(int userId, AddReviewRequestModel req)
         {
             Content = req.Content;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             Rating = req.Rating;
-            UserId = req.UserId;
+            UserId = userId;
             CourseId = req.CourseId;
         }
         public int Id { get; set; }

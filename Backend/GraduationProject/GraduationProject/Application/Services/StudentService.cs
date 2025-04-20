@@ -15,7 +15,7 @@ namespace GraduationProject.Application.Services
         Task<ServiceResult<EnrollmentDTO>> GetStudentEnrollment(int studentId, int courseId);
         Task<ServiceResult<StageResponse>> GetEnrollmentStage(int enrollmentId, int stage, int studentId);
         Task<ServiceResult<StageResponse>> GetEnrollmentCurrentStage(int enrollmentId, int studentId);
-        Task<bool> EnrollmentExists(int studentId, int courseId);
+        Task<ServiceResult<bool>> EnrollmentExists(int studentId, int courseId);
         Task<ServiceResult<UserQuizAttemptDTO>> AttemptQuiz(UserQuizAttemptDTO quizAttempt);
     }
 
@@ -47,9 +47,18 @@ namespace GraduationProject.Application.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<bool> EnrollmentExists(int studentId, int courseId)
+        public async Task<ServiceResult<bool>> EnrollmentExists(int studentId, int courseId)
         {
-            return await _unitOfWork.EnrollmentRepo.ExistsAsync(studentId, courseId);
+            try
+            {
+                var enrollment = await _unitOfWork.EnrollmentRepo.ExistsAsync(studentId, courseId);
+                return ServiceResult<bool>.Success(enrollment);
+            }
+            catch 
+            {
+                return ServiceResult<bool>.Failure("Something Wrong happened");
+            }
+
         }
 
         public async Task<ServiceResult<EnrollmentDTO>> GetStudentEnrollment(int studentId, int courseId)

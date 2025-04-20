@@ -8,10 +8,10 @@ namespace GraduationProject.Application.Services
 
     public interface IReviewService
     {
-        Task<ServiceResult<bool>> AddReviewAsync(AddReviewRequestModel review);
-        Task<ServiceResult<bool>> UpdateReviewAsync(EditReviewRequestModel review);
-        Task<ServiceResult<bool>> DeleteReviewAsync(int reviewId);
-        Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int index);
+        Task<ServiceResult<bool>> AddReviewAsync(int userId, AddReviewRequestModel review);
+        Task<ServiceResult<bool>> EditReviewAsync(int userId, EditReviewRequestModel review);
+        Task<ServiceResult<bool>> DeleteReviewAsync(int userId, int reviewId);
+        Task<ServiceResult<PaginatedList<ReviewDTO>>> GetReviewsByCourseIdAsync(int courseId, int? userId, int index);
     }
     public class ReviewService : IReviewService
     {
@@ -23,35 +23,37 @@ namespace GraduationProject.Application.Services
 
         private async Task<bool> UpdateCourseAvg(int courseId)
         {
-            var courseRatingTask = _unitOfWork.ReviewRepository.GetAverageCourseRatingAsync(courseId);
-            var courseTask =  _unitOfWork.CourseRepo.GetByIdAsync(courseId);
-            await Task.WhenAll(
-               courseRatingTask,
-               courseTask
-            );
-            var course = await courseTask;
+            var courseRating = await _unitOfWork.ReviewRepository.GetAverageCourseRatingAsync(courseId);
+            var course =  await _unitOfWork.CourseRepo.GetByIdAsync(courseId);
+
             if (course == null)
             {
                 return false;
             }
-            course.AverageRating = await courseRatingTask;
+            course.AverageRating = courseRating;
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
 
-        public async Task<ServiceResult<bool>> AddReviewAsync(AddReviewRequestModel review)
+        public async Task<ServiceResult<bool>> AddReviewAsync(int userId, AddReviewRequestModel review)
         {
             try
             {
-                _unitOfWork.ReviewRepository.AddReview(review);
+                if (await _unitOfWork.ReviewRepository.ReviewExist(userId, review.CourseId))
+                {
+                    return ServiceResult<bool>.Failure("You have already reviewed this course.");
+                }
+
+                _unitOfWork.ReviewRepository.AddReview(userId, review);
                 await _unitOfWork.SaveChangesAsync();
 
                 var success = await UpdateCourseAvg(review.CourseId);
-                if (!success)
+                if (success)
                 {
-                    return ServiceResult<bool>.Failure("Something wrong happened");
+                    return ServiceResult<bool>.Success(success);
                 }
-                return ServiceResult<bool>.Success(success);
+
+                return ServiceResult<bool>.Failure("Something wrong happened");
             }
             catch
             {
@@ -60,13 +62,28 @@ namespace GraduationProject.Application.Services
 
         }
 
-        public async Task<ServiceResult<bool>> DeleteReviewAsync(int reviewId)
+
+        public async Task<ServiceResult<bool>> DeleteReviewAsync(int userId, int reviewId)
         {
             try
             {
-                _unitOfWork.ReviewRepository.Delete(reviewId);
+                var dbReview = await _unitOfWork.ReviewRepository.GetByIdAsync(reviewId);
+                if(dbReview == null)
+                    return ServiceResult<bool>.Failure("Review Does not exist.");
+
+                if(dbReview.UserId != userId)
+                    return ServiceResult<bool>.Failure("You are not authorized to delete this review.");
+
+                _unitOfWork.ReviewRepository.Delete(dbReview);
                 await _unitOfWork.SaveChangesAsync();
-                return ServiceResult<bool>.Success(true);
+
+                var success = await UpdateCourseAvg(dbReview.CourseId);
+                if(success)
+                {
+                    return ServiceResult<bool>.Success(true);
+                }
+
+                return ServiceResult<bool>.Failure("Something wrong happened");
             }
             catch
             {
@@ -74,24 +91,40 @@ namespace GraduationProject.Application.Services
             }
         }
 
-        public async Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int index)
-        {
-           return await _unitOfWork.ReviewRepository.GetReviewsByCourseIdAsync(courseId, index);
-        }
-
-        public async Task<ServiceResult<bool>> UpdateReviewAsync(EditReviewRequestModel review)
+        public async Task<ServiceResult<PaginatedList<ReviewDTO>>> GetReviewsByCourseIdAsync(int courseId, int? userId, int index)
         {
             try
             {
-                _unitOfWork.ReviewRepository.EditReview(review);
+                var list = await _unitOfWork.ReviewRepository.GetReviewsByCourseIdAsync(courseId, userId, index);
+                return ServiceResult<PaginatedList<ReviewDTO>>.Success(list);
+            }
+            catch
+            {
+                return ServiceResult<PaginatedList<ReviewDTO>>.Failure("Something went wrong.");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> EditReviewAsync(int userId, EditReviewRequestModel review)
+        {
+            try
+            {
+                var courseId = _unitOfWork.ReviewRepository.EditReview(userId, review);
                 await _unitOfWork.SaveChangesAsync();
 
-                var success = await UpdateCourseAvg(review.CourseId);
+                var success = await UpdateCourseAvg(courseId);
                 if (!success)
                 {
                     return ServiceResult<bool>.Failure("Something wrong happened");
                 }
                 return ServiceResult<bool>.Success(success);
+            }
+            catch(ArgumentException ex)
+            {
+                return ServiceResult<bool>.Failure(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return ServiceResult<bool>.Failure(ex.Message);
             }
             catch
             {
