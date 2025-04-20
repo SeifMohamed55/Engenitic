@@ -23,7 +23,7 @@ namespace GraduationProject.API.Responses
                 Name = nameFunc(course.FileHash.PublicId),
                 Hash = course.FileHash.Hash,
             };
-            RatingStats = new RatingStats();
+            RatingStats = new RatingStatsDTO();
         }
 
         public int Id { get; set; }
@@ -36,6 +36,6 @@ namespace GraduationProject.API.Responses
         public int Stages { get; set; }
         public bool IsEnrolled { get; set; } = false;
         public ImageMetadata Image { get; set; }
-        public RatingStats RatingStats { get; set; }
+        public RatingStatsDTO RatingStats { get; set; }
     }
 }

@@ -1,19 +1,19 @@
 ﻿namespace GraduationProject.Domain.DTOs
 {
-    public class RatingStats
+    public class RatingStatsDTO
     {
-        public RatingStats()
+        public RatingStatsDTO()
         {
             
         }
 
-        public RatingStats(double avg, IDictionary<byte, int> dict)
+        public RatingStatsDTO(float avg, IDictionary<byte, CourseStatDTO> dict)
         {
             AverageRating = avg;
             Breakdown = dict;
         }
-        public int TotalCount => Breakdown.Values.Sum();
-        public double AverageRating { get; set; }
-        public IDictionary<byte, int> Breakdown { get; set; } = null!;
+        public int TotalCount => Breakdown.Values.Select(x=> x.Count).Sum();
+        public float AverageRating { get; set; }
+        public IDictionary<byte, CourseStatDTO> Breakdown { get; set; } = null!;
     }
 }

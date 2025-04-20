@@ -13,7 +13,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
     public interface IReviewRepository : IBulkRepository<Review, int>
     {
-        Task<RatingStats> GetCourseRatingStats(int courseId);
+        Task<RatingStatsDTO> GetCourseRatingStats(int courseId);
         Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int? userId, int page);
         void AddReview(int userId, AddReviewRequestModel review);
         Task<double> GetAverageCourseRatingAsync(int courseId);
@@ -52,29 +52,40 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return finalList;
         }
 
-        public async Task<RatingStats> GetCourseRatingStats(int courseId)
+        public async Task<RatingStatsDTO> GetCourseRatingStats(int courseId)
         {
             var grouped = await _dbSet
                 .Where(r => r.CourseId == courseId)
                 .GroupBy(r => 1) // everything in one group
                 .Select(g => new
                 {
-                    Avg = g.Average(r => (double?)r.Rating) ?? 0.0,
+                    Avg = g.Average(r => (float?)r.Rating) ?? 0.0f,
                     Ratings = g.GroupBy(r => r.Rating)
                                .Select(rg => new { Rating = rg.Key, Count = rg.Count() })
                                .ToList()
                 })
                 .FirstOrDefaultAsync();
 
-            var dict = grouped?.Ratings.ToDictionary(x => x.Rating, x => x.Count) ?? new Dictionary<byte, int>();
+            if(grouped == null)
+            {
+                return new RatingStatsDTO(0.0f, new Dictionary<byte, CourseStatDTO>());
+            }
+
+
+            var dict = grouped.Ratings
+                .ToDictionary(
+                    x => x.Rating,
+                    x => new CourseStatDTO(x.Count, float.Round(((float)x.Count / grouped.Ratings.Sum(x => x.Count)) * 100.0f, 1))
+                );
+
             for (byte i = 1; i <= 5; i++)
             {
                 if (!dict.ContainsKey(i))
                 {
-                    dict[i] = 0;
+                    dict[i] = new CourseStatDTO(0, 0.0f);
                 }
             }
-            return new RatingStats(grouped?.Avg ?? 0.0, dict);
+            return new RatingStatsDTO(float.Round(grouped.Avg, 1), dict);
         }
 
         public void AddReview(int userId, AddReviewRequestModel review)
