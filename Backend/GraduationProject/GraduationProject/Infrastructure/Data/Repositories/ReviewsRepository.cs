@@ -68,9 +68,13 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
             if(grouped == null)
             {
-                return new RatingStatsDTO(0.0f, new Dictionary<byte, CourseStatDTO>());
+                var emptyDic = new Dictionary<byte, CourseStatDTO>();
+                for (byte i = 1; i <= 5; i++)
+                {   
+                    emptyDic[i] = new CourseStatDTO(0, 0.0f);
+                }
+                return new RatingStatsDTO(0.0f, emptyDic);
             }
-
 
             var dict = grouped.Ratings
                 .ToDictionary(
