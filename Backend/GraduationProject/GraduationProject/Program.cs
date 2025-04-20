@@ -49,6 +49,11 @@ builder.Services.AddHttpClient<IVqaService, VqaService>(client =>
     client.BaseAddress = new Uri("http://localhost:8000/");
 });
 
+builder.Services.AddHttpClient<ITextToSpeechService, TextToSpeechService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:8002/");
+});
+
 builder.Services.AddHttpClient<IMediaValidator, MediaValidator>(client =>
 {
     client.DefaultRequestHeaders.Add("User-Agent", "MediaValidator");

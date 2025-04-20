@@ -48,6 +48,11 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             {
                 finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index);
             }
+/*            finalList.ForEach(x =>
+            {
+                var date = (DateTime)x.UpdatedAt;
+                x.UpdatedAt = date.ToTimeAgo();
+            });*/
 
             return finalList;
         }

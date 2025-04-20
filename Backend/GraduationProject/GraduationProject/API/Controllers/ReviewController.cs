@@ -27,7 +27,7 @@ namespace GraduationProject.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{courseId}")]
+        [HttpGet]
         public async Task<IActionResult> GetReviewsByCourseId(int courseId, int index = 1)
         {
             // extract userId from Authorization
