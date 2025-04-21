@@ -7,6 +7,7 @@ namespace GraduationProject.API.Responses
         public int TotalPages { get; init; }
         public int TotalItems { get; init; }
         public string CurrentlyViewing { get; init; }
+        public int PageIndex { get; init; }
         public PaginatedList<T> PaginatedList { get; init; }
 
         public PaginatedResponse(PaginatedList<T> list)
@@ -14,6 +15,7 @@ namespace GraduationProject.API.Responses
             PaginatedList = list;
             TotalPages = list.TotalPages;
             TotalItems = list.TotalCount;
+            PageIndex = list.PageIndex;
             CurrentlyViewing =
                 $"({1 + (list.PageIndex - 1) * list.PageSize}" +
                 $" - " +
