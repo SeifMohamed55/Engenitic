@@ -1,18 +1,14 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 
-namespace GraduationProject.Application.Services
+namespace GraduationProject.Application.Services.HttpClientServices
 {
-
-    public interface IGrammarCorrectionService
-    {
-        Task<ServiceResult<GrammarCorrectionResponse>> CorrectGrammar(GrammarCorrectionRequest request);
-    }
     public class GrammarCorrectionService : IGrammarCorrectionService
     {
         private readonly HttpClient _httpClient;

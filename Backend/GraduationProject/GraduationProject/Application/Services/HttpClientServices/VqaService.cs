@@ -1,16 +1,12 @@
 ﻿using GraduationProject.API.Responses;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace GraduationProject.Application.Services
+namespace GraduationProject.Application.Services.HttpClientServices
 {
-
-    public interface IVqaService
-    {
-        Task<ServiceResult<VqaResponse>> GetAnswerAsync(IFormFile image, string question);
-    }
 
     public class VqaService : IVqaService
     {
@@ -49,7 +45,7 @@ namespace GraduationProject.Application.Services
                     throw new JsonException("Failed to retrieve the response.");
                 return ServiceResult<VqaResponse>.Success(result);
             }
-            catch(HttpRequestException e)
+            catch (HttpRequestException e)
             {
                 return ServiceResult<VqaResponse>.Failure(e.Message);
             }

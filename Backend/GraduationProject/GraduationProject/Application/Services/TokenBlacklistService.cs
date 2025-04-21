@@ -1,13 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using GraduationProject.Application.Services.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace GraduationProject.Application.Services
 {
-    public interface ITokenBlacklistService
-    {
-        bool IsTokenBlacklisted(string accessToken);
-        bool IsTokenBlacklisted(HttpContext context);
-        void BlacklistToken(string accessTokenJti, DateTimeOffset exp);
-    }
 
 
     public class TokenBlacklistService : ITokenBlacklistService

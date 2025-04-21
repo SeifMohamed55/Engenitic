@@ -1,7 +1,7 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Domain.DTOs;
-using GraduationProject.Infrastructure.Data;
+using GraduationProject.Infrastructure.Data.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

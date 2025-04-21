@@ -1,15 +1,9 @@
 ﻿using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Infrastructure.Data.Repositories.Base
 {
-
-    public interface IBulkRepository<T, TKey> : IRepository<T> where T : class, IEntity<TKey>
-    {
-        Task<int> ExecuteDeleteAsync(IReadOnlySet<TKey> ids);
-        Task AddRangeAsync(IEnumerable<T> quizzes);
-        void RemoveRange(IEnumerable<T> quizzes);
-    }
 
     public class BulkRepository<T, TKey> : Repository<T>, IBulkRepository<T, TKey> where T : class, IEntity<TKey>
     {

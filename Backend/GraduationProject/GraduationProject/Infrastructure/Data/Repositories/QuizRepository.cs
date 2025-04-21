@@ -4,18 +4,12 @@ using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Frozen;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-
-    public interface IQuizRepository : IBulkRepository<Quiz, int>
-    {
-        Task<QuizDTO?> GetQuizByCourseAndPosition(int courseId, int position);
-        Task<bool> AddUserQuizAttempt(UserQuizAttemptDTO userQuizAttempt); // TODO: Implement this method
-        Task<List<QuizTitleResponse>> GetQuizesTitle(int courseId);
-    }
     public class QuizRepository : BulkRepository<Quiz, int>, IQuizRepository
     {
         private AppDbContext _context { get; set; }

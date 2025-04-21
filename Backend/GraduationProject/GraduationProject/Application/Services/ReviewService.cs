@@ -1,18 +1,11 @@
 ﻿using GraduationProject.API.Requests;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
-using GraduationProject.Infrastructure.Data;
+using GraduationProject.Infrastructure.Data.Interfaces;
 
 namespace GraduationProject.Application.Services
 {
-
-    public interface IReviewService
-    {
-        Task<ServiceResult<bool>> AddReviewAsync(int userId, AddReviewRequestModel review);
-        Task<ServiceResult<bool>> EditReviewAsync(int userId, EditReviewRequestModel review);
-        Task<ServiceResult<bool>> DeleteReviewAsync(int userId, int reviewId);
-        Task<ServiceResult<PaginatedList<ReviewDTO>>> GetReviewsByCourseIdAsync(int courseId, int? userId, int index);
-    }
     public class ReviewService : IReviewService
     {
         private IUnitOfWork _unitOfWork;

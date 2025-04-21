@@ -1,6 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using GraduationProject.API.Responses;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
@@ -11,13 +12,6 @@ using System.IO;
 
 namespace GraduationProject.Application.Services
 {
-
-    public interface IUploadingService
-    {
-        Task<FileHash?> UploadImageAsync(string imageUrl, string imageName, CloudinaryType type);
-        Task<FileHash?> UploadImageAsync(Stream stream, string imageName, CloudinaryType type);
-        Task<bool> ImageHashMatches(FileHash? fileHash, string imgUrl);
-    }
 
     public class UploadingService : IUploadingService
     {

@@ -6,6 +6,7 @@ using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using System.Collections.Frozen;
@@ -13,33 +14,8 @@ using System.Data;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-
-    public interface ICourseRepository : IBulkRepository<Course, int>
-    {
-        Task<CourseDetailsResponse?> GetDetailsById(int id);
-        Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index = 1);
-        Task<PaginatedList<CourseDTO>> GetPageOfHiddenCourses(int index = 1);
-        Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
-        Task<CourseStatistics?> GetCourseStatistics(int courseId);
-        Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
-
-        // Edit, Add, Remove
-        Task<Course> MakeCourse(RegisterCourseRequest course, FileHash hash);
-        Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
-        Task AddCourseToTag(int courseId, List<TagDTO> tag);
-        Task<int?> GetCourseInstructorId(int courseId);
-        Task<Course?> GetCourseWithImageAndInstructor(int id);
-        Task<EditCourseRequest?> GetEditCourseRequestWithQuizes(int courseId);
-        Task<Course?> GetCourseWithQuizes(int courseId);
-
-        //Task<bool> AddListOfCourses(List<RegisterCourseRequest> courses);
-
-        Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses);
-        Task<QuizQuestionAnswerIds?> GetQuizesQuestionAndAnswerIds(int courseId);
-    }
     public class CoursesRepository : BulkRepository<Course, int>, ICourseRepository
     {
-
         private readonly DbSet<Tag> _tags;
         private readonly AppDbContext _context;
         public CoursesRepository(AppDbContext context) : base(context)

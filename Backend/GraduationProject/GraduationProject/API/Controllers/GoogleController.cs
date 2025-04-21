@@ -3,7 +3,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Gmail.v1;
 using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
-using GraduationProject.Application.Services;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Authentication;

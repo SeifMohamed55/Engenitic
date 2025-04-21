@@ -1,15 +1,12 @@
-﻿using GraduationProject.Domain.Models;
-using GraduationProject.Infrastructure.Data;
+﻿using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
 namespace GraduationProject.Application.Services
 {
-
-    public interface IUserService
-    {
-    }
 
     public class UserService : IUserService
     {

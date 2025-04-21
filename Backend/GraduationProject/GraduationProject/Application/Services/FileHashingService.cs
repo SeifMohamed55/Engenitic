@@ -1,11 +1,8 @@
 ﻿
+using GraduationProject.Application.Services.Interfaces;
 using System.IO.Hashing;
 namespace GraduationProject.Application.Services
 {
-    public interface IHashingService
-    {
-        Task<ulong> HashWithxxHash(Stream stream);
-    }
     public class FileHashingService : IHashingService
     {
 

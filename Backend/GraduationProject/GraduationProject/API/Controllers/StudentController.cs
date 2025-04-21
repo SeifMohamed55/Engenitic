@@ -1,6 +1,6 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
-using GraduationProject.Application.Services;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

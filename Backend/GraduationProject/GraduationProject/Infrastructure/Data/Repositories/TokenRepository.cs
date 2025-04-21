@@ -1,6 +1,7 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -8,15 +9,6 @@ using System.Security.Cryptography;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-
-    public interface ITokenRepository : IRepository<RefreshToken>
-    {
-        void DeleteRefreshToken(Guid deviceId);
-        Task<RefreshToken?> GetUserRefreshToken(Guid deviceId, int userId);
-        RefreshToken GenerateRefreshToken(int userId, DeviceInfo deviceInfo);
-
-        Task RemoveRevokedOrExpiredByUserId(int id);
-    }
 
     public class TokenRepository : Repository<RefreshToken>, ITokenRepository
     {

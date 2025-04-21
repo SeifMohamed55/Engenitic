@@ -6,6 +6,7 @@
     using Google.Apis.Gmail.v1;
     using Google.Apis.Gmail.v1.Data;
     using Google.Apis.Services;
+    using GraduationProject.Application.Services.Interfaces;
     using GraduationProject.Domain.Models;
     using GraduationProject.StartupConfigurations;
     using Microsoft.AspNetCore.Authentication.Google;
@@ -16,12 +17,6 @@
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-
-    public interface IGmailServiceHelper
-    {
-        Task SendEmailAsync(string to, string subject, string body);
-
-    }
 
     public class GmailServiceHelper : IGmailServiceHelper
     {

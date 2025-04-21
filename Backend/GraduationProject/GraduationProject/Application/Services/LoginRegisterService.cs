@@ -1,9 +1,10 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
-using GraduationProject.Infrastructure.Data;
+using GraduationProject.Infrastructure.Data.Interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -15,13 +16,6 @@ using System.Net;
 
 namespace GraduationProject.Application.Services
 {
-    public interface ILoginRegisterService
-    {
-        Task<ServiceResult<LoginWithCookies>> Login(LoginCustomRequest model, DeviceInfo deviceInfo);
-        Task<ServiceResult<RefreshToken>> Logout(Guid deviceId, int userId);
-        Task<ServiceResult<LoginWithCookies>> ExternalLogin(string provider, AuthenticatedPayload payload);
-        Task<ServiceResult<AppUserDTO>> Register(RegisterCustomRequest model, bool isExternal);
-    }
     public class LoginRegisterService : ILoginRegisterService
     {
         private readonly UserManager<AppUser> _userManager;

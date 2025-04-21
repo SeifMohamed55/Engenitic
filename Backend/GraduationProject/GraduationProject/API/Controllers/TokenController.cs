@@ -1,6 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2.Requests;
 using GraduationProject.API.Responses;
-using GraduationProject.Application.Services;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;

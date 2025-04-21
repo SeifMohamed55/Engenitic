@@ -1,4 +1,5 @@
 ﻿using GraduationProject.API.Requests;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.Models;
 using GraduationProject.StartupConfigurations;
 using Microsoft.Extensions.Options;
@@ -11,16 +12,6 @@ using System.Text;
 
 namespace GraduationProject.Application.Services
 {
-    public interface IJwtTokenService
-    {
-        (string, string) GenerateJwtToken(AppUser userWithTokenAndRoles, List<string> roles);
-        (int, string) ExtractIdAndJtiFromExpiredToken(string token);
-        bool IsAccessTokenValid(string token);
-        string? ExtractJwtTokenFromContext(HttpContext context);
-        DateTimeOffset GetAccessTokenExpiration(string accessToken);
-        bool IsRefreshTokenExpired(RefreshToken refreshToken);
-        bool VerifyRefresh(string raw, string hashed);
-    }
 
     public class JwtTokenService : IJwtTokenService
     {

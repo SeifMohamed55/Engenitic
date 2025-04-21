@@ -1,17 +1,12 @@
-﻿using GraduationProject.Domain.DTOs;
+﻿using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
-using GraduationProject.Infrastructure.Data;
+using GraduationProject.Infrastructure.Data.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Org.BouncyCastle.Security;
 
 namespace GraduationProject.Application.Services
 {
-    public interface IAdminService
-    {
-        Task BanUser(int id);
-        Task UnbanUser(int id);
-        Task<PaginatedList<AppUserDTO>> GetUsersPage(int index, string? role);
-    }
     public class AdminService : IAdminService
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -43,7 +38,7 @@ namespace GraduationProject.Application.Services
 
         public async Task<PaginatedList<AppUserDTO>> GetUsersPage(int index, string? role)
         {
-            if(role == null)
+            if (role == null)
                 return await _unitOfWork.UserRepo.GetUsersInRolePage(index, null);
 
             var roleEntity = await _roleManager.FindByNameAsync(role);

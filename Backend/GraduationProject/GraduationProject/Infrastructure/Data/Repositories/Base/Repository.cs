@@ -1,23 +1,14 @@
 ﻿using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data.Repositories.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Frozen;
 using System.Linq.Expressions;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-    public interface IRepository<T> where T : class
-    {
-        Task<List<T>> GetAllAsync();
-        Task<T?> GetByIdAsync(int id);
-        void Insert(T entity);
-        void Update(T entity);
-        void Delete(object id);
-        void Delete(T entityToDelete);
-        void Detach(T entity);
-    }
 
 
-    public class Repository<T> : IRepository<T>  where T : class
+    public class Repository<T> : IGenericRepository<T>  where T : class
     {
         private readonly AppDbContext _context;
         protected readonly DbSet<T> _dbSet;

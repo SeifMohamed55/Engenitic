@@ -1,7 +1,12 @@
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
+using GraduationProject.Application.Services.HttpClientServices;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Common.Middlewares;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data;
+using GraduationProject.Infrastructure.Data.Interfaces;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -119,7 +124,6 @@ builder.Services.AddCors(options =>
 });
 
 
-
 builder.Services.AddRateLimiting();
 
 var app = builder.Build();
@@ -143,7 +147,18 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// works fine
+/*using (var scope = app.Services.CreateScope())
+{
+    var uow = scope.ServiceProvider.GetRequiredService<IDictionaryUnitOfWork>();
+    var tokenRepo = uow.GetRepository<ITokenRepository>();
+    var allTokens = await tokenRepo.GetAllAsync();
 
+    var coursesRepo = uow.GetRepository<ICourseRepository>();
+    var courses = await coursesRepo.GetAllAsync();
+
+}*/
+
+app.Run();
 
 

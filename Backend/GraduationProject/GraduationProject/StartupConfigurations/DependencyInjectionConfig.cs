@@ -1,10 +1,13 @@
 ﻿using CloudinaryDotNet;
 using GraduationProject.Application.Services;
+using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data;
+using GraduationProject.Infrastructure.Data.Interfaces;
 using GraduationProject.Infrastructure.Data.Repositories;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
-using static GraduationProject.Application.Services.ICoursesService;
+using GraduationProject.Infrastructure.Data.Repositories.Base.Interfaces;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 
 namespace GraduationProject.StartupConfigurations
 {
@@ -26,6 +29,7 @@ namespace GraduationProject.StartupConfigurations
 
             services.AddScoped<IGmailServiceHelper, GmailServiceHelper>();
 
+            services.AddScoped<IDictionaryUnitOfWork, DictionaryUnitOfWork>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBulkRepository<QuizAnswer, int>, BulkRepository<QuizAnswer, int>>();
             services.AddScoped<IUserRepository, UsersRepository>();

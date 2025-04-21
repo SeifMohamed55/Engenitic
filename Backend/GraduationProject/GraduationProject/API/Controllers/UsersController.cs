@@ -3,7 +3,6 @@ using GraduationProject.Application.Services;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
-using GraduationProject.Infrastructure.Data;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +11,8 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Security.Claims;
 using GraduationProject.API.Requests;
+using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Infrastructure.Data.Interfaces;
 
 namespace GraduationProject.API.Controllers
 {

@@ -1,5 +1,5 @@
 ﻿using GraduationProject.API.Responses;
-using GraduationProject.Application.Services;
+using GraduationProject.Application.Services.Interfaces;
 using System.Net;
 
 namespace GraduationProject.Common.Middlewares

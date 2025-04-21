@@ -4,6 +4,7 @@ using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,20 +12,6 @@ using Microsoft.Extensions.Options;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-
-    public interface IUserRepository : IBulkRepository<AppUser, int>
-    {
-        Task<AppUserDTO?> GetAppUserDTO(int id);
-        Task<AppUser?> GetUserWithRoles(int id);
-        Task<AppUser?> GetUserWithRoles(string email);
-        Task<FileHash> GetUserImageHash(int id);
-        Task<AppUser?> GetUserWithFiles(int id);
-        Task<PaginatedList<AppUserDTO>> GetBannedUsersDTO(int index);
-        public Task<PaginatedList<AppUserDTO>> GetUsersInRolePage(int index, Role? role);
-
-        //Task<string?> GetUserImage(int id);
-
-    }
 
     public class UsersRepository : BulkRepository<AppUser, int>, IUserRepository
     {

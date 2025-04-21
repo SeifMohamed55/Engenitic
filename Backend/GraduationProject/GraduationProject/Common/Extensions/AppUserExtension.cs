@@ -1,4 +1,4 @@
-﻿using GraduationProject.Application.Services;
+﻿using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;

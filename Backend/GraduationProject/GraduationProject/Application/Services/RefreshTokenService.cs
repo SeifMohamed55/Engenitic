@@ -1,20 +1,10 @@
-﻿using GraduationProject.Infrastructure.Data;
+﻿using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Infrastructure.Data.Interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.Extensions.Options;
 
 namespace GraduationProject.Application.Services
 {
-    public interface IRefreshTokenService
-    {
-        /// <summary>
-        /// Refreshes the access token
-        /// </summary>
-        /// <param name="oldAccessToken"></param>
-        /// <returns>
-        /// The new Access Token
-        /// </returns>
-        Task<ServiceResult<string>> Refresh(string oldAccessToken, string requestRefToken, Guid deviceId);
-    }
 
     public class RefreshTokenService : IRefreshTokenService
     {

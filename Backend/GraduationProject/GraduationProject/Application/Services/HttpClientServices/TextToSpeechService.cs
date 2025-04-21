@@ -1,14 +1,10 @@
-﻿using GraduationProject.StartupConfigurations;
+﻿using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.StartupConfigurations;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Utilities;
 
-namespace GraduationProject.Application.Services
+namespace GraduationProject.Application.Services.HttpClientServices
 {
-
-    public interface ITextToSpeechService
-    {
-        Task<ServiceResult<byte[]>> GetAudioFromTextAsync(string text);
-    }
 
     public class TextToSpeechService : ITextToSpeechService
     {

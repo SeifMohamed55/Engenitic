@@ -5,12 +5,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Collections.Generic;
-
-    public interface IMediaValidator
-    {
-        Task<bool> ValidateAsync(string url);
-        Task<MediaType> GetMediaTypeAsync(string url);
-    }
+    using GraduationProject.Application.Services.Interfaces;
 
     public enum MediaType
     {

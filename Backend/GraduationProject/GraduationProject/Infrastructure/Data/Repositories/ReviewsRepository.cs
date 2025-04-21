@@ -4,22 +4,13 @@ using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Frozen;
 using System.Linq;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-
-    public interface IReviewRepository : IBulkRepository<Review, int>
-    {
-        Task<RatingStatsDTO> GetCourseRatingStats(int courseId);
-        Task<PaginatedList<ReviewDTO>> GetReviewsByCourseIdAsync(int courseId, int? userId, int page);
-        void AddReview(int userId, AddReviewRequestModel review);
-        Task<double> GetAverageCourseRatingAsync(int courseId);
-        int EditReview(int userId, EditReviewRequestModel review);
-        Task<bool> ReviewExist(int userId, int courseId);
-    }
 
     public class ReviewsRepository : BulkRepository<Review, int>, IReviewRepository
     {

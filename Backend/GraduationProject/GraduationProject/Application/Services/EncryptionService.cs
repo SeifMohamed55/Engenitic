@@ -1,20 +1,12 @@
 ﻿namespace GraduationProject.Application.Services
 {
+    using GraduationProject.Application.Services.Interfaces;
     using GraduationProject.StartupConfigurations;
     using Microsoft.Extensions.Options;
     using System;
     using System.IO.Hashing;
     using System.Security.Cryptography;
     using System.Text;
-
-
-    public interface IEncryptionService
-    {
-        string AesEncrypt(string plaintext);
-        string AesDecrypt(string encryptedBase64);
-        string HashWithHMAC(string input);
-        bool VerifyHMAC(string raw, string hash);
-    }
 
     public class EncryptionService : IEncryptionService
     {

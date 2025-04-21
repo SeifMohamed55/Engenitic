@@ -1,31 +1,11 @@
 ﻿namespace GraduationProject.Infrastructure.Data
 {
     using GraduationProject.Domain.Models;
-    using GraduationProject.Infrastructure.Data.Repositories;
-    using GraduationProject.Infrastructure.Data.Repositories.Base;
+    using GraduationProject.Infrastructure.Data.Interfaces;
+    using GraduationProject.Infrastructure.Data.Repositories.Base.Interfaces;
+    using GraduationProject.Infrastructure.Data.Repositories.interfaces;
     using Microsoft.EntityFrameworkCore.Storage;
     using System;
-
-    public interface IUnitOfWork
-    {
-        public IUserRepository UserRepo { get; }
-        public ITokenRepository TokenRepo { get; }
-        public ICourseRepository CourseRepo { get; }
-        public IEnrollmentRepository EnrollmentRepo { get; }
-        public IQuizRepository QuizRepo { get; }
-        public ITagsRepository TagsRepo { get; }
-        public IUserLoginRepository UserLoginRepo { get; }
-        public IFileHashRepository FileHashRepo { get; }
-        public IQuizQuestionRepository QuizQuestionRepo { get; set; }
-        public IBulkRepository<QuizAnswer,int> QuizAnswerRepo { get; set; }
-        public IReviewRepository ReviewRepository { get; set; }
-
-        Task SaveChangesAsync();
-        Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
-
-        Task RollbackTransactionAsync();
-    }
 
     public class UnitOfWork : IUnitOfWork
     {

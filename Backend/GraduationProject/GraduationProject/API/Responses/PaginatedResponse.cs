@@ -21,7 +21,5 @@ namespace GraduationProject.API.Responses
                 $" - " +
                 $"{(list.PageIndex != list.TotalPages ? list.PageIndex * list.PageSize : (list.PageIndex - 1) * list.PageSize + list.Count)})";
         }
-
-
     }
 }

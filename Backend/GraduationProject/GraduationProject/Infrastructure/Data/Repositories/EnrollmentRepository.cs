@@ -5,21 +5,11 @@ using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
+using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
-
-    public interface IEnrollmentRepository : IBulkRepository<UserEnrollment, int>
-    {
-        Task<UserEnrollment> EnrollOnCourse(StudentEnrollmentRequest enrollment);
-        Task<PaginatedList<EnrollmentDTO>> GetStudentEnrolledCourses(int studentId, int index);
-        Task<EnrollmentDTO?> GetStudentEnrollmentDTO(int studentId, int courseId);
-        Task<UserEnrollment?> GetStudentEnrollment(int studentId, int courseId);
-        Task<bool> ExistsAsync(int studentId, int courseId);
-        Task<int> GetTotalEnrolledOnCourse(int courseId);
-
-    }
     public class EnrollmentRepository : BulkRepository<UserEnrollment, int>, IEnrollmentRepository
     {
         private readonly DbSet<Course> _courses;
