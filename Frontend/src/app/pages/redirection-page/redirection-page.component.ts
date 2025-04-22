@@ -40,7 +40,6 @@ export class RedirectionPageComponent implements OnInit, OnDestroy {
           const userId = Number(params.get('userId'));
           const newEmail = String(params.get('newEmail'));
           const token = String(params.get('token'));
-          console.log(userId, newEmail, token);
           return this._CoursesService
             .confirmEmailChange(userId, newEmail, token)
             .pipe(

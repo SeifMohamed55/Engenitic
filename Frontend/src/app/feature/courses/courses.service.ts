@@ -184,12 +184,13 @@ export class CoursesService {
     newEmail: string,
     token: string
   ): Observable<any> {
+    console.log({ userId, newEmail, token });
     return this._HttpClient.post(
       `https://localhost/api/Users/confirm-email-change`,
       {
         userId,
         newEmail,
-        token
+        token,
       }
     );
   }
