@@ -178,4 +178,19 @@ export class CoursesService {
       },
     });
   }
+
+  confirmEmailChange(
+    userId: number,
+    newEmail: string,
+    token: string
+  ): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Users/confirm-email-change`,
+      {
+        userId,
+        newEmail,
+        token
+      }
+    );
+  }
 }
