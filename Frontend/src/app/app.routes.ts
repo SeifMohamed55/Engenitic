@@ -25,7 +25,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   {
-    path: 'redirection_page',
+    path: 'redirection-page',
     component: RedirectionPageComponent,
     data: { roles: ['student', 'instructor', 'admin'] },
     canActivate: [rolesGuard],
