@@ -14,9 +14,9 @@
         public ITagsRepository TagsRepo { get; }
         public IUserLoginRepository UserLoginRepo { get; }
         public IFileHashRepository FileHashRepo { get; }
-        public IQuizQuestionRepository QuizQuestionRepo { get; set; }
-        public IBulkRepository<QuizAnswer, int> QuizAnswerRepo { get; set; }
-        public IReviewRepository ReviewRepository { get; set; }
+        public IQuizQuestionRepository QuizQuestionRepo { get;  }
+        public IBulkRepository<QuizAnswer, int> QuizAnswerRepo { get; }
+        public IReviewRepository ReviewRepository { get; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();

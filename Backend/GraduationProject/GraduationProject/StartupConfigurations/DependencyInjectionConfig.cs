@@ -29,8 +29,8 @@ namespace GraduationProject.StartupConfigurations
 
             services.AddScoped<IGmailServiceHelper, GmailServiceHelper>();
 
-            services.AddScoped<IDictionaryUnitOfWork, DictionaryUnitOfWork>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, DictionaryUnitOfWork>();
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBulkRepository<QuizAnswer, int>, BulkRepository<QuizAnswer, int>>();
             services.AddScoped<IUserRepository, UsersRepository>();
             services.AddScoped<IQuizRepository, QuizRepository>();
