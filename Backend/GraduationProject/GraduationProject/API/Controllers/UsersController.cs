@@ -122,8 +122,7 @@ namespace GraduationProject.API.Controllers
 
                 var token = await _userManager.GenerateChangeEmailTokenAsync(user, emailRequest.NewEmail);
 
-                var confirmationLink = $"{_jwtOptions.Audience}/confirm-email-change?userId={user.Id}&newEmail={emailRequest.NewEmail}&token={Uri.EscapeDataString(token)}";
-
+                var confirmationLink = $"{_jwtOptions.Audience}/redirection-page?userId={user.Id}&newEmail={emailRequest.NewEmail}&token={Uri.EscapeDataString(token)}";
 
                 // Send this link to the user's email
                 await _emailService.SendEmailAsync(emailRequest.NewEmail,

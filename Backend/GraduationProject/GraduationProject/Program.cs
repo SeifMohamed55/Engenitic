@@ -1,12 +1,10 @@
+using DotNetEnv;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Application.Services.HttpClientServices;
 using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Common.Middlewares;
 using GraduationProject.Domain.Models;
-using GraduationProject.Infrastructure.Data;
-using GraduationProject.Infrastructure.Data.Interfaces;
-using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 builder.Configuration.AddEnvironmentVariables();
 
