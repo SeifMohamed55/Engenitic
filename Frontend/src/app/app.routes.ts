@@ -19,10 +19,17 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { MainCourseComponent } from './pages/main-course/main-course.component';
 import { rolesGuard } from './guards/roles.guard';
 import { authRedirectGuardGuard } from './guards/auth-redirect-guard.guard';
+import { RedirectionPageComponent } from './pages/redirection-page/redirection-page.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
+  {
+    path: 'redirection_page',
+    component: RedirectionPageComponent,
+    data: { roles: ['student', 'instructor', 'admin'] },
+    canActivate: [rolesGuard],
+  },
   {
     path: 'offered-courses',
     component: CoursesComponent,
