@@ -35,142 +35,90 @@
       />
     </figure>
   </div>
-  <section class="py-10 grid grid-cols-1 items-start gap-20">
+  <section
+    *ngIf="courseDetailsResopnse"
+    class="py-10 grid grid-cols-1 items-start gap-20"
+  >
     <div class="flex flex-col justify-between gap-4">
       <h3 class="font-display text-secondary-header">learner reviews</h3>
       <p class="py-10">
         <i class="fa-solid fa-star text-yellow-400"></i>
-        <span class="text-secondary-header font-semibold px-10">4.7</span>
-        <span class="text-sm opacity-80 font-regular">40 reviews</span>
+        <span class="text-secondary-header font-semibold px-10">
+          {{ courseDetailsResopnse.ratingStats.averageRating.toFixed(1) }}
+        </span>
+        <span class="text-sm opacity-80 font-regular">{{
+          courseDetailsResopnse.ratingStats.totalCount
+        }}</span>
       </p>
       <div class="grid grid-rows-5 gap-5">
-        <div class="flex justify-between items-center gap-5">
-          <p class="font-display w-[50px]">5 stars</p>
+        <div
+          *ngFor="let i of [5, 4, 3, 2, 1]"
+          class="flex justify-between items-center gap-5"
+        >
+          <p class="font-display w-[50px]">{{ i }} stars</p>
           <div
             class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
             <span
-              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
+              class="h-[7px] rounded enginitic-main-color -z-10"
+              [style.width]="
+                this.courseDetailsResopnse.ratingStats.breakdown[i].percentage +
+                '%'
+              "
             ></span>
           </div>
-          <span class="text-sm font-regular">79.19%</span>
-        </div>
-        <div class="flex justify-between items-center gap-5">
-          <p class="font-display w-[50px]">4 stars</p>
-          <div
-            class="w-full h-[7px] border rounded relative flex overflow-hidden"
-          >
-            <span
-              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
-            ></span>
-          </div>
-          <span class="text-sm font-regular">79.19%</span>
-        </div>
-        <div class="flex justify-between items-center gap-5">
-          <p class="font-display w-[50px]">3 stars</p>
-          <div
-            class="w-full h-[7px] border rounded relative flex overflow-hidden"
-          >
-            <span
-              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
-            ></span>
-          </div>
-          <span class="text-sm font-regular">79.19%</span>
-        </div>
-        <div class="flex justify-between items-center gap-5">
-          <p class="font-display w-[50px]">2 stars</p>
-          <div
-            class="w-full h-[7px] border rounded relative flex overflow-hidden"
-          >
-            <span
-              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
-            ></span>
-          </div>
-          <span class="text-sm font-regular">79.19%</span>
-        </div>
-        <div class="flex justify-between items-center gap-5">
-          <p class="font-display w-[50px]">1 stars</p>
-          <div
-            class="w-full h-[7px] border rounded relative flex overflow-hidden"
-          >
-            <span
-              class="w-[75%] h-[7px] rounded enginitic-main-color -z-10"
-            ></span>
-          </div>
-          <span class="text-sm font-regular">79.19%</span>
+          <span class="text-sm font-regular">
+            {{ this.courseDetailsResopnse.ratingStats.breakdown[i].count }}
+          </span>
         </div>
       </div>
     </div>
     <div class="w-full flex justify-between flex-col gap-20">
-      <p class="opacity-60 font-regular">showing 3 of 40</p>
+      <p class="opacity-60 font-regular">
+        showing {{ reviews.currentlyViewing }}
+      </p>
       <owl-carousel-o [options]="customOptions" class="w-full my-carousel">
         <ng-template
+          *ngFor="let review of reviews.paginatedList"
           class="flex flex-col justify-between gap-20 w-full"
           carouselSlide
         >
           <div class="border rounded-xl p-10 flex justify-start gap-10">
-            <div
-              class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
-            >
-              M
-            </div>
+            <figure>
+              <img
+                class="object-cover aspect-square rounded-full w-[100px] h-[100px]"
+                [src]="review.imageMetadata.imageURL"
+                [alt]="review.imageMetadata.name"
+              />
+            </figure>
             <div class="font-regular">
               <p>
                 <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
-                reviewed on jul 7, 2024
+                {{ review.updatedAt | TimePipe }}
               </p>
               <p>
-                The Project is well planned and well organized showing all the
-                usage with real time examples
-              </p>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template
-          class="flex flex-col justify-between gap-20 w-full"
-          carouselSlide
-        >
-          <div class="border rounded-xl p-10 flex justify-start gap-10">
-            <div
-              class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
-            >
-              A
-            </div>
-            <div class="font-regular">
-              <p>
-                <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
-                reviewed on jul 7, 2024
-              </p>
-              <p>
-                The Project is well planned and well organized showing all the
-                usage with real time examples
-              </p>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template
-          class="flex flex-col justify-between gap-20 w-full"
-          carouselSlide
-        >
-          <div class="border rounded-xl p-10 flex justify-start gap-10">
-            <div
-              class="aspect-square flex justify-center items-center enginitic-main-color font-display text-header text-white rounded-full w-[100px] h-[100px]"
-            >
-              S
-            </div>
-            <div class="font-regular">
-              <p>
-                <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
-                reviewed on jul 7, 2024
-              </p>
-              <p>
-                The Project is well planned and well organized showing all the
-                usage with real time examples
+                {{ review.content }}
               </p>
             </div>
           </div>
         </ng-template>
       </owl-carousel-o>
+      <div class="flex justify-between items-center">
+        <button
+          [disabled]="reviews.pageIndex <= 1"
+          class="engenitic-button"
+          (click)="handleReviewsIndex(reviews.pageIndex - 1)"
+        >
+          previous
+        </button>
+        <button
+          [disabled]="reviews.pageIndex >= reviews.totalPages"
+          class="engenitic-button"
+          (click)="handleReviewsIndex(reviews.pageIndex + 1)"
+        >
+          next
+        </button>
+      </div>
     </div>
   </section>
   <section>

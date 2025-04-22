@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   FormControl,
@@ -24,10 +24,18 @@ import {
 } from 'rxjs';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { Course } from '../../interfaces/courses/course';
+import { Comments } from '../../interfaces/reviews/commemts';
+import { TimePipe } from '../../pipes/time.pipe';
 
 @Component({
   selector: 'app-course-details',
-  imports: [ReactiveFormsModule, CommonModule, CarouselModule, RouterModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    CarouselModule,
+    RouterModule,
+    TimePipe,
+  ],
   templateUrl: './course-details.component.html',
   styleUrl: './course-details.component.scss',
 })
@@ -43,6 +51,7 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private refreshRandomCourses$ = new Subject<void>();
   courseDetailsResopnse: CourseDetails = {} as CourseDetails;
+  reviews: Comments = {} as Comments;
   randomCourses: Course[] = [];
   courseId!: number;
   userId!: number;
@@ -54,9 +63,20 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
     pullDrag: true,
     dots: true,
     navSpeed: 1000,
-    items: 1,
-    center: true,
-    margin: 150,
+    responsive: {
+      0: {
+        items: 1,
+        center: true, // Creates "peeking" effect on mobile
+      },
+      992: {
+        items: 2,
+        margin: 20, // Disable touch drag on desktop
+      },
+      1200: {
+        items: 3,
+        margin: 20,
+      },
+    },
   };
 
   ngOnInit(): void {
@@ -81,9 +101,9 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
         switchMap(([_, params]) => {
           const courseId = Number(params.get('courseId'));
           if (!courseId) return of(null);
-
           return this._CoursesService.getCourseDetails(courseId).pipe(
             tap((res) => {
+              console.log(res);
               this.courseDetailsResopnse = res.data;
               this.isEnrolled = res.data.isEnrolled || false;
             }),
@@ -92,7 +112,20 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
               return of(null);
             })
           );
-        })
+        }),
+        switchMap(() =>
+          this._CoursesService.getCourseReviews(this.courseId, 1).pipe(
+            tap((res) => (this.reviews = res.data)),
+            catchError((err) => {
+              err.error
+                ? this._ToastrService.error(err.error.message)
+                : this._ToastrService.error(
+                    'an error has occured try again later'
+                  );
+              return of(err);
+            })
+          )
+        )
       )
       .subscribe();
 
@@ -110,6 +143,21 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
       err.error?.message || 'An error occurred on the server, try again later';
     this._ToastrService.error(errorMessage);
     this._Router.navigate(['/offered-courses']);
+  }
+
+  handleReviewsIndex(index: number) {
+    this._CoursesService
+      .getCourseReviews(this.courseId, index)
+      .pipe(
+        tap((res) => (this.reviews = res.data)),
+        catchError((err) => {
+          err.error
+            ? this._ToastrService.error(err.error.message)
+            : this._ToastrService.error('an error has occured try again later');
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {

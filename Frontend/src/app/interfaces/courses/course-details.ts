@@ -7,13 +7,26 @@ export interface CourseDetails {
   instructorEmail: string;
   instructorPhone: string;
   requirements: string;
-  image: Image;
   stages: number;
-  isEnrolled?: boolean;
+  isEnrolled: boolean;
+  image: Image;
+  ratingStats: RatingStats;
 }
 
-export interface Image {
+interface Image {
   name: string;
   imageURL: string;
   hash: number;
+  version: any;
+}
+
+interface RatingStats {
+  totalCount: number;
+  averageRating: number;
+  breakdown: {
+    [key: number]: {
+      count: number;
+      percentage: number;
+    };
+  };
 }

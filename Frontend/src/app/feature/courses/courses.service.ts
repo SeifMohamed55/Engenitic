@@ -166,7 +166,16 @@ export class CoursesService {
     );
   }
 
-  GetRandomCourses() : Observable <any> {
+  GetRandomCourses(): Observable<any> {
     return this._HttpClient.get(`https://localhost/api/courses/random4`);
+  }
+
+  getCourseReviews(courseId: number, index: number): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/reviews`, {
+      params: {
+        courseId,
+        index,
+      },
+    });
   }
 }
