@@ -13,6 +13,7 @@ using System.Security.Claims;
 using GraduationProject.API.Requests;
 using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Infrastructure.Data.Interfaces;
+using Humanizer;
 
 namespace GraduationProject.API.Controllers
 {
@@ -95,7 +96,7 @@ namespace GraduationProject.API.Controllers
 
             if (userId == null || !int.TryParse(userId, out int currentUserId) || currentUserId != emailRequest.Id)
             {
-                return Unauthorized(new ErrorResponse()
+                return BadRequest(new ErrorResponse()
                 {
                     Code = HttpStatusCode.Unauthorized,
                     Message = "Invalid User ID."
@@ -153,7 +154,7 @@ namespace GraduationProject.API.Controllers
         [HttpPost("confirm-email-change")]
         public async Task<IActionResult> ConfirmEmailChange(ConfirmEmailRequest req)
         {
-            var user = await _userManager.FindByIdAsync(req.UserId);
+            var user = await _userManager.FindByIdAsync(req.UserId.ToString());
             if (user == null)
             {
                 return BadRequest(new ErrorResponse(){
