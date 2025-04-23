@@ -1,15 +1,50 @@
 <main class="container">
-    <form class="grid grid-cols-2 gap-20" [formGroup]="listeningForm" (ngSubmit)="handleSubmit()">
-        <div class="flex justify-between flex-col">
-            <textarea #sentence rows="12" cols="60" class="engenitic-input mb-5" placeholder="   Type Your Sentence Here ...." formControlName="sentence"></textarea>
-            <div class="mb-4" *ngIf="listeningForm.get('sentence')?.errors && (listeningForm.get('sentence')?.touched || sentence.value.length > 0)">
-                <p class="text-normal font-regular text-red-500" *ngIf="listeningForm.get('sentence')?.getError('required')">the sentence field is required</p>
-            </div>
-            <button type="submit" [disabled]="isDisabled" class="engenitic-button w-fit hover:enginitic-main-color hover:text-white">submit</button>
-        </div>
-        <div>
-            <label for="listening-audio" class="font-regular text-normal">listening audio</label>
-            <audio id="listening-audio" controls src="" class="engenitic-input shadow-container mt-6" ></audio>
-        </div>
-    </form>
+  <form
+    class="grid grid-cols-2 gap-20"
+    [formGroup]="listeningForm"
+    (ngSubmit)="handleSubmit()"
+  >
+    <div class="flex justify-between flex-col">
+      <textarea
+        #text
+        rows="12"
+        cols="60"
+        class="engenitic-input mb-5"
+        placeholder="   Type Your text Here ...."
+        formControlName="text"
+      ></textarea>
+      <div
+        class="mb-4"
+        *ngIf="
+          listeningForm.get('text')?.errors &&
+          (listeningForm.get('text')?.touched || text.value.length > 0)
+        "
+      >
+        <p
+          class="text-normal font-regular text-red-500"
+          *ngIf="listeningForm.get('text')?.getError('required')"
+        >
+          the text field is required
+        </p>
+      </div>
+      <button
+        type="submit"
+        [disabled]="isDisabled"
+        class="engenitic-button w-fit hover:enginitic-main-color hover:text-white"
+      >
+        submit
+      </button>
+    </div>
+    <div>
+      <label for="listening-audio" class="font-regular text-normal"
+        >listening audio</label
+      >
+      <audio
+        id="listening-audio"
+        controls
+        [src]="audioUrl"
+        class="engenitic-input shadow-container mt-6"
+      ></audio>
+    </div>
+  </form>
 </main>

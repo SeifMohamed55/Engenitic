@@ -18,4 +18,14 @@ export class ModelsService {
       { sentence }
     );
   }
+
+  textToSpeech(value: any): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/text-to-speech`,
+      value,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
 }
