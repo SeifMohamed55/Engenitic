@@ -127,9 +127,6 @@ namespace GraduationProject.API.Controllers
 
         }
 
-
-
-
         [HttpGet("login")]
         public IActionResult Login()
         {
