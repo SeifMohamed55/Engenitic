@@ -1,4 +1,3 @@
-using DotNetEnv;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services;
 using GraduationProject.Application.Services.HttpClientServices;
@@ -9,16 +8,14 @@ using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
+var vars = DotNetEnv.Env.Load();
 
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
-
 builder.Services.AddDbContextPool<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRES_GRAD_ONLINE"))
                .EnableServiceProviderCaching());
