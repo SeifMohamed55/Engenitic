@@ -5,6 +5,9 @@ from io import BytesIO
 import os
 import torch
 import logging
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

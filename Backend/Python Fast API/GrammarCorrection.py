@@ -4,6 +4,9 @@ import os
 import difflib
 from pydantic import BaseModel
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

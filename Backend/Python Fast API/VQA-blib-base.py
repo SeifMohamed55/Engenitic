@@ -4,6 +4,9 @@ from PIL import Image
 from io import BytesIO
 import os
 from fastapi import FastAPI, Header, HTTPException
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 

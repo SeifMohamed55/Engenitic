@@ -5,3 +5,4 @@ env/
 __pycache__/
 models/
 blip2-opt-2.7b/
+.env

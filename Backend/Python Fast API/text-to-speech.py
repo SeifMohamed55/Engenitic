@@ -6,7 +6,9 @@ import torchaudio
 import io, os
 from fastapi.responses import StreamingResponse
 import soundfile as sf  # ✅ Use this instead of torchaudio.save
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # ✅ Initialize FastAPI app
 app = FastAPI()
