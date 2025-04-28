@@ -25,14 +25,14 @@ namespace GraduationProject.API.Controllers
     {
         private readonly MailingOptions _options;
         private readonly UserManager<AppUser> _userManager;
-        private readonly ILoginRegisterService _loginService;
+        private readonly Application.Services.Interfaces.IAuthenticationService _loginService;
         private readonly JwtOptions _jwtOptions;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
         public GoogleController(
             IOptions<MailingOptions> options,
             UserManager<AppUser> userManager,
-            ILoginRegisterService loginService,
+            Application.Services.Interfaces.IAuthenticationService loginService,
             IOptions<JwtOptions> jwtOptions,
             ICloudinaryService cloudinaryService,
             IOptions<JsonOptions> jsonOptions

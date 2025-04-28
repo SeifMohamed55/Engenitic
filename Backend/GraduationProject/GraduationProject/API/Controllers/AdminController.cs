@@ -14,10 +14,10 @@ namespace GraduationProject.API.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : ControllerBase
     {
-        private readonly ILoginRegisterService _loginService;
+        private readonly IAuthenticationService _loginService;
         private readonly IAdminService _adminService;
         public AdminController(
-            ILoginRegisterService loginRegisterService,
+            IAuthenticationService loginRegisterService,
             IAdminService adminService)
         {
             _loginService = loginRegisterService;

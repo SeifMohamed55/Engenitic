@@ -17,12 +17,12 @@ namespace GraduationProject.API.Controllers
     [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ILoginRegisterService _loginService;
+        private readonly IAuthenticationService _authenticationService;
         private readonly JwtOptions _jwtOptions;
         private readonly IJwtTokenService _jwtTokenService;
-        public AuthenticationController(ILoginRegisterService loginService, IOptions<JwtOptions> options, IJwtTokenService jwtTokenService)
+        public AuthenticationController(IAuthenticationService loginService, IOptions<JwtOptions> options, IJwtTokenService jwtTokenService)
         {
-            _loginService = loginService;
+            _authenticationService = loginService;
             _jwtOptions = options.Value;
             _jwtTokenService = jwtTokenService;
         }
@@ -40,7 +40,7 @@ namespace GraduationProject.API.Controllers
             try
             {
 
-                if(Guid.TryParse(HttpContext.Request.Cookies["device_id"], out var guid))
+                if (Guid.TryParse(HttpContext.Request.Cookies["device_id"], out var guid))
                 {
                     model.DeviceId = guid;
                 }
@@ -48,18 +48,18 @@ namespace GraduationProject.API.Controllers
                 {
                     model.DeviceId = Guid.NewGuid();
                 }
-    
+
                 // (for IP) HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
                 // At production if behind a proxy
-                               
+
                 var deviceInfo = new DeviceInfo
                 {
-                    DeviceId =  model.DeviceId.Value,
-                    IpAddress =  HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                    DeviceId = model.DeviceId.Value,
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
                     UserAgent = HttpContext.Request.Headers["User-Agent"].FirstOrDefault() ?? "Unknown"
                 };
 
-                ServiceResult<LoginWithCookies> res = await _loginService.Login(model, deviceInfo);
+                ServiceResult<LoginWithCookies> res = await _authenticationService.Login(model, deviceInfo);
 
                 if (res.TryGetData(out var data))
                 {
@@ -118,9 +118,9 @@ namespace GraduationProject.API.Controllers
             {
                 (int userId, string jti) = _jwtTokenService.ExtractIdAndJtiFromExpiredToken(jwt);
 
-                var res = await _loginService.Logout(guid, userId);
+                var res = await _authenticationService.Logout(guid, userId);
 
-                if(!res.TryGetData(out var data))
+                if (!res.TryGetData(out var data))
                     return Ok(new SuccessResponse()
                     {
                         Code = System.Net.HttpStatusCode.OK,
@@ -180,7 +180,7 @@ namespace GraduationProject.API.Controllers
                 });
 
 
-            var res = await _loginService.Register(model, false);
+            var res = await _authenticationService.Register(model, false);
             if (res.IsSuccess)
                 return Ok(new SuccessResponse()
                 {
@@ -197,6 +197,44 @@ namespace GraduationProject.API.Controllers
 
         }
 
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordRequest model)
+        {
+            var res = await _authenticationService.ForgetPassword(model);
+            if (res.IsSuccess)
+                return Ok(new SuccessResponse()
+                {
+                    Code = System.Net.HttpStatusCode.OK,
+                    Data = res.Data,
+                    Message = res.Message
+                });
+            else
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = res.Message
+                });
+
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            var res = await _authenticationService.ResetPassword(model);
+            if (res.IsSuccess)
+                return Ok(new SuccessResponse()
+                {
+                    Code = System.Net.HttpStatusCode.OK,
+                    Data = res.Data,
+                    Message = res.Message
+                });
+            else
+                return BadRequest(new ErrorResponse()
+                {
+                    Code = System.Net.HttpStatusCode.BadRequest,
+                    Message = res.Message
+                });
+        }
     }
 }
 

@@ -16,7 +16,7 @@ using System.Net;
 
 namespace GraduationProject.Application.Services
 {
-    public class LoginRegisterService : ILoginRegisterService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IJwtTokenService _tokenService;
@@ -28,8 +28,9 @@ namespace GraduationProject.Application.Services
         private readonly IUploadingService _uploadingService;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IUserService _userService;
+        private readonly IGmailServiceHelper _emailSender;
 
-        public LoginRegisterService(
+        public AuthenticationService(
             UserManager<AppUser> userManager,
             IJwtTokenService tokenService,
             IOptions<JwtOptions> options,
@@ -39,7 +40,8 @@ namespace GraduationProject.Application.Services
             SignInManager<AppUser> signInManager,
             IUploadingService uploadingService,
             ICloudinaryService cloudinaryService,
-            IUserService userService
+            IUserService userService,
+            IGmailServiceHelper emailSender
             )
 
         {
@@ -53,6 +55,7 @@ namespace GraduationProject.Application.Services
             _uploadingService = uploadingService;
             _cloudinaryService = cloudinaryService;
             _userService = userService;
+            _emailSender = emailSender;
 
         }
 
@@ -457,6 +460,44 @@ namespace GraduationProject.Application.Services
             
 
 
+        }
+
+        public async Task<ServiceResult<bool>> ForgetPassword(ForgetPasswordRequest model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return ServiceResult<bool>.Failure("User not found");
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = $"{_jwtOptions.Audience}/reset-password?token={token}&email={model.Email}";
+            try
+            {
+                await _emailSender.SendEmailAsync(model.Email,
+                    "Reset Password",
+                    $"You can reset your password by clicking this link: {callbackUrl}");
+            }
+            catch
+            {
+                return ServiceResult<bool>.Failure("Couldn't send email");
+            }
+            return ServiceResult<bool>.Success(true);
+        }
+
+        public async Task<ServiceResult<bool>> ResetPassword(ResetPasswordRequest model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return ServiceResult<bool>.Failure("User not found");
+
+            if(model.NewPassword != model.ConfirmPassword)
+                return ServiceResult<bool>.Failure("Passwords do not match");
+
+            if(await _userManager.CheckPasswordAsync(user, model.NewPassword))
+                return ServiceResult<bool>.Failure("New password cannot be the same as old password");
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            if (!result.Succeeded)
+                return ServiceResult<bool>.Failure(string.Join('\n', result.Errors.Select(x => x.Description)));
+            return ServiceResult<bool>.Success(true);
         }
 
         private async Task SaveGooglePhoto(AppUser user, AuthenticatedPayload payload)
