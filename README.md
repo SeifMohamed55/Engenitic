@@ -1,2 +1,2 @@
 # Engenitic
-A project
+Engenitic is a modern, responsive English-language web platform built with Angular and .NET Core, following clean architecture principles. The backend integrates PostgreSQL (cloud-hosted) and uses JWT for secure authentication, while efficiently handling images and videos via FormData. The frontend leverages Tailwind CSS with SCSS, and integrates ngx-based libraries for toasts, loaders, charts, and carousels. The site includes three AI-powered models: grammar correction, question-answering, and text-to-speech generation. It features a robust subscription system, secure data handling, and a polished UI/UX experience across devices.
