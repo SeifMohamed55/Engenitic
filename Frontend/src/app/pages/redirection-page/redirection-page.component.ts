@@ -21,7 +21,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './redirection-page.component.scss',
 })
 export class RedirectionPageComponent implements OnInit, OnDestroy {
-  counter: number = 10;
+  counter: number = 5;
   subscription!: Subscription;
   userId!: number;
   newEmail!: string;
@@ -64,7 +64,7 @@ export class RedirectionPageComponent implements OnInit, OnDestroy {
         },
       });
 
-    this.subscription = interval(1000)
+    this.subscription = interval(5000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.counter === 0) {
