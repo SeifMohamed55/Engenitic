@@ -1,187 +1,226 @@
 <main class="container pt-10">
-  <div class="grid grid-cols-2 gap-20">
-    <form [formGroup]="emailForm" (ngSubmit)="handleEmailSubmit()">
-      <input
-        #email
-        type="email"
-        placeholder=" Email"
-        class="engenitic-input"
-        formControlName="email"
-      />
-      <div
-        *ngIf="
-          emailForm.get('email')?.errors ||
-          (emailForm.get('email')?.touched && email.value.length > 0)
-        "
-      >
-        <p
-          class="text-normal font-regular text-red-500 py-4"
-          *ngIf="emailForm.get('email')?.getError('email')"
+  <div
+    class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-20 "
+  >
+    <!-- Email Form -->
+    <form
+      [formGroup]="emailForm"
+      (ngSubmit)="handleEmailSubmit()"
+      class="w-full"
+    >
+      <div class="form-group">
+        <input
+          #email
+          type="email"
+          placeholder="Email"
+          class="engenitic-input w-full"
+          formControlName="email"
+        />
+        <div
+          class="error-messages"
+          *ngIf="
+            emailForm.get('email')?.errors &&
+            (emailForm.get('email')?.touched || email.value.length > 0)
+          "
         >
-          invalid email
-        </p>
-        <p
-          class="text-normal font-regular text-red-500 py-4"
-          *ngIf="emailForm.get('email')?.getError('required')"
-        >
-          email field is required
-        </p>
+          <p
+            class="text-sm font-regular text-red-500 mt-2"
+            *ngIf="emailForm.get('email')?.getError('email')"
+          >
+            Invalid email format
+          </p>
+          <p
+            class="text-sm font-regular text-red-500 mt-2"
+            *ngIf="emailForm.get('email')?.getError('required')"
+          >
+            Email field is required
+          </p>
+        </div>
       </div>
       <button
         type="submit"
         [ngClass]="{ 'engenitic-button-disabled': disableButtonEmail }"
         [disabled]="disableButtonEmail"
-        class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all mt-4"
+        class="engenitic-button w-full sm:w-auto hover:bg-yellow-500 duration-500 transition-all mt-4"
       >
-        update
+        Update Email
       </button>
     </form>
-    <form [formGroup]="userNameForm" (ngSubmit)="handleUserNameSubmit()">
-      <input
-        #userName
-        type="text"
-        placeholder="  Username"
-        class="engenitic-input"
-        formControlName="userName"
-      />
-      <div
-        *ngIf="
-          userNameForm.get('userName')?.errors &&
-          (userNameForm.get('userName')?.touched || userName.value.length > 0)
-        "
-      >
-        <p
-          class="text-normal font-regular text-red-500 py-4"
-          *ngIf="userNameForm.get('userName')?.getError('required')"
+
+    <!-- Username Form -->
+    <form
+      [formGroup]="userNameForm"
+      (ngSubmit)="handleUserNameSubmit()"
+      class="w-full"
+    >
+      <div class="form-group">
+        <input
+          #userName
+          type="text"
+          placeholder="Username"
+          class="engenitic-input w-full"
+          formControlName="userName"
+        />
+        <div
+          class="error-messages"
+          *ngIf="
+            userNameForm.get('userName')?.errors &&
+            (userNameForm.get('userName')?.touched || userName.value.length > 0)
+          "
         >
-          user name field is required
-        </p>
+          <p
+            class="text-sm font-regular text-red-500 mt-2"
+            *ngIf="userNameForm.get('userName')?.getError('required')"
+          >
+            Username field is required
+          </p>
+        </div>
       </div>
       <button
         type="submit"
         [ngClass]="{ 'engenitic-button-disabled': disableButtonUserName }"
         [disabled]="disableButtonUserName"
-        class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all mt-4"
+        class="engenitic-button w-full sm:w-auto hover:bg-yellow-500 duration-500 transition-all mt-4"
       >
-        update
+        Update Username
       </button>
     </form>
+
+    <!-- Profile Picture Section -->
     <div
-      class="col-span-2 w-[300px] h-[300px] mx-auto flex justify-between items-center flex-col mb-20"
+      class="lg:col-span-2 w-full max-w-[300px] mx-auto flex flex-col items-center mb-8"
     >
-      <img
-        [src]="previewUrl"
-        alt="profile picture"
-        class="w-[200px] h-[200px] object-cover rounded-[50%]"
-      />
-      <input
-        placeholder="update picture"
-        type="file"
-        accept="image/*"
-        (change)="onFileChange($event)"
-        class="custom-file-input font-display lowercase mx-auto my-4"
-      />
+      <div class="profile-picture-container">
+        <img
+          [src]="previewUrl"
+          alt="Profile picture"
+          class="w-[200px] h-[200px] object-cover rounded-full border-4 border-gray-200"
+        />
+      </div>
+      <div class="file-input-container mt-4 w-full">
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileChange($event)"
+          class="custom-file-input w-full text-center"
+          id="fileInput"
+        title="update image button"
+          />
+      </div>
       <p
-        class="text-normal text-center font-regular text-red-500 my-4"
+        class="text-sm text-center font-regular text-red-500 mt-2"
         *ngIf="fileValidationError"
       >
         {{ fileValidationError }}
       </p>
       <button
-        type="submit"
+        type="button"
         [ngClass]="{ 'engenitic-button-disabled': disableButtonImage }"
         [disabled]="disableButtonImage"
-        class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all mt-4"
+        class="engenitic-button w-full sm:w-auto hover:bg-yellow-500 duration-500 transition-all mt-4"
         (click)="handleImageSubmit()"
       >
-        update
+        Update Picture
       </button>
     </div>
-    <form
-      class="col-span-2 grid grid-cols-2 gap-x-20 gap-y-5 w-full mt-3"
-      [formGroup]="passwordForm"
-      (ngSubmit)="handlePasswordSubmit()"
-    >
-      <div>
-        <input
-          #oldPassword
-          type="password"
-          placeholder="  Old Password"
-          class="engenitic-input"
-          formControlName="oldPassword"
-        />
+
+    <!-- Password Form -->
+    <div class="lg:col-span-2 w-full">
+      <form
+        [formGroup]="passwordForm"
+        (ngSubmit)="handlePasswordSubmit()"
+        class="password-form"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8">
+          <!-- Old Password -->
+          <div class="form-group">
+            <input
+              #oldPassword
+              type="password"
+              placeholder="Current Password"
+              class="engenitic-input w-full"
+              formControlName="oldPassword"
+            />
+            <div
+              class="error-messages"
+              *ngIf="
+                passwordForm.get('oldPassword')?.errors &&
+                (passwordForm.get('oldPassword')?.touched ||
+                  oldPassword.value.length > 0)
+              "
+            >
+              <p
+                class="text-sm font-regular text-red-500 mt-2"
+                *ngIf="passwordForm.get('oldPassword')?.getError('required')"
+              >
+                Current password is required
+              </p>
+              <p
+                class="text-sm font-regular text-red-500 mt-2"
+                *ngIf="passwordForm.get('oldPassword')?.getError('minlength')"
+              >
+                Password must be at least 6 characters
+              </p>
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div class="form-group">
+            <input
+              #newPassword
+              type="password"
+              placeholder="New Password"
+              class="engenitic-input w-full"
+              formControlName="newPassword"
+            />
+            <div
+              class="error-messages"
+              *ngIf="
+                passwordForm.get('newPassword')?.errors &&
+                (passwordForm.get('newPassword')?.touched ||
+                  newPassword.value.length > 0)
+              "
+            >
+              <p
+                class="text-sm font-regular text-red-500 mt-2"
+                *ngIf="passwordForm.get('newPassword')?.getError('required')"
+              >
+                New password is required
+              </p>
+              <p
+                class="text-sm font-regular text-red-500 mt-2"
+                *ngIf="passwordForm.get('newPassword')?.getError('minlength')"
+              >
+                Password must be at least 6 characters
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Same Password Error -->
         <div
-          *ngIf="
-            passwordForm.get('oldPassword')?.errors &&
-            (passwordForm.get('oldPassword')?.touched ||
-              oldPassword.value.length > 0)
-          "
+          class="text-center mt-4"
+          *ngIf="passwordForm.errors?.['samePassword'] && !passwordForm.get('oldPassword')?.errors && !passwordForm.get('newPassword')?.errors"
         >
-          <p
-            class="text-normal font-regular text-red-500 py-4"
-            *ngIf="passwordForm.get('oldPassword')?.getError('required')"
-          >
-            old password field is required
-          </p>
-          <p
-            class="text-normal font-regular text-red-500 py-4"
-            *ngIf="passwordForm.get('oldPassword')?.getError('minlength')"
-          >
-            password field must be more than 5
+          <p class="text-sm font-regular text-red-500">
+            New password must be different from current password
           </p>
         </div>
-      </div>
-      <div>
-        <input
-          #newPassword
-          type="password"
-          placeholder="  New Password"
-          class="engenitic-input"
-          formControlName="newPassword"
-        />
-        <div
-          *ngIf="
-            passwordForm.get('newPassword')?.errors &&
-            (passwordForm.get('newPassword')?.touched ||
-              newPassword.value.length > 0)
-          "
-        >
-          <p
-            class="text-normal font-regular text-red-500 py-4"
-            *ngIf="passwordForm.get('newPassword')?.getError('required')"
+
+        <div class="text-center mt-6">
+          <button
+            type="submit"
+            [ngClass]="{ 'engenitic-button-disabled': disableButtonPassword }"
+            [disabled]="disableButtonPassword"
+            class="engenitic-button w-full sm:w-auto hover:bg-yellow-500 duration-500 transition-all"
           >
-            new password field is required
-          </p>
-          <p
-            class="text-normal font-regular text-red-500 py-4"
-            *ngIf="passwordForm.get('newPassword')?.getError('minlength')"
-          >
-            password field must be more than 5
-          </p>
+            Update Password
+          </button>
         </div>
-      </div>
-      <div
-        class="col-span-2 mx-auto"
-        *ngIf="
-            passwordForm.errors?.['samePassword'] &&
-            !passwordForm.get('oldPassword')?.errors &&
-            !passwordForm.get('newPassword')?.errors"
-      >
-        <p class="text-normal font-regular text-red-500 py-4">
-          Passwords must be different!
-        </p>
-      </div>
-      <button
-        type="submit"
-        [ngClass]="{ 'engenitic-button-disabled': disableButtonPassword }"
-        [disabled]="disableButtonPassword"
-        class="engenitic-button w-fit hover:bg-yellow-500 duration-500 transition-all col-span-2"
-      >
-        update
-      </button>
-    </form>
+      </form>
+    </div>
   </div>
   <section>
-    <router-outlet></router-outlet>
+    <router-outlet> </router-outlet>
   </section>
 </main>

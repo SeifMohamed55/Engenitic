@@ -10,7 +10,6 @@ import {
   switchMap,
   takeUntil,
   tap,
-  throwError,
 } from 'rxjs';
 import {
   FormArray,

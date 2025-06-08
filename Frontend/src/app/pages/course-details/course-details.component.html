@@ -1,31 +1,35 @@
 <main class="container pt-10">
-  <div class="grid grid-cols-2 items-center gap-32">
+  <div class="grid md:grid-cols-2 items-center gap-32">
     <ng-template #loading>Loading...</ng-template>
     <div
       *ngIf="courseDetailsResopnse; else loading"
       class="flex justify-between items-start flex-col gap-10"
     >
-      <h1 class="font-display text-header mb-6">
+      <h1
+        class="font-display text-2xl sm:text-3xl lg:text-5xl xl:text-header mb-6"
+      >
         {{ courseDetailsResopnse.title }}
       </h1>
-      <p class="font-regular text-normal">
+      <p class="font-regular text-sm xl:text-normal">
         {{ courseDetailsResopnse.description }}
       </p>
-      <p class="font-regular text-normal">
+      <p class="font-regular text-sm xl:text-normal">
         course stages : {{ courseDetailsResopnse.stages }}
       </p>
-      <p class="font-regular text-normal">
+      <p class="font-regular text-sm xl:text-normal">
         requirements before taking the course :
         {{ courseDetailsResopnse.requirements }}
       </p>
-      <p class="font-regular text-normal">
+      <p class="font-regular text-sm xl:text-normal">
         made by : {{ courseDetailsResopnse.instructorName }}
       </p>
-      <p class="font-regular text-normal">
+      <p class="font-regular text-sm xl:text-normal">
         instructor Email : {{ courseDetailsResopnse.instructorEmail }}
       </p>
     </div>
-    <figure class="flex justify-center items-center w-[80%] h-[80%]">
+    <figure
+      class="mx-auto order-first md:order-last flex justify-center items-center w-[80%] h-[80%]"
+    >
       <img
         title="{{ courseDetailsResopnse.title }}"
         [src]="courseDetailsResopnse.image.imageURL"
@@ -55,7 +59,7 @@
           *ngFor="let i of [5, 4, 3, 2, 1]"
           class="flex justify-between items-center gap-5"
         >
-          <p class="font-display w-[50px]">{{ i }} stars</p>
+          <p class="font-display text-nowrap">{{ i }} stars</p>
           <div
             class="w-full h-[7px] border rounded relative flex overflow-hidden"
           >
@@ -67,7 +71,7 @@
               "
             ></span>
           </div>
-          <span class="text-sm font-regular">
+          <span class="text-xs md:text-sm font-regular">
             {{ this.courseDetailsResopnse.ratingStats.breakdown[i].count }}
           </span>
         </div>
@@ -83,16 +87,17 @@
           class="flex flex-col justify-between gap-20 w-full"
           carouselSlide
         >
-          <div class="border rounded-xl p-10 flex justify-start gap-10">
+          <div class="border rounded-xl p-5 md:p-10 flex justify-start gap-5 md:gap-10">
             <figure>
               <img
-                class="object-cover aspect-square rounded-full w-[100px] h-[100px]"
+                class="object-cover aspect-square rounded-full w-[50px] h-[50px] md:w-[100px] md:h-[100px]"
                 [src]="review.imageMetadata.imageURL"
-                [alt]="review.imageMetadata.name"
+                [alt]="review.imageMetadata.name || 'course img'"
+                loading="lazy"
               />
             </figure>
-            <div class="font-regular">
-              <p>
+            <div class="font-regular text-sm xl:text-normal">
+              <p class="text-nowrap">
                 <i class="fa-solid fa-star text-yellow-400 text-sm"></i> .
                 {{ review.updatedAt | TimePipe }}
               </p>
