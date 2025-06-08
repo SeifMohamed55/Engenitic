@@ -1,6 +1,10 @@
 <main>
   <div class="container">
-    <h1 class="text-center text-header py-10 font-display">Course Creation</h1>
+    <h1
+      class="text-center text-2xl sm:text-3xl lg:text-5xl xl:text-header py-10 font-display"
+    >
+      Course Creation
+    </h1>
 
     <form [formGroup]="addingCourseForm" (ngSubmit)="onSubmit()">
       <!-- Basic Course Information -->
@@ -70,7 +74,7 @@
 
       <!-- Level Management -->
       <h2 class="py-10 text-center font-display text-[40px]">Course Levels</h2>
-      <div class="level-navigation">
+      <div class="flex md:items-center flex-col md:flex-row gap-4 my-4">
         <button
           class="btn-secondary"
           type="button"
@@ -164,7 +168,7 @@
 
             <h3 class="py-10 text-center font-display text-[40px]">Quizzes</h3>
 
-            <div class="level-navigation">
+            <div class="flex md:items-center flex-col md:flex-row gap-4 my-4">
               <button
                 class="btn-secondary"
                 type="button"

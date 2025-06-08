@@ -1,5 +1,5 @@
 <main class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6">
+  <h1 class="text-2xl sm:text-3xl lg:text-5xl font-display font-bold mb-6">
     Edit Course: {{ courseData?.title || "Loading..." }}
   </h1>
 
@@ -96,7 +96,7 @@
       <!-- Quiz Navigation -->
       <div
         *ngIf="quizes.controls.length > 0"
-        class="mb-6 flex items-center gap-4"
+        class="mb-6 flex md:items-center md:flex-row flex-col gap-4"
       >
         <button
           type="button"
@@ -211,7 +211,7 @@
 
           <!-- Questions Section -->
           <div class="mt-6" formArrayName="questions">
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-between items-center flex-row mb-6">
               <h3 class="text-xl font-semibold">Questions</h3>
               <button
                 type="button"
@@ -225,7 +225,7 @@
             <!-- Question Navigation -->
             <div
               *ngIf="questions.controls.length > 0"
-              class="mb-6 flex items-center gap-4"
+              class="mb-6 flex md:items-center flex-col md:flex-row gap-4"
             >
               <button
                 type="button"
@@ -317,7 +317,9 @@
                       [formGroupName]="k"
                       class="border p-4 rounded-md"
                     >
-                      <div class="flex items-center gap-4">
+                      <div
+                        class="flex md:items-center flex-col md:flex-row gap-4"
+                      >
                         <!-- Answer Text -->
                         <div class="flex-1">
                           <input
@@ -368,7 +370,7 @@
     </div>
 
     <!-- Submit Button -->
-    <div class="mt-8">
+    <div class="mt-8 md:mx-0">
       <button
         type="submit"
         class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 font-regular"
