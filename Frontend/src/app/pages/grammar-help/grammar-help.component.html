@@ -1,6 +1,6 @@
 <main class="container">
   <form
-    class="grid grid-cols-2 gap-20"
+    class="grid md:grid-cols-2 gap-5 md:gap-20"
     [formGroup]="grammarForm"
     (ngSubmit)="handleSubmit()"
   >
@@ -21,21 +21,21 @@
         "
       >
         <p
-          class="text-normal font-regular text-red-500"
+          class="text-sm xl:text-normal font-regular text-red-500"
           *ngIf="grammarForm.get('sentence')?.getError('required')"
         >
-          you must enter a sentence before submitting !
+          you must enter a sentence before submitting
         </p>
       </div>
       <button
         [disabled]="buttonDisabled"
-        class="engenitic-button hover:enginitic-main-color hover:text-white"
+        class="engenitic-button hover:enginitic-main-color hover:text-white w-full md:w-fit"
         type="submit"
       >
         submit
       </button>
     </div>
-    <div class="flex justify-between flex-col ">
+    <div class="flex justify-between flex-col">
       <textarea
         class="engenitic-input my-5"
         rows="12"
@@ -45,7 +45,9 @@
       >
  {{ response }} </textarea
       >
-      <p class="font-regular " *ngIf="score">your grammar score is {{ score }} %</p>
+      <p class="font-regular" *ngIf="score">
+        your grammar score is {{ score }} %
+      </p>
     </div>
   </form>
 </main>
