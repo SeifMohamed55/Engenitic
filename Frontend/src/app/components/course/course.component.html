@@ -12,7 +12,7 @@
   </div>
 
   <!-- Course List -->
-  <div class="py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+  <div class="py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
     <!-- No Results Message -->
     <ng-container *ngIf="courses.length === 0">
       <div class="text-center py-10 col-span-full">
@@ -41,7 +41,9 @@
       <div
         class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 items-center border border-black rounded-lg p-5 shadow-container course"
       >
-        <div class="grid grid-rows-4 gap-5 md:gap-10">
+        <div
+          class="min-h-[300px] flex justify-between flex-col gap-5 md:gap-10 overflow-hidden"
+        >
           <h3 class="font-display text-secondary-header">
             {{ course.title }}
           </h3>
@@ -53,7 +55,7 @@
           </p>
           <a
             [routerLink]="['/course-details', course.id]"
-            class="engenitic-button text-center translate-y-20 course-button relative group inline-block hover:enginitic-main-color"
+            class="engenitic-button text-center translate-y-full md:translate-y-full course-button relative group inline-block hover:enginitic-main-color"
           >
             <span
               class="transition-opacity duration-300 opacity-100 group-hover:opacity-0 flex justify-center items-center"
@@ -74,7 +76,7 @@
               course.image.imageURL || './assets/images/course-placeholder.png'
             "
             [alt]="course.image.name ? course.image.name : 'course image'"
-            class="w-full h-48 object-cover rounded-lg"
+            class="w-full h-48 object-contain rounded-lg"
           />
         </figure>
       </div>
