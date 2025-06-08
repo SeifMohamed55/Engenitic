@@ -1,6 +1,8 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
+using GraduationProject.API.Responses.ActionResult;
 using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,88 +37,27 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid index."
                 });
 
-            try
-            {
-                var data = await _adminService.GetUsersPage(index, role);
+            var res = await _adminService.GetUsersPage(index, role);
 
-                if (index > data.TotalPages && data.TotalPages != 0)
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = "Invalid Page Number",
-                        Code = HttpStatusCode.BadRequest,
-                    });
-
-                return Ok(new SuccessResponse()
-                {
-                    Code = HttpStatusCode.OK,
-                    Data = data,
-                    Message = "Users retrieved successfully."
-                });
-            }
-            catch (InvalidParameterException ex)
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Code = HttpStatusCode.BadRequest,
-                    Message = ex.Message
-                });
-            }
-            catch
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Code = HttpStatusCode.BadRequest,
-                    Message = "Something Wrong occured"
-                });
-            }
+            return res.ToActionResult();
+  
         }
 
         // DELETE: api/admin/ban/5
-        [HttpDelete("ban/{id}")]
+        [HttpPost("ban/{id}")]
         public async Task<IActionResult> BanAppUser(int id)
         {
-            try
-            {
-                await _adminService.BanUser(id);
+            var res = await _adminService.BanUser(id);
 
-                return Ok(new SuccessResponse()
-                {
-                    Message = "User has been banned.",
-                    Code = HttpStatusCode.OK
-                });
-            }
-            catch
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = "User not found.",
-                    Code = HttpStatusCode.BadRequest
-                });
-            }
+            return res.ToActionResult();
         }
 
         // DELETE: api/admin/ban/5
-        [HttpDelete("unban/{id}")]
+        [HttpPost("unban/{id}")]
         public async Task<IActionResult> UnbanAppUser(int id)
         {
-            try
-            {
-                await _adminService.UnbanUser(id);
-
-                return Ok(new SuccessResponse()
-                {
-                    Message = "User has been banned.",
-                    Code = HttpStatusCode.OK
-                });
-            }
-            catch
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = "User not found.",
-                    Code = HttpStatusCode.BadRequest
-                });
-            }
+            var res = await _adminService.UnbanUser(id);
+            return res.ToActionResult();
         }
 
 
@@ -124,30 +65,10 @@ namespace GraduationProject.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> AddAdmin([FromForm] RegisterCustomRequest model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new ErrorResponse()
-                {
-                    Code = HttpStatusCode.BadRequest,
-                    Message = string.Join('\n', ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)),
-                    Status = "Error",
-                });
-
             model.Role = "admin";
             var adminResult = await _loginService.Register(model, false);
 
-            if (adminResult.IsSuccess)
-                return Ok(new SuccessResponse()
-                {
-                    Code = HttpStatusCode.OK,
-                    Data = adminResult.Data,
-                    Message = "Admin has been added successfully."
-                });
-            else
-                return BadRequest(new ErrorResponse()
-                {
-                    Code = HttpStatusCode.BadRequest,
-                    Message = adminResult.Message ?? "",
-                });
+            return adminResult.ToActionResult();
         }
 
 

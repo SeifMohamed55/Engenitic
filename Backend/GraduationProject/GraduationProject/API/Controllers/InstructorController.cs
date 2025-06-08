@@ -1,6 +1,8 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
+using GraduationProject.API.Responses.ActionResult;
 using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
@@ -44,38 +46,17 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid User.",
                     Code = HttpStatusCode.BadRequest,
                 });
-            try
-            {
-                if (!int.TryParse(claimId, out int parsedId) || parsedId != instructorId)
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = "Invalid User.",
-                        Code = HttpStatusCode.BadRequest,
-                    });
-                var courses = await _coursesService.GetInstructorCourses(parsedId, index);
 
-                if (index > courses.TotalPages && courses.TotalPages != 0)
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = "Invalid Page Number",
-                        Code = HttpStatusCode.BadRequest,
-                    });
-
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Courses Retrieved Successfully.",
-                    Data = new PaginatedResponse<CourseDTO>(courses),
-                    Code = HttpStatusCode.OK,
-                });
-            }
-            catch
-            {
+            if (!int.TryParse(claimId, out int parsedId) || parsedId != instructorId)
                 return BadRequest(new ErrorResponse()
                 {
-                    Message = "Something Wrong Happened.",
+                    Message = "Invalid User.",
                     Code = HttpStatusCode.BadRequest,
                 });
-            }
+            var res = await _coursesService.GetInstructorCourses(parsedId, index);
+
+            return res.ToActionResult();
+           
         }
 
         // GET: /api/instructor/statistics/1
@@ -83,30 +64,10 @@ namespace GraduationProject.API.Controllers
         [Authorize(Roles = "instructor, admin")]
         public async Task<IActionResult> GetCourseStatistics(int courseId)
         {
-            try
-            {
-                var statistics = await _coursesService.GetCourseStatistics(courseId);
-                if (statistics == null)
-                    return NotFound(new ErrorResponse()
-                    {
-                        Message = "Course was not found.",
-                        Code = HttpStatusCode.NotFound,
-                    });
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Statistics Retrieved Successfully.",
-                    Data = statistics,
-                    Code = HttpStatusCode.OK,
-                });
-            }
-            catch
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = "Something Wrong Happened.",
-                    Code = HttpStatusCode.BadRequest,
-                });
-            }
+
+            var res = await _coursesService.GetCourseStatistics(courseId);
+            return res.ToActionResult();
+            
         }
 
         // POST: Add Course
@@ -189,19 +150,7 @@ namespace GraduationProject.API.Controllers
 
                 var dto = await _coursesService.EditCourse(course);
 
-                if(dto.TryGetData(out var data))
-                    return Ok(new SuccessResponse()
-                    {
-                        Message = "Course Edited Successfully.",
-                        Data = data,
-                        Code = HttpStatusCode.OK,
-                    });
-                else
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = dto.Message ?? "An error occured",
-                        Code = HttpStatusCode.BadRequest,
-                    });
+                return dto.ToActionResult();
 
             }
             catch
@@ -242,18 +191,7 @@ namespace GraduationProject.API.Controllers
             try
             {
                 var res = await _coursesService.EditCourseImage(image, courseId);
-                if(res.IsSuccess)
-                    return Ok(new SuccessResponse()
-                    {
-                        Message = "Image updated successfully.",
-                        Code = HttpStatusCode.OK, 
-                    });
-                else
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = res.Message ?? "An error occured",
-                        Code = HttpStatusCode.BadRequest,
-                    });
+                return res.ToActionResult();
             }
             catch
             {

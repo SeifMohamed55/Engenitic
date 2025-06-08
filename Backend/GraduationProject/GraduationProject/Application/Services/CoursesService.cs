@@ -8,8 +8,6 @@ using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Frozen;
-using System.Collections.Generic;
 using System.Net;
 
 namespace GraduationProject.Application.Services
@@ -35,25 +33,64 @@ namespace GraduationProject.Application.Services
             _mediaValidator = mediaValidator;
         }
 
-        public async Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index)
+        public async Task<ServiceResult<PaginatedList<CourseDTO>>> GetPageOfCourses(int index)
         {
-            var courses = await _unitOfWork.CourseRepo.GetPageOfCourses(index);
-            UpdateImagesUrlInList(courses);
-            return courses;
+            try
+            {
+                var courses = await _unitOfWork.CourseRepo.GetPageOfCourses(index);
+                UpdateImagesUrlInList(courses);
+                if (index > courses.TotalPages && courses.TotalPages != 0)
+                    return ServiceResult<PaginatedList<CourseDTO>>
+                        .Failure("Invalid Page Number", HttpStatusCode.BadRequest);
+
+                return ServiceResult<PaginatedList<CourseDTO>>.Success(courses, "Courses fetched successfully.");
+            }
+            catch
+            {
+                return ServiceResult<PaginatedList<CourseDTO>>
+                    .Failure("Couldn't fetch courses.", HttpStatusCode.BadRequest);
+            }
+
         }
 
-        public async Task<PaginatedList<CourseDTO>> SearchOnPageOfCourses(string search, int index)
+        public async Task<ServiceResult<PaginatedList<CourseDTO>>> SearchOnPageOfCourses(string search, int index)
         {
-            var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesBySearching(search, index);
-            UpdateImagesUrlInList(courses);
-            return courses;
+            try
+            {
+                var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesBySearching(search, index);
+                UpdateImagesUrlInList(courses);
+                if (index > courses.TotalPages && courses.TotalPages != 0)
+                    return ServiceResult<PaginatedList<CourseDTO>>
+                        .Failure("Invalid Page Number", HttpStatusCode.BadRequest);
+
+                return ServiceResult<PaginatedList<CourseDTO>>.Success(courses, "Page retrieved Successfully");
+            }
+            catch
+            {
+                return ServiceResult<PaginatedList<CourseDTO>>
+                    .Failure("Couldn't fetch courses.", HttpStatusCode.BadRequest);
+            }
+
         }
 
-        public async Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index)
+        public async Task<ServiceResult<PaginatedList<CourseDTO>>> GetPageOfCoursesByTag(string tag, int index)
         {
-            var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesByTag(tag, index);
-            UpdateImagesUrlInList(courses);
-            return courses;
+            try
+            {
+                var courses = await _unitOfWork.CourseRepo.GetPageOfCoursesByTag(tag, index);
+                UpdateImagesUrlInList(courses);
+                if (index > courses.TotalPages && courses.TotalPages != 0)
+                    return ServiceResult<PaginatedList<CourseDTO>>
+                        .Failure("Invalid Page Number", HttpStatusCode.BadRequest);
+
+                return ServiceResult<PaginatedList<CourseDTO>>.Success(courses, "Page retrieved Successfully");
+            }
+            catch
+            {
+                return ServiceResult<PaginatedList<CourseDTO>>
+                    .Failure("Couldn't fetch courses.", HttpStatusCode.BadRequest);
+            }
+
         }
 
         private void UpdateImagesUrlInList(List<CourseDTO> courses)
@@ -73,59 +110,84 @@ namespace GraduationProject.Application.Services
         }
 
 
-        public async Task<CourseDetailsResponse?> GetCourseDetailsById(int courseId)
+        public async Task<ServiceResult<CourseDetailsResponse>> GetCourseDetailsById(int courseId)
         {
             var course = await _unitOfWork.CourseRepo.GetDetailsById(courseId);
             if (course == null)
-                return null;
+                return ServiceResult<CourseDetailsResponse>.Failure("Failed to fetch the course", HttpStatusCode.ServiceUnavailable);
 
             course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL, course.Image.Version);
 
             var stats = await _unitOfWork.ReviewRepository.GetCourseRatingStats(courseId);
             if (stats == null)
-                return null;
-                
+                return ServiceResult<CourseDetailsResponse>
+                    .Failure("Failed to fetch the course", HttpStatusCode.ServiceUnavailable);;
+
             course.RatingStats = stats;
                 
-            return course;
+            return ServiceResult<CourseDetailsResponse>.Success(course, "Statistic fetched successfully");
 
         }
 
-        public async Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index)
+        public async Task<ServiceResult<PaginatedList<CourseDTO>>> GetInstructorCourses(int instructorId, int index)
         {
-            var courses = await _unitOfWork.CourseRepo.GetInstructorCourses(instructorId, index);
-            UpdateImagesUrlInList(courses);
-            return courses;
+            try
+            {
+                var courses = await _unitOfWork.CourseRepo.GetInstructorCourses(instructorId, index);
+                UpdateImagesUrlInList(courses);
+                if (index > courses.TotalPages && courses.TotalPages != 0)
+                    return ServiceResult<PaginatedList<CourseDTO>>
+                        .Failure("Invalid Page Number", HttpStatusCode.BadRequest);
+
+                return ServiceResult<PaginatedList<CourseDTO>>.Success(courses, "Page retrieved Successfully");
+            }
+            catch
+            {
+                return ServiceResult<PaginatedList<CourseDTO>>
+                    .Failure("Couldn't fetch courses.", HttpStatusCode.BadRequest);
+            }
+
         }
 
-        public async Task<CourseStatistics?> GetCourseStatistics(int courseId)
+        public async Task<ServiceResult<CourseStatistics>> GetCourseStatistics(int courseId)
         {
-            return await _unitOfWork.CourseRepo.GetCourseStatistics(courseId);
+            var stats = await _unitOfWork.CourseRepo.GetCourseStatistics(courseId);
+            if (stats == null)
+                return ServiceResult<CourseStatistics>.Failure("Failed to retrieve statistics");
+            return ServiceResult<CourseStatistics>.Success(stats, "statistics retrieved successfully.");
         }
 
-        public async Task<CourseDTO> AddCourse(RegisterCourseRequest course)
+        public async Task<ServiceResult<CourseDTO>> AddCourse(RegisterCourseRequest course)
         {
-            var defaultCourseHash = await _unitOfWork.FileHashRepo.GetDefaultCourseImageAsync();
+            try
+            {
+                var defaultCourseHash = await _unitOfWork.FileHashRepo.GetDefaultCourseImageAsync();
 
-            var addedCourse = await _unitOfWork.CourseRepo.MakeCourse(course, defaultCourseHash);
-            await _unitOfWork.SaveChangesAsync();
+                var addedCourse = await _unitOfWork.CourseRepo.MakeCourse(course, defaultCourseHash);
+                await _unitOfWork.SaveChangesAsync();
 
-            var imageName = "course_" + addedCourse.Id;
+                var imageName = "course_" + addedCourse.Id;
 
-            using var stream = course.Image.OpenReadStream();
+                using var stream = course.Image.OpenReadStream();
 
-            var hash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.CourseImage);
+                var hash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.CourseImage);
 
-            if (hash == null)
-                hash = defaultCourseHash;
+                if (hash == null)
+                    hash = defaultCourseHash;
 
-            addedCourse.FileHash = hash;
+                addedCourse.FileHash = hash;
 
-            await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
 
-            var dto = new CourseDTO(addedCourse);
+                var dto = new CourseDTO(addedCourse);
 
-            return dto;
+                return ServiceResult<CourseDTO>.Success(dto, "Course Added successfully.");
+            }
+            catch
+            {
+                return ServiceResult<CourseDTO>.Failure("Couldn't Add course.", HttpStatusCode.BadRequest);
+            }
+            
         }
 
         public async Task<ServiceResult<CourseDetailsResponse>> EditCourse(EditCourseRequest courseReq)
@@ -149,7 +211,7 @@ namespace GraduationProject.Application.Services
 
             var dbQuestionsWithAnswers = await _unitOfWork.CourseRepo.GetQuizesQuestionAndAnswerIds(courseReq.Id);
             if (dbQuestionsWithAnswers == null)
-                return ServiceResult<CourseDetailsResponse>.Failure("course quizzes is not found");
+                return ServiceResult<CourseDetailsResponse>.Failure("course quizzes is not found", HttpStatusCode.BadRequest);
 
             var userQuestionsInDb = dbQuestionsWithAnswers.QuestionIds.IsSupersetOf(userQuestionIds);
             var userAnswersInDb = dbQuestionsWithAnswers.AnswerIds.IsSupersetOf(usersAnswerIds);
@@ -167,7 +229,7 @@ namespace GraduationProject.Application.Services
                 {
                     var invalidUrls = tasks.Where(x => !x.Item2.Result).Select(x => x.Item1).ToList();
                     string invalidUrlsString = string.Join('\n', invalidUrls);
-                    return ServiceResult<CourseDetailsResponse>.Failure($"Invalid video url/s:\n{invalidUrlsString}");
+                    return ServiceResult<CourseDetailsResponse>.Failure($"Invalid video url/s:\n{invalidUrlsString}", HttpStatusCode.BadRequest);
                 }
 
                 try
@@ -183,13 +245,13 @@ namespace GraduationProject.Application.Services
                 catch
                 {
                     await _unitOfWork.RollbackTransactionAsync();
-                    return ServiceResult<CourseDetailsResponse>.Failure("Couldn't Update database. Try again later.");
+                    return ServiceResult<CourseDetailsResponse>.Failure("Couldn't Update database. Try again later.", HttpStatusCode.BadRequest);
                 }
 
 
                 var dbCourse = await _unitOfWork.CourseRepo.GetCourseWithQuizes(courseReq.Id);
                 if (dbCourse == null)
-                    return ServiceResult<CourseDetailsResponse>.Failure("course not found");
+                    return ServiceResult<CourseDetailsResponse>.Failure("course not found", HttpStatusCode.BadRequest);
 
                 var dbQuizzesDict = dbCourse.Quizes
                     .ToDictionary(q => q.Id, q => q);
@@ -249,16 +311,16 @@ namespace GraduationProject.Application.Services
 
                 var resp = await _unitOfWork.CourseRepo.GetDetailsById(courseReq.Id);
                 if (resp == null)
-                    return ServiceResult<CourseDetailsResponse>.Failure("course not found");
+                    return ServiceResult<CourseDetailsResponse>.Failure("course not found", HttpStatusCode.BadRequest);
 
                 resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
 
-                return ServiceResult<CourseDetailsResponse>.Success(resp);
+                return ServiceResult<CourseDetailsResponse>.Success(resp, "Quiz Titles retrieved Successfully", HttpStatusCode.OK);
             }
             else
             {
                 return ServiceResult<CourseDetailsResponse>
-                    .Failure("Invalid Request Questions or answers don't match");
+                    .Failure("Invalid Request Questions or answers don't match", HttpStatusCode.BadRequest);
             }
 
 
@@ -269,7 +331,7 @@ namespace GraduationProject.Application.Services
         {
             var addedCourse = await _unitOfWork.CourseRepo.GetCourseWithImageAndInstructor(courseId);
             if (addedCourse == null)
-                return ServiceResult<bool>.Failure("Course not found.");
+                return ServiceResult<bool>.Failure("Course not found.", HttpStatusCode.BadRequest);
 
 
             var defaultCourseHash = await _unitOfWork.FileHashRepo.GetDefaultCourseImageAsync();
@@ -281,7 +343,7 @@ namespace GraduationProject.Application.Services
             var hash = await _uploadingService.UploadImageAsync(stream, imageName, CloudinaryType.CourseImage);
 
             if (hash == null)
-                return ServiceResult<bool>.Failure("Image Upload Failed.");
+                return ServiceResult<bool>.Failure("Image Upload Failed.", HttpStatusCode.BadRequest);
 
 
             if (_unitOfWork.FileHashRepo.IsDefaultCourseImageHash(addedCourse.FileHash))
@@ -292,9 +354,16 @@ namespace GraduationProject.Application.Services
             {
                 addedCourse.FileHash.UpdateFromHash(hash);
             }
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+                return ServiceResult<bool>.Success(true, "Image updated Successfully", HttpStatusCode.OK);
+            }
+            catch
+            {
+                return ServiceResult<bool>.Failure("Couldn't Update photo. Try again later.", HttpStatusCode.BadRequest);
+            }
 
-            await _unitOfWork.SaveChangesAsync();
-            return ServiceResult<bool>.Success(true);
 
         }
 
@@ -303,19 +372,40 @@ namespace GraduationProject.Application.Services
             return await _unitOfWork.CourseRepo.GetCourseInstructorId(courseId);
         }
 
-        public async Task DeleteCourse(int courseId)
+        public async Task<ServiceResult<bool>> DeleteCourse(int courseId)
         {
-            var course = await _unitOfWork.CourseRepo.GetCourseWithImageAndInstructor(courseId);
-            if(course == null)
-                throw new ArgumentNullException("course is not found");
+            try
+            {
+                var course = await _unitOfWork.CourseRepo.GetCourseWithImageAndInstructor(courseId);
+                if (course == null)
+                    throw new ArgumentNullException("course is not found");
 
-            course.hidden = true;
-            await _unitOfWork.SaveChangesAsync();
+                course.hidden = true;
+                await _unitOfWork.SaveChangesAsync();
+                return ServiceResult<bool>.Success(true, "Course Deleted Successfully", HttpStatusCode.OK);
+            }
+            catch
+            {
+                return ServiceResult<bool>.Failure("Couldn't delete course.", HttpStatusCode.BadRequest);
+            }
+            
+
         }
 
-        public async Task<EditCourseRequest?> GetCourseWithQuizes(int courseId)
+        public async Task<ServiceResult<EditCourseRequest>> GetCourseWithQuizes(int courseId)
         {
-            return await _unitOfWork.CourseRepo.GetEditCourseRequestWithQuizes(courseId);
+            try
+            {
+                var course = await _unitOfWork.CourseRepo.GetEditCourseRequestWithQuizes(courseId);
+                if (course == null)
+                    return ServiceResult<EditCourseRequest>.Failure("course not found", HttpStatusCode.BadRequest);
+                return ServiceResult<EditCourseRequest>.Success(course, "course retrieved successfully", HttpStatusCode.OK);
+            }
+            catch
+            {
+                return ServiceResult<EditCourseRequest>.Failure("Couldn't fetch course.", HttpStatusCode.BadRequest);
+            }
+
         }
 
         public async Task<ServiceResult<List<QuizTitleResponse>>> GetQuizesTitles(int courseId)
@@ -323,21 +413,30 @@ namespace GraduationProject.Application.Services
             try
             {
                 var res = await _unitOfWork.QuizRepo.GetQuizesTitle(courseId);
-                return ServiceResult<List<QuizTitleResponse>>.Success(res); 
+                return ServiceResult<List<QuizTitleResponse>>.Success(res, "Quiz Titles retrieved Successfully", HttpStatusCode.OK); 
             }
             catch
             {
-                return ServiceResult<List<QuizTitleResponse>>.Failure("Error in getting titles");
+                return ServiceResult<List<QuizTitleResponse>>.Failure("Error in getting titles", HttpStatusCode.BadRequest);
             }
         }
 
-        public async Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses)
+        public async Task<ServiceResult<List<CourseDTO>>> GetRandomCourses(int numberOfCourses)
         {
-            var courses = await _unitOfWork.CourseRepo.GetRandomCourses(numberOfCourses);
-            courses.ForEach(x=> x.Image.ImageURL =
-                _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version));
+            try
+            {
+                var courses = await _unitOfWork.CourseRepo.GetRandomCourses(numberOfCourses);
+                courses.ForEach(x => x.Image.ImageURL =
+                    _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version));
 
-            return courses;
+                return ServiceResult<List<CourseDTO>>.Success(courses, "Courses fetched successfully");
+            }
+            catch
+            {
+                return ServiceResult<List<CourseDTO>>
+                    .Failure("Couldn't fetch courses.", HttpStatusCode.BadRequest);
+            }
+            
         }
     }
     

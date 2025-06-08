@@ -9,6 +9,7 @@ using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using Sprache;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -60,13 +61,22 @@ namespace GraduationProject.Application.Services
         }
 
 
+        private void HandleIdentityResult(IdentityResult result, List<IdentityError> errors)
+        {
+            if (!result.Succeeded)
+            {
+                errors.AddRange(result.Errors);
+                throw new Exception();
+            }
+        }
+
         public async Task<ServiceResult<AppUserDTO>> Register(RegisterCustomRequest model, bool isExternal)
         {
             if (await _userManager.FindByEmailAsync(model.Email) != null)
-                return ServiceResult<AppUserDTO>.Failure("Email already exists.");
+                return ServiceResult<AppUserDTO>.Failure("Email already exists.", HttpStatusCode.BadRequest);
 
             if (model.Password != model.ConfirmPassword)
-                return ServiceResult<AppUserDTO>.Failure("Passwords do not match.");
+                return ServiceResult<AppUserDTO>.Failure("Passwords do not match.", HttpStatusCode.BadRequest);
 
             string? RegionCode = null;
             if (model.PhoneNumber != null && model.PhoneRegion != null)
@@ -79,12 +89,12 @@ namespace GraduationProject.Application.Services
                     RegionCode = phoneDetails.Value.Item2;
                 }
                 else
-                    return ServiceResult<AppUserDTO>.Failure("Invalid phone number");
+                    return ServiceResult<AppUserDTO>.Failure("Invalid phone number", HttpStatusCode.BadRequest);
             }
 
             var userRole = await _roleManager.FindByNameAsync(model.Role);
             if (userRole == null)
-                return ServiceResult<AppUserDTO>.Failure("Invalid Role.");
+                return ServiceResult<AppUserDTO>.Failure("Invalid Role.", HttpStatusCode.BadRequest);
 
             var user = new AppUser()
             {
@@ -104,27 +114,18 @@ namespace GraduationProject.Application.Services
                 await _unitOfWork.BeginTransactionAsync();
 
                 var result = await _userManager.CreateAsync(user, model.Password);
-                if (!result.Succeeded)
-                {
-                    errors.AddRange(result.Errors);
-                    throw new Exception();
-                }
+                HandleIdentityResult(result, errors);
 
                 result = await _userManager.AddToRoleAsync(user, model.Role);
-                if (!result.Succeeded)
-                {
-                    errors.AddRange(result.Errors);
-                    throw new Exception();
-                }
+                HandleIdentityResult(result, errors);
 
                 await _unitOfWork.CommitTransactionAsync();
 
             }
             catch
             {
-                await _unitOfWork.RollbackTransactionAsync();
-                var list = errors.Select(x => x.Description).ToList();
-                return ServiceResult<AppUserDTO>.Failure(list.Count == 0 ? "An error occured" : string.Join('\n', list));
+                await _unitOfWork.RollbackTransactionAsync();               
+                return ServiceResult<AppUserDTO>.Failure("An error occured", errors);
             }
 
             try
@@ -162,11 +163,11 @@ namespace GraduationProject.Application.Services
                     }
                 };
 
-                return ServiceResult<AppUserDTO>.Success(data);
+                return ServiceResult<AppUserDTO>.Success(data, "User registered Successfully.", HttpStatusCode.OK);
             }
             catch
             {
-                return ServiceResult<AppUserDTO>.Failure("Couldn't save image");
+                return ServiceResult<AppUserDTO>.Failure("Couldn't save image", HttpStatusCode.BadRequest);
             }
         }
 
@@ -191,22 +192,25 @@ namespace GraduationProject.Application.Services
             }
         }
 
+
+
+
         public async Task<ServiceResult<LoginWithCookies>> Login(LoginCustomRequest model, DeviceInfo deviceInfo)
         {
             var user = await _unitOfWork.UserRepo.GetUserWithRoles(model.Email);
             if (user == null)
-                return ServiceResult<LoginWithCookies>.Failure("Email does not exist");
+                return ServiceResult<LoginWithCookies>.Failure("Email does not exist", HttpStatusCode.BadRequest);
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
 
             if (result.IsLockedOut)
-                return ServiceResult<LoginWithCookies>.Failure("User is LockedOut Try again in 5 minutes");
+                return ServiceResult<LoginWithCookies>.Failure("User is LockedOut Try again in 5 minutes", HttpStatusCode.Locked);
 
             if (!result.Succeeded)
             {
                 await _userManager.AccessFailedAsync(user);
-                return ServiceResult<LoginWithCookies>.Failure("Password is incorrect!");
+                return ServiceResult<LoginWithCookies>.Failure("Password is incorrect!", HttpStatusCode.BadRequest);
             }
 
             await _userManager.ResetAccessFailedCountAsync(user);
@@ -262,15 +266,19 @@ namespace GraduationProject.Application.Services
                     AccessToken = accessToken
                 };
 
-                return ServiceResult<LoginWithCookies>.Success(new LoginWithCookies()
-                {
-                    LoginResponse = data,
-                    RefreshToken = dbToken,
-                });
+                return ServiceResult<LoginWithCookies>.Success(
+                    new LoginWithCookies()
+                    {
+                        LoginResponse = data,
+                        RefreshToken = dbToken,
+                    },
+                    "Logged in successfully",
+                    HttpStatusCode.OK
+                );
             }
             catch
             {
-                return ServiceResult<LoginWithCookies>.Failure("Couldn't SignIn.");
+                return ServiceResult<LoginWithCookies>.Failure("Couldn't SignIn.", HttpStatusCode.BadRequest);
             }
 
         }
@@ -281,7 +289,7 @@ namespace GraduationProject.Application.Services
             
             var dbRefreshToken = await _unitOfWork.TokenRepo.GetUserRefreshToken(deviceId, userId);
             if (dbRefreshToken is null)
-                return ServiceResult<RefreshToken>.Failure("User is not Signed In");
+                return ServiceResult<RefreshToken>.Failure("User is not Signed In", HttpStatusCode.OK);
 
 
             _tokenBlacklistService.BlacklistToken
@@ -295,7 +303,7 @@ namespace GraduationProject.Application.Services
             catch
             {
             }
-            return ServiceResult<RefreshToken>.Success(dbRefreshToken);
+            return ServiceResult<RefreshToken>.Success(dbRefreshToken, "Logged out successfully", HttpStatusCode.OK);
 
         }
 
@@ -324,27 +332,18 @@ namespace GraduationProject.Application.Services
                     await _unitOfWork.BeginTransactionAsync();
 
                     var result = await _userManager.CreateAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        errors.AddRange(result.Errors);
-                        throw new Exception();
-                    }
+                    HandleIdentityResult(result, errors);
+
                     result = await _userManager.AddToRoleAsync(user, "student");
-                    if (!result.Succeeded)
-                    {
-                        errors.AddRange(result.Errors);
-                        throw new Exception();
-                    }
+                    HandleIdentityResult(result, errors);
+
 
                     var loginInfo = new UserLoginInfo
                         (provider, payload.UniqueId, provider);
 
                     result = await _userManager.AddLoginAsync(user, loginInfo);
-                    if (!result.Succeeded)
-                    {
-                        errors.AddRange(result.Errors);
-                        throw new Exception();
-                    }
+                    HandleIdentityResult(result, errors);
+
                     await _unitOfWork.CommitTransactionAsync();
 
                     var imageName = "user_" + user.Id;
@@ -366,12 +365,11 @@ namespace GraduationProject.Application.Services
 
                     var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId, fileHash.Version);
 
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 catch (Exception)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
-                    return (ServiceResult<LoginWithCookies>.Failure(errors.Select(x => x.Description).ToList()));
+                    return ServiceResult<LoginWithCookies>.Failure("Failed To login", errors);
                 }
             }
             List<string> roles = new List<string>();
@@ -393,7 +391,7 @@ namespace GraduationProject.Application.Services
 
                 var result = await _userManager.AddLoginAsync(user, loginInfo);
                 if (!result.Succeeded)
-                    return ServiceResult<LoginWithCookies>.Failure(result.Errors.Select(x => x.Description).ToList());
+                    return ServiceResult<LoginWithCookies>.Failure("Failed to login", result.Errors);
             }
 
             try
@@ -446,15 +444,19 @@ namespace GraduationProject.Application.Services
                     AccessToken = accessToken
                 };
 
-                return ServiceResult<LoginWithCookies>.Success(new LoginWithCookies()
-                {
-                    LoginResponse = data,
-                    RefreshToken = dbToken,
-                });
+                return ServiceResult<LoginWithCookies>.Success(
+                    new LoginWithCookies()
+                    {
+                        LoginResponse = data,
+                        RefreshToken = dbToken,
+                    },
+                    "User Logged in successfully"
+                    ,HttpStatusCode.OK
+                );
             }
             catch
             {
-                return ServiceResult<LoginWithCookies>.Failure("An Error Occured, Try again later");
+                return ServiceResult<LoginWithCookies>.Failure("An Error Occured, Try again later", HttpStatusCode.BadRequest);
             }
 
             
@@ -466,7 +468,7 @@ namespace GraduationProject.Application.Services
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
-                return ServiceResult<bool>.Failure("User not found");
+                return ServiceResult<bool>.Failure("User not found", HttpStatusCode.BadRequest);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = $"{_jwtOptions.Audience}/reset-password?token={token}&email={model.Email}";
             try
@@ -474,30 +476,34 @@ namespace GraduationProject.Application.Services
                 await _emailSender.SendEmailAsync(model.Email,
                     "Reset Password",
                     $"You can reset your password by clicking this link: {callbackUrl}");
+
+                return ServiceResult<bool>.Success(true, "An email was sent for your new email", HttpStatusCode.OK);
             }
             catch
             {
-                return ServiceResult<bool>.Failure("Couldn't send email");
+                return ServiceResult<bool>.Failure("Couldn't send email", HttpStatusCode.BadRequest);
             }
-            return ServiceResult<bool>.Success(true);
         }
 
         public async Task<ServiceResult<bool>> ResetPassword(ResetPasswordRequest model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
-                return ServiceResult<bool>.Failure("User not found");
+                return ServiceResult<bool>.Failure("User not found", HttpStatusCode.BadRequest);
 
             if(model.NewPassword != model.ConfirmPassword)
-                return ServiceResult<bool>.Failure("Passwords do not match");
+                return ServiceResult<bool>.Failure("Passwords do not match", HttpStatusCode.BadRequest);
 
             if(await _userManager.CheckPasswordAsync(user, model.NewPassword))
-                return ServiceResult<bool>.Failure("New password cannot be the same as old password");
+                return ServiceResult<bool>.Failure("New password cannot be the same as old password", HttpStatusCode.BadRequest);
 
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+
             if (!result.Succeeded)
-                return ServiceResult<bool>.Failure(string.Join('\n', result.Errors.Select(x => x.Description)));
-            return ServiceResult<bool>.Success(true);
+            {
+                return ServiceResult<bool>.Failure("An error occured.", result.Errors);
+            }
+            return ServiceResult<bool>.Success(true, "Password resetted successfully", HttpStatusCode.OK);
         }
 
         private async Task SaveGooglePhoto(AppUser user, AuthenticatedPayload payload)

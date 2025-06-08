@@ -43,7 +43,7 @@ namespace GraduationProject.Application.Services.HttpClientServices
                 var result = await response.Content.ReadFromJsonAsync<VqaResponse>();
                 if (result == null)
                     throw new JsonException("Failed to retrieve the response.");
-                return ServiceResult<VqaResponse>.Success(result);
+                return ServiceResult<VqaResponse>.Success(result, "Model predicted successfully");
             }
             catch (HttpRequestException e)
             {

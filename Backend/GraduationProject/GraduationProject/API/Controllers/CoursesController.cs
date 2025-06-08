@@ -1,15 +1,11 @@
-﻿using GraduationProject.API.Responses;
+﻿using GraduationProject.API.Responses.ActionResult;
 using GraduationProject.Application.Services.Interfaces;
-using GraduationProject.Domain.DTOs;
-using GraduationProject.Infrastructure.Data.Repositories;
+using GraduationProject.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Bcpg;
 using System.Net;
-using System.Security.Claims;
 
 namespace GraduationProject.API.Controllers
 {
-    // TODO: Tags
 
     [ApiController]
     [Route("api/[controller]")]
@@ -38,32 +34,9 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid Page Number",
                     Code = HttpStatusCode.BadRequest,
                 });
-            try
-            {
-                var courses = await _coursesService.GetPageOfCourses(index);
 
-                if (index > courses.TotalPages && courses.TotalPages != 0)
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = "Invalid Page Number",
-                        Code = HttpStatusCode.BadRequest,
-                    });
-
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Courses Retrieved Successfully.",
-                    Data = new PaginatedResponse<CourseDTO>(courses),
-                    Code = HttpStatusCode.OK,
-                });
-            }
-            catch
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse()
-                {
-                    Message = "Something Wrong Happened.",
-                    Code = HttpStatusCode.InternalServerError,
-                });
-            }
+            var res = await _coursesService.GetPageOfCourses(index);
+            return res.ToActionResult();
         }
 
 
@@ -77,33 +50,9 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid Page Number",
                     Code = HttpStatusCode.BadRequest,
                 });
-            try
-            {
-                var courses = await _coursesService.SearchOnPageOfCourses(search, index);
 
-                if (index > courses.TotalPages && courses.TotalPages != 0)
-                    return BadRequest(new ErrorResponse
-                    {
-                        Message = "Invalid Page Number",
-                        Code = HttpStatusCode.BadRequest,
-                    });
-
-                return Ok(new SuccessResponse
-                {
-                    Message = "Courses Retrieved Successfully.",
-                    Data = new PaginatedResponse<CourseDTO>(courses),
-                    Code = HttpStatusCode.OK,
-                });
-            }
-            catch
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse()
-                {
-                    Message = "Something Wrong Happened.",
-                    Code = HttpStatusCode.InternalServerError,
-                });
-
-            }
+            var res = await _coursesService.SearchOnPageOfCourses(search, index);
+            return res.ToActionResult();       
         }
 
 
@@ -117,33 +66,9 @@ namespace GraduationProject.API.Controllers
                     Message = "Invalid Page Number",
                     Code = HttpStatusCode.BadRequest,
                 });
-            try
-            {
-                var courses = await _coursesService.GetPageOfCoursesByTag(tag, index);
 
-                if (index > courses.TotalPages && courses.TotalPages != 0)
-                    return BadRequest(new ErrorResponse
-                    {
-                        Message = "Invalid Page Number",
-                        Code = HttpStatusCode.BadRequest,
-                    });
-
-                return Ok(new SuccessResponse
-                {
-                    Message = "Courses Retrieved Successfully.",
-                    Data = new PaginatedResponse<CourseDTO>(courses),
-                    Code = HttpStatusCode.OK,
-                });
-            }
-            catch
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse()
-                {
-                    Message = "Something Wrong Happened.",
-                    Code = HttpStatusCode.InternalServerError,
-                });
-
-            }
+            var res = await _coursesService.GetPageOfCoursesByTag(tag, index);
+            return res.ToActionResult();
         }
 
 
@@ -181,36 +106,21 @@ namespace GraduationProject.API.Controllers
             if(oldAccessToken != null)
                 (userId, _) = _jwtTokenService.ExtractIdAndJtiFromExpiredToken(oldAccessToken);
 
-            try
-            {
-                var isEnrolled = await _studentService.EnrollmentExists(userId, courseId);
+            var isEnrolled = await _studentService.EnrollmentExists(userId, courseId);
 
-                var course = await _coursesService.GetCourseDetailsById(courseId);
+            var courseRes = await _coursesService.GetCourseDetailsById(courseId);
 
-                if (course == null)
-                    return NotFound(new ErrorResponse
-                    {
-                        Message = "Course Not Found.",
-                        Code = HttpStatusCode.NotFound,
-                    });
-
-                course.IsEnrolled = isEnrolled.Data;
-
-                return Ok(new SuccessResponse()
+            if (!courseRes.TryGetData(out var course))
+                return NotFound(new ErrorResponse
                 {
-                    Message = "Course Retrieved Successfully.",
-                    Data = course,
-                    Code = HttpStatusCode.OK,
+                    Message = courseRes.Message,
+                    Code = HttpStatusCode.NotFound,
                 });
-            }
-            catch
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponse()
-                {
-                    Message = "Something Wrong Happened.",
-                    Code = HttpStatusCode.InternalServerError,
-                });
-            }
+
+            course.IsEnrolled = isEnrolled.Data;
+
+            return courseRes.ToActionResult();
+
         }
 
         // GET: /api/courses/quizzes-title
@@ -218,19 +128,8 @@ namespace GraduationProject.API.Controllers
         public async Task<IActionResult> GetCourseQuizesTiltles
             ([FromQuery] int courseId)
         {
-            var quizesTitle = await _coursesService.GetQuizesTitles(courseId);
-            if (!quizesTitle.IsSuccess)
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = quizesTitle.Message,
-                    Code = HttpStatusCode.BadRequest,   
-                });
-            return Ok(new SuccessResponse()
-            {
-                Message = "Quizes Titles Retrieved Successfully.",
-                Data = quizesTitle.Data,
-                Code = HttpStatusCode.OK,
-            });
+            var res = await _coursesService.GetQuizesTitles(courseId);
+            return res.ToActionResult();
         }
 
 

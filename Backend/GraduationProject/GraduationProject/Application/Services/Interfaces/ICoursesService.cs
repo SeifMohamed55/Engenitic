@@ -6,21 +6,21 @@ namespace GraduationProject.Application.Services.Interfaces
 {
     public interface ICoursesService
     {
-        Task<PaginatedList<CourseDTO>> GetPageOfCourses(int index);
-        Task<PaginatedList<CourseDTO>> SearchOnPageOfCourses(string search, int index);
-        Task<PaginatedList<CourseDTO>> GetPageOfCoursesByTag(string tag, int index);
-        Task<CourseDetailsResponse?> GetCourseDetailsById(int courseId);
+        Task<ServiceResult<PaginatedList<CourseDTO>>> GetPageOfCourses(int index);
+        Task<ServiceResult<PaginatedList<CourseDTO>>> SearchOnPageOfCourses(string search, int index);
+        Task<ServiceResult<PaginatedList<CourseDTO>>> GetPageOfCoursesByTag(string tag, int index);
+        Task<ServiceResult<CourseDetailsResponse>> GetCourseDetailsById(int courseId);
         Task<List<TagDTO>> GetAllTagsAsync();
-        Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
-        Task<CourseStatistics?> GetCourseStatistics(int courseId);
-        Task<CourseDTO> AddCourse(RegisterCourseRequest course);
+        Task<ServiceResult<PaginatedList<CourseDTO>>> GetInstructorCourses(int instructorId, int index);
+        Task<ServiceResult<CourseStatistics>> GetCourseStatistics(int courseId);
+        Task<ServiceResult<CourseDTO>> AddCourse(RegisterCourseRequest course);
         Task<ServiceResult<CourseDetailsResponse>> EditCourse(EditCourseRequest course);
-        Task DeleteCourse(int courseId);
+        Task<ServiceResult<bool>> DeleteCourse(int courseId);
         Task<ServiceResult<bool>> EditCourseImage(IFormFile image, int courseId);
         Task<int?> GetCourseInstructorId(int courseId);
-        Task<EditCourseRequest?> GetCourseWithQuizes(int courseId);
+        Task<ServiceResult<EditCourseRequest>> GetCourseWithQuizes(int courseId);
         Task<ServiceResult<List<QuizTitleResponse>>> GetQuizesTitles(int courseId);
-        Task<List<CourseDTO>> GetRandomCourses(int numberOfCourses);
+        Task<ServiceResult<List<CourseDTO>>> GetRandomCourses(int numberOfCourses);
     }
 
 }

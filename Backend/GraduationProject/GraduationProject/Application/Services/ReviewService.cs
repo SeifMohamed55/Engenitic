@@ -46,7 +46,7 @@ namespace GraduationProject.Application.Services
                 var success = await UpdateCourseAvg(review.CourseId);
                 if (success)
                 {
-                    return ServiceResult<bool>.Success(success);
+                    return ServiceResult<bool>.Success(success, "Review Added successfully");
                 }
 
                 return ServiceResult<bool>.Failure("Something wrong happened");
@@ -76,7 +76,7 @@ namespace GraduationProject.Application.Services
                 var success = await UpdateCourseAvg(dbReview.CourseId);
                 if(success)
                 {
-                    return ServiceResult<bool>.Success(true);
+                    return ServiceResult<bool>.Success(true, "Review Deleted Successfully");
                 }
 
                 return ServiceResult<bool>.Failure("Something wrong happened");
@@ -97,7 +97,7 @@ namespace GraduationProject.Application.Services
                     x.ImageMetadata.ImageURL = _cloudinaryService
                         .GetImageUrl(x.ImageMetadata.ImageURL, x.ImageMetadata.Version);
                 });
-                return ServiceResult<PaginatedList<ReviewDTO>>.Success(list);
+                return ServiceResult<PaginatedList<ReviewDTO>>.Success(list, "Reviews are retrieved successfully.");
             }
             catch
             {
@@ -117,7 +117,7 @@ namespace GraduationProject.Application.Services
                 {
                     return ServiceResult<bool>.Failure("Something wrong happened");
                 }
-                return ServiceResult<bool>.Success(success);
+                return ServiceResult<bool>.Success(success, "Review was edited successfully");
             }
             catch(ArgumentException ex)
             {

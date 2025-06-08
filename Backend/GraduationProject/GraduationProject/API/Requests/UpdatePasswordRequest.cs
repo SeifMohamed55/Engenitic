@@ -4,8 +4,6 @@ namespace GraduationProject.API.Requests
 {
     public class UpdatePasswordRequest
     {
-        [Required]
-        public int Id { get; set; }
 
         [Required]
         [MinLength(5)]

@@ -1,6 +1,8 @@
 ﻿using GraduationProject.API.Responses;
+using GraduationProject.API.Responses.ActionResult;
 using GraduationProject.Application.Services;
 using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -38,18 +40,7 @@ namespace GraduationProject.API.Controllers
             }
 
             var answer = await _vqaService.GetAnswerAsync(image, question);
-            if(answer.IsSuccess)
-                return Ok(new SuccessResponse()
-                { 
-                   Data = answer.Data,
-                    Message = "Model Predicted Successfully."
-                });
-            else
-                return BadRequest(new ErrorResponse()
-                {
-                    Message = answer.Message ?? "An error occurred",
-                    Code = HttpStatusCode.BadRequest
-                });
+            return answer.ToActionResult();
         }
     }
 

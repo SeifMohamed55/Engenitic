@@ -63,7 +63,7 @@ namespace GraduationProject.Application.Services
 
                 await _unitOfWork.SaveChangesAsync();
 
-                return ServiceResult<string>.Success(newAccessToken);
+                return ServiceResult<string>.Success(newAccessToken, "Token Refreshed successfully");
 
             }
             catch (Exception)

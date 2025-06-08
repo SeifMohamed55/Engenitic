@@ -26,11 +26,11 @@ namespace GraduationProject.Application.Services.HttpClientServices
             {
                 // Read the byte array of the audio file from the response
                 var bytes = await response.Content.ReadAsByteArrayAsync();
-                return ServiceResult<byte[]>.Success(bytes);
+                return ServiceResult<byte[]>.Success(bytes, "The Audio is retrieved successfully.", System.Net.HttpStatusCode.OK);
             }
             else
             {
-                return ServiceResult<byte[]>.Failure("Error generating speech: " + response.ReasonPhrase);
+                return ServiceResult<byte[]>.Failure("Error generating speech: " + response.ReasonPhrase, System.Net.HttpStatusCode.BadRequest);
             }
         }
     }

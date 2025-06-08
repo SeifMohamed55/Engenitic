@@ -1,5 +1,6 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
+using GraduationProject.API.Responses.ActionResult;
 using GraduationProject.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -105,7 +106,7 @@ namespace GraduationProject.API.Controllers
                 if (!res.Succeeded)
                     return BadRequest(new ErrorResponse
                     {
-                        Message = res.Errors,
+                        Message = string.Join('\n', res.Errors.Select(x=> x.Description)),
                         Code = HttpStatusCode.BadRequest,
                     });
             }
@@ -125,7 +126,7 @@ namespace GraduationProject.API.Controllers
                 if (!res.Succeeded)
                     return BadRequest(new ErrorResponse
                     {
-                        Message = res.Errors,
+                        Message = string.Join('\n', res.Errors.Select(x => x.Description)),
                         Code = HttpStatusCode.BadRequest,
                     });
             }
@@ -160,7 +161,7 @@ namespace GraduationProject.API.Controllers
             if (x.Succeeded)
                 return CreatedAtAction("GetRole", new { id = newRole.Id }, newRole);
             else
-                return BadRequest(new ErrorResponse { Message = x.Errors, Code = HttpStatusCode.BadRequest });
+                return BadRequest(new ErrorResponse { Message = string.Join('\n', x.Errors.Select(x => x.Description)), Code = HttpStatusCode.BadRequest });
 
         }
 
@@ -189,7 +190,7 @@ namespace GraduationProject.API.Controllers
                 if (!res.Succeeded)
                     return BadRequest(new ErrorResponse
                     {
-                        Message = res.Errors,
+                        Message = string.Join('\n', res.Errors.Select(x => x.Description)),
                         Code = HttpStatusCode.BadRequest
                     });
             }
@@ -208,7 +209,7 @@ namespace GraduationProject.API.Controllers
                 if (!res.Succeeded)
                     return BadRequest(new ErrorResponse
                     {
-                        Message = res.Errors,
+                        Message = string.Join('\n', res.Errors.Select(x => x.Description)),
                         Code = HttpStatusCode.BadRequest
                     });
             }

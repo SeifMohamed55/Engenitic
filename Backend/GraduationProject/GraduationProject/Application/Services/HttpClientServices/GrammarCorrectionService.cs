@@ -29,11 +29,11 @@ namespace GraduationProject.Application.Services.HttpClientServices
         {
             if (string.IsNullOrEmpty(_apiKey))
             {
-                return ServiceResult<GrammarCorrectionResponse>.Failure("Api key not configured");
+                return ServiceResult<GrammarCorrectionResponse>.Failure("Api key not configured", System.Net.HttpStatusCode.ServiceUnavailable);
             }
-            _httpClient.DefaultRequestHeaders.Add("api-key", _apiKey);
             try
             {
+                _httpClient.DefaultRequestHeaders.Add("api-key", _apiKey);
                 var json = JsonSerializer.Serialize(request, _jsonOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -43,19 +43,19 @@ namespace GraduationProject.Application.Services.HttpClientServices
                 var result = await response.Content.ReadFromJsonAsync<GrammarCorrectionResponse>();
                 if (result == null)
                     throw new JsonException("Failed to retrieve the response.");
-                return ServiceResult<GrammarCorrectionResponse>.Success(result);
+                return ServiceResult<GrammarCorrectionResponse>.Success(result, "Grammar is corrected successfully.", System.Net.HttpStatusCode.OK);
             }
             catch (HttpRequestException e)
             {
-                return ServiceResult<GrammarCorrectionResponse>.Failure(e.Message);
+                return ServiceResult<GrammarCorrectionResponse>.Failure(e.Message, System.Net.HttpStatusCode.BadRequest);
             }
             catch (JsonException e)
             {
-                return ServiceResult<GrammarCorrectionResponse>.Failure(e.Message);
+                return ServiceResult<GrammarCorrectionResponse>.Failure(e.Message, System.Net.HttpStatusCode.BadRequest);
             }
             catch
             {
-                return ServiceResult<GrammarCorrectionResponse>.Failure("An error Occured");
+                return ServiceResult<GrammarCorrectionResponse>.Failure("An error Occured", System.Net.HttpStatusCode.BadRequest);
             }
         }
     }
