@@ -77,7 +77,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         next: ({ stage, quizTitles }) => {
           this.mainCourseResponse = stage.data;
           this.creatingAnswers(this.mainCourseResponse);
-
           this.levelsTitles = quizTitles.data;
         },
         error: (err) => {
@@ -308,11 +307,13 @@ export class MainCourseComponent implements OnInit, OnDestroy {
                         'An error occurred on the server, try again later'
                       );
                     }
+                    this.displayQuiz = false;
                     return of(null);
                   })
                 );
             } else {
               // if failed
+              this.displayQuiz = false;
               this._ToastrService.error(res.message);
               return of(null);
             }
