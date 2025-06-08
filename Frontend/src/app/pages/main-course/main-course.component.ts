@@ -313,8 +313,8 @@ export class MainCourseComponent implements OnInit, OnDestroy {
                 );
             } else {
               // if failed
-              this.displayQuiz = false;
               this._ToastrService.error(res.message);
+              this.handleClosingQuiz();
               return of(null);
             }
           }),
