@@ -1,4 +1,4 @@
-<main class="container">
+<main class="container mx-auto">
   <h1 class="font-display text-header py-3">{{ mainCourseResponse.title }}</h1>
   <h2 class="font-regular pb-5">
     in this stage you will learn : {{ mainCourseResponse.description }}
@@ -10,7 +10,7 @@
     >
       <iframe
         title="course video"
-        class="w-full h-full rounded"
+        class="w-full h-full rounded aspect-video"
         [src]="mainCourseResponse.videoUrl"
         frameborder="0"
         allowfullscreen
@@ -110,7 +110,7 @@
 >
   <div class="rounded-xl overflow-hidden">
     <div
-      class="w-[500px] h-[700px] bg-white rounded-2xl p-6 overflow-y-scroll flex flex-col justify-between gap-10"
+      class="mx-auto w-[370px] h-[500px]  md:w-[500px] md:h-[700px] bg-white rounded-2xl p-6 overflow-y-scroll flex flex-col justify-between gap-10"
       formArrayName="questions"
     >
       <button
@@ -148,7 +148,7 @@
                 index as i
               "
               [formGroupName]="'answer_' + (i + 1)"
-              class="flex justify-between border p-3 rounded-xl border-[#58B6B8]"
+              class="cursor-pointer flex justify-between border p-3 rounded-xl border-[#58B6B8]"
             >
               <p class="font-display">{{ answer.answerText }}</p>
               <input
@@ -164,7 +164,7 @@
         </div>
       </div>
       <div>
-                <div class="text-sm text-center pb-10 text-red-500 font-regular">
+        <div class="text-sm text-center pb-10 text-red-500 font-regular">
           {{ errorString }}
         </div>
         <button

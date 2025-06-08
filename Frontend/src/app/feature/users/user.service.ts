@@ -101,4 +101,16 @@ export class UserService {
       }
     );
   }
+
+  getAllUsers(): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Admin/users`);
+  }
+
+  banUser(userId: number): Observable<any> {
+    return this._HttpClient.delete(`https://localhost/api/Admin`, {
+      params: {
+        id: userId,
+      },
+    });
+  }
 }

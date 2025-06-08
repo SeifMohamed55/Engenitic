@@ -5,7 +5,13 @@ import { CoursesService } from '../../feature/courses/courses.service';
 import { Course } from '../../interfaces/courses/course';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { combineLatest, Subject, takeUntil, distinctUntilChanged } from 'rxjs';
+import {
+  combineLatest,
+  Subject,
+  takeUntil,
+  distinctUntilChanged,
+  tap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-course',
@@ -116,7 +122,10 @@ export class CourseComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this._CoursesService
       .coursesOffered(page)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        tap((res) => console.log(res))
+      )
       .subscribe({
         next: (res) => {
           this.courses = res.data.paginatedList;

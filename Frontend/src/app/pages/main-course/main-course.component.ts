@@ -10,7 +10,6 @@ import {
   switchMap,
   takeUntil,
   tap,
-  throwError,
 } from 'rxjs';
 import {
   FormArray,
@@ -78,7 +77,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         next: ({ stage, quizTitles }) => {
           this.mainCourseResponse = stage.data;
           this.creatingAnswers(this.mainCourseResponse);
-
           this.levelsTitles = quizTitles.data;
         },
         error: (err) => {
@@ -309,12 +307,14 @@ export class MainCourseComponent implements OnInit, OnDestroy {
                         'An error occurred on the server, try again later'
                       );
                     }
+                    this.displayQuiz = false;
                     return of(null);
                   })
                 );
             } else {
               // if failed
               this._ToastrService.error(res.message);
+              this.handleClosingQuiz();
               return of(null);
             }
           }),
