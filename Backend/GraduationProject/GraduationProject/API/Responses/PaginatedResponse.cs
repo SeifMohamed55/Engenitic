@@ -1,16 +1,17 @@
 ﻿using GraduationProject.Application.Services;
+using System.Collections;
 
 namespace GraduationProject.API.Responses
 {
-    public class PaginatedResponse<T>
+    public class PaginatedResponse
     {
         public int TotalPages { get; init; }
         public int TotalItems { get; init; }
         public string CurrentlyViewing { get; init; }
         public int PageIndex { get; init; }
-        public PaginatedList<T> PaginatedList { get; init; }
+        public IList PaginatedList { get; init; }
 
-        public PaginatedResponse(PaginatedList<T> list)
+        public PaginatedResponse(IPaginatedList list)
         {
             PaginatedList = list;
             TotalPages = list.TotalPages;

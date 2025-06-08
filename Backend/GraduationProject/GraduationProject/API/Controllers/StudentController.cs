@@ -58,7 +58,7 @@ namespace GraduationProject.API.Controllers
                 return Ok(new SuccessResponse()
                 {
                     Message = "Courses Retrieved Successfully.",
-                    Data = new PaginatedResponse<EnrollmentDTO>(courses),
+                    Data = new PaginatedResponse(courses),
                     Code = HttpStatusCode.OK,
                 });
             }

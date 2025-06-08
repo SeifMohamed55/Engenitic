@@ -228,12 +228,7 @@ namespace GraduationProject.API.Controllers
                         Message = "Course was not found.",
                         Code = HttpStatusCode.NotFound,
                     });
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Course Retrieved Successfully.",
-                    Data = course,
-                    Code = HttpStatusCode.OK,
-                });
+                return course.ToActionResult();
             }
             catch
             {

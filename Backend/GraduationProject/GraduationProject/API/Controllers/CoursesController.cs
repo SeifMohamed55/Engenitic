@@ -140,12 +140,7 @@ namespace GraduationProject.API.Controllers
             try
             {
                 var courses = await _coursesService.GetRandomCourses(4);
-                return Ok(new SuccessResponse()
-                {
-                    Message = "Courses Retrieved Successfully.",
-                    Data = courses,
-                    Code = HttpStatusCode.OK,
-                });
+                return courses.ToActionResult();
             }
             catch
             {
