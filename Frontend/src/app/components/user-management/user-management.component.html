@@ -1,0 +1,140 @@
+<div class="bg-white rounded-lg shadow-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-display text-gray-800">USER MANAGEMENT</h2>
+    <pagination-controls
+      (pageChange)="onPageChange($event)"
+      previousLabel="Previous"
+      nextLabel="Next"
+      [responsive]="true"
+      [maxSize]="10"
+    >
+    </pagination-controls>
+    <div class="flex gap-4">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="filterUsers()"
+        placeholder="Search users..."
+        class="engenitic-input max-w-xs"
+      />
+      <select
+        title="filter user"
+        [(ngModel)]="selectedRole"
+        (change)="filterUsers()"
+        class="engenitic-input max-w-xs"
+      >
+        <option value="">All Roles</option>
+        <option value="student">students</option>
+        <option value="instructor">Instructors</option>
+        <option value="admin">Admins</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="gradient">
+          <th class="text-left py-4 px-6 text-white font-display text-lg">
+            USER
+          </th>
+          <th class="text-left py-4 px-6 text-white font-display text-lg">
+            EMAIL
+          </th>
+          <th class="text-left py-4 px-6 text-white font-display text-lg">
+            ROLE
+          </th>
+          <th class="text-left py-4 px-6 text-white font-display text-lg">
+            STATUS
+          </th>
+          <th class="text-left py-4 px-6 text-white font-display text-lg">
+            JOIN DATE
+          </th>
+          <th class="text-left py-4 px-6 text-white font-display text-lg">
+            ACTIONS
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let user of filteredUsers
+              | paginate
+                : {
+                    itemsPerPage: itemsPerPage,
+                    currentPage: currentPage,
+                    totalItems: totalItems
+                  };
+            trackBy: trackByUserId
+          "
+          class="border-b border-gray-200 hover:bg-gray-50 transition-colors fade-in"
+        >
+          <td class="py-4 px-6">
+            <div class="flex items-center gap-3">
+              <img
+                [src]="user.image.imageURL"
+                [alt]="user.image.name || 'user image'"
+                class="w-10 h-10 rounded-full object-cover"
+              />
+              <span class="font-regular font-medium text-gray-800">{{
+                user.userName
+              }}</span>
+            </div>
+          </td>
+          <td class="py-4 px-6 font-regular text-gray-600">{{ user.email }}</td>
+          <td class="py-4 px-6">
+            <span
+              class="px-3 py-1 rounded-full text-sm font-regular font-medium"
+              [ngClass]="{
+                'bg-blue-100 text-blue-800': user.roles.includes('student'),
+                'bg-purple-100 text-purple-800': user.roles.includes('admin'),
+                'bg-green-100 text-green-800': user.roles.includes('instructor')
+              }"
+            >
+              {{ user.roles[0] | titlecase }}
+            </span>
+          </td>
+          <td class="py-4 px-6">
+            <span
+              class="px-3 py-1 rounded-full text-sm font-regular font-medium"
+              [ngClass]="{
+                'engenitic-success text-white': !user.banned,
+                'engenitic-danger text-white': user.banned
+              }"
+            >
+              {{ (user.banned ? "banned" : "active") | titlecase }}
+            </span>
+          </td>
+          <td class="py-4 px-6 font-regular text-gray-600">
+            {{ user.createdAt | date : "MMM d, y" }}
+          </td>
+          <td class="py-4 px-6">
+            <div class="flex gap-2">
+              <button
+                *ngIf="!user.banned"
+                (click)="handleBan(user.id)"
+                class="engenitic-button engenitic-danger text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
+              >
+                BAN
+              </button>
+              <button
+                *ngIf="user.banned"
+                (click)="handleUnban(user.id)"
+                class="engenitic-button engenitic-success text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
+              >
+                UNBAN
+              </button>
+              <!-- <button
+                *ngIf="user.role === 'user' && user.status === 'active'"
+                (click)="promoteToAdmin(user.id)"
+                class="engenitic-button enginitic-main-color text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
+              >
+                MAKE ADMIN
+              </button> -->
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

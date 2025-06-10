@@ -1,1 +1,66 @@
-<p>admin works!</p>
+<div class="min-h-screen bg-gray-100 mt-10">
+  <!-- Header -->
+  <header class="gradient shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-6">
+        <div>
+          <h1 class="text-4xl font-display text-white">ADMIN DASHBOARD</h1>
+          <p class="font-regular text-blue-100 mt-1">
+            Manage users and review instructor applications
+          </p>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <p class="font-regular text-white font-medium">Admin Panel</p>
+            <p class="font-regular text-blue-100 text-sm">
+              {{ currentDate | date : "MMM d, y" }}
+            </p>
+          </div>
+          <div
+            class="w-10 h-10 bg-white rounded-full flex items-center justify-center"
+          >
+            <span class="font-display text-primary text-lg">A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex space-x-8">
+        <button
+          (click)="activeTab = 'users'"
+          class="py-4 px-2 border-b-2 font-regular font-medium text-sm transition-colors"
+          [ngClass]="{
+            'border-primary text-primary': activeTab === 'users',
+            'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+              activeTab !== 'users'
+          }"
+        >
+          User Management
+        </button>
+        <button
+          (click)="activeTab = 'cvs'"
+          class="py-4 px-2 border-b-2 font-regular font-medium text-sm transition-colors"
+          [ngClass]="{
+            'border-primary text-primary': activeTab === 'cvs',
+            'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+              activeTab !== 'cvs'
+          }"
+        >
+          CV Review
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="fade-in" [ngSwitch]="activeTab">
+      <app-user-management *ngSwitchCase="'users'"></app-user-management>
+      <app-cv-review *ngSwitchCase="'cvs'"></app-cv-review>
+    </div>
+  </main>
+</div>
