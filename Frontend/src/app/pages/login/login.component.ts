@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -10,7 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, CommonModule, ToastrModule],
+  imports: [ReactiveFormsModule, CommonModule, ToastrModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

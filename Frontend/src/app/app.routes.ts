@@ -20,6 +20,7 @@ import { MainCourseComponent } from './pages/main-course/main-course.component';
 import { rolesGuard } from './guards/roles.guard';
 import { authRedirectGuardGuard } from './guards/auth-redirect-guard.guard';
 import { RedirectionPageComponent } from './pages/redirection-page/redirection-page.component';
+import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -125,6 +126,11 @@ export const routes: Routes = [
       },
       { path: '**', component: NotFoundComponent },
     ],
+  },
+  {
+    path: 'forget-password',
+    component: ForgetPasswordComponent,
+    canActivate: [authRedirectGuardGuard],
   },
   { path: 'unauthorized', component: UnothorizedComponent },
   { path: '**', component: NotFoundComponent },

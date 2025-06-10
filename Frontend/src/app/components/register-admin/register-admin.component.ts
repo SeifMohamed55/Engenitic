@@ -1,46 +1,33 @@
-import { ToastrService } from 'ngx-toastr';
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
-  FormGroup,
-  FormControl,
-  ReactiveFormsModule,
-  Validators,
   AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
   ValidationErrors,
+  Validators,
 } from '@angular/forms';
-import { UserService } from '../../feature/users/user.service';
+import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
-import { Router } from '@angular/router';
+import { UserService } from '../../feature/users/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-register-admin',
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  templateUrl: './register-admin.component.html',
+  styleUrl: './register-admin.component.scss',
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterAdminComponent {
   private destroy$ = new Subject<void>();
   buttonDisabled: boolean = false;
   selectedFile: File | null = null;
   fileValidationError: string | null = null;
-  cvErrorMessage: string = '';
-  selectedCv: File | null = null;
 
   constructor(
     private _ToastrService: ToastrService,
-    private _UserService: UserService,
-    private _Router: Router
+    private _UserService: UserService
   ) {}
-
-  ngOnInit(): void {
-    if (this._UserService.role.value) {
-      this._ToastrService.warning(
-        "you can't access this page unless you are not logged in"
-      );
-      this._Router.navigate(['/home']);
-    }
-  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -68,7 +55,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(5),
       ]),
-      role: new FormControl('student'),
     },
     {
       validators: [this.confirmPassword, this.phoneNumberValidation],
@@ -139,80 +125,47 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  //handle cv
-  handleCv(e: Event): void {
-    const FILE_SIZE: number = 5 * 1024 * 1024;
-    const data = e.target as HTMLInputElement;
-    this.cvErrorMessage = '';
-    if (data.files) {
-      const file = data.files[0] as File;
-      if (file.size > FILE_SIZE) {
-        this.cvErrorMessage = 'file size must be below 5MB';
-        return;
-      }
-      if (!file.type.includes('application/pdf')) {
-        this.cvErrorMessage = 'file type must be pdf';
-        return;
-      }
-      this.selectedCv = file;
-    } else {
-      this.cvErrorMessage = 'select a file please';
-      return;
-    }
-  }
-
   // on submiting form
   registerSubmit(): void {
     this.buttonDisabled = true;
     if (this.registerForm.valid) {
-      if (
-        (this.registerForm.get('role')?.value === 'instructor' &&
-          this.selectedCv) ||
-        this.registerForm.get('role')?.value !== 'instructor'
-      ) {
-        const formData = new FormData();
-        formData.append('username', this.registerForm.get('userName')?.value);
-        formData.append('email', this.registerForm.get('email')?.value);
-        formData.append('password', this.registerForm.get('password')?.value);
-        formData.append(
-          'confirmPassword',
-          this.registerForm.get('repassword')?.value
-        );
-        formData.append(
-          'phoneNumber',
-          this.registerForm.get('phoneGroup')?.get('phone')?.value
-        );
-        formData.append(
-          'phoneRegion',
-          this.registerForm.get('phoneGroup')?.get('countryCode')?.value
-        );
-        formData.append('role', this.registerForm.get('role')?.value);
-        if (this.selectedFile) {
-          formData.append('image', this.selectedFile);
-        }
-        if (this.selectedCv) {
-          formData.append('cv', this.selectedCv);
-        }
-        this._UserService
-          .registerData(formData)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (res) => {
-              this._ToastrService.success(res.message);
-            },
-            error: (err) => {
-              if (err.error.message) {
-                this._ToastrService.error(err.error.message);
-              } else {
-                this._ToastrService.error(
-                  'an error has during connecting to the server occured try again later'
-                );
-              }
-            },
-          });
-      } else {
-        this.cvErrorMessage = 'cv field is required';
+      const formData = new FormData();
+      formData.append('username', this.registerForm.get('userName')?.value);
+      formData.append('email', this.registerForm.get('email')?.value);
+      formData.append('password', this.registerForm.get('password')?.value);
+      formData.append(
+        'confirmPassword',
+        this.registerForm.get('repassword')?.value
+      );
+      formData.append(
+        'phoneNumber',
+        this.registerForm.get('phoneGroup')?.get('phone')?.value
+      );
+      formData.append(
+        'phoneRegion',
+        this.registerForm.get('phoneGroup')?.get('countryCode')?.value
+      );
+      formData.append('role', 'admin');
+      if (this.selectedFile) {
+        formData.append('image', this.selectedFile);
       }
+      this._UserService
+        .registerAdmin(formData)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this._ToastrService.success(res.message);
+          },
+          error: (err) => {
+            if (err.error.message) {
+              this._ToastrService.error(err.error.message);
+            } else {
+              this._ToastrService.error(
+                'an error has during connecting to the server occured try again later'
+              );
+            }
+          },
+        });
     } else {
       this.registerForm.markAllAsTouched();
     }

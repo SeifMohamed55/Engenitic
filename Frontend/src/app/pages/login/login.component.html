@@ -62,15 +62,24 @@
         password must be more than 5 characters
       </p>
     </div>
-    <div>
-      <input
-        type="checkbox"
-        id="remember-me"
-        class="w-fit me-5 shadow-none hover:shadow-none"
-        [checked]="loginForm.get('rememberMe')?.value"
-        (change)="handleRememberMe($event)"
-      />
-      <label for="remember-me" class="font-display">remember me</label>
+    <div class="flex justify-between">
+      <div>
+        <input
+          type="checkbox"
+          id="remember-me"
+          class="w-fit me-5 shadow-none hover:shadow-none"
+          [checked]="loginForm.get('rememberMe')?.value"
+          (change)="handleRememberMe($event)"
+        />
+        <label for="remember-me" class="font-display">remember me</label>
+      </div>
+      <div>
+        <a
+          routerLink="/forget-password"
+          class="font-display hover:text-[#58B6B8] transition-colors duration-300"
+          >forget password</a
+        >
+      </div>
     </div>
     <div class="flex justify-center gap-8 items-center">
       <button
