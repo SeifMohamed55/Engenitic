@@ -13,7 +13,7 @@ export const authRedirectGuardGuard: CanActivateFn = (route, state) => {
     map((role) => {
       if (role) {
         router.navigate(['/home']);
-        toastr.warning("can't reach this page unless you are not logged in")
+        toastr.warning("can't reach this page unless you are not logged in");
         return false;
       }
       return true;

@@ -58,7 +58,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         tap((res) => {
           this.userId = parseInt(res.get('userId') as string);
-          this.currentPage = parseInt(res.get('collectionId') as string);
+          this.currentPage = parseInt(res.get('userCollectionId') as string);
         })
       )
       .subscribe();

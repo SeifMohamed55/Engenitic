@@ -2,17 +2,23 @@
   <!-- Header -->
   <header class="gradient shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-6">
+      <div
+        class="flex justify-between md:items-center flex-col md:flex-row py-6"
+      >
         <div>
-          <h1 class="text-4xl font-display text-white">ADMIN DASHBOARD</h1>
-          <p class="font-regular text-blue-100 mt-1">
+          <h1
+            class="text-2xl sm:text-3xl lg:text-5xl xl:text-header font-display text-white"
+          >
+            ADMIN DASHBOARD
+          </h1>
+          <p class="text-sm xl:text-normal font-regular text-blue-100 mt-1">
             Manage users and review instructor applications
           </p>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 ms-auto">
           <div class="text-right">
             <p class="font-regular text-white font-medium">Admin Panel</p>
-            <p class="font-regular text-blue-100 text-sm">
+            <p class="font-regular text-blue-100 text-sm xl:text-normal">
               {{ currentDate | date : "MMM d, y" }}
             </p>
           </div>
