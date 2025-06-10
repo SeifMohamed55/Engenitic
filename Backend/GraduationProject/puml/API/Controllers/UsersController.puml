@@ -1,0 +1,22 @@
+@startuml
+class UsersController {
+    + UsersController(userService:IUserService, unitOfWork:IUnitOfWork, userManager:UserManager<AppUser>, emailService:IGmailServiceHelper, options:IOptions<JwtOptions>, cloudinary:ICloudinaryService, uploadingService:IUploadingService, hashingService:IHashingService)
+    + <<async>> GetProfileData() : Task<ActionResult<AppUserDTO>>
+    + <<async>> UpdateEmail(emailRequest:UpdateEmailRequest) : Task<IActionResult>
+    + <<async>> ConfirmEmailChange(req:ConfirmEmailRequest) : Task<IActionResult>
+    + <<async>> UpdatePassword(req:UpdatePasswordRequest) : Task<IActionResult>
+    + <<async>> UpdateUsername(req:UpdateUsernameRequest) : Task<IActionResult>
+    + <<async>> UpdateImage(image:IFormFile, id:int) : Task<IActionResult>
+}
+class "UserManager`1"<T> {
+}
+ControllerBase <|-- UsersController
+UsersController --> "_unitOfWork" IUnitOfWork
+UsersController --> "_userManager<AppUser>" "UserManager`1"
+UsersController --> "_emailService" IGmailServiceHelper
+UsersController --> "_jwtOptions" JwtOptions
+UsersController --> "_cloudinary" ICloudinaryService
+UsersController --> "_uploadingService" IUploadingService
+UsersController --> "_hashingService" IHashingService
+UsersController --> "_userService" IUserService
+@enduml

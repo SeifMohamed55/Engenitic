@@ -1,0 +1,16 @@
+@startuml
+class CoursesController {
+    + CoursesController(coursesService:ICoursesService, studentService:IStudentService, jwtTokenService:IJwtTokenService)
+    + <<async>> GetPageOfCourses(index:int) : Task<IActionResult>
+    + <<async>> GetCoursesBySearching(search:string, index:int) : Task<IActionResult>
+    + <<async>> GetCoursesByTag(tag:string, index:int) : Task<IActionResult>
+    + <<async>> GetTags() : Task<IActionResult>
+    + <<async>> GetCourseById(courseId:int) : Task<IActionResult>
+    + <<async>> GetCourseQuizesTiltles(courseId:int) : Task<IActionResult>
+    + <<async>> GetRandomCourses() : Task<IActionResult>
+}
+ControllerBase <|-- CoursesController
+CoursesController --> "_coursesService" ICoursesService
+CoursesController --> "_studentService" IStudentService
+CoursesController --> "_jwtTokenService" IJwtTokenService
+@enduml

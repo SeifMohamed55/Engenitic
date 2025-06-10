@@ -1,0 +1,7 @@
+@startuml
+class UserAnswerDTO {
+    + QuestionId : int <<get>> <<set>>
+    + AnswerId : int <<get>> <<set>>
+    + IsCorrect : bool <<get>> <<set>>
+}
+@enduml

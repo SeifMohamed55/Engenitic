@@ -1,0 +1,20 @@
+@startuml
+class UserService {
+    + UserService(unitOfWork:IUnitOfWork, userManager:UserManager<AppUser>, emailService:IGmailServiceHelper, options:IOptions<JwtOptions>, cloudinary:ICloudinaryService, uploadingService:IUploadingService, hashingService:IHashingService)
+    + <<async>> GetProfile(userId:int) : Task<ServiceResult<AppUserDTO>>
+    + <<async>> UpdateEmail(req:UpdateEmailRequest) : Task<ServiceResult<bool>>
+    + <<async>> ConfirmEmailChange(req:ConfirmEmailRequest) : Task<ServiceResult<bool>>
+    + <<async>> UpdatePassword(req:UpdatePasswordRequest, claimId:string) : Task<ServiceResult<bool>>
+    + <<async>> UpdateUsernameRequest(req:UpdateUsernameRequest, claimId:string) : Task<ServiceResult<bool>>
+}
+class "UserManager`1"<T> {
+}
+IUserService <|-- UserService
+UserService --> "_unitOfWork" IUnitOfWork
+UserService --> "_userManager<AppUser>" "UserManager`1"
+UserService --> "_emailService" IGmailServiceHelper
+UserService --> "_jwtOptions" JwtOptions
+UserService --> "_cloudinary" ICloudinaryService
+UserService --> "_uploadingService" IUploadingService
+UserService --> "_hashingService" IHashingService
+@enduml

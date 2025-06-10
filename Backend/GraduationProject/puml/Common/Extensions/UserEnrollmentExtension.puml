@@ -1,0 +1,5 @@
+@startuml
+class UserEnrollmentExtension <<static>> {
+    + {static} DTOProjection(query:IQueryable<UserEnrollment>) : IQueryable<EnrollmentDTO>
+}
+@enduml

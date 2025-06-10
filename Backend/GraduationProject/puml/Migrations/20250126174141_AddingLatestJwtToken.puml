@@ -1,0 +1,7 @@
+@startuml
+class AddingLatestJwtToken <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingLatestJwtToken
+@enduml

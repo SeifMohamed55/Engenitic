@@ -1,0 +1,14 @@
+@startuml
+class AuthenticationController {
+    + AuthenticationController(loginService:IAuthenticationService, options:IOptions<JwtOptions>, jwtTokenService:IJwtTokenService)
+    + <<async>> Login(model:LoginCustomRequest) : Task<IActionResult>
+    + <<async>> Revoke() : Task<IActionResult>
+    + <<async>> Register(model:RegisterCustomRequest) : Task<IActionResult>
+    + <<async>> ForgetPassword(model:ForgetPasswordRequest) : Task<IActionResult>
+    + <<async>> ResetPassword(model:ResetPasswordRequest) : Task<IActionResult>
+}
+ControllerBase <|-- AuthenticationController
+AuthenticationController --> "_authenticationService" IAuthenticationService
+AuthenticationController --> "_jwtOptions" JwtOptions
+AuthenticationController --> "_jwtTokenService" IJwtTokenService
+@enduml

@@ -1,8 +1,0 @@
-@startuml
-class SuccessResponse {
-    + Status : string <<get>> <<set>> = "Success"
-    + Message : string <<get>> <<set>>
-    + Data : object? <<get>> <<set>>
-}
-SuccessResponse o-> "Code" HttpStatusCode
-@enduml

@@ -1,0 +1,19 @@
+@startuml
+class UserEnrollment {
+    + Id : int <<get>> <<set>>
+    + CurrentStage : int <<get>> <<set>>
+    + IsCompleted : bool <<get>> <<set>>
+    + TotalStages : int <<get>> <<init>>
+    + UserId : int <<get>> <<set>>
+    + CourseId : int <<get>> <<set>>
+}
+class "IEntity`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+"IEntity`1" "<int>" <|-- UserEnrollment
+UserEnrollment o-> "EnrolledAt" DateTime
+UserEnrollment o-> "User" AppUser
+UserEnrollment o-> "Course" Course
+UserEnrollment o-> "QuizAttempts<UserQuizAttempt>" "ICollection`1"
+@enduml

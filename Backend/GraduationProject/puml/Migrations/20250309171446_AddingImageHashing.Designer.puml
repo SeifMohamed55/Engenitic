@@ -1,0 +1,5 @@
+@startuml
+class AddingImageHashing <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

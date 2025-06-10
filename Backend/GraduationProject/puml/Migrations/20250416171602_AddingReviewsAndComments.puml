@@ -1,0 +1,7 @@
+@startuml
+class AddingReviewsAndComments <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingReviewsAndComments
+@enduml

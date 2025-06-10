@@ -1,0 +1,13 @@
+@startuml
+class ReviewsController {
+    + ReviewsController(reviewService:IReviewService, studentService:IStudentService, jwtTokenService:IJwtTokenService)
+    + <<async>> GetReviewsByCourseId(courseId:int, index:int) : Task<IActionResult>
+    + <<async>> AddReview(review:AddReviewRequestModel) : Task<IActionResult>
+    + <<async>> EditReview(review:EditReviewRequestModel) : Task<IActionResult>
+    + <<async>> DeleteReview(reviewId:int) : Task<IActionResult>
+}
+ControllerBase <|-- ReviewsController
+ReviewsController --> "_reviewService" IReviewService
+ReviewsController --> "_studentService" IStudentService
+ReviewsController --> "_jwtTokenService" IJwtTokenService
+@enduml

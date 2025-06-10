@@ -201,6 +201,9 @@ namespace GraduationProject.Application.Services
             if (user == null)
                 return ServiceResult<LoginWithCookies>.Failure("Email does not exist", HttpStatusCode.BadRequest);
 
+            if(user.Banned)
+                return ServiceResult<LoginWithCookies>.Failure("User is banned", HttpStatusCode.Forbidden);
+
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
 

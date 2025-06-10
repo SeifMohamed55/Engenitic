@@ -1,0 +1,7 @@
+@startuml
+class CloudinaryUploadResult {
+    + CloudinaryUploadResult(uploadResult:ImageUploadResult)
+    + PublicId : string <<get>> <<set>>
+    + Version : string <<get>> <<set>>
+}
+@enduml

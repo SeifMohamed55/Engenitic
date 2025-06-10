@@ -1,0 +1,5 @@
+@startuml
+class DeleteReviewRequest {
+    + ReviewId : int <<get>> <<set>>
+}
+@enduml

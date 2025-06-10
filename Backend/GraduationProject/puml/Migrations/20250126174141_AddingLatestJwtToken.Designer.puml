@@ -1,0 +1,5 @@
+@startuml
+class AddingLatestJwtToken <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

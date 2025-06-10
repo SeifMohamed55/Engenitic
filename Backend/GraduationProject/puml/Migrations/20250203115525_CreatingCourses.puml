@@ -1,0 +1,7 @@
+@startuml
+class CreatingCourses <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- CreatingCourses
+@enduml

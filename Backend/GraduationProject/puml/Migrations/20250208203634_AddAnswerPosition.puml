@@ -1,0 +1,7 @@
+@startuml
+class AddAnswerPosition <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddAnswerPosition
+@enduml

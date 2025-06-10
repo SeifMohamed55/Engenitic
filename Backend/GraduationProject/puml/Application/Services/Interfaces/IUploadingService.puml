@@ -1,0 +1,7 @@
+@startuml
+interface IUploadingService {
+    UploadImageAsync(imageUrl:string, imageName:string, type:CloudinaryType) : Task<FileHash?>
+    UploadImageAsync(stream:Stream, imageName:string, type:CloudinaryType) : Task<FileHash?>
+    ImageHashMatches(fileHash:FileHash?, imgUrl:string) : Task<bool>
+}
+@enduml

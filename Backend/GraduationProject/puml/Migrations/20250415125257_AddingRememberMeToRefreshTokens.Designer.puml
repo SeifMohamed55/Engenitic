@@ -1,0 +1,5 @@
+@startuml
+class AddingRememberMeToRefreshTokens <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

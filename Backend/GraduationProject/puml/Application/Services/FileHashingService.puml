@@ -1,0 +1,6 @@
+@startuml
+class FileHashingService {
+    + <<async>> HashWithxxHash(file:Stream) : Task<ulong>
+}
+IHashingService <|-- FileHashingService
+@enduml

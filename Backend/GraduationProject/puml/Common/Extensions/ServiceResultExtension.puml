@@ -1,0 +1,5 @@
+@startuml
+class ServiceResultExtensions <<static>> {
+    + {static} ToActionResult(result:ServiceResult<T>) : IActionResult
+}
+@enduml

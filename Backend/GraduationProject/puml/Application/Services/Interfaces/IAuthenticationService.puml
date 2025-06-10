@@ -1,0 +1,10 @@
+@startuml
+interface IAuthenticationService {
+    Login(model:LoginCustomRequest, deviceInfo:DeviceInfo) : Task<ServiceResult<LoginWithCookies>>
+    Logout(deviceId:Guid, userId:int) : Task<ServiceResult<RefreshToken>>
+    ExternalLogin(provider:string, payload:AuthenticatedPayload) : Task<ServiceResult<LoginWithCookies>>
+    Register(model:RegisterCustomRequest, isExternal:bool) : Task<ServiceResult<AppUserDTO>>
+    ForgetPassword(model:ForgetPasswordRequest) : Task<ServiceResult<bool>>
+    ResetPassword(model:ResetPasswordRequest) : Task<ServiceResult<bool>>
+}
+@enduml

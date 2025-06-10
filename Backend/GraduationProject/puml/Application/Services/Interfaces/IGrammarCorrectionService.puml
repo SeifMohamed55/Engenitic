@@ -1,0 +1,5 @@
+@startuml
+interface IGrammarCorrectionService {
+    CorrectGrammar(request:GrammarCorrectionRequest) : Task<ServiceResult<GrammarCorrectionResponse>>
+}
+@enduml

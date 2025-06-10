@@ -1,0 +1,8 @@
+@startuml
+class StageResponse {
+    + StageResponse(quizDTO:QuizDTO, latestStage:int, progress:float)
+    + LatestStage : int <<get>> <<set>>
+    + Progress : float <<get>> <<set>>
+}
+QuizDTO <|-- StageResponse
+@enduml

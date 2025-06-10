@@ -1,0 +1,6 @@
+@startuml
+class GrammarCorrectionResponse {
+    + CorrectedText : string <<get>> <<set>>
+    + Score : float <<get>> <<set>>
+}
+@enduml

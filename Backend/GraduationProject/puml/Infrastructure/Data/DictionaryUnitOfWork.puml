@@ -1,0 +1,30 @@
+@startuml
+class DictionaryUnitOfWork {
+    - _transaction : IDbContextTransaction? = null
+    + DictionaryUnitOfWork(context:AppDbContext, serviceProvider:IServiceProvider)
+    - GetRepository() : TRepo
+    + <<async>> SaveChangesAsync() : Task
+    + <<async>> BeginTransactionAsync() : Task
+    + <<async>> CommitTransactionAsync() : Task
+    + <<async>> RollbackTransactionAsync() : Task
+}
+class "Dictionary`2"<T1,T2> {
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+IUnitOfWork <|-- DictionaryUnitOfWork
+DictionaryUnitOfWork --> "_context" AppDbContext
+DictionaryUnitOfWork --> "_serviceProvider" IServiceProvider
+DictionaryUnitOfWork --> "_repositories<Type,object>" "Dictionary`2"
+DictionaryUnitOfWork --> "UserRepo" IUserRepository
+DictionaryUnitOfWork --> "TokenRepo" ITokenRepository
+DictionaryUnitOfWork --> "CourseRepo" ICourseRepository
+DictionaryUnitOfWork --> "EnrollmentRepo" IEnrollmentRepository
+DictionaryUnitOfWork --> "QuizRepo" IQuizRepository
+DictionaryUnitOfWork --> "TagsRepo" ITagsRepository
+DictionaryUnitOfWork --> "UserLoginRepo" IUserLoginRepository
+DictionaryUnitOfWork --> "FileHashRepo" IFileHashRepository
+DictionaryUnitOfWork --> "QuizQuestionRepo" IQuizQuestionRepository
+DictionaryUnitOfWork --> "QuizAnswerRepo<QuizAnswer,int>" "IBulkRepository`2"
+DictionaryUnitOfWork --> "ReviewRepository" IReviewRepository
+@enduml

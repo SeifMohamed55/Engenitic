@@ -1,0 +1,7 @@
+@startuml
+class UpdatingForeignKeyCourses <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- UpdatingForeignKeyCourses
+@enduml

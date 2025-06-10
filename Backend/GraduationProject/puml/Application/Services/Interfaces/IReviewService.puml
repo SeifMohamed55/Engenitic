@@ -1,0 +1,8 @@
+@startuml
+interface IReviewService {
+    AddReviewAsync(userId:int, review:AddReviewRequestModel) : Task<ServiceResult<bool>>
+    EditReviewAsync(userId:int, review:EditReviewRequestModel) : Task<ServiceResult<bool>>
+    DeleteReviewAsync(userId:int, reviewId:int) : Task<ServiceResult<bool>>
+    GetReviewsByCourseIdAsync(courseId:int, userId:int?, index:int) : Task<ServiceResult<PaginatedList<ReviewDTO>>>
+}
+@enduml

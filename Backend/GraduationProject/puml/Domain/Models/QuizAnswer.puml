@@ -1,0 +1,16 @@
+@startuml
+class QuizAnswer {
+    + QuizAnswer()
+    + QuizAnswer(answer:AnswerDTO)
+    + Id : int <<get>> <<set>>
+    + AnswerText : string <<get>> <<set>>
+    + IsCorrect : bool <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+    + QuestionId : int <<get>> <<set>>
+    + UpdateFromDto(answer:AnswerDTO) : void
+}
+class "IEntity`1"<T> {
+}
+"IEntity`1" "<int>" <|-- QuizAnswer
+QuizAnswer o-> "Question" QuizQuestion
+@enduml

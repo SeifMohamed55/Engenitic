@@ -1,0 +1,13 @@
+@startuml
+class AdminController {
+    + AdminController(loginRegisterService:IAuthenticationService, adminService:IAdminService, cloudinaryService:ICloudinaryService)
+    + <<async>> GetUsers(role:string?, index:int) : Task<IActionResult>
+    + <<async>> BanAppUser(id:int) : Task<IActionResult>
+    + <<async>> UnbanAppUser(id:int) : Task<IActionResult>
+    + <<async>> AddAdmin(model:RegisterCustomRequest) : Task<IActionResult>
+}
+ControllerBase <|-- AdminController
+AdminController --> "_loginService" IAuthenticationService
+AdminController --> "_adminService" IAdminService
+AdminController --> "_cloudinaryService" ICloudinaryService
+@enduml

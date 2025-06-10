@@ -1,0 +1,25 @@
+@startuml
+class UnitOfWork {
+    - _transaction : IDbContextTransaction? = null
+    + UnitOfWork(context:AppDbContext, userRepository:IUserRepository, tokenRepository:ITokenRepository, courseRepository:ICourseRepository, enrollmentRepository:IEnrollmentRepository, quizRepository:IQuizRepository, tagsRepository:ITagsRepository, userLoginRepository:IUserLoginRepository, fileHashRepository:IFileHashRepository, quizQuestionRepository:IQuizQuestionRepository, reviewRepository:IReviewRepository, quizAnswerRepo:IBulkRepository<QuizAnswer, int>)
+    + <<async>> SaveChangesAsync() : Task
+    + <<async>> BeginTransactionAsync() : Task
+    + <<async>> CommitTransactionAsync() : Task
+    + <<async>> RollbackTransactionAsync() : Task
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+IUnitOfWork <|-- UnitOfWork
+UnitOfWork --> "_context" AppDbContext
+UnitOfWork --> "UserRepo" IUserRepository
+UnitOfWork --> "TokenRepo" ITokenRepository
+UnitOfWork --> "CourseRepo" ICourseRepository
+UnitOfWork --> "EnrollmentRepo" IEnrollmentRepository
+UnitOfWork --> "QuizRepo" IQuizRepository
+UnitOfWork --> "TagsRepo" ITagsRepository
+UnitOfWork --> "UserLoginRepo" IUserLoginRepository
+UnitOfWork --> "FileHashRepo" IFileHashRepository
+UnitOfWork --> "QuizQuestionRepo" IQuizQuestionRepository
+UnitOfWork --> "QuizAnswerRepo<QuizAnswer,int>" "IBulkRepository`2"
+UnitOfWork --> "ReviewRepository" IReviewRepository
+@enduml

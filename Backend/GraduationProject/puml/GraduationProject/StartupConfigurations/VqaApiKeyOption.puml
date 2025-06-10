@@ -1,5 +1,0 @@
-@startuml
-class VqaApiKeyOption {
-    ApiKey : string <<get>> <<set>>
-}
-@enduml

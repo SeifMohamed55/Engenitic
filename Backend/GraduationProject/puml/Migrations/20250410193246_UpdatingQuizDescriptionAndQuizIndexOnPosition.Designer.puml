@@ -1,0 +1,5 @@
+@startuml
+class UpdatingQuizDescriptionAndQuizIndexOnPosition <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

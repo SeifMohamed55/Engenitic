@@ -1,0 +1,7 @@
+@startuml
+class AddingAverageRatingToCourse <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingAverageRatingToCourse
+@enduml

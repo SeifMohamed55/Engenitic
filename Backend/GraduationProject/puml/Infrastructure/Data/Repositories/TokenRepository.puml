@@ -1,0 +1,15 @@
+@startuml
+class TokenRepository {
+    + TokenRepository(context:AppDbContext, jwtOptions:IOptions<JwtOptions>)
+    - GenerateSecureToken() : Guid
+    + GenerateRefreshToken(userId:int, deviceInfo:DeviceInfo) : RefreshToken
+    + DeleteRefreshToken(deviceId:Guid) : void
+    + <<async>> GetUserRefreshToken(deviceId:Guid, userId:int) : Task<RefreshToken?>
+    + <<async>> RemoveRevokedOrExpiredByUserId(id:int) : Task
+}
+class "Repository`1"<T> {
+}
+"Repository`1" "<RefreshToken>" <|-- TokenRepository
+ITokenRepository <|-- TokenRepository
+TokenRepository --> "_jwtOptions" JwtOptions
+@enduml

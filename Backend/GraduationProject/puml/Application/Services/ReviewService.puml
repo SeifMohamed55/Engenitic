@@ -1,0 +1,13 @@
+@startuml
+class ReviewService {
+    + ReviewService(unitOfWork:IUnitOfWork, cloudinaryService:ICloudinaryService)
+    - <<async>> UpdateCourseAvg(courseId:int) : Task<bool>
+    + <<async>> AddReviewAsync(userId:int, review:AddReviewRequestModel) : Task<ServiceResult<bool>>
+    + <<async>> DeleteReviewAsync(userId:int, reviewId:int) : Task<ServiceResult<bool>>
+    + <<async>> GetReviewsByCourseIdAsync(courseId:int, userId:int?, index:int) : Task<ServiceResult<PaginatedList<ReviewDTO>>>
+    + <<async>> EditReviewAsync(userId:int, review:EditReviewRequestModel) : Task<ServiceResult<bool>>
+}
+IReviewService <|-- ReviewService
+ReviewService --> "_unitOfWork" IUnitOfWork
+ReviewService --> "_cloudinaryService" ICloudinaryService
+@enduml

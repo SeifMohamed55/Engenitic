@@ -1,0 +1,11 @@
+@startuml
+interface IStudentService {
+    GetStudentEnrollments(studentId:int, index:int) : Task<PaginatedList<EnrollmentDTO>>
+    EnrollOnCourse(enrollment:StudentEnrollmentRequest) : Task
+    GetStudentEnrollment(studentId:int, courseId:int) : Task<ServiceResult<EnrollmentDTO>>
+    GetEnrollmentStage(enrollmentId:int, stage:int, studentId:int) : Task<ServiceResult<StageResponse>>
+    GetEnrollmentCurrentStage(enrollmentId:int, studentId:int) : Task<ServiceResult<StageResponse>>
+    EnrollmentExists(studentId:int, courseId:int) : Task<ServiceResult<bool>>
+    AttemptQuiz(quizAttempt:UserQuizAttemptDTO) : Task<ServiceResult<UserQuizAttemptDTO>>
+}
+@enduml

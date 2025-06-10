@@ -1,0 +1,26 @@
+@startuml
+class CoursesService {
+    + CoursesService(unitOfWork:IUnitOfWork, cloudinaryService:ICloudinaryService, uploadingService:IUploadingService, mediaValidator:IMediaValidator)
+    + <<async>> GetPageOfCourses(index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    + <<async>> SearchOnPageOfCourses(search:string, index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    + <<async>> GetPageOfCoursesByTag(tag:string, index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    - UpdateImagesUrlInList(courses:List<CourseDTO>) : void
+    + <<async>> GetAllTagsAsync() : Task<List<TagDTO>>
+    + <<async>> GetCourseDetailsById(courseId:int) : Task<ServiceResult<CourseDetailsResponse>>
+    + <<async>> GetInstructorCourses(instructorId:int, index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    + <<async>> GetCourseStatistics(courseId:int) : Task<ServiceResult<CourseStatistics>>
+    + <<async>> AddCourse(course:RegisterCourseRequest) : Task<ServiceResult<CourseDTO>>
+    + <<async>> EditCourse(courseReq:EditCourseRequest) : Task<ServiceResult<CourseDetailsResponse>>
+    + <<async>> EditCourseImage(image:IFormFile, courseId:int) : Task<ServiceResult<bool>>
+    + <<async>> GetCourseInstructorId(courseId:int) : Task<int?>
+    + <<async>> DeleteCourse(courseId:int) : Task<ServiceResult<bool>>
+    + <<async>> GetCourseWithQuizes(courseId:int) : Task<ServiceResult<EditCourseRequest>>
+    + <<async>> GetQuizesTitles(courseId:int) : Task<ServiceResult<List<QuizTitleResponse>>>
+    + <<async>> GetRandomCourses(numberOfCourses:int) : Task<ServiceResult<List<CourseDTO>>>
+}
+ICoursesService <|-- CoursesService
+CoursesService --> "_unitOfWork" IUnitOfWork
+CoursesService --> "_cloudinary" ICloudinaryService
+CoursesService --> "_uploadingService" IUploadingService
+CoursesService --> "_mediaValidator" IMediaValidator
+@enduml

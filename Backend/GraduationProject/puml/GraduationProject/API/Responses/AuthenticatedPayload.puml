@@ -1,8 +1,0 @@
-@startuml
-class AuthenticatedPayload {
-    Email : string <<get>> <<set>>
-    Name : string <<get>> <<set>>
-    ImageUrl : string <<get>> <<set>>
-    UniqueId : string <<get>> <<set>>
-}
-@enduml

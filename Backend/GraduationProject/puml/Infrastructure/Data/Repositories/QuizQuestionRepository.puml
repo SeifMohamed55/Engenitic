@@ -1,0 +1,10 @@
+@startuml
+class QuizQuestionRepository {
+    + QuizQuestionRepository(context:AppDbContext)
+    + <<async>> GetQuizWithQuestionsByIdAsync(quizId:int) : Task<Dictionary<int, UserAnswerDTO>>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+"BulkRepository`2" "<QuizQuestion,int>" <|-- QuizQuestionRepository
+IQuizQuestionRepository <|-- QuizQuestionRepository
+@enduml

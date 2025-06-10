@@ -1,0 +1,5 @@
+@startuml
+class ApiKeyOption {
+    ApiKey : string <<get>> <<set>>
+}
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+interface IGmailServiceHelper {
+    SendEmailAsync(to:string, subject:string, body:string) : Task
+}
+@enduml

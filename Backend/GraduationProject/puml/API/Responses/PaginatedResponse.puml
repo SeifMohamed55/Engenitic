@@ -1,0 +1,10 @@
+@startuml
+class PaginatedResponse {
+    + TotalPages : int <<get>> <<init>>
+    + TotalItems : int <<get>> <<init>>
+    + CurrentlyViewing : string <<get>> <<init>>
+    + PageIndex : int <<get>> <<init>>
+    + PaginatedResponse(list:IPaginatedList)
+}
+PaginatedResponse --> "PaginatedList" IList
+@enduml

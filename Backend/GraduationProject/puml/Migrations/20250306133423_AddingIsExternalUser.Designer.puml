@@ -1,0 +1,5 @@
+@startuml
+class AddingIsExternalUser <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+class ChangingRefreshTokenDetailsNames <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

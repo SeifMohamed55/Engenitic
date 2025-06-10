@@ -1,0 +1,14 @@
+@startuml
+class CourseDTO {
+    + CourseDTO()
+    + CourseDTO(course:Course)
+    + Id : int <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Code : string? <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + InstructorName : string? <<get>> <<set>>
+    + Requirements : string <<get>> <<set>>
+    + Stages : int <<get>> <<set>>
+}
+CourseDTO --> "Image" ImageMetadata
+@enduml

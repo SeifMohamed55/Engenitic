@@ -1,0 +1,16 @@
+@startuml
+class "BulkRepository`2"<T,TKey> {
+    + BulkRepository(context:AppDbContext)
+    + <<async>> ExecuteDeleteAsync(ids:IReadOnlySet<TKey>) : Task<int>
+    + <<async>> AddRangeAsync(quizzes:IEnumerable<T>) : Task
+    + RemoveRange(quizzes:IEnumerable<T>) : void
+}
+class "Repository`1"<T> {
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+class "IEntity`1"<T> {
+}
+"Repository`1" "<T>" <|-- "BulkRepository`2"
+"IBulkRepository`2" "<T,TKey>" <|-- "BulkRepository`2"
+@enduml

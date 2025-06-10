@@ -1,0 +1,9 @@
+@startuml
+interface IUserService {
+    GetProfile(userId:int) : Task<ServiceResult<AppUserDTO>>
+    UpdateEmail(req:UpdateEmailRequest) : Task<ServiceResult<bool>>
+    ConfirmEmailChange(req:ConfirmEmailRequest) : Task<ServiceResult<bool>>
+    UpdatePassword(req:UpdatePasswordRequest, claimId:string) : Task<ServiceResult<bool>>
+    UpdateUsernameRequest(req:UpdateUsernameRequest, claimId:string) : Task<ServiceResult<bool>>
+}
+@enduml

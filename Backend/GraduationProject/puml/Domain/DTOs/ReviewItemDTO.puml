@@ -1,0 +1,7 @@
+@startuml
+class CourseStatDTO {
+    + CourseStatDTO(count:int, percentage:float)
+    + Count : int <<get>> <<set>>
+    + Percentage : float <<get>> <<set>>
+}
+@enduml

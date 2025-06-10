@@ -1,0 +1,5 @@
+@startuml
+interface IRefreshTokenService {
+    Refresh(oldAccessToken:string, requestRefToken:string, deviceId:Guid) : Task<ServiceResult<string>>
+}
+@enduml

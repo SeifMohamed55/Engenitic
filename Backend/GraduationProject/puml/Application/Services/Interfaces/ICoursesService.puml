@@ -1,0 +1,19 @@
+@startuml
+interface ICoursesService {
+    GetPageOfCourses(index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    SearchOnPageOfCourses(search:string, index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    GetPageOfCoursesByTag(tag:string, index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    GetCourseDetailsById(courseId:int) : Task<ServiceResult<CourseDetailsResponse>>
+    GetAllTagsAsync() : Task<List<TagDTO>>
+    GetInstructorCourses(instructorId:int, index:int) : Task<ServiceResult<PaginatedList<CourseDTO>>>
+    GetCourseStatistics(courseId:int) : Task<ServiceResult<CourseStatistics>>
+    AddCourse(course:RegisterCourseRequest) : Task<ServiceResult<CourseDTO>>
+    EditCourse(course:EditCourseRequest) : Task<ServiceResult<CourseDetailsResponse>>
+    DeleteCourse(courseId:int) : Task<ServiceResult<bool>>
+    EditCourseImage(image:IFormFile, courseId:int) : Task<ServiceResult<bool>>
+    GetCourseInstructorId(courseId:int) : Task<int?>
+    GetCourseWithQuizes(courseId:int) : Task<ServiceResult<EditCourseRequest>>
+    GetQuizesTitles(courseId:int) : Task<ServiceResult<List<QuizTitleResponse>>>
+    GetRandomCourses(numberOfCourses:int) : Task<ServiceResult<List<CourseDTO>>>
+}
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+class UpdatingQuizQuestionAnswers <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+class AdminService {
+    + AdminService(unitOfWork:IUnitOfWork, roleManager:RoleManager<Role>, userManager:UserManager<AppUser>)
+    + <<async>> BanUser(id:int) : Task<ServiceResult<bool>>
+    + <<async>> UnbanUser(id:int) : Task<ServiceResult<bool>>
+    + <<async>> GetUsersPage(index:int, role:string?) : Task<ServiceResult<PaginatedList<AppUserDTO>>>
+    + <<async>> VerifyInstructor(id:int) : Task<ServiceResult<bool>>
+}
+class "RoleManager`1"<T> {
+}
+class "UserManager`1"<T> {
+}
+IAdminService <|-- AdminService
+AdminService --> "_unitOfWork" IUnitOfWork
+AdminService --> "_roleManager<Role>" "RoleManager`1"
+AdminService --> "_userManager<AppUser>" "UserManager`1"
+@enduml

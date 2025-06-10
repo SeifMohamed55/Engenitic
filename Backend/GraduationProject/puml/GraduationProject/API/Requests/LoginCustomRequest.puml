@@ -1,6 +1,0 @@
-@startuml
-class LoginCustomRequest {
-    + Email : string <<get>> <<set>>
-    + Password : string <<get>> <<set>>
-}
-@enduml

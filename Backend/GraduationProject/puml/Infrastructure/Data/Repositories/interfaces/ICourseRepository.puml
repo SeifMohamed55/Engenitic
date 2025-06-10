@@ -1,0 +1,23 @@
+@startuml
+interface ICourseRepository {
+    GetDetailsById(id:int) : Task<CourseDetailsResponse?>
+    GetPageOfCourses(index:int) : Task<PaginatedList<CourseDTO>>
+    GetPageOfHiddenCourses(index:int) : Task<PaginatedList<CourseDTO>>
+    GetPageOfCoursesBySearching(searchTerm:string, index:int) : Task<PaginatedList<CourseDTO>>
+    GetCourseStatistics(courseId:int) : Task<CourseStatistics?>
+    GetInstructorCourses(instructorId:int, index:int) : Task<PaginatedList<CourseDTO>>
+    MakeCourse(course:RegisterCourseRequest, hash:FileHash) : Task<Course>
+    GetPageOfCoursesByTag(tag:string, index:int) : Task<PaginatedList<CourseDTO>>
+    AddCourseToTag(courseId:int, tag:List<TagDTO>) : Task
+    GetCourseInstructorId(courseId:int) : Task<int?>
+    GetCourseWithImageAndInstructor(id:int) : Task<Course?>
+    GetEditCourseRequestWithQuizes(courseId:int) : Task<EditCourseRequest?>
+    GetCourseWithQuizes(courseId:int) : Task<Course?>
+    GetRandomCourses(numberOfCourses:int) : Task<List<CourseDTO>>
+    GetQuizesQuestionAndAnswerIds(courseId:int) : Task<QuizQuestionAnswerIds?>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<Course,int>" <|-- ICourseRepository
+ICustomRepository <|-- ICourseRepository
+@enduml

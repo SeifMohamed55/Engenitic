@@ -1,0 +1,16 @@
+@startuml
+class CourseDetailsResponse {
+    + CourseDetailsResponse(course:Course)
+    + Id : int <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Code : string? <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + InstructorName : string <<get>> <<set>>
+    + InstructorEmail : string <<get>> <<set>>
+    + Requirements : string <<get>> <<set>>
+    + Stages : int <<get>> <<set>>
+    + IsEnrolled : bool <<get>> <<set>> = false
+}
+CourseDetailsResponse --> "Image" ImageMetadata
+CourseDetailsResponse --> "RatingStats" RatingStatsDTO
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+class FileHashRepository {
+    + FileHashRepository(context:AppDbContext)
+    + <<async>> GetDefaultUserImageAsync() : Task<FileHash>
+    + <<async>> GetDefaultCourseImageAsync() : Task<FileHash>
+    + IsDefaultCourseImageHash(hash:FileHash) : bool
+    + IsDefaultUserImageHash(hash:FileHash) : bool
+}
+class "BulkRepository`2"<T1,T2> {
+}
+"BulkRepository`2" "<FileHash,int>" <|-- FileHashRepository
+IFileHashRepository <|-- FileHashRepository
+@enduml

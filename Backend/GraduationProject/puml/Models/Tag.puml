@@ -1,0 +1,14 @@
+@startuml
+class Tag {
+    + Tag(dto:TagDTO)
+    + Tag(value:string)
+    + Id : int <<get>> <<set>>
+    + Value : string <<get>> <<set>>
+}
+class "IEntity`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+"IEntity`1" "<int>" <|-- Tag
+Tag o-> "Courses<Course>" "ICollection`1"
+@enduml

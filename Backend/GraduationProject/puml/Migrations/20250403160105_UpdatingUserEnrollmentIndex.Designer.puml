@@ -1,0 +1,5 @@
+@startuml
+class UpdatingUserEnrollmentIndex <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

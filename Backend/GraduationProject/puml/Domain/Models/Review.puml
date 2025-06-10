@@ -1,0 +1,19 @@
+@startuml
+class Review {
+    + Review()
+    + Review(userId:int, req:AddReviewRequestModel)
+    + Id : int <<get>> <<set>>
+    + Content : string <<get>> <<set>>
+    + Rating : byte <<get>> <<set>>
+    + UserId : int <<get>> <<set>>
+    + CourseId : int <<get>> <<set>>
+    + UpdateFromRequest(newContent:string, rating:byte) : void
+}
+class "IEntity`1"<T> {
+}
+"IEntity`1" "<int>" <|-- Review
+Review o-> "CreatedAt" DateTime
+Review o-> "UpdatedAt" DateTime
+Review o-> "User" AppUser
+Review o-> "Course" Course
+@enduml

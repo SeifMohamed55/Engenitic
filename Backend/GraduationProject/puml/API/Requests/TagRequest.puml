@@ -1,0 +1,6 @@
+@startuml
+class TagRequest {
+    + Id : int <<get>> <<set>>
+    + Tag : string <<get>> <<set>>
+}
+@enduml

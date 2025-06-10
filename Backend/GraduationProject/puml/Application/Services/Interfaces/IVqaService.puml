@@ -1,0 +1,5 @@
+@startuml
+interface IVqaService {
+    GetAnswerAsync(image:IFormFile, question:string) : Task<ServiceResult<VqaResponse>>
+}
+@enduml

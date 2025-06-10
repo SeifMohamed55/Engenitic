@@ -1,0 +1,7 @@
+@startuml
+class AddingIndexesToTitleAndDescription <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingIndexesToTitleAndDescription
+@enduml

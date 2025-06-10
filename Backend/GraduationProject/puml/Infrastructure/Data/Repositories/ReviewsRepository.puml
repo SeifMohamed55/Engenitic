@@ -1,0 +1,15 @@
+@startuml
+class ReviewsRepository {
+    + ReviewsRepository(context:AppDbContext)
+    + <<async>> GetReviewsByCourseIdAsync(courseId:int, userId:int?, index:int) : Task<PaginatedList<ReviewDTO>>
+    + <<async>> GetCourseRatingStats(courseId:int) : Task<RatingStatsDTO>
+    + AddReview(userId:int, review:AddReviewRequestModel) : void
+    + EditReview(userId:int, review:EditReviewRequestModel) : int
+    + <<async>> GetAverageCourseRatingAsync(courseId:int) : Task<double>
+    + <<async>> ReviewExist(userId:int, courseId:int) : Task<bool>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+"BulkRepository`2" "<Review,int>" <|-- ReviewsRepository
+IReviewRepository <|-- ReviewsRepository
+@enduml

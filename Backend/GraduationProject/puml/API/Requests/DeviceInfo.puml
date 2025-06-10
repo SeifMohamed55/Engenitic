@@ -1,0 +1,7 @@
+@startuml
+class DeviceInfo {
+    + IpAddress : string <<get>> <<set>>
+    + UserAgent : string <<get>> <<set>>
+}
+DeviceInfo --> "DeviceId" Guid
+@enduml

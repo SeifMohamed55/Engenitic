@@ -1,0 +1,8 @@
+@startuml
+class GrammarCorrectionController {
+    + GrammarCorrectionController(grammarCorrectionService:IGrammarCorrectionService)
+    + <<async>> CorrectGrammar(request:GrammarCorrectionRequest) : Task<IActionResult>
+}
+ControllerBase <|-- GrammarCorrectionController
+GrammarCorrectionController --> "_grammarCorrectionService" IGrammarCorrectionService
+@enduml

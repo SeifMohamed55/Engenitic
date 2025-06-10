@@ -1,0 +1,5 @@
+@startuml
+class GrammarCorrectionRequest {
+    + Sentence : string <<get>> <<set>>
+}
+@enduml

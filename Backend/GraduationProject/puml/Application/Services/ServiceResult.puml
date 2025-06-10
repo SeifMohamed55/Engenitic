@@ -1,0 +1,15 @@
+@startuml
+class "ServiceResult`1"<T> {
+    + IsSuccess : bool <<get>>
+    + Data : T? <<get>>
+    + Message : string <<get>>
+    + Errors : IDictionary<string, string[]>? <<get>> = null
+    - ServiceResult(isSuccess:bool, data:T?, message:string, code:HttpStatusCode, errors:IDictionary<string, string[]>?)
+    + {static} Success(data:T, message:string, code:HttpStatusCode) : ServiceResult<T>
+    + {static} Failure(message:string, errors:IEnumerable<IdentityError>, code:HttpStatusCode) : ServiceResult<T>
+    + {static} Failure(message:string, code:HttpStatusCode) : ServiceResult<T>
+    + TryGetData(data:T?) : bool
+    + TryGetErrors(errors:IDictionary<string, string[]>?) : bool
+}
+"ServiceResult`1" --> "StatusCode" HttpStatusCode
+@enduml

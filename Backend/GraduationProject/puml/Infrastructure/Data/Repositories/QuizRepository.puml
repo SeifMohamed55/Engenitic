@@ -1,0 +1,16 @@
+@startuml
+class QuizRepository {
+    + QuizRepository(context:AppDbContext)
+    + <<async>> GetQuizByCourseAndPosition(courseId:int, position:int) : Task<QuizDTO?>
+    + <<async>> AddUserQuizAttempt(userQuizAttempt:UserQuizAttemptDTO) : Task<bool>
+    + <<async>> GetQuizesTitle(courseId:int) : Task<List<QuizTitleResponse>>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+class "Func`4"<T1,T2,T3,T4> {
+}
+"BulkRepository`2" "<Quiz,int>" <|-- QuizRepository
+IQuizRepository <|-- QuizRepository
+QuizRepository --> "_context" AppDbContext
+QuizRepository o-> "GetQuizWithNoAnswerAsync<AppDbContext,int,int,Task<QuizDTO?>>" "Func`4"
+@enduml

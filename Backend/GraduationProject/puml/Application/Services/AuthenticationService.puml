@@ -1,0 +1,32 @@
+@startuml
+class AuthenticationService {
+    + AuthenticationService(userManager:UserManager<AppUser>, tokenService:IJwtTokenService, options:IOptions<JwtOptions>, roleManager:RoleManager<Role>, unitOfWork:IUnitOfWork, tokenBlacklistService:ITokenBlacklistService, signInManager:SignInManager<AppUser>, uploadingService:IUploadingService, cloudinaryService:ICloudinaryService, userService:IUserService, emailSender:IGmailServiceHelper)
+    - HandleIdentityResult(result:IdentityResult, errors:List<IdentityError>) : void
+    + <<async>> Register(model:RegisterCustomRequest, isExternal:bool) : Task<ServiceResult<AppUserDTO>>
+    - <<async>> TryUploadImage(stream:Stream, imageName:string, defaultHash:FileHash) : Task<FileHash>
+    + <<async>> Login(model:LoginCustomRequest, deviceInfo:DeviceInfo) : Task<ServiceResult<LoginWithCookies>>
+    + <<async>> Logout(deviceId:Guid, userId:int) : Task<ServiceResult<RefreshToken>>
+    + <<async>> ExternalLogin(provider:string, payload:AuthenticatedPayload) : Task<ServiceResult<LoginWithCookies>>
+    + <<async>> ForgetPassword(model:ForgetPasswordRequest) : Task<ServiceResult<bool>>
+    + <<async>> ResetPassword(model:ResetPasswordRequest) : Task<ServiceResult<bool>>
+    - <<async>> SaveGooglePhoto(user:AppUser, payload:AuthenticatedPayload) : Task
+}
+class "UserManager`1"<T> {
+}
+class "RoleManager`1"<T> {
+}
+class "SignInManager`1"<T> {
+}
+IAuthenticationService <|-- AuthenticationService
+AuthenticationService --> "_userManager<AppUser>" "UserManager`1"
+AuthenticationService --> "_tokenService" IJwtTokenService
+AuthenticationService --> "_jwtOptions" JwtOptions
+AuthenticationService --> "_roleManager<Role>" "RoleManager`1"
+AuthenticationService --> "_unitOfWork" IUnitOfWork
+AuthenticationService --> "_tokenBlacklistService" ITokenBlacklistService
+AuthenticationService --> "_signInManager<AppUser>" "SignInManager`1"
+AuthenticationService --> "_uploadingService" IUploadingService
+AuthenticationService --> "_cloudinaryService" ICloudinaryService
+AuthenticationService --> "_userService" IUserService
+AuthenticationService --> "_emailSender" IGmailServiceHelper
+@enduml

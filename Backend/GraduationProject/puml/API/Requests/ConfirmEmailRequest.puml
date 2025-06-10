@@ -1,0 +1,7 @@
+@startuml
+class ConfirmEmailRequest {
+    + UserId : int <<get>> <<set>>
+    + NewEmail : string <<get>> <<set>>
+    + Token : string <<get>> <<set>>
+}
+@enduml

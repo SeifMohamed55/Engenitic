@@ -1,0 +1,5 @@
+@startuml
+interface IHashingService {
+    HashWithxxHash(stream:Stream) : Task<ulong>
+}
+@enduml

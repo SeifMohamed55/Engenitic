@@ -1,0 +1,12 @@
+@startuml
+interface "IBulkRepository`2"<T,TKey> {
+    ExecuteDeleteAsync(ids:IReadOnlySet<TKey>) : Task<int>
+    AddRangeAsync(quizzes:IEnumerable<T>) : Task
+    RemoveRange(quizzes:IEnumerable<T>) : void
+}
+class "IGenericRepository`1"<T> {
+}
+class "IEntity`1"<T> {
+}
+"IGenericRepository`1" "<T>" <|-- "IBulkRepository`2"
+@enduml

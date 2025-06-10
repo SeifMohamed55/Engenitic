@@ -1,0 +1,14 @@
+@startuml
+interface IEnrollmentRepository {
+    EnrollOnCourse(enrollment:StudentEnrollmentRequest) : Task<UserEnrollment>
+    GetStudentEnrolledCourses(studentId:int, index:int) : Task<PaginatedList<EnrollmentDTO>>
+    GetStudentEnrollmentDTO(studentId:int, courseId:int) : Task<EnrollmentDTO?>
+    GetStudentEnrollment(studentId:int, courseId:int) : Task<UserEnrollment?>
+    ExistsAsync(studentId:int, courseId:int) : Task<bool>
+    GetTotalEnrolledOnCourse(courseId:int) : Task<int>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<UserEnrollment,int>" <|-- IEnrollmentRepository
+ICustomRepository <|-- IEnrollmentRepository
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+class ErrorResponse {
+    + Status : string <<get>> <<set>> = "Error"
+    + Message : string <<get>> <<set>>
+    + Errors : IDictionary<string, string[]>? <<get>> <<set>> = null
+}
+IApiResponse <|-- ErrorResponse
+ErrorResponse o-> "Code" HttpStatusCode
+@enduml

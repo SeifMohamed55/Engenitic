@@ -1,0 +1,9 @@
+@startuml
+class QuizQuestionAnswerIds {
+}
+class "IReadOnlySet`1"<T> {
+}
+QuizQuestionAnswerIds o-> "QuizzesIds<int>" "IReadOnlySet`1"
+QuizQuestionAnswerIds o-> "QuestionIds<int>" "IReadOnlySet`1"
+QuizQuestionAnswerIds o-> "AnswerIds<int>" "IReadOnlySet`1"
+@enduml

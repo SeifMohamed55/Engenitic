@@ -1,0 +1,18 @@
+@startuml
+class UsersRepository {
+    + UsersRepository(context:AppDbContext)
+    - DefaultQuery() : IQueryable<AppUser>
+    - <<async>> GetUsersDTOPageAsync(index:int) : Task<PaginatedList<AppUserDTO>>
+    + <<async>> GetUsersInRolePage(index:int, role:Role?) : Task<PaginatedList<AppUserDTO>>
+    + <<async>> GetBannedUsersDTO(index:int) : Task<PaginatedList<AppUserDTO>>
+    + <<async>> GetAppUserDTO(id:int) : Task<AppUserDTO?>
+    + <<async>> GetUserWithRoles(id:int) : Task<AppUser?>
+    + <<async>> GetUserWithRoles(email:string) : Task<AppUser?>
+    + <<async>> GetUserImageHash(userId:int) : Task<FileHash>
+    + <<async>> GetUserWithFiles(id:int) : Task<AppUser?>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+"BulkRepository`2" "<AppUser,int>" <|-- UsersRepository
+IUserRepository <|-- UsersRepository
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+class updatingImageSrcToNotNullableAndRenamingCol <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

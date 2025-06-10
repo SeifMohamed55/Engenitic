@@ -1,0 +1,10 @@
+@startuml
+class UserLoginRepository {
+    + UserLoginRepository(context:AppDbContext)
+    + <<async>> ContainsLoginProvider(userId:int, provider:string) : Task<bool>
+}
+class "Repository`1"<T> {
+}
+"Repository`1" "<IdentityUserLogin<int>>" <|-- UserLoginRepository
+IUserLoginRepository <|-- UserLoginRepository
+@enduml

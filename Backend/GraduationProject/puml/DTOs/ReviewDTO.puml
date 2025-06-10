@@ -1,0 +1,12 @@
+@startuml
+class ReviewDTO {
+    + ReviewId : int <<get>> <<set>>
+    + UserId : int <<get>> <<set>>
+    + CourseId : int <<get>> <<set>>
+    + Content : string <<get>> <<set>>
+    + Rating : byte <<get>> <<set>>
+    + FullName : string <<get>> <<set>>
+}
+ReviewDTO --> "UpdatedAt" DateTime
+ReviewDTO o-> "ImageMetadata" ImageMetadata
+@enduml

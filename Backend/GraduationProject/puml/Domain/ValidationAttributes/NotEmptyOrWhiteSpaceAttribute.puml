@@ -1,0 +1,6 @@
+@startuml
+class NotEmptyOrWhiteSpaceAttribute {
+    # <<override>> IsValid(value:object?, validationContext:ValidationContext) : ValidationResult?
+}
+ValidationAttribute <|-- NotEmptyOrWhiteSpaceAttribute
+@enduml

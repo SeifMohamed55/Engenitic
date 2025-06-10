@@ -1,0 +1,12 @@
+@startuml
+class RefreshToken {
+}
+IpAddress : string <<get>> <<set>>
+UserAgent : string <<get>> <<set>>
++ IsRevoked : bool <<get>> <<set>> = false
+LoginProvider : string <<get>> <<set>>
++ LatestJwtAccessTokenJti : string <<get>> <<set>>
++ RememberMe : bool <<get>> <<set>> = false
++ UserId : int <<get>> <<set>>
+RefreshToken --> "Guid" required
+@enduml

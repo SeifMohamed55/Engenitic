@@ -1,0 +1,7 @@
+@startuml
+class UpdatingNumberOfCourseStages <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- UpdatingNumberOfCourseStages
+@enduml

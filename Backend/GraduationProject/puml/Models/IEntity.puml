@@ -1,0 +1,5 @@
+@startuml
+interface "IEntity`1"<T> {
+    Id : T <<get>> <<set>>
+}
+@enduml

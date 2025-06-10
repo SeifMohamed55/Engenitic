@@ -1,0 +1,8 @@
+@startuml
+class Roles <<static>> {
+    + <<const>> Admin : string = "admin"
+    + <<const>> Instructor : string = "instructor"
+    + <<const>> Student : string = "student"
+    + <<const>> VerifiedInstructor : string = "verifiedInstructor"
+}
+@enduml

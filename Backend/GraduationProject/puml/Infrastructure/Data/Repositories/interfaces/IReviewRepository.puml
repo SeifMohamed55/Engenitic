@@ -1,0 +1,14 @@
+@startuml
+interface IReviewRepository {
+    GetCourseRatingStats(courseId:int) : Task<RatingStatsDTO>
+    GetReviewsByCourseIdAsync(courseId:int, userId:int?, page:int) : Task<PaginatedList<ReviewDTO>>
+    AddReview(userId:int, review:AddReviewRequestModel) : void
+    GetAverageCourseRatingAsync(courseId:int) : Task<double>
+    EditReview(userId:int, review:EditReviewRequestModel) : int
+    ReviewExist(userId:int, courseId:int) : Task<bool>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<Review,int>" <|-- IReviewRepository
+ICustomRepository <|-- IReviewRepository
+@enduml

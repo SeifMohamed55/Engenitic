@@ -85,10 +85,7 @@ namespace GraduationProject.API.Controllers
 
                 }
                 else
-                    return BadRequest(new ErrorResponse()
-                    {
-                        Message = res.Message ?? "Couldn't login user."
-                    });
+                    return res.ToActionResult();
             }
             catch
             {

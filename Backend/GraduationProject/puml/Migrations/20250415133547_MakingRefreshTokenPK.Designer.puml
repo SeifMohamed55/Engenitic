@@ -1,0 +1,5 @@
+@startuml
+class MakingRefreshTokenPK <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

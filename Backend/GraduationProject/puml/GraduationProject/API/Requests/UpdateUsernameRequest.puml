@@ -1,6 +1,0 @@
-@startuml
-class UpdateUsernameRequest {
-    + Id : int <<get>> <<set>>
-    + NewUsername : string <<get>> <<set>>
-}
-@enduml

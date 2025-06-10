@@ -1,0 +1,25 @@
+@startuml
+interface IPaginatedList {
+    PageIndex : int <<get>>
+    TotalCount : int <<get>>
+    PageSize : int <<get>>
+    TotalPages : int <<get>>
+}
+class "PaginatedList`1"<T> {
+    + PageIndex : int <<get>>
+    + PageSize : int <<get>>
+    + TotalCount : int <<get>>
+    + TotalPages : int <<get>>
+    - PaginatedList(source:IEnumerable<T>, pageIndex:int, pageSize:int, totalCount:int)
+    + HasPreviousPage : bool <<get>>
+    + HasNextPage : bool <<get>>
+    + Prepend(item:T) : void
+    + {static} <<async>> CreateAsync(source:IQueryable<T>, pageIndex:int, pageSize:int) : Task<PaginatedList<T>>
+    + {static} Create(source:IQueryable<T>, pageIndex:int, pageSize:int) : PaginatedList<T>
+}
+class "List`1"<T> {
+}
+IList <|-- IPaginatedList
+"List`1" "<T>" <|-- "PaginatedList`1"
+IPaginatedList <|-- "PaginatedList`1"
+@enduml

@@ -22,6 +22,7 @@ namespace GraduationProject.Common.Extensions
                     IsEmailConfirmed = x.EmailConfirmed,
                     CreatedAt = x.CreatedAt,
                     Roles = x.Roles
+                        .OrderBy(x=> x.Id)
                         .Select(r => r.Name)
                         .ToList(),
                     Image = new()

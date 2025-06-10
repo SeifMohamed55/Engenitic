@@ -15,6 +15,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories.interfaces
         Task<PaginatedList<CourseDTO>> GetPageOfCoursesBySearching(string searchTerm, int index = 1);
         Task<CourseStatistics?> GetCourseStatistics(int courseId);
         Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index);
+        Task HideAllInstructorCourses(int instructorId);
+        Task UnHideAllInstructorCourses(int instructorId);
 
         // Edit, Add, Remove
         Task<Course> MakeCourse(RegisterCourseRequest course, FileHash hash);

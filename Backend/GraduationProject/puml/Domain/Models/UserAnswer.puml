@@ -1,0 +1,14 @@
+@startuml
+class UserAnswer {
+    + Id : int <<get>> <<set>>
+    + IsCorrect : bool <<get>> <<set>>
+    + UserQuizAttemptId : int <<get>> <<set>>
+    + QuestionId : int? <<get>> <<set>>
+    + Question : QuizQuestion? <<get>> <<set>>
+    + AnswerId : int? <<get>> <<set>>
+    + Answer : QuizAnswer? <<get>> <<set>>
+}
+class "IEntity`1"<T> {
+}
+"IEntity`1" "<int>" <|-- UserAnswer
+@enduml

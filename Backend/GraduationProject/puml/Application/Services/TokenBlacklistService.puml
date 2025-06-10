@@ -1,0 +1,11 @@
+@startuml
+class TokenBlacklistService {
+    + TokenBlacklistService(memoryCache:IMemoryCache, jwtTokenService:IJwtTokenService)
+    + IsTokenBlacklisted(accessToken:string) : bool
+    + IsTokenBlacklisted(context:HttpContext) : bool
+    + BlacklistToken(accessTokenJti:string, exp:DateTimeOffset) : void
+}
+ITokenBlacklistService <|-- TokenBlacklistService
+TokenBlacklistService --> "_memoryCache" IMemoryCache
+TokenBlacklistService --> "_jwtTokenService" IJwtTokenService
+@enduml

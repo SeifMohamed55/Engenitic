@@ -1,0 +1,7 @@
+@startuml
+class AddingTagsEntityWithManyToManyWithCourses <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingTagsEntityWithManyToManyWithCourses
+@enduml

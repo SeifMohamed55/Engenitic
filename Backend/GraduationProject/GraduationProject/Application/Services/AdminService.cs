@@ -15,7 +15,10 @@ namespace GraduationProject.Application.Services
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<AppUser> _userManager;
 
-        public AdminService(IUnitOfWork unitOfWork, RoleManager<Role> roleManager, UserManager<AppUser> userManager)
+        public AdminService(IUnitOfWork unitOfWork,
+            RoleManager<Role> roleManager,
+            UserManager<AppUser> userManager,
+            ICoursesService coursesService)
         {
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
@@ -26,10 +29,14 @@ namespace GraduationProject.Application.Services
         {
             try
             {
+
                 var user = await _unitOfWork.UserRepo.GetByIdAsync(id);
                 if (user == null)
                     return ServiceResult<bool>.Failure("User not found", HttpStatusCode.NotFound);
+
                 user.Banned = true;
+                await _unitOfWork.CourseRepo.HideAllInstructorCourses(user.Id);
+
                 await _unitOfWork.SaveChangesAsync();
                 return ServiceResult<bool>.Success(true, "User banned successfully", HttpStatusCode.OK);
             }
@@ -48,7 +55,10 @@ namespace GraduationProject.Application.Services
                 var user = await _unitOfWork.UserRepo.GetByIdAsync(id);
                 if (user == null)
                     return ServiceResult<bool>.Failure("User not found", HttpStatusCode.NotFound);
+
                 user.Banned = false;
+                await _unitOfWork.CourseRepo.UnHideAllInstructorCourses(user.Id);
+
                 await _unitOfWork.SaveChangesAsync();
                 return ServiceResult<bool>.Success(true, "User unbanned successfully", HttpStatusCode.OK);
             }

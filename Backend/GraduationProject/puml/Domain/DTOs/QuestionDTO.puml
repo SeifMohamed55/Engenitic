@@ -1,0 +1,13 @@
+@startuml
+class QuestionDTO {
+    + Id : int <<get>> <<set>>
+    + QuestionText : string <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+    + Validate(validationContext:ValidationContext) : IEnumerable<ValidationResult>
+}
+class "List`1"<T> {
+}
+IPostitionable <|-- QuestionDTO
+IValidatableObject <|-- QuestionDTO
+QuestionDTO o-> "Answers<AnswerDTO>" "List`1"
+@enduml

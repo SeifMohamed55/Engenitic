@@ -1,0 +1,17 @@
+@startuml
+class UserQuizAttempt {
+    + Id : int <<get>> <<set>>
+    + UserScore : int <<get>> <<set>>
+    + QuizId : int? <<get>> <<set>>
+    + Quiz : Quiz? <<get>> <<set>>
+    + UserEnrollmentId : int <<get>> <<set>>
+}
+class "IEntity`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+"IEntity`1" "<int>" <|-- UserQuizAttempt
+UserQuizAttempt o-> "CompletedAt" DateTime
+UserQuizAttempt o-> "UserEnrollment" UserEnrollment
+UserQuizAttempt o-> "UserAnswers<UserAnswer>" "ICollection`1"
+@enduml

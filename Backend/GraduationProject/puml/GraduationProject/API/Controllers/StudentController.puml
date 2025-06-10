@@ -1,9 +1,0 @@
-@startuml
-class StudentController {
-    + StudentController(unitOfWork:IUnitOfWork)
-    + <<async>> GetStudentCourses(index:int, id:int) : Task<IActionResult>
-    + <<async>> Enroll(enrollment:StudentEnrollmentRequest) : Task<IActionResult>
-}
-ControllerBase <|-- StudentController
-StudentController --> "_unitOfWork" IUnitOfWork
-@enduml

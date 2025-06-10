@@ -1,0 +1,7 @@
+@startuml
+class AddingQuizezStructure <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingQuizezStructure
+@enduml

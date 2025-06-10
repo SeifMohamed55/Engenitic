@@ -1,0 +1,23 @@
+@startuml
+enum MediaType {
+    Unknown,
+    Video,
+    Audio,
+    Invalid,
+}
+class MediaValidator {
+    + MediaValidator(httpClient:HttpClient)
+    + <<async>> ValidateAsync(url:string) : Task<bool>
+    + <<async>> GetMediaTypeAsync(url:string) : Task<MediaType>
+    - IsValidUrlFormat(url:string) : bool
+    - GetKnownPlatformMediaType(url:string) : MediaType
+    - <<async>> GetCloudStorageMediaTypeAsync(url:string) : Task<MediaType>
+    - GetMediaTypeFromContentHeaders(response:HttpResponseMessage) : MediaType
+}
+class "Dictionary`2"<T1,T2> {
+}
+IMediaValidator <|-- MediaValidator
+MediaValidator --> "_httpClient" HttpClient
+MediaValidator --> "_videoExtensions<string,string>" "Dictionary`2"
+MediaValidator --> "_audioExtensions<string,string>" "Dictionary`2"
+@enduml

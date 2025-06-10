@@ -1,0 +1,8 @@
+@startuml
+interface IEncryptionService {
+    AesEncrypt(plaintext:string) : string
+    AesDecrypt(encryptedBase64:string) : string
+    HashWithHMAC(input:string) : string
+    VerifyHMAC(raw:string, hash:string) : bool
+}
+@enduml

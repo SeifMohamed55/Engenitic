@@ -1,0 +1,17 @@
+@startuml
+class AppUserDTO {
+    + Id : int <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + UserName : string <<get>> <<set>>
+    + PhoneNumber : string? <<get>> <<set>>
+    + PhoneRegionCode : string? <<get>> <<set>>
+    + Banned : bool <<get>> <<set>>
+    + IsExternal : bool <<get>> <<set>>
+    + IsEmailConfirmed : bool <<get>> <<set>>
+}
+class "ICollection`1"<T> {
+}
+AppUserDTO o-> "Image" ImageMetadata
+AppUserDTO o-> "CreatedAt" DateTime
+AppUserDTO o-> "Roles<string>" "ICollection`1"
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class RemovingComments <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- RemovingComments
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+class GrammarCorrectionService {
+    - <<readonly>> _apiKey : string
+    + GrammarCorrectionService(httpClient:HttpClient, options:IOptions<ApiKeyOption>, jsonOptions:IOptions<JsonOptions>)
+    + <<async>> CorrectGrammar(request:GrammarCorrectionRequest) : Task<ServiceResult<GrammarCorrectionResponse>>
+}
+IGrammarCorrectionService <|-- GrammarCorrectionService
+GrammarCorrectionService --> "_httpClient" HttpClient
+GrammarCorrectionService --> "_jsonOptions" JsonSerializerOptions
+@enduml

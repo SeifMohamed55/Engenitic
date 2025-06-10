@@ -1,0 +1,7 @@
+@startuml
+class AddingFileHashVersion <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- AddingFileHashVersion
+@enduml

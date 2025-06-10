@@ -1,0 +1,14 @@
+@startuml
+class TagsRepository {
+    + TagsRepository(context:AppDbContext)
+    + AddTag(tag:string) : Tag
+    + <<async>> GetTagByValueAsync(value:string) : Task<Tag?>
+    + <<async>> EditTagAsync(id:int, newValue:string) : Task<Tag>
+    + <<async>> GetAllAsync(id:int) : Task<List<Tag>>
+    + <<async>> GetTagsDTOAsync() : Task<List<TagDTO>>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+"BulkRepository`2" "<Tag,int>" <|-- TagsRepository
+ITagsRepository <|-- TagsRepository
+@enduml

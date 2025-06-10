@@ -1,0 +1,5 @@
+@startuml
+class AddAnswerPosition <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

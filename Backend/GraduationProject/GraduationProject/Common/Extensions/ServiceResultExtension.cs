@@ -37,6 +37,7 @@ namespace GraduationProject.Common.Extensions
                 {
                     Message = result.Message,
                     Errors = result.TryGetErrors(out var errors) ? errors : null,
+                    Code = result.StatusCode
                 })
                 {
                     StatusCode = (int)result.StatusCode

@@ -1,0 +1,9 @@
+@startuml
+interface IDictionaryUnitOfWork {
+    GetRepository() : TRepo
+    SaveChangesAsync() : Task
+    BeginTransactionAsync() : Task
+    CommitTransactionAsync() : Task
+    RollbackTransactionAsync() : Task
+}
+@enduml

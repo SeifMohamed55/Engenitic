@@ -1,0 +1,15 @@
+@startuml
+class UploadingService {
+    + UploadingService(cloudinary:Cloudinary, hashingService:IHashingService)
+    + {static} IsValidImageType(image:IFormFile?, maxSize:long) : bool
+    + <<async>> UploadImageAsync(stream:Stream, imageName:string, type:CloudinaryType) : Task<FileHash?>
+    - <<async>> UploadAsync(image:Stream, imageName:string, type:CloudinaryType) : Task<CloudinaryUploadResult?>
+    + <<async>> UploadImageAsync(imageUrl:string, imageName:string, type:CloudinaryType) : Task<FileHash?>
+    - <<async>> UploadAsync(imageUrl:string, imageName:string, type:CloudinaryType) : Task<CloudinaryUploadResult?>
+    - <<async>> GetFileStreamAsync(result:CloudinaryUploadResult) : Task<Stream?>
+    + <<async>> ImageHashMatches(fileHash:FileHash?, imgUrl:string) : Task<bool>
+}
+IUploadingService <|-- UploadingService
+UploadingService --> "_cloudinary" Cloudinary
+UploadingService --> "_hashingService" IHashingService
+@enduml

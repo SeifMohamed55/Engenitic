@@ -13,7 +13,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories.interfaces
         Task<FileHash> GetUserImageHash(int id);
         Task<AppUser?> GetUserWithFiles(int id);
         Task<PaginatedList<AppUserDTO>> GetBannedUsersDTO(int index);
-        public Task<PaginatedList<AppUserDTO>> GetUsersInRolePage(int index, Role? role);
+        Task<PaginatedList<AppUserDTO>> GetUsersInRolePage(int index, Role? role);
 
         //Task<string?> GetUserImage(int id);
 

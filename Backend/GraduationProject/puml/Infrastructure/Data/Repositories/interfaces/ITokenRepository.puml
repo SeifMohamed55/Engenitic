@@ -1,0 +1,12 @@
+@startuml
+interface ITokenRepository {
+    DeleteRefreshToken(deviceId:Guid) : void
+    GetUserRefreshToken(deviceId:Guid, userId:int) : Task<RefreshToken?>
+    GenerateRefreshToken(userId:int, deviceInfo:DeviceInfo) : RefreshToken
+    RemoveRevokedOrExpiredByUserId(id:int) : Task
+}
+class "IGenericRepository`1"<T> {
+}
+"IGenericRepository`1" "<RefreshToken>" <|-- ITokenRepository
+ICustomRepository <|-- ITokenRepository
+@enduml

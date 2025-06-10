@@ -1,0 +1,15 @@
+@startuml
+interface IUserRepository {
+    GetAppUserDTO(id:int) : Task<AppUserDTO?>
+    GetUserWithRoles(id:int) : Task<AppUser?>
+    GetUserWithRoles(email:string) : Task<AppUser?>
+    GetUserImageHash(id:int) : Task<FileHash>
+    GetUserWithFiles(id:int) : Task<AppUser?>
+    GetBannedUsersDTO(index:int) : Task<PaginatedList<AppUserDTO>>
+    + GetUsersInRolePage(index:int, role:Role?) : Task<PaginatedList<AppUserDTO>>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<AppUser,int>" <|-- IUserRepository
+ICustomRepository <|-- IUserRepository
+@enduml

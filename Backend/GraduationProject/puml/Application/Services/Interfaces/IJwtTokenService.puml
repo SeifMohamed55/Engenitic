@@ -1,0 +1,11 @@
+@startuml
+interface IJwtTokenService {
+    GenerateJwtToken(userWithTokenAndRoles:AppUser, roles:List<string>) : (string, string)
+    ExtractIdAndJtiFromExpiredToken(token:string) : (int, string)
+    IsAccessTokenValid(token:string) : bool
+    ExtractJwtTokenFromContext(context:HttpContext) : string?
+    GetAccessTokenExpiration(accessToken:string) : DateTimeOffset
+    IsRefreshTokenExpired(refreshToken:RefreshToken) : bool
+    VerifyRefresh(raw:string, hashed:string) : bool
+}
+@enduml

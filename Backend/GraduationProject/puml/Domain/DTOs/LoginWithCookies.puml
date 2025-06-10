@@ -1,0 +1,6 @@
+@startuml
+class LoginWithCookies {
+}
+LoginWithCookies o-> "LoginResponse" LoginResponse
+LoginWithCookies o-> "RefreshToken" RefreshToken
+@enduml

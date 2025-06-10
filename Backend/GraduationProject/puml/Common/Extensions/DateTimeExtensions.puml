@@ -1,0 +1,5 @@
+@startuml
+class DateTimeExtensions <<static>> {
+    + {static} ToTimeAgo(dateTime:DateTime) : string
+}
+@enduml

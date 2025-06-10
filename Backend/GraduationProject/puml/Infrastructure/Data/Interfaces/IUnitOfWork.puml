@@ -1,0 +1,21 @@
+@startuml
+interface IUnitOfWork {
+    SaveChangesAsync() : Task
+    BeginTransactionAsync() : Task
+    CommitTransactionAsync() : Task
+    RollbackTransactionAsync() : Task
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+IUnitOfWork --> "UserRepo" IUserRepository
+IUnitOfWork --> "TokenRepo" ITokenRepository
+IUnitOfWork --> "CourseRepo" ICourseRepository
+IUnitOfWork --> "EnrollmentRepo" IEnrollmentRepository
+IUnitOfWork --> "QuizRepo" IQuizRepository
+IUnitOfWork --> "TagsRepo" ITagsRepository
+IUnitOfWork --> "UserLoginRepo" IUserLoginRepository
+IUnitOfWork --> "FileHashRepo" IFileHashRepository
+IUnitOfWork --> "QuizQuestionRepo" IQuizQuestionRepository
+IUnitOfWork --> "QuizAnswerRepo<QuizAnswer,int>" "IBulkRepository`2"
+IUnitOfWork --> "ReviewRepository" IReviewRepository
+@enduml

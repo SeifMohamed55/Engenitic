@@ -1,0 +1,10 @@
+@startuml
+class TagsController {
+    + TagsController(unitOfWork:IUnitOfWork)
+    + <<async>> AddTag(tag:TagRequest) : Task<IActionResult>
+    + <<async>> GetTagByValue(value:string) : Task<IActionResult>
+    + <<async>> EditTag(tag:TagRequest) : Task<IActionResult>
+}
+ControllerBase <|-- TagsController
+TagsController --> "_unitOfWork" IUnitOfWork
+@enduml

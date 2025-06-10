@@ -1,0 +1,11 @@
+@startuml
+interface IQuizRepository {
+    GetQuizByCourseAndPosition(courseId:int, position:int) : Task<QuizDTO?>
+    AddUserQuizAttempt(userQuizAttempt:UserQuizAttemptDTO) : Task<bool>
+    GetQuizesTitle(courseId:int) : Task<List<QuizTitleResponse>>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<Quiz,int>" <|-- IQuizRepository
+ICustomRepository <|-- IQuizRepository
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+class RatingStatsDTO {
+    + RatingStatsDTO()
+    + RatingStatsDTO(avg:float, dict:IDictionary<byte, CourseStatDTO>)
+    + TotalCount : int <<get>>
+    + AverageRating : float <<get>> <<set>>
+}
+class "IDictionary`2"<T1,T2> {
+}
+RatingStatsDTO o-> "Breakdown<byte,CourseStatDTO>" "IDictionary`2"
+@enduml

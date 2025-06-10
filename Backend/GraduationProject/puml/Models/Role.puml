@@ -1,0 +1,14 @@
+@startuml
+class Role {
+    + <<override>> Name : string <<get>> <<set>>
+}
+class "IdentityRole`1"<T> {
+}
+class "IEntity`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+"IdentityRole`1" "<int>" <|-- Role
+"IEntity`1" "<int>" <|-- Role
+Role o-> "Users<AppUser>" "ICollection`1"
+@enduml

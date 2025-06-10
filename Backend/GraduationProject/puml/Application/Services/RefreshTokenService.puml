@@ -1,0 +1,10 @@
+@startuml
+class RefreshTokenService {
+    + RefreshTokenService(tokenService:IJwtTokenService, unitOfWork:IUnitOfWork, userService:IUserService, jwtOptions:IOptions<JwtOptions>)
+    + <<async>> Refresh(oldAccessToken:string, requestRefToken:string, deviceId:Guid) : Task<ServiceResult<string>>
+}
+IRefreshTokenService <|-- RefreshTokenService
+RefreshTokenService --> "_tokenService" IJwtTokenService
+RefreshTokenService --> "_unitOfWork" IUnitOfWork
+RefreshTokenService --> "_jwtOptions" JwtOptions
+@enduml

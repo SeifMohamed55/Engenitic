@@ -1,9 +1,0 @@
-@startuml
-interface IHashingService {
-    HashWithxxHash(stream:Stream) : Task<ulong>
-}
-class FileHashingService {
-    + <<async>> HashWithxxHash(file:Stream) : Task<ulong>
-}
-IHashingService <|-- FileHashingService
-@enduml

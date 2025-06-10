@@ -1,0 +1,7 @@
+@startuml
+interface ITokenBlacklistService {
+    IsTokenBlacklisted(accessToken:string) : bool
+    IsTokenBlacklisted(context:HttpContext) : bool
+    BlacklistToken(accessTokenJti:string, exp:DateTimeOffset) : void
+}
+@enduml

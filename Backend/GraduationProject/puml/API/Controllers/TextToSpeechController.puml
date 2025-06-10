@@ -1,0 +1,8 @@
+@startuml
+class TextToSpeechController {
+    + TextToSpeechController(tts:ITextToSpeechService)
+    + <<async>> ConvertTextToSpeech(text:TextToSpeechRequest) : Task<IActionResult>
+}
+ControllerBase <|-- TextToSpeechController
+TextToSpeechController --> "_tts" ITextToSpeechService
+@enduml

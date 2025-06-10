@@ -1,0 +1,12 @@
+@startuml
+interface "IGenericRepository`1"<T> {
+    GetAllAsync() : Task<List<T>>
+    GetByIdAsync(id:int) : Task<T?>
+    Insert(entity:T) : void
+    Update(entity:T) : void
+    Delete(id:object) : void
+    Delete(entityToDelete:T) : void
+    Detach(entity:T) : void
+}
+IRepository <|-- "IGenericRepository`1"
+@enduml

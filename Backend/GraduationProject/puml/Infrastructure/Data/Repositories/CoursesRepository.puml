@@ -1,0 +1,32 @@
+@startuml
+class CoursesRepository {
+    + CoursesRepository(context:AppDbContext)
+    + <<async>> GetDetailsById(id:int) : Task<CourseDetailsResponse?>
+    - GetCoursesQuery() : IQueryable<Course>
+    + <<async>> GetCourseWithImageAndInstructor(id:int) : Task<Course?>
+    + <<async>> GetPageOfCourses(index:int) : Task<PaginatedList<CourseDTO>>
+    + <<async>> GetPageOfHiddenCourses(index:int) : Task<PaginatedList<CourseDTO>>
+    + <<async>> GetPageOfCoursesBySearching(searchTerm:string, index:int) : Task<PaginatedList<CourseDTO>>
+    + <<async>> GetCourseStatistics(courseId:int) : Task<CourseStatistics?>
+    + <<async>> GetInstructorCourses(instructorId:int, index:int) : Task<PaginatedList<CourseDTO>>
+    + GetPageOfCoursesByTag(tag:string, index:int) : Task<PaginatedList<CourseDTO>>
+    + <<async>> MakeCourse(courseReq:RegisterCourseRequest, hash:FileHash) : Task<Course>
+    + <<async>> AddCourseToTag(courseId:int, tags:List<TagDTO>) : Task
+    + <<async>> GetCourseInstructorId(courseId:int) : Task<int?>
+    + <<async>> GetEditCourseRequestWithQuizes(courseId:int) : Task<EditCourseRequest?>
+    + GetRandomCourses(numberOfCourses:int) : Task<List<CourseDTO>>
+    + <<async>> GetQuizesQuestionAndAnswerIds(courseId:int) : Task<QuizQuestionAnswerIds?>
+    + <<async>> GetCourseWithQuizes(courseId:int) : Task<Course?>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+class "DbSet`1"<T> {
+}
+class "Func`3"<T1,T2,T3> {
+}
+"BulkRepository`2" "<Course,int>" <|-- CoursesRepository
+ICourseRepository <|-- CoursesRepository
+CoursesRepository --> "_tags<Tag>" "DbSet`1"
+CoursesRepository --> "_context" AppDbContext
+CoursesRepository o-> "GetCourseWithQuizesCompiled<AppDbContext,int,Task<EditCourseRequest?>>" "Func`3"
+@enduml

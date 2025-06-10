@@ -1,0 +1,6 @@
+@startuml
+class UniquePostitionAttribute {
+    # <<override>> IsValid(value:object?, validationContext:ValidationContext) : ValidationResult?
+}
+ValidationAttribute <|-- UniquePostitionAttribute
+@enduml

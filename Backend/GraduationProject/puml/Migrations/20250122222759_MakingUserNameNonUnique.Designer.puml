@@ -1,0 +1,5 @@
+@startuml
+class MakingUserNameNonUnique <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

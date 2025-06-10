@@ -1,0 +1,5 @@
+@startuml
+interface ITextToSpeechService {
+    GetAudioFromTextAsync(text:string) : Task<ServiceResult<byte[]>>
+}
+@enduml

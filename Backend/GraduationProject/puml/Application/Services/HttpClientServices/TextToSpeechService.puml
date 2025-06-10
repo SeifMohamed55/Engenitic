@@ -1,0 +1,9 @@
+@startuml
+class TextToSpeechService {
+    - <<readonly>> _apiKey : string
+    + TextToSpeechService(httpClient:HttpClient, options:IOptions<ApiKeyOption>)
+    + <<async>> GetAudioFromTextAsync(text:string) : Task<ServiceResult<byte[]>>
+}
+ITextToSpeechService <|-- TextToSpeechService
+TextToSpeechService --> "_httpClient" HttpClient
+@enduml

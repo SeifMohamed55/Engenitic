@@ -1,0 +1,6 @@
+@startuml
+interface IMediaValidator {
+    ValidateAsync(url:string) : Task<bool>
+    GetMediaTypeAsync(url:string) : Task<MediaType>
+}
+@enduml

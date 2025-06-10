@@ -1,0 +1,7 @@
+@startuml
+class RefreshTokenOndeleteSetNull <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- RefreshTokenOndeleteSetNull
+@enduml

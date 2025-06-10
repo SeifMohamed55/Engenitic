@@ -1,0 +1,18 @@
+@startuml
+class StudentService {
+    + StudentService(unitOfWork:IUnitOfWork, cloudinaryService:ICloudinaryService)
+    + <<async>> GetStudentEnrollments(studentId:int, index:int) : Task<PaginatedList<EnrollmentDTO>>
+    + <<async>> EnrollOnCourse(enrollment:StudentEnrollmentRequest) : Task
+    + <<async>> EnrollmentExists(studentId:int, courseId:int) : Task<ServiceResult<bool>>
+    + <<async>> GetStudentEnrollment(studentId:int, courseId:int) : Task<ServiceResult<EnrollmentDTO>>
+    + <<async>> GetEnrollmentStage(enrollmentId:int, stage:int, studentId:int) : Task<ServiceResult<StageResponse>>
+    + <<async>> GetEnrollmentCurrentStage(enrollmentId:int, studentId:int) : Task<ServiceResult<StageResponse>>
+    - <<async>> GetAndValidateEnrollment(enrollmentId:int, studentId:int) : Task<ServiceResult<UserEnrollment>>
+    - <<async>> GetQuizForStage(courseId:int, stage:int) : Task<ServiceResult<QuizDTO>>
+    - GetProgress(enrollment:UserEnrollment) : float
+    + <<async>> AttemptQuiz(quizAttempt:UserQuizAttemptDTO) : Task<ServiceResult<UserQuizAttemptDTO>>
+}
+IStudentService <|-- StudentService
+StudentService --> "_unitOfWork" IUnitOfWork
+StudentService --> "_cloudinaryService" ICloudinaryService
+@enduml

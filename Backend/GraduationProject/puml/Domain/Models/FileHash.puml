@@ -1,0 +1,17 @@
+@startuml
+class FileHash {
+    + Id : int <<get>> <<set>>
+    + PublicId : string <<get>> <<set>>
+    + Hash : ulong <<get>> <<set>>
+    Version : string <<get>> <<set>>
+    + UpdateFromHash(hash:FileHash) : void
+}
+class "IEntity`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+"IEntity`1" "<int>" <|-- FileHash
+FileHash --> "Type" CloudinaryType
+FileHash o-> "Users<AppUser>" "ICollection`1"
+FileHash o-> "Courses<Course>" "ICollection`1"
+@enduml

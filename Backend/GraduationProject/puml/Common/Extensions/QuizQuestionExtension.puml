@@ -1,0 +1,5 @@
+@startuml
+class QuizQuestionExtension <<static>> {
+    + {static} QuestionWithAnswer(query:IQueryable<QuizQuestion>) : IQueryable<UserAnswerDTO>
+}
+@enduml

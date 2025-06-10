@@ -1,0 +1,5 @@
+@startuml
+class ReviewExtensions <<static>> {
+    + {static} DTOProjection(query:IQueryable<Review>) : IQueryable<ReviewDTO>
+}
+@enduml

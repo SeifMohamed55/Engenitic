@@ -1,0 +1,12 @@
+@startuml
+interface ITagsRepository {
+    AddTag(tag:string) : Tag
+    GetTagByValueAsync(value:string) : Task<Tag?>
+    EditTagAsync(id:int, newValue:string) : Task<Tag>
+    GetTagsDTOAsync() : Task<List<TagDTO>>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<Tag,int>" <|-- ITagsRepository
+ICustomRepository <|-- ITagsRepository
+@enduml

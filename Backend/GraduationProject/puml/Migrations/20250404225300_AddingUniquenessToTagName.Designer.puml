@@ -1,0 +1,5 @@
+@startuml
+class AddingUniquenessToTagName <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

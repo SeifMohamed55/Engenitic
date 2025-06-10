@@ -1,0 +1,10 @@
+@startuml
+class CloudinaryService {
+    + CloudinaryService(cloudinary:Cloudinary)
+    + GetImageUrl(publicId:string, version:string) : string
+    + GetProfileImage(publicId:string, version:string) : string
+    + GetPDF(publicId:string, version:string) : string
+}
+ICloudinaryService <|-- CloudinaryService
+CloudinaryService --> "_cloudinary" Cloudinary
+@enduml

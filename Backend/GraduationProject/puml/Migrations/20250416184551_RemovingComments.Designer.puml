@@ -1,0 +1,5 @@
+@startuml
+class RemovingComments <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

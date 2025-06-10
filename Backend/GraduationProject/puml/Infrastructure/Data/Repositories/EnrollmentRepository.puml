@@ -1,0 +1,18 @@
+@startuml
+class EnrollmentRepository {
+    + EnrollmentRepository(context:AppDbContext)
+    + <<async>> EnrollOnCourse(enrollment:StudentEnrollmentRequest) : Task<UserEnrollment>
+    + <<async>> GetStudentEnrolledCourses(studentId:int, index:int) : Task<PaginatedList<EnrollmentDTO>>
+    + GetStudentEnrollmentDTO(studentId:int, courseId:int) : Task<EnrollmentDTO?>
+    + <<async>> GetStudentEnrollment(studentId:int, courseId:int) : Task<UserEnrollment?>
+    + <<async>> ExistsAsync(studentId:int, courseId:int) : Task<bool>
+    + <<async>> GetTotalEnrolledOnCourse(courseId:int) : Task<int>
+}
+class "BulkRepository`2"<T1,T2> {
+}
+class "DbSet`1"<T> {
+}
+"BulkRepository`2" "<UserEnrollment,int>" <|-- EnrollmentRepository
+IEnrollmentRepository <|-- EnrollmentRepository
+EnrollmentRepository --> "_courses<Course>" "DbSet`1"
+@enduml

@@ -1,7 +1,0 @@
-@startuml
-class ErrorResponse {
-    + Status : string <<get>> <<set>> = "Error"
-    + Message : object <<get>> <<set>>
-}
-ErrorResponse --> "Code" HttpStatusCode
-@enduml

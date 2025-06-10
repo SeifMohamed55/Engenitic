@@ -15,6 +15,13 @@
         "dotnet-ef"
       ],
       "rollForward": false
+    },
+    "plantumlclassdiagramgenerator": {
+      "version": "1.2.4",
+      "commands": [
+        "puml-gen"
+      ],
+      "rollForward": false
     }
   }
 }

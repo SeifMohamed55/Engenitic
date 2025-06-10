@@ -92,8 +92,21 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                     TotalEnrollments = x.Enrollments.Count,
                     TotalCompleted = x.Enrollments.Count(e => e.IsCompleted == true),
                 })
-                .FirstOrDefaultAsync(x => x.CourseId == courseId)
-;
+                .FirstOrDefaultAsync(x => x.CourseId == courseId);
+        }
+
+
+        public async Task HideAllInstructorCourses(int instructorId)
+        {
+            await _dbSet.Where(x => x.InstructorId == instructorId)
+                .ForEachAsync(x => x.hidden = true);
+        }
+
+
+        public async Task UnHideAllInstructorCourses(int instructorId)
+        {
+            await _dbSet.Where(x => x.InstructorId == instructorId)
+                .ForEachAsync(x => x.hidden = false);
         }
 
         public async Task<PaginatedList<CourseDTO>> GetInstructorCourses(int instructorId, int index)

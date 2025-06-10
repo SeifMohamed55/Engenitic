@@ -1,0 +1,19 @@
+@startuml
+class "Repository`1"<T> {
+    + Repository(context:AppDbContext)
+    + <<async>> GetAllAsync() : Task<List<T>>
+    + <<async>> GetByIdAsync(id:int) : Task<T?>
+    + Insert(entity:T) : void
+    + Update(entity:T) : void
+    + <<virtual>> Delete(id:object) : void
+    + <<virtual>> Delete(entityToDelete:T) : void
+    + Detach(entity:T) : void
+}
+class "IGenericRepository`1"<T> {
+}
+class "DbSet`1"<T> {
+}
+"IGenericRepository`1" "<T>" <|-- "Repository`1"
+"Repository`1" --> "_context" AppDbContext
+"Repository`1" --> "_dbSet<T>" "DbSet`1"
+@enduml

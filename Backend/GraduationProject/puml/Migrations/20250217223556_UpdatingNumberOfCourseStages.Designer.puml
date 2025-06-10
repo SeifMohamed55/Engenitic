@@ -1,0 +1,5 @@
+@startuml
+class UpdatingNumberOfCourseStages <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

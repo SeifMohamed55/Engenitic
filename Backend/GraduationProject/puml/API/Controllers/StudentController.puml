@@ -1,0 +1,12 @@
+@startuml
+class StudentController {
+    + StudentController(studentService:IStudentService)
+    + <<async>> GetStudentCourses(id:int, index:int) : Task<IActionResult>
+    + <<async>> Enroll(enrollment:StudentEnrollmentRequest) : Task<IActionResult>
+    + <<async>> GetCurrentStage(studentId:int, enrollmentId:int) : Task<IActionResult>
+    + <<async>> GetCourseStage(studentId:int, enrollmentId:int, stage:int) : Task<IActionResult>
+    + <<async>> AttemptQuiz(userQuizAttempt:UserQuizAttemptDTO) : Task<IActionResult>
+}
+ControllerBase <|-- StudentController
+StudentController --> "_studentService" IStudentService
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+interface IQuizQuestionRepository {
+    GetQuizWithQuestionsByIdAsync(quizId:int) : Task<Dictionary<int, UserAnswerDTO>>
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<QuizQuestion,int>" <|-- IQuizQuestionRepository
+ICustomRepository <|-- IQuizQuestionRepository
+@enduml

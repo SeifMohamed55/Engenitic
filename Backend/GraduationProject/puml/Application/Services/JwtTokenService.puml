@@ -1,0 +1,17 @@
+@startuml
+class JwtTokenService {
+    + JwtTokenService(options:IOptions<JwtOptions>, encryptionService:IEncryptionService, tokenValidationParameters:IOptions<TokenValidationParameters>)
+    + GenerateJwtToken(user:AppUser, roles:List<string>) : (string, string)
+    - GetPrincipalFromExpiredToken(token:string) : ClaimsPrincipal
+    + IsAccessTokenValid(token:string) : bool
+    + GetAccessTokenExpiration(accessToken:string) : DateTimeOffset
+    + ExtractIdAndJtiFromExpiredToken(token:string) : (int, string)
+    + ExtractJwtTokenFromContext(context:HttpContext) : string?
+    + VerifyRefresh(raw:string, hashed:string) : bool
+    + IsRefreshTokenExpired(refreshToken:RefreshToken) : bool
+}
+IJwtTokenService <|-- JwtTokenService
+JwtTokenService --> "_encryptionService" IEncryptionService
+JwtTokenService --> "_tokenValidationParameters" TokenValidationParameters
+JwtTokenService --> "_jwtOptions" JwtOptions
+@enduml

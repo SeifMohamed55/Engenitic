@@ -1,0 +1,8 @@
+@startuml
+interface IAdminService {
+    BanUser(id:int) : Task<ServiceResult<bool>>
+    UnbanUser(id:int) : Task<ServiceResult<bool>>
+    GetUsersPage(index:int, role:string?) : Task<ServiceResult<PaginatedList<AppUserDTO>>>
+    VerifyInstructor(id:int) : Task<ServiceResult<bool>>
+}
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+class AppUser {
+    + <<override>> Email : string <<get>> <<set>>
+    + PhoneRegionCode : string? <<get>> <<set>>
+    + Banned : bool <<get>> <<set>>
+    + FullName : string <<get>> <<set>>
+    + IsExternal : bool <<get>> <<set>>
+    + UpdateFromDTO(dto:AppUserDTO) : void
+}
+class "IdentityUser`1"<T> {
+}
+class "IEntity`1"<T> {
+}
+class "ICollection`1"<T> {
+}
+"IdentityUser`1" "<int>" <|-- AppUser
+"IEntity`1" "<int>" <|-- AppUser
+AppUser o-> "CreatedAt" DateTime
+AppUser o-> "RefreshTokens<RefreshToken>" "ICollection`1"
+AppUser o-> "Roles<Role>" "ICollection`1"
+AppUser o-> "Courses<Course>" "ICollection`1"
+AppUser o-> "Enrollments<UserEnrollment>" "ICollection`1"
+AppUser o-> "FileHashes<FileHash>" "ICollection`1"
+AppUser o-> "Reviews<Review>" "ICollection`1"
+@enduml

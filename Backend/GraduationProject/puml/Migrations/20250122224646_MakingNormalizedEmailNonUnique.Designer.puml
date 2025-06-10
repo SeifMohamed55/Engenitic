@@ -1,0 +1,5 @@
+@startuml
+class MakingNormalizedEmailNonUnique <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

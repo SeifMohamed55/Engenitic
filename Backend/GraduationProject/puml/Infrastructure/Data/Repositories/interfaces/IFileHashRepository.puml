@@ -1,0 +1,12 @@
+@startuml
+interface IFileHashRepository {
+    GetDefaultUserImageAsync() : Task<FileHash>
+    GetDefaultCourseImageAsync() : Task<FileHash>
+    IsDefaultCourseImageHash(hash:FileHash) : bool
+    IsDefaultUserImageHash(hash:FileHash) : bool
+}
+class "IBulkRepository`2"<T1,T2> {
+}
+"IBulkRepository`2" "<FileHash,int>" <|-- IFileHashRepository
+ICustomRepository <|-- IFileHashRepository
+@enduml

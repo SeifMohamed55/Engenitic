@@ -1,0 +1,5 @@
+@startuml
+class AddingQuizezStructure <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

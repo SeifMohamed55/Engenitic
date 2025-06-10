@@ -1,0 +1,9 @@
+@startuml
+class QuizTitleResponse {
+    + Id : int <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + Position : int <<get>> <<set>>
+}
+IPostitionable <|-- QuizTitleResponse
+@enduml

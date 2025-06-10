@@ -1,0 +1,7 @@
+@startuml
+class UpdatingQuizQuestionAnswers <<partial>> {
+    # <<override>> Up(migrationBuilder:MigrationBuilder) : void
+    # <<override>> Down(migrationBuilder:MigrationBuilder) : void
+}
+Migration <|-- UpdatingQuizQuestionAnswers
+@enduml

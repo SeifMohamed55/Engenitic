@@ -1,0 +1,5 @@
+@startuml
+class CreatingCourses <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml

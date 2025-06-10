@@ -1,0 +1,9 @@
+@startuml
+class VqaService {
+    - <<readonly>> _apiKey : string
+    + VqaService(httpClient:HttpClient, options:IOptions<ApiKeyOption>)
+    + <<async>> GetAnswerAsync(image:IFormFile, question:string) : Task<ServiceResult<VqaResponse>>
+}
+IVqaService <|-- VqaService
+VqaService --> "_httpClient" HttpClient
+@enduml

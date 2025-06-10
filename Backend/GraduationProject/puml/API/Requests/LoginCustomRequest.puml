@@ -1,0 +1,8 @@
+@startuml
+class LoginCustomRequest {
+    + Email : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + RememberMe : bool <<get>> <<set>> = false
+    + DeviceId : Guid? <<get>> <<set>>
+}
+@enduml

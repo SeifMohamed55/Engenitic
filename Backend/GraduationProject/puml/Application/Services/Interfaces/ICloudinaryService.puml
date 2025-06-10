@@ -1,0 +1,9 @@
+@startuml
+interface ICloudinaryService {
+    + {static} DefaultUserImagePublicId : string <<get>>
+    + {static} DefaultCourseImagePublicId : string <<get>>
+    GetImageUrl(publicId:string, version:string) : string
+    GetProfileImage(publicId:string, version:string) : string
+    GetPDF(publicId:string, version:string) : string
+}
+@enduml

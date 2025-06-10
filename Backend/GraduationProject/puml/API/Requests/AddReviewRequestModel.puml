@@ -1,0 +1,7 @@
+@startuml
+class AddReviewRequestModel {
+    + CourseId : int <<get>> <<set>>
+    + Content : string <<get>> <<set>>
+    + Rating : byte <<get>> <<set>>
+}
+@enduml

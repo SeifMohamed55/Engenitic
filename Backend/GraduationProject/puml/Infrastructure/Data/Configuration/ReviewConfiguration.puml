@@ -1,0 +1,8 @@
+@startuml
+class ReviewConfiguration {
+    + Configure(builder:EntityTypeBuilder<Review>) : void
+}
+class "IEntityTypeConfiguration`1"<T> {
+}
+"IEntityTypeConfiguration`1" "<Review>" <|-- ReviewConfiguration
+@enduml

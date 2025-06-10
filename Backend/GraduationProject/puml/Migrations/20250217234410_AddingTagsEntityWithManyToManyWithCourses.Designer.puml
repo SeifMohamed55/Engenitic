@@ -1,0 +1,5 @@
+@startuml
+class AddingTagsEntityWithManyToManyWithCourses <<partial>> {
+    # <<override>> BuildTargetModel(modelBuilder:ModelBuilder) : void
+}
+@enduml
