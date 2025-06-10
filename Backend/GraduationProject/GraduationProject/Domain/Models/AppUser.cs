@@ -12,6 +12,8 @@ namespace GraduationProject.Domain.Models
         public string FullName { get; set; } = null!;
         public bool IsExternal { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public ICollection<Role> Roles { get; set; } = new List<Role>();
         public ICollection<Course> Courses { get; set; } = new List<Course>(); // Course Maker

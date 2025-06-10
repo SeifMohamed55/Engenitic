@@ -30,6 +30,9 @@ namespace GraduationProject.Infrastructure.Data.Configuration
                 .IsUnicode()
                 .HasMaxLength(100);
 
+            builder.Property(x => x.CreatedAt)
+                .HasDefaultValueSql("NOW()");
+
             builder.Property(u => u.PhoneNumber).HasMaxLength(25);
 
             builder.HasMany(x => x.Roles)

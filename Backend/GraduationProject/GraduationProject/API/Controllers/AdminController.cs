@@ -18,12 +18,15 @@ namespace GraduationProject.API.Controllers
     {
         private readonly IAuthenticationService _loginService;
         private readonly IAdminService _adminService;
+        private readonly ICloudinaryService _cloudinaryService;
         public AdminController(
             IAuthenticationService loginRegisterService,
-            IAdminService adminService)
+            IAdminService adminService,
+            ICloudinaryService cloudinaryService)
         {
             _loginService = loginRegisterService;
             _adminService = adminService;
+            _cloudinaryService = cloudinaryService;
         }
 
 
@@ -39,11 +42,19 @@ namespace GraduationProject.API.Controllers
 
             var res = await _adminService.GetUsersPage(index, role);
 
+            if (res.TryGetData(out var data))
+            {
+               data.ForEach(user =>
+               {
+                   user.Image.ImageURL = _cloudinaryService.GetImageUrl(user.Image.ImageURL, user.Image.Version);
+               });
+            }
+
             return res.ToActionResult();
   
         }
 
-        // DELETE: api/admin/ban/5
+        // POST: api/admin/ban/5
         [HttpPost("ban/{id}")]
         public async Task<IActionResult> BanAppUser(int id)
         {
@@ -52,7 +63,7 @@ namespace GraduationProject.API.Controllers
             return res.ToActionResult();
         }
 
-        // DELETE: api/admin/ban/5
+        // POST: api/admin/ban/5
         [HttpPost("unban/{id}")]
         public async Task<IActionResult> UnbanAppUser(int id)
         {

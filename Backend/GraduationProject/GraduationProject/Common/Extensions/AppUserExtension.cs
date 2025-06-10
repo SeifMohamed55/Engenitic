@@ -2,7 +2,6 @@
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace GraduationProject.Common.Extensions
 {
@@ -11,7 +10,6 @@ namespace GraduationProject.Common.Extensions
         public static IQueryable<AppUserDTO> DTOProjection(this IQueryable<AppUser> query)
         {
             return query
-                .Include(x => x.FileHashes)
                 .Select(x => new AppUserDTO
                 {
                     Id = x.Id,
@@ -22,6 +20,10 @@ namespace GraduationProject.Common.Extensions
                     Banned = x.Banned,
                     IsExternal = x.IsExternal,
                     IsEmailConfirmed = x.EmailConfirmed,
+                    CreatedAt = x.CreatedAt,
+                    Roles = x.Roles
+                        .Select(r => r.Name)
+                        .ToList(),
                     Image = new()
                     {
                         ImageURL = x.FileHashes
