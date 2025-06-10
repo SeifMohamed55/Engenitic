@@ -8,7 +8,6 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
-  ValidatorFn,
 } from '@angular/forms';
 import { UserService } from '../../feature/users/user.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -25,6 +24,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   buttonDisabled: boolean = false;
   selectedFile: File | null = null;
   fileValidationError: string | null = null;
+  cvErrorMessage: string = '';
+  selectedCv: File | null = null;
 
   constructor(
     private _ToastrService: ToastrService,
@@ -46,6 +47,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // the form variable
   registerForm: FormGroup = new FormGroup(
     {
       phoneGroup: new FormGroup(
@@ -73,6 +75,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   );
 
+  //confirm pass function
   confirmPassword(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const repassword = group.get('repassword')?.value;
@@ -85,6 +88,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     return null;
   }
 
+  //phone number validation
   phoneNumberValidation(group: AbstractControl): ValidationErrors | null {
     const countryCode = group.get('countryCode');
     const phoneNumber = group.get('phone');
@@ -103,6 +107,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     return null;
   }
 
+  //handling images
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.fileValidationError = null;
@@ -134,46 +139,82 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
+  //handle cv
+  handleCv(e: Event): void {
+    const FILE_SIZE: number = 5 * 1024 * 1024;
+    const data = e.target as HTMLInputElement;
+    this.cvErrorMessage = '';
+    if (data.files) {
+      const file = data.files[0] as File;
+      if (file.size > FILE_SIZE) {
+        this.cvErrorMessage = 'file size must be below 5MB';
+        return;
+      }
+      if (!file.type.includes('application/pdf')) {
+        this.cvErrorMessage = 'file type must be pdf';
+        return;
+      }
+      this.selectedCv = file;
+    } else {
+      this.cvErrorMessage = 'select a file please';
+      return;
+    }
+  }
+
+  // on submiting form
   registerSubmit(): void {
     this.buttonDisabled = true;
     if (this.registerForm.valid) {
-      const formData = new FormData();
-      formData.append('username', this.registerForm.get('userName')?.value);
-      formData.append('email', this.registerForm.get('email')?.value);
-      formData.append('password', this.registerForm.get('password')?.value);
-      formData.append(
-        'confirmPassword',
-        this.registerForm.get('repassword')?.value
-      );
-      formData.append(
-        'phoneNumber',
-        this.registerForm.get('phoneGroup')?.get('phone')?.value
-      );
-      formData.append(
-        'phoneRegion',
-        this.registerForm.get('phoneGroup')?.get('countryCode')?.value
-      );
-      formData.append('role', this.registerForm.get('role')?.value);
-      if (this.selectedFile) {
-        formData.append('image', this.selectedFile);
-      }
-      this._UserService
-        .registerData(formData)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res) => {
-            this._ToastrService.success(res.message);
-          },
-          error: (err) => {
-            if (err.error.message) {
-              this._ToastrService.error(err.error.message);
-            } else {
-              this._ToastrService.error(
-                'an error has during connecting to the server occured try again later'
-              );
-            }
-          },
+      if (
+        this.registerForm.get('role')?.value === 'instructor' &&
+        this.selectedCv
+      ) {
+        const formData = new FormData();
+        formData.append('username', this.registerForm.get('userName')?.value);
+        formData.append('email', this.registerForm.get('email')?.value);
+        formData.append('password', this.registerForm.get('password')?.value);
+        formData.append(
+          'confirmPassword',
+          this.registerForm.get('repassword')?.value
+        );
+        formData.append(
+          'phoneNumber',
+          this.registerForm.get('phoneGroup')?.get('phone')?.value
+        );
+        formData.append(
+          'phoneRegion',
+          this.registerForm.get('phoneGroup')?.get('countryCode')?.value
+        );
+        formData.append('role', this.registerForm.get('role')?.value);
+        if (this.selectedFile) {
+          formData.append('image', this.selectedFile);
+        }
+        if (this.selectedCv) {
+          formData.append('cv', this.selectedCv);
+        }
+        formData.forEach((el) => {
+          console.log(el);
         });
+        this._UserService
+          .registerData(formData)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (res) => {
+              this._ToastrService.success(res.message);
+            },
+            error: (err) => {
+              if (err.error.message) {
+                this._ToastrService.error(err.error.message);
+              } else {
+                this._ToastrService.error(
+                  'an error has during connecting to the server occured try again later'
+                );
+              }
+            },
+          });
+      } else {
+        this.cvErrorMessage = 'cv field is required';
+      }
     } else {
       this.registerForm.markAllAsTouched();
     }

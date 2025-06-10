@@ -101,7 +101,7 @@ export const routes: Routes = [
             pathMatch: 'full',
           },
           {
-            path: ':userId/:collectionId',
+            path: ':userId/:userCollectionId',
             component: AdminComponent,
           },
           {
