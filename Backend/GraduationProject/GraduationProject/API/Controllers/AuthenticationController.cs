@@ -161,7 +161,6 @@ namespace GraduationProject.API.Controllers
 
             var res = await _authenticationService.Register(model, false);
             return res.ToActionResult();
-
         }
 
         [HttpPost("forget-password")]

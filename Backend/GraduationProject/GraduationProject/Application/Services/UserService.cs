@@ -48,9 +48,9 @@ namespace GraduationProject.Application.Services
                 return ServiceResult<AppUserDTO>.Failure("User not found");
             }
 
-            var imageUrl = _cloudinary.GetImageUrl(userDto.Image.ImageURL, userDto.Image.Version);
+            var imageUrl = _cloudinary.GetImageUrl(userDto.Image.FileURL, userDto.Image.Version);
             var imageName = imageUrl.Split('/').LastOrDefault() ?? "";
-            userDto.Image.ImageURL = imageUrl;
+            userDto.Image.FileURL = imageUrl;
             userDto.Image.Name = imageName;
 
             return ServiceResult<AppUserDTO>.Success(userDto, "Profile retrieved Successfully.");

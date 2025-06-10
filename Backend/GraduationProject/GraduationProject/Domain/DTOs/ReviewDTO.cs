@@ -11,7 +11,7 @@ namespace GraduationProject.Domain.DTOs
         public DateTime UpdatedAt { get; set; }
         public byte Rating { get; set; }
         public string FullName { get; set; } = null!;
-        public ImageMetadata ImageMetadata { get; set; } = null!;
+        public FileMetadata ImageMetadata { get; set; } = null!;
 
     }
 }

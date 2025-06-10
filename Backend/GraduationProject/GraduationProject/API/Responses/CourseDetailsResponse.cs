@@ -19,7 +19,7 @@ namespace GraduationProject.API.Responses
             Requirements = course.Requirements;
             Image = new()
             {
-                ImageURL = course.FileHash.PublicId,
+                FileURL = course.FileHash.PublicId,
                 Name = nameFunc(course.FileHash.PublicId),
                 Hash = course.FileHash.Hash,
             };
@@ -35,7 +35,7 @@ namespace GraduationProject.API.Responses
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
         public bool IsEnrolled { get; set; } = false;
-        public ImageMetadata Image { get; set; }
+        public FileMetadata Image { get; set; }
         public RatingStatsDTO RatingStats { get; set; }
     }
 }

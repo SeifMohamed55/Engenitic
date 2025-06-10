@@ -1,6 +1,7 @@
 ﻿using GraduationProject.API.Requests;
 using GraduationProject.API.Responses;
 using GraduationProject.Application.Services.Interfaces;
+using GraduationProject.Common.Constants;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.Domain.Enums;
 using GraduationProject.Domain.Models;
@@ -91,6 +92,8 @@ namespace GraduationProject.Application.Services
                 else
                     return ServiceResult<AppUserDTO>.Failure("Invalid phone number", HttpStatusCode.BadRequest);
             }
+            if (model.Role == Roles.Instructor)
+                model.Role = Roles.UnverifiedInstructor;
 
             var userRole = await _roleManager.FindByNameAsync(model.Role);
             if (userRole == null)
@@ -143,6 +146,26 @@ namespace GraduationProject.Application.Services
                 }
 
                 user.FileHashes.Add(fileHash);
+
+
+                if (userRole.Name.Equals(Roles.UnverifiedInstructor, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!UploadingService.IsValidCv(model.Cv))
+                    {
+                        await _userManager.DeleteAsync(user);
+                        return ServiceResult<AppUserDTO>.Failure("Invalid CV file type.", HttpStatusCode.BadRequest);
+                    }
+
+                    using (Stream cvStream = model.Cv.OpenReadStream())
+                    {
+                        var cvHash = await _uploadingService.UploadImageAsync(cvStream, $"cv_{user.Id}", CloudinaryType.InstructorCV);
+                        if (cvHash != null)
+                        {
+                            user.FileHashes.Add(cvHash);
+                        }
+                    }
+                }
+
                 await _unitOfWork.SaveChangesAsync();
 
                 var imageUrl = _cloudinaryService.GetImageUrl(fileHash.PublicId, fileHash.Version);
@@ -155,9 +178,9 @@ namespace GraduationProject.Application.Services
                     Id = user.Id,
                     PhoneRegionCode = user.PhoneRegionCode,
                     UserName = user.FullName,
-                    Image = new ImageMetadata
+                    Image = new FileMetadata
                     {
-                        ImageURL = imageUrl,
+                        FileURL = imageUrl,
                         Name = imgName,
                         Hash = fileHash.Hash
                     }
@@ -258,9 +281,9 @@ namespace GraduationProject.Application.Services
                     Banned = user.Banned,
                     Name = user.FullName,
                     Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
-                    Image = new ImageMetadata
+                    Image = new FileMetadata
                     {
-                        ImageURL = imgUrl,
+                        FileURL = imgUrl,
                         Name = imgName,
                         Hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.Hash ?? 0
                     },
@@ -436,9 +459,9 @@ namespace GraduationProject.Application.Services
                     Banned = user.Banned,
                     Name = user.FullName,
                     Roles = roles.ToList(),
-                    Image = new ImageMetadata
+                    Image = new FileMetadata
                     {
-                        ImageURL = imgUrl,
+                        FileURL = imgUrl,
                         Name = imgName,
                         Hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.Hash ?? 0
                     },

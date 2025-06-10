@@ -25,6 +25,37 @@ namespace GraduationProject.Application.Services
             _hashingService = hashingService;
         }
 
+        public static bool IsValidCv([NotNullWhen(true)] IFormFile? cv)
+        {
+            if (cv == null || cv.Length == 0)
+                return false;
+
+            long maxSize = 5 * 1024 * 1024;
+            var allowedExtension = ".pdf";
+            var allowedMimeType = "application/pdf";
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(cv.FileName, out var contentType))
+            {
+                return false;
+            }
+
+            var extension = Path.GetExtension(cv.FileName).ToLowerInvariant();
+
+            if (extension != allowedExtension || contentType != allowedMimeType)
+            {
+                return false;
+            }
+
+            if (cv.Length > maxSize)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
         public static bool IsValidImageType([NotNullWhen(true)] IFormFile? image, long maxSize = 2 * 1024 * 1024)
         {
             if (image == null || image.Length == 0)

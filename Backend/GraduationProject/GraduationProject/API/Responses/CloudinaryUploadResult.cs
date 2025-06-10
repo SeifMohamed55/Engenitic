@@ -10,6 +10,12 @@ namespace GraduationProject.API.Responses
             Version = uploadResult.Version;
         }
 
+        public CloudinaryUploadResult(RawUploadResult uploadResult)
+        {
+            PublicId = uploadResult.PublicId;
+            Version = uploadResult.Version;
+        }
+
         public string PublicId { get; set; }
         public string Version { get; set; }
 

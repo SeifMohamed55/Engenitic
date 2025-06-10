@@ -114,17 +114,19 @@ namespace GraduationProject.Application.Services
                 var roles = user.Roles.Select(x => x.NormalizedName);
 
                 // Check if user is instructor
-                if (!roles.Contains(Roles.Instructor.ToUpper()))
+                if (!roles.Contains(Roles.UnverifiedInstructor.ToUpper()))
                     return ServiceResult<bool>.Failure("User is not an instructor", HttpStatusCode.BadRequest);
 
                 // Check if already verified
-                if (roles.Contains(Roles.VerifiedInstructor.ToUpper()))
+                if (roles.Contains(Roles.Instructor.ToUpper()))
                     return ServiceResult<bool>.Failure("User is already a verified instructor", HttpStatusCode.BadRequest);
 
                 // Proceed to verify
-                var res = await _userManager.AddToRoleAsync(user, Roles.VerifiedInstructor);
+                var res = await _userManager.AddToRoleAsync(user, Roles.Instructor);
                 if (!res.Succeeded)
                     return ServiceResult<bool>.Failure("Failed to add user to role", HttpStatusCode.InternalServerError);
+
+                await _userManager.RemoveFromRoleAsync(user, Roles.UnverifiedInstructor);
                 return ServiceResult<bool>.Success(true, "Instructor verified successfully", HttpStatusCode.OK);
             }
             catch

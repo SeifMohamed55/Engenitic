@@ -21,7 +21,7 @@ namespace GraduationProject.Common.Extensions
                     Title = x.Title,
                     Image = new() 
                     { 
-                        ImageURL = x.FileHash.PublicId,
+                        FileURL = x.FileHash.PublicId,
                         Name = "CourseImg",
                         Hash = x.FileHash.Hash,
                         Version = x.FileHash.Version

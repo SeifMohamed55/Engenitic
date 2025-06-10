@@ -4,7 +4,7 @@ namespace GraduationProject.Domain.DTOs
 {
     public class CourseDTO
     {
-        public CourseDTO() { Image = new ImageMetadata(); }
+        public CourseDTO() { Image = new FileMetadata(); }
         public CourseDTO(Course course)
         {
             Id = course.Id;
@@ -16,7 +16,7 @@ namespace GraduationProject.Domain.DTOs
             Requirements = course.Requirements;
             Image = new()
             {
-                ImageURL = course.FileHash.PublicId,
+                FileURL = course.FileHash.PublicId,
                 Name = course.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
                 Hash = course.FileHash.Hash,
                 Version = course.FileHash.Version
@@ -30,7 +30,7 @@ namespace GraduationProject.Domain.DTOs
         public string? InstructorName { get; set; } = null!;
         public string Requirements { get; set; } = null!;
         public int Stages { get; set; }
-        public ImageMetadata Image { get; set; }
+        public FileMetadata Image { get; set; }
 
     }
 }

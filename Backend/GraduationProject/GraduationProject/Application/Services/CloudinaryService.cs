@@ -55,7 +55,7 @@ namespace GraduationProject.Application.Services
         {
             return _cloudinary.Api
                 .Url
-                .ResourceType("raw")
+                .ResourceType("image")
                 .Secure()
                 .Signed(true)
                 .Type("authenticated")

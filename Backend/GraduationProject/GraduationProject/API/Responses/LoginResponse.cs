@@ -9,7 +9,7 @@ namespace GraduationProject.API.Responses
         public string Name { get; set; } = string.Empty;
         public List<string> Roles { get; set; } = new();
         public string ValidTo { get; set; } = string.Empty;
-        public ImageMetadata Image { get; set; } = new();
+        public FileMetadata Image { get; set; } = new();
         public string AccessToken { get; set; } = string.Empty;
     }
 }
