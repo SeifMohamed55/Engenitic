@@ -94,7 +94,21 @@ export const routes: Routes = [
         path: 'admin',
         data: { roles: ['admin'] },
         canActivate: [rolesGuard],
-        component: AdminComponent,
+        children: [
+          {
+            path: '',
+            redirectTo: '1/1',
+            pathMatch: 'full',
+          },
+          {
+            path: ':userId/:collectionId',
+            component: AdminComponent,
+          },
+          {
+            path: '**',
+            component: NotFoundComponent,
+          },
+        ],
       },
       { path: '**', component: NotFoundComponent },
     ],

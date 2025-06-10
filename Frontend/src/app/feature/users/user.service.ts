@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { UserData } from '../../interfaces/admin/admin-data';
 
 @Injectable({
   providedIn: 'root',
@@ -102,15 +103,24 @@ export class UserService {
     );
   }
 
-  getAllUsers(): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Admin/users`);
+  getAllUsers(index: number): Observable<any> {
+    return this._HttpClient.get(`https://localhost/api/Admin/users`, {
+      params: {
+        index,
+      },
+    });
   }
 
   banUser(userId: number): Observable<any> {
-    return this._HttpClient.delete(`https://localhost/api/Admin`, {
-      params: {
-        id: userId,
-      },
-    });
+    return this._HttpClient.post(
+      `https://localhost/api/Admin/ban/${userId}`,
+      {}
+    );
+  }
+  unbanUser(userId: number): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Admin/unban/${userId}`,
+      {}
+    );
   }
 }

@@ -10,6 +10,7 @@ import {
   catchError,
   throwError,
   pipe,
+  finalize,
 } from 'rxjs';
 import { CoursesService } from '../../feature/courses/courses.service';
 import { ToastrService } from 'ngx-toastr';
@@ -64,7 +65,7 @@ export class RedirectionPageComponent implements OnInit, OnDestroy {
         },
       });
 
-    this.subscription = interval(5000)
+    this.subscription = interval(1000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.counter === 0) {
