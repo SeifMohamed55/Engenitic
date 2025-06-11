@@ -36,6 +36,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   ngOnInit(): void {
     this.fetchCollection();
   }
@@ -49,7 +50,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
           this.users = res.data.paginatedList;
           this.totalItems = res.data.totalItems;
         }),
-        tap(() => this.filterUsers())
+        tap(() => this.filterUsers()),
+        tap((res) => console.log(res))
       )
       .subscribe();
 
@@ -136,6 +138,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     return user.id;
   }
 
+  // for pagination
   onPageChange(page: number): void {
     this.currentPage = page;
     this._Router

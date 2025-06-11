@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { UserData } from '../../interfaces/admin/admin-data';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +16,8 @@ export class UserService {
   >(null);
 
   constructor(private _HttpClient: HttpClient) {}
+
+  // authintication
 
   registerData(value: any): Observable<any> {
     return this._HttpClient.post(
@@ -50,6 +51,17 @@ export class UserService {
       }
     );
   }
+
+  forgetPassword(email: string): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/users/forget-password`,
+      {
+        email,
+      }
+    );
+  }
+
+  // profile data and update
 
   getProfileData(userId: number): Observable<any> {
     return this._HttpClient.get(`https://localhost/api/Users/profile`, {
@@ -103,6 +115,8 @@ export class UserService {
     );
   }
 
+  // Admin apis
+
   getAllUsers(index: number): Observable<any> {
     return this._HttpClient.get(`https://localhost/api/Admin/users`, {
       params: {
@@ -122,5 +136,9 @@ export class UserService {
       `https://localhost/api/Admin/unban/${userId}`,
       {}
     );
+  }
+
+  registerAdmin(value: any): Observable<any> {
+    return this._HttpClient.post(`https://localhost/api/admin/register`, value);
   }
 }

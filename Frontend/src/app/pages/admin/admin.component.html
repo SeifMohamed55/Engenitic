@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-100 mt-10">
+<div class="min-h-fit bg-gray-100 mt-10">
   <!-- Header -->
   <header class="gradient shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,15 +58,27 @@
         >
           CV Review
         </button>
+        <button
+          (click)="activeTab = 'registerAdmin'"
+          class="py-4 px-2 border-b-2 font-regular font-medium text-sm transition-colors capitalize"
+          [ngClass]="{
+            'border-primary text-primary': activeTab === 'registerAdmin',
+            'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300':
+              activeTab !== 'registerAdmin'
+          }"
+        >
+          make an admin
+        </button>
       </div>
     </div>
   </nav>
 
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="min-w-7xl h-fit mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="fade-in" [ngSwitch]="activeTab">
       <app-user-management *ngSwitchCase="'users'"></app-user-management>
       <app-cv-review *ngSwitchCase="'cvs'"></app-cv-review>
+      <app-register-admin *ngSwitchCase="'registerAdmin'"></app-register-admin>
     </div>
   </main>
 </div>
