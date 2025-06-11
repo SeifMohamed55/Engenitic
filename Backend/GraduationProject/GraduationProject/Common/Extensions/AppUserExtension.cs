@@ -27,7 +27,7 @@ namespace GraduationProject.Common.Extensions
                         .ToList(),
                     Image = new()
                     {
-                        FileURL = x.FileHashes
+                        ImageUrl = x.FileHashes
                               .Where(z => z.Type == CloudinaryType.UserImage)
                               .Select(z => z.PublicId)
                               .FirstOrDefault() ?? ICloudinaryService.DefaultUserImagePublicId,
@@ -43,7 +43,7 @@ namespace GraduationProject.Common.Extensions
                     },
                     Cv = new()
                     {
-                        FileURL = x.FileHashes
+                        ImageUrl = x.FileHashes
                               .Where(z => z.Type == CloudinaryType.InstructorCV)
                               .Select(z => z.PublicId)
                               .FirstOrDefault() ?? "",

@@ -25,8 +25,8 @@ namespace GraduationProject.Application.Services
             var enrollments = await _unitOfWork.EnrollmentRepo.GetStudentEnrolledCourses(studentId, index);
             enrollments.ForEach(x =>
             {
-                x.Course.Image.FileURL = _cloudinaryService
-                 .GetImageUrl(x.Course.Image.FileURL, x.Course.Image.Version);
+                x.Course.Image.ImageUrl = _cloudinaryService
+                 .GetImageUrl(x.Course.Image.ImageUrl, x.Course.Image.Version);
             });
             return enrollments;
         }
@@ -60,8 +60,8 @@ namespace GraduationProject.Application.Services
                 return  ServiceResult<EnrollmentDTO>.Failure("Enrollment not found");
             
 
-            enrollmentDTO.Course.Image.FileURL = _cloudinaryService
-                .GetImageUrl(enrollmentDTO.Course.Image.FileURL, enrollmentDTO.Course.Image.Version);
+            enrollmentDTO.Course.Image.ImageUrl = _cloudinaryService
+                .GetImageUrl(enrollmentDTO.Course.Image.ImageUrl, enrollmentDTO.Course.Image.Version);
 
             return ServiceResult<EnrollmentDTO>.Success(enrollmentDTO, "Enrollment is retrieved successfully.");
         }

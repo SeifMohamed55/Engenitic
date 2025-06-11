@@ -94,8 +94,8 @@ namespace GraduationProject.Application.Services
                 var list = await _unitOfWork.ReviewRepository.GetReviewsByCourseIdAsync(courseId, userId, index);
                 list.ForEach(x =>
                 {
-                    x.ImageMetadata.FileURL = _cloudinaryService
-                        .GetImageUrl(x.ImageMetadata.FileURL, x.ImageMetadata.Version);
+                    x.ImageMetadata.ImageUrl = _cloudinaryService
+                        .GetImageUrl(x.ImageMetadata.ImageUrl, x.ImageMetadata.Version);
                 });
                 return ServiceResult<PaginatedList<ReviewDTO>>.Success(list, "Reviews are retrieved successfully.");
             }

@@ -16,7 +16,7 @@ namespace GraduationProject.Domain.DTOs
             Requirements = course.Requirements;
             Image = new()
             {
-                FileURL = course.FileHash.PublicId,
+                ImageUrl = course.FileHash.PublicId,
                 Name = course.FileHash.PublicId.Split('/').LastOrDefault() ?? "",
                 Hash = course.FileHash.Hash,
                 Version = course.FileHash.Version

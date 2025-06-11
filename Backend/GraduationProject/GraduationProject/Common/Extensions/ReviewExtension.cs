@@ -21,7 +21,7 @@ namespace GraduationProject.Common.Extensions
                     FullName = x.User.FullName,
                     ImageMetadata = new()
                     {
-                        FileURL = x.User.FileHashes
+                        ImageUrl = x.User.FileHashes
                               .Where(z => z.Type == CloudinaryType.UserImage)
                               .Select(z => z.PublicId)
                               .FirstOrDefault() ?? ICloudinaryService.DefaultUserImagePublicId,
