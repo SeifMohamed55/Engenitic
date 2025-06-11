@@ -46,8 +46,8 @@ namespace GraduationProject.API.Controllers
             {
                data.ForEach(user =>
                {
-                   user.Image.ImageUrl = _cloudinaryService.GetImageUrl(user.Image.ImageUrl, user.Image.Version);
-                   user.Cv.ImageUrl = _cloudinaryService.GetPDF(user.Cv.ImageUrl, user.Cv.Version);
+                   user.Image.ImageURL = _cloudinaryService.GetImageUrl(user.Image.ImageURL, user.Image.Version);
+                   user.Cv.ImageURL = _cloudinaryService.GetPDF(user.Cv.ImageURL, user.Cv.Version);
                });
             }
 

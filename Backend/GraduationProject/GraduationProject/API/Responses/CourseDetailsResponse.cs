@@ -19,7 +19,7 @@ namespace GraduationProject.API.Responses
             Requirements = course.Requirements;
             Image = new()
             {
-                ImageUrl = course.FileHash.PublicId,
+                ImageURL = course.FileHash.PublicId,
                 Name = nameFunc(course.FileHash.PublicId),
                 Hash = course.FileHash.Hash,
             };

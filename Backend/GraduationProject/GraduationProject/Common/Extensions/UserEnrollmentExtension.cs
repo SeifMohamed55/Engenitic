@@ -37,7 +37,7 @@ namespace GraduationProject.Common.Extensions
                         Requirements = enrollment.Course.Requirements,
                         Image = new()
                         {
-                            ImageUrl = enrollment.Course.FileHash.PublicId,
+                            ImageURL = enrollment.Course.FileHash.PublicId,
                             Name = "Course Image",
                             Hash = enrollment.Course.FileHash.Hash,
                             Version = enrollment.Course.FileHash.Version,

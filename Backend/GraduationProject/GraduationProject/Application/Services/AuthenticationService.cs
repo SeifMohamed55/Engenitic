@@ -180,7 +180,7 @@ namespace GraduationProject.Application.Services
                     UserName = user.FullName,
                     Image = new FileMetadata
                     {
-                        ImageUrl = imageUrl,
+                        ImageURL = imageUrl,
                         Name = imgName,
                         Hash = fileHash.Hash
                     }
@@ -281,7 +281,7 @@ namespace GraduationProject.Application.Services
                     Roles = user.Roles.Select(x => x.Name.ToLower()).ToList(),
                     Image = new FileMetadata
                     {
-                        ImageUrl = imgUrl,
+                        ImageURL = imgUrl,
                         Name = imgName,
                         Hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.Hash ?? 0
                     },
@@ -459,7 +459,7 @@ namespace GraduationProject.Application.Services
                     Roles = roles.ToList(),
                     Image = new FileMetadata
                     {
-                        ImageUrl = imgUrl,
+                        ImageURL = imgUrl,
                         Name = imgName,
                         Hash = user.FileHashes.FirstOrDefault(x => x.Type == CloudinaryType.UserImage)?.Hash ?? 0
                     },

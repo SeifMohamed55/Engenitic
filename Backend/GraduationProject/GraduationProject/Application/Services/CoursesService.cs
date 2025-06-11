@@ -99,8 +99,8 @@ namespace GraduationProject.Application.Services
 
             courses.ForEach(x =>
             {
-                x.Image.ImageUrl = _cloudinary.GetImageUrl(x.Image.ImageUrl, x.Image.Version);
-                x.Image.Name = nameFunc(x.Image.ImageUrl);
+                x.Image.ImageURL = _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version);
+                x.Image.Name = nameFunc(x.Image.ImageURL);
             });
         }
 
@@ -116,7 +116,7 @@ namespace GraduationProject.Application.Services
             if (course == null)
                 return ServiceResult<CourseDetailsResponse>.Failure("Failed to fetch the course", HttpStatusCode.ServiceUnavailable);
 
-            course.Image.ImageUrl = _cloudinary.GetImageUrl(course.Image.ImageUrl, course.Image.Version);
+            course.Image.ImageURL = _cloudinary.GetImageUrl(course.Image.ImageURL, course.Image.Version);
 
             var stats = await _unitOfWork.ReviewRepository.GetCourseRatingStats(courseId);
             if (stats == null)
@@ -313,7 +313,7 @@ namespace GraduationProject.Application.Services
                 if (resp == null)
                     return ServiceResult<CourseDetailsResponse>.Failure("course not found", HttpStatusCode.BadRequest);
 
-                resp.Image.ImageUrl = _cloudinary.GetImageUrl(resp.Image.ImageUrl, resp.Image.Version);
+                resp.Image.ImageURL = _cloudinary.GetImageUrl(resp.Image.ImageURL, resp.Image.Version);
 
                 return ServiceResult<CourseDetailsResponse>.Success(resp, "Quiz Titles retrieved Successfully", HttpStatusCode.OK);
             }
@@ -426,8 +426,8 @@ namespace GraduationProject.Application.Services
             try
             {
                 var courses = await _unitOfWork.CourseRepo.GetRandomCourses(numberOfCourses);
-                courses.ForEach(x => x.Image.ImageUrl =
-                    _cloudinary.GetImageUrl(x.Image.ImageUrl, x.Image.Version));
+                courses.ForEach(x => x.Image.ImageURL =
+                    _cloudinary.GetImageUrl(x.Image.ImageURL, x.Image.Version));
 
                 return ServiceResult<List<CourseDTO>>.Success(courses, "Courses fetched successfully");
             }
