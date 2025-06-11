@@ -110,6 +110,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
+  handleCv(fileLink: string): void {
+    window.open(fileLink, 'PopupWindow', 'width=800,height=600');
+  }
+
   filterUsers(): void {
     if (!this.selectedRole) {
       this.filteredUsers = this.users.filter((user) => {
