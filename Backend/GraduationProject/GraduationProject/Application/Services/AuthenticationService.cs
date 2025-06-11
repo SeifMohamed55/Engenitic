@@ -216,8 +216,6 @@ namespace GraduationProject.Application.Services
         }
 
 
-
-
         public async Task<ServiceResult<LoginWithCookies>> Login(LoginCustomRequest model, DeviceInfo deviceInfo)
         {
             var user = await _unitOfWork.UserRepo.GetUserWithRoles(model.Email);
