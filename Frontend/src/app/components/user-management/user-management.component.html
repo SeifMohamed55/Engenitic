@@ -93,8 +93,8 @@
                 'bg-purple-100 text-purple-800': user.roles.includes('admin'),
                 'bg-green-100 text-green-800':
                   user.roles.includes('instructor'),
-                'bg-black-100 text-white-800': user.roles.includes(
-                  'Unverifiedinstructor'
+                'bg-yellow-100 text-yellow-800': user.roles.includes(
+                  'unverifiedInstructor'
                 )
               }"
             >
@@ -131,13 +131,13 @@
               >
                 UNBAN
               </button>
-              <!-- <button
-                *ngIf="user.role === 'user' && user.status === 'active'"
-                (click)="promoteToAdmin(user.id)"
-                class="engenitic-button enginitic-main-color text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
+              <button
+                *ngIf="user.roles.includes('instructor')"
+                (click)="handleCv(user.cv.fileURL)"
+                class="text-nowrap engenitic-button enginitic-main-color text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
               >
-                MAKE ADMIN
-              </button> -->
+                view cv
+              </button>
             </div>
           </td>
         </tr>
