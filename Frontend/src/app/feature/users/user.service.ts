@@ -17,7 +17,7 @@ export class UserService {
 
   constructor(private _HttpClient: HttpClient) {}
 
-  // authintication 
+  // authintication
 
   registerData(value: any): Observable<any> {
     return this._HttpClient.post(
@@ -48,6 +48,15 @@ export class UserService {
         headers: {
           'Content-Type': 'application/json',
         },
+      }
+    );
+  }
+
+  forgetPassword(email: string): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/users/forget-password`,
+      {
+        email,
       }
     );
   }
