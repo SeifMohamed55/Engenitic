@@ -77,9 +77,10 @@ namespace GraduationProject.Application.Services
 
                 float progress = GetProgress(enrollment);
                 var quiz = await GetQuizForStage(enrollment.CourseId, stage);
+                var courseReviewRes = await _unitOfWork.ReviewRepository.GetStudentCourseReview(enrollment.CourseId, studentId);
 
                 if (quiz.TryGetData(out var quizData))
-                    return ServiceResult<StageResponse>.Success(new StageResponse(quizData, enrollment.CurrentStage, progress),
+                    return ServiceResult<StageResponse>.Success(new StageResponse(courseReviewRes.Data, quizData, enrollment.CurrentStage, progress),
                         "Stage retrieved successfully");
                 else
                     return ServiceResult<StageResponse>.Failure(quiz.Message);
@@ -97,9 +98,10 @@ namespace GraduationProject.Application.Services
             {
                 float progress = GetProgress(enrollment);
                 var quiz =  await GetQuizForStage(enrollment.CourseId, enrollment.CurrentStage);
+                var courseReviewRes = await _unitOfWork.ReviewRepository.GetStudentCourseReview(enrollment.CourseId, studentId);
 
                 if (quiz.TryGetData(out var quizData))
-                    return ServiceResult<StageResponse>.Success(new StageResponse(quizData, enrollment.CurrentStage, progress),
+                    return ServiceResult<StageResponse>.Success(new StageResponse(courseReviewRes.Data, quizData, enrollment.CurrentStage, progress),
                         "Stage retrieved Successfully");
                 else
                     return ServiceResult<StageResponse>.Failure(quiz.Message);

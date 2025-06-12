@@ -8,7 +8,5 @@ namespace GraduationProject.Application.Services.Interfaces
         Task<ServiceResult<bool>> UnbanUser(int id);
         Task<ServiceResult<PaginatedList<AppUserDTO>>> GetUsersPage(int index, string? role);
         Task<ServiceResult<bool>> VerifyInstructor(int id);
-
-
     }
 }

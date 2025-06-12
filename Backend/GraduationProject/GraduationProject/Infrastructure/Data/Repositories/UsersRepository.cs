@@ -9,6 +9,7 @@ using GraduationProject.StartupConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
@@ -26,7 +27,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             return _dbSet
                 .Include(x => x.Roles)
                 .Include(x => x.FileHashes)
-                .OrderBy(x=> x.FullName);
+                .OrderBy(x => x.Banned)
+                    .ThenBy(x=> x.FullName);
         }
 
         private async Task<PaginatedList<AppUserDTO>> GetUsersDTOPageAsync(int index)

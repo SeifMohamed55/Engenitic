@@ -1,17 +1,13 @@
 ﻿using GraduationProject.API.Requests;
-using GraduationProject.API.Responses;
 using GraduationProject.API.Responses.ActionResult;
 using GraduationProject.Application.Services;
 using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Common.Extensions;
 using GraduationProject.Domain.DTOs;
 using GraduationProject.StartupConfigurations;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
+
 
 namespace GraduationProject.API.Controllers
 {

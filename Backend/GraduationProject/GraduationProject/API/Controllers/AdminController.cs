@@ -72,6 +72,13 @@ namespace GraduationProject.API.Controllers
             return res.ToActionResult();
         }
 
+        [HttpPost("verify-instructor/{id}")]
+        public async Task<IActionResult> VerifyInstructor(int id)
+        {
+            var res = await _adminService.VerifyInstructor(id);
+            return res.ToActionResult();
+        }
+
 
 
         [HttpPost("register")]

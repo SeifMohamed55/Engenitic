@@ -14,6 +14,8 @@ namespace GraduationProject.Infrastructure.Data.Repositories.interfaces
         Task<double> GetAverageCourseRatingAsync(int courseId);
         int EditReview(int userId, EditReviewRequestModel review);
         Task<bool> ReviewExist(int userId, int courseId);
+        Task<ServiceResult<ReviewDTO>> GetStudentCourseReview(int courseId, int studentId);
+        
     }
 
 }
