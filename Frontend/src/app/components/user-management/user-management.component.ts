@@ -39,6 +39,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.fetchCollection();
+    this.onPageChange(this.currentPage);
   }
 
   fetchCollection(): void {
@@ -47,6 +48,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         tap((res) => {
+          console.log(res);
           this.users = res.data.paginatedList;
           this.totalItems = res.data.totalItems;
         }),
@@ -114,6 +116,22 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     window.open(fileLink, 'PopupWindow', 'width=800,height=600');
   }
 
+  handleApprovement(instructorId: number): void {
+    this.adminService
+      .verifyInstructor(instructorId)
+      .pipe(
+        takeUntil(this.destroy$),
+        tap((res) =>
+          this.toaster.success(res.message || 'an instructor has been approved')
+        ),
+        catchError((err) => {
+          this.toaster.error(err.error.message || 'something wrong happened');
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
+
   filterUsers(): void {
     if (!this.selectedRole) {
       this.filteredUsers = this.users.filter((user) => {
@@ -129,10 +147,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
           !this.searchTerm ||
           user.userName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
           user.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-
         const matchesRole =
           !this.selectedRole || user.roles.includes(this.selectedRole);
-
         return matchesSearch && matchesRole;
       });
     }

@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
 import { UserService } from '../../feature/users/user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-forget-password',
@@ -22,7 +23,11 @@ export class ForgetPasswordComponent {
     email: new FormControl('', [Validators.email, Validators.required]),
   });
 
-  constructor(private _UserService: UserService) {}
+  constructor(
+    private _UserService: UserService,
+    private _ToastrService: ToastrService
+  ) {}
+
   handleForgetPass(): void {
     this.buttonDisabled = true;
     if (this.ForgetPassForm.valid) {
@@ -30,9 +35,15 @@ export class ForgetPasswordComponent {
         .forgetPassword(this.ForgetPassForm.value)
         .pipe(
           takeUntil(this.destroy$),
-          tap((res) => console.log(res)),
+          tap((res) =>
+            this._ToastrService.success(
+              res.message || 'a message has been sent to your email'
+            )
+          ),
           catchError((err) => {
-            console.log(err);
+            this._ToastrService.error(
+              err.error.message || 'something went wrong try again'
+            );
             return of(null);
           })
         )

@@ -28,6 +28,7 @@
         <option value="">All Roles</option>
         <option value="student">students</option>
         <option value="instructor">Instructors</option>
+        <option value="unverifiedInstructor">Unverified instructor</option>
         <option value="admin">Admins</option>
       </select>
     </div>
@@ -132,11 +133,21 @@
                 UNBAN
               </button>
               <button
-                *ngIf="user.roles.includes('instructor')"
+                *ngIf="
+                  user.roles.includes('instructor') ||
+                  user.roles.includes('unverifiedInstructor')
+                "
                 (click)="handleCv(user.cv.imageURL)"
                 class="text-nowrap engenitic-button enginitic-main-color text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
               >
                 view cv
+              </button>
+              <button
+                *ngIf="user.roles.includes('unverifiedInstructor')"
+                (click)="handleApprovement(user.id)"
+                class="text-nowrap engenitic-button bg-purple-600 text-white px-3 py-1 rounded text-sm hover:opacity-80 transition-opacity"
+              >
+                Approve
               </button>
             </div>
           </td>
