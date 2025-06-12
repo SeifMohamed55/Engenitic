@@ -39,6 +39,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.fetchCollection();
+    this.onPageChange(this.currentPage);
   }
 
   fetchCollection(): void {
@@ -120,9 +121,11 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       .verifyInstructor(instructorId)
       .pipe(
         takeUntil(this.destroy$),
-        tap((res) => console.log(res)),
+        tap((res) =>
+          this.toaster.success(res.message || 'an instructor has been approved')
+        ),
         catchError((err) => {
-          console.error(err);
+          this.toaster.error(err.error.message || 'something wrong happened');
           return of(null);
         })
       )

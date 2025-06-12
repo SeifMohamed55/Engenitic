@@ -1,69 +1,112 @@
-import { CourseComponent } from './components/course/course.component';
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { CoursesComponent } from './pages/courses/courses.component';
-import { GrammarHelpComponent } from './pages/grammar-help/grammar-help.component';
-import { VqaComponent } from './pages/vqa/vqa.component';
-import { LoginComponent } from './pages/login/login.component';
-import { RegisterComponent } from './pages/register/register.component';
-import { ListeningComponent } from './pages/listening/listening.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { CourseDetailsComponent } from './pages/course-details/course-details.component';
-import { UnothorizedComponent } from './pages/unothorized/unothorized.component';
-import { AdminComponent } from './pages/admin/admin.component';
-import { StudentEnrolledCoursesComponent } from './components/student-enrolled-courses/student-enrolled-courses.component';
-import { InstructorMadeCoursesComponent } from './components/instructor-made-courses/instructor-made-courses.component';
-import { InstructorAddCourseComponent } from './pages/instructor-add-course/instructor-add-course.component';
-import { InstructorEditCourseComponent } from './pages/instructor-edit-course/instructor-edit-course.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { MainCourseComponent } from './pages/main-course/main-course.component';
 import { rolesGuard } from './guards/roles.guard';
 import { authRedirectGuardGuard } from './guards/auth-redirect-guard.guard';
-import { RedirectionPageComponent } from './pages/redirection-page/redirection-page.component';
-import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
+
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./pages/home/home.component').then((m) => m.HomeComponent),
+  },
+
+  {
+    path: 'policy',
+    loadComponent: () =>
+      import('./pages/policy/policy.component').then((m) => m.PolicyComponent),
+  },
+
   {
     path: 'redirection-page',
-    component: RedirectionPageComponent,
+    loadComponent: () =>
+      import('./pages/redirection-page/redirection-page.component').then(
+        (m) => m.RedirectionPageComponent
+      ),
     data: { roles: ['student', 'instructor', 'admin'] },
     canActivate: [rolesGuard],
   },
+
   {
     path: 'offered-courses',
-    component: CoursesComponent,
+    loadComponent: () =>
+      import('./pages/courses/courses.component').then(
+        (m) => m.CoursesComponent
+      ),
     children: [
       { path: '', redirectTo: '1', pathMatch: 'full' },
-      { path: ':collectionNumber', component: CourseComponent },
+      {
+        path: ':collectionNumber',
+        loadComponent: () =>
+          import('./components/course/course.component').then(
+            (m) => m.CourseComponent
+          ),
+      },
     ],
   },
-  { path: 'course-details/:courseId', component: CourseDetailsComponent },
+
+  {
+    path: 'course-details/:courseId',
+    loadComponent: () =>
+      import('./pages/course-details/course-details.component').then(
+        (m) => m.CourseDetailsComponent
+      ),
+  },
+
   {
     path: 'main-course/:studentId/:enrollmentId/:courseId',
-    component: MainCourseComponent,
-    data: {
-      roles: ['student'],
-    },
+    loadComponent: () =>
+      import('./pages/main-course/main-course.component').then(
+        (m) => m.MainCourseComponent
+      ),
+    data: { roles: ['student'] },
     canActivate: [rolesGuard],
   },
-  { path: 'grammar', component: GrammarHelpComponent },
-  { path: 'Q&A', component: VqaComponent },
-  { path: 'listening', component: ListeningComponent },
+
+  {
+    path: 'grammar',
+    loadComponent: () =>
+      import('./pages/grammar-help/grammar-help.component').then(
+        (m) => m.GrammarHelpComponent
+      ),
+  },
+
+  {
+    path: 'Q&A',
+    loadComponent: () =>
+      import('./pages/vqa/vqa.component').then((m) => m.VqaComponent),
+  },
+
+  {
+    path: 'listening',
+    loadComponent: () =>
+      import('./pages/listening/listening.component').then(
+        (m) => m.ListeningComponent
+      ),
+  },
+
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./pages/login/login.component').then((m) => m.LoginComponent),
     canActivate: [authRedirectGuardGuard],
   },
+
   {
     path: 'register',
-    component: RegisterComponent,
+    loadComponent: () =>
+      import('./pages/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
     canActivate: [authRedirectGuardGuard],
   },
+
   {
     path: 'profile',
-    component: ProfileComponent,
+    loadComponent: () =>
+      import('./pages/profile/profile.component').then(
+        (m) => m.ProfileComponent
+      ),
     children: [
       {
         path: 'student',
@@ -73,9 +116,18 @@ export const routes: Routes = [
           { path: '', redirectTo: '1/1', pathMatch: 'full' },
           {
             path: ':userId/:collectionId',
-            component: StudentEnrolledCoursesComponent,
+            loadComponent: () =>
+              import(
+                './components/student-enrolled-courses/student-enrolled-courses.component'
+              ).then((m) => m.StudentEnrolledCoursesComponent),
           },
-          { path: '**', component: NotFoundComponent },
+          {
+            path: '**',
+            loadComponent: () =>
+              import('./pages/not-found/not-found.component').then(
+                (m) => m.NotFoundComponent
+              ),
+          },
         ],
       },
       {
@@ -86,9 +138,18 @@ export const routes: Routes = [
           { path: '', redirectTo: '1/1', pathMatch: 'full' },
           {
             path: ':userId/:collectionId',
-            component: InstructorMadeCoursesComponent,
+            loadComponent: () =>
+              import(
+                './components/instructor-made-courses/instructor-made-courses.component'
+              ).then((m) => m.InstructorMadeCoursesComponent),
           },
-          { path: '**', component: NotFoundComponent },
+          {
+            path: '**',
+            loadComponent: () =>
+              import('./pages/not-found/not-found.component').then(
+                (m) => m.NotFoundComponent
+              ),
+          },
         ],
       },
       {
@@ -103,35 +164,81 @@ export const routes: Routes = [
           },
           {
             path: ':userId/:userCollectionId',
-            component: AdminComponent,
+            loadComponent: () =>
+              import('./pages/admin/admin.component').then(
+                (m) => m.AdminComponent
+              ),
           },
           {
             path: '**',
-            component: NotFoundComponent,
+            loadComponent: () =>
+              import('./pages/not-found/not-found.component').then(
+                (m) => m.NotFoundComponent
+              ),
           },
         ],
       },
-      { path: '**', component: NotFoundComponent },
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./pages/not-found/not-found.component').then(
+            (m) => m.NotFoundComponent
+          ),
+      },
     ],
   },
+
   {
     path: 'courses',
     data: { roles: ['instructor'] },
     canActivate: [rolesGuard],
     children: [
-      { path: 'adding/:instructorId', component: InstructorAddCourseComponent },
+      {
+        path: 'adding/:instructorId',
+        loadComponent: () =>
+          import(
+            './pages/instructor-add-course/instructor-add-course.component'
+          ).then((m) => m.InstructorAddCourseComponent),
+      },
       {
         path: 'editing/:instructorId/:courseId',
-        component: InstructorEditCourseComponent,
+        loadComponent: () =>
+          import(
+            './pages/instructor-edit-course/instructor-edit-course.component'
+          ).then((m) => m.InstructorEditCourseComponent),
       },
-      { path: '**', component: NotFoundComponent },
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./pages/not-found/not-found.component').then(
+            (m) => m.NotFoundComponent
+          ),
+      },
     ],
   },
+
   {
     path: 'forget-password',
-    component: ForgetPasswordComponent,
+    loadComponent: () =>
+      import('./pages/forget-password/forget-password.component').then(
+        (m) => m.ForgetPasswordComponent
+      ),
     canActivate: [authRedirectGuardGuard],
   },
-  { path: 'unauthorized', component: UnothorizedComponent },
-  { path: '**', component: NotFoundComponent },
+
+  {
+    path: 'unauthorized',
+    loadComponent: () =>
+      import('./pages/unothorized/unothorized.component').then(
+        (m) => m.UnothorizedComponent
+      ),
+  },
+
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent
+      ),
+  },
 ];
