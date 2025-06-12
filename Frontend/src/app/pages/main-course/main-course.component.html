@@ -110,7 +110,7 @@
 >
   <div class="rounded-xl overflow-hidden">
     <div
-      class="mx-auto w-[370px] h-[500px]  md:w-[500px] md:h-[700px] bg-white rounded-2xl p-6 overflow-y-scroll flex flex-col justify-between gap-10"
+      class="mx-auto w-[370px] h-[500px] md:w-[500px] md:h-[700px] bg-white rounded-2xl p-6 overflow-y-scroll flex flex-col justify-between gap-10"
       formArrayName="questions"
     >
       <button
@@ -177,3 +177,191 @@
     </div>
   </div>
 </form>
+<!-- review-form.component.html -->
+<div class="container mx-auto p-6 rounded-lg">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Leave a Review</h2>
+
+  <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Rating Input -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+      <div class="flex items-center space-x-1">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <button
+            (title)="('review with ' + star)"
+            type="button"
+            (click)="setRating(star)"
+            (mouseenter)="hoveredRating = star"
+            (mouseleave)="hoveredRating = 0"
+            class="focus:outline-none"
+          >
+            <svg
+              class="w-10 h-10 transition duration-150"
+              [class.text-yellow-400]="
+                star <=
+                (hoveredRating ||
+                  selectedRating ||
+                  reviewForm.get('rating')?.value)
+              "
+              [class.text-gray-300]="
+                star >
+                (hoveredRating ||
+                  selectedRating ||
+                  reviewForm.get('rating')?.value)
+              "
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+          </button>
+        </ng-container>
+      </div>
+      <div
+        *ngIf="
+          reviewForm.get('rating')?.invalid &&
+          (reviewForm.get('rating')?.dirty || reviewForm.get('rating')?.touched)
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        Please select a rating between 1 and 5
+      </div>
+    </div>
+
+    <!-- Review Content -->
+    <div>
+      <label for="content" class="block text-sm font-medium text-gray-700 mb-2"
+        >Your Review</label
+      >
+      <textarea
+        id="content"
+        formControlName="content"
+        rows="5"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Share your thoughts about this course..."
+      ></textarea>
+      <div
+        *ngIf="
+          reviewForm.get('content')?.invalid &&
+          (reviewForm.get('content')?.dirty ||
+            reviewForm.get('content')?.touched)
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        <span *ngIf="reviewForm.get('content')?.errors?.['required']"
+          >Review content is required</span
+        >
+        <span *ngIf="reviewForm.get('content')?.errors?.['minlength']"
+          >Review must be at least 10 characters</span
+        >
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+      <button
+        type="submit"
+        [disabled]="!reviewForm.valid"
+        class="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 engenitic-button"
+      >
+        Submit Review
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="container mx-auto p-6 rounded-lg">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Your Review</h2>
+
+  <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Rating Input -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+      <div class="flex items-center space-x-1">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <button
+            type="button"
+            (title)="('review with ' + star)"
+            (click)="setRating(star)"
+            (mouseenter)="hoveredRating = star"
+            (mouseleave)="hoveredRating = 0"
+            class="focus:outline-none"
+          >
+            <svg
+              class="w-10 h-10 transition duration-150"
+              [class.text-yellow-400]="
+                star <=
+                (hoveredRating ||
+                  selectedRating ||
+                  reviewForm.get('rating')?.value)
+              "
+              [class.text-gray-300]="
+                star >
+                (hoveredRating ||
+                  selectedRating ||
+                  reviewForm.get('rating')?.value)
+              "
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+          </button>
+        </ng-container>
+      </div>
+      <div
+        *ngIf="
+          reviewForm.get('rating')?.invalid &&
+          (reviewForm.get('rating')?.dirty || reviewForm.get('rating')?.touched)
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        Please select a rating between 1 and 5
+      </div>
+    </div>
+
+    <!-- Review Content -->
+    <div>
+      <label for="content" class="block text-sm font-medium text-gray-700 mb-2"
+        >Your Review</label
+      >
+      <textarea
+        id="content"
+        formControlName="content"
+        rows="5"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Share your thoughts about this course..."
+      ></textarea>
+      <div
+        *ngIf="
+          reviewForm.get('content')?.invalid &&
+          (reviewForm.get('content')?.dirty ||
+            reviewForm.get('content')?.touched)
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        <span *ngIf="reviewForm.get('content')?.errors?.['required']"
+          >Review content is required</span
+        >
+        <span *ngIf="reviewForm.get('content')?.errors?.['minlength']"
+          >Review must be at least 10 characters</span
+        >
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4">
+      <button
+        type="submit"
+        [disabled]="!reviewForm.valid"
+        class="w-full engenitic-button px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
+      >
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>

@@ -194,4 +194,12 @@ export class CoursesService {
       }
     );
   }
+
+  addReview(value: {
+    courseId: number;
+    content: string;
+    rating: number;
+  }): Observable<any> {
+    return this._HttpClient.post(`https://localhost/api/reviews/add`, value);
+  }
 }

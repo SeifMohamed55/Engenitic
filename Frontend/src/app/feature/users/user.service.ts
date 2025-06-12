@@ -52,12 +52,10 @@ export class UserService {
     );
   }
 
-  forgetPassword(email: string): Observable<any> {
+  forgetPassword(value: { email: string }): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/users/forget-password`,
-      {
-        email,
-      }
+      `https://localhost/api/Authentication/forget-password`,
+      value
     );
   }
 
@@ -140,5 +138,12 @@ export class UserService {
 
   registerAdmin(value: any): Observable<any> {
     return this._HttpClient.post(`https://localhost/api/admin/register`, value);
+  }
+
+  verifyInstructor(instructorId: number): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Admin/verify-instructor/${instructorId}`,
+      {}
+    );
   }
 }

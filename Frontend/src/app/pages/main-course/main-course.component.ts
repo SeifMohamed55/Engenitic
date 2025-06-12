@@ -21,7 +21,6 @@ import {
 import { MainCourse } from '../../interfaces/courses/main-course';
 import { Levels } from '../../interfaces/courses/levels';
 import { ToastrService } from 'ngx-toastr';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 export interface QuizSubmit {
   questionId: number;
@@ -46,6 +45,19 @@ export class MainCourseComponent implements OnInit, OnDestroy {
   quizFormGroup = new FormGroup({
     questions: new FormArray<any>([]),
   });
+  reviewForm: FormGroup = new FormGroup({
+    content: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+    ]),
+    rating: new FormControl(3, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(5),
+    ]),
+  });
+  hoveredRating = 0;
+  selectedRating = 0;
 
   constructor(
     private _ActivatedRoute: ActivatedRoute,
@@ -334,4 +346,47 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       this.errorString = 'you must complete the quiz in order to submit';
     }
   }
+
+  setRating(rating: number): void {
+    this.selectedRating = rating;
+    this.reviewForm.patchValue({ rating });
+  }
+
+  onSubmit(): void {
+    if (this.reviewForm.valid) {
+      this._CoursesService
+        .addReview({
+          courseId: this.courseId,
+          ...this.reviewForm.value,
+        })
+        .pipe(
+          takeUntil(this.destroy$),
+          tap((res) => this._ToastrService.success(res.message)),
+          catchError((err) => {
+            this._ToastrService.error(
+              err.error.message || 'something went wrong try again'
+            );
+            return of(null);
+          })
+        )
+        .subscribe();
+    } else {
+      this.reviewForm.markAllAsTouched();
+    }
+  }
+  // parent.component.ts
+  currentReview = {
+    content: 'This is the best course ever!',
+    rating: 3,
+  };
+
+  updateReview(updatedReview: any) {
+    console.log('Updated review:', updatedReview);
+    // Send to your API or handle as needed
+  }
+
+  cancelEditing() {
+    // Handle cancel action
+  }
+  onCancel(): void {}
 }
