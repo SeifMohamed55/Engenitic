@@ -121,16 +121,24 @@ namespace GraduationProject.Application.Services
                 if (roles.Contains(Roles.Instructor.ToUpper()))
                     return ServiceResult<bool>.Failure("User is already a verified instructor", HttpStatusCode.BadRequest);
 
+                await _unitOfWork.BeginTransactionAsync();
                 // Proceed to verify
                 var res = await _userManager.AddToRoleAsync(user, Roles.Instructor);
                 if (!res.Succeeded)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
                     return ServiceResult<bool>.Failure("Failed to add user to role", HttpStatusCode.InternalServerError);
+                }
 
                 await _userManager.RemoveFromRoleAsync(user, Roles.UnverifiedInstructor);
+
+                await _unitOfWork.CommitTransactionAsync();
+
                 return ServiceResult<bool>.Success(true, "Instructor verified successfully", HttpStatusCode.OK);
             }
             catch
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 return ServiceResult<bool>
                     .Failure("An error occurred while verifying the instructor", HttpStatusCode.ServiceUnavailable);
             }
