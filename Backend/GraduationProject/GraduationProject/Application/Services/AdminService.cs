@@ -29,10 +29,12 @@ namespace GraduationProject.Application.Services
         {
             try
             {
-
-                var user = await _unitOfWork.UserRepo.GetByIdAsync(id);
+                var user = await _unitOfWork.UserRepo.GetUserWithRoles(id);
                 if (user == null)
                     return ServiceResult<bool>.Failure("User not found", HttpStatusCode.NotFound);
+
+                if(user.Roles.Any(r => r.Name.ToLower() == Roles.Admin))
+                    return ServiceResult<bool>.Failure("Cannot ban an admin user", HttpStatusCode.BadRequest);
 
                 user.Banned = true;
                 await _unitOfWork.CourseRepo.HideAllInstructorCourses(user.Id);

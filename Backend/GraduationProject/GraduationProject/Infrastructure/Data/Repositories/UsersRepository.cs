@@ -36,11 +36,13 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             var query = DefaultQuery()
                 .DTOProjection();
 
+            var lol = await query.ToListAsync();
+
             var paginatedList = await PaginatedList<AppUserDTO>.CreateAsync(query, index);
 
             return PaginatedList<AppUserDTO>
                 .Create(
-                    paginatedList.OrderBy(x => x.Roles.First().ToLower()),
+                    paginatedList.OrderBy(x=> x.Banned).ThenBy(x => x.Roles.First().ToLower()),
                     paginatedList.PageIndex,
                     paginatedList.TotalCount
                 );
