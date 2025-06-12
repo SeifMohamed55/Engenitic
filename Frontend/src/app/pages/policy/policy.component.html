@@ -1,87 +1,264 @@
-<p>
-  # Privacy Policy for Engenetics **Effective Date: June 13, 2025** Engenetics
-  ("we," "us," or "our") is committed to protecting the privacy and security of
-  our users' personal information. This Privacy Policy outlines how we collect,
-  use, disclose, and safeguard your information when you use our website,
-  Engenetics, a free English learning platform. By accessing or using our
-  website, you agree to the terms of this Privacy Policy. ## 1. Information We
-  Collect We collect the following types of information: ### 1.1 Personal
-  Information - **Account Information**: When you register as a student,
-  instructor, or unverified instructor, we collect your name, email address,
-  username, password, and, for instructor applicants, a CV. - **Profile
-  Information**: Any updates to your username, email address, or password
-  provided through your profile page. - **Course Interaction Data**: Information
-  about your enrolled courses, completed quizzes, progress tracking, and course
-  reviews. - **Authentication Data**: If you use Google authentication, we
-  collect your Google account email and associated profile information to
-  facilitate login. ### 1.2 Non-Personal Information - **Usage Data**:
-  Information about how you interact with the website, such as pages visited,
-  time spent on the site, and search queries in the courses tab. - **Device and
-  Technical Information**: IP address, browser type, operating system, and
-  device identifiers. - **Cookies and Session Data**: We use cookies to manage
-  user sessions, track preferences, and improve user experience. ### 1.3
-  Uploaded Content - **Instructor CVs and Images**: CVs and images uploaded by
-  users applying to become instructors are stored via Cloudinary. - **Course
-  Content**: Videos and other materials uploaded by instructors, hosted on
-  third-party cloud services (e.g., Twitch, Dropbox, Google Drive). ## 2. How We
-  Use Your Information We use the collected information for the following
-  purposes: - **Account Management**: To create and manage user accounts, verify
-  instructor applications, and facilitate password resets via email. - **Service
-  Delivery**: To provide access to courses, track progress, deliver quiz
-  results, and display personalized course recommendations. - **Communication**:
-  To send email notifications for password resets, email change confirmations,
-  and other account-related activities via Gmail API. - **Website
-  Functionality**: To enable features such as course searching, pagination, and
-  responsive design. - **Security**: To authenticate users via JSON Web Tokens
-  (JWT) and refresh tokens, manage sessions with cookies, and protect against
-  unauthorized access. - **Analytics and Improvement**: To analyze usage
-  patterns and improve the website’s functionality and user experience. ## 3.
-  How We Share Your Information We do not sell, trade, or rent your personal
-  information to third parties. We may share your information in the following
-  cases: - **Third-Party Service Providers**: With trusted providers like
-  Cloudinary (for CV and image storage), Gmail API (for email communications),
-  and Google Cloud Console (for authentication and integration). - **Legal
-  Compliance**: When required by law, regulation, or legal process, or to
-  protect the rights, property, or safety of Engenetics, our users, or the
-  public. - **Instructor Verification**: Admins may access CVs and account
-  details to review and approve instructor applications. ## 4. Data Storage and
-  Security - **Storage**: Personal information is stored in a PostgreSQL 17
-  database using a code-first approach with Entity Framework Core. CVs and
-  images are stored via Cloudinary, and course videos are hosted on third-party
-  cloud services. - **Security Measures**: We use JWT and refresh tokens to
-  secure API endpoints, ASP.NET Identity for user management, and environment
-  variables to protect sensitive data. The frontend is secured with Angular
-  guards, and the backend follows onion architecture for modularity. -
-  **Cookies**: We use cookies to manage user sessions and ensure seamless
-  navigation. You can manage cookie preferences through your browser settings.
-  ## 5. Your Rights and Choices - **Access and Update**: You can view and edit
-  your username, email, or password in your profile. Email changes require
-  confirmation via a message sent to the new email address. - **Account
-  Deletion**: Contact us to request deletion of your account and associated
-  data, subject to legal obligations. - **Cookies**: You may disable cookies in
-  your browser, but this may affect website functionality. ## 6. Third-Party
-  Services Engenetics integrates with the following third-party services: -
-  **Google Authentication**: For student login, subject to Google’s Privacy
-  Policy. - **Gmail API**: For sending password reset and email confirmation
-  messages. - **Cloudinary**: For storing CVs and images uploaded by users. -
-  **Cloud Services (Twitch, Dropbox, Google Drive)**: For hosting course videos,
-  subject to their respective privacy policies. We are not responsible for the
-  privacy practices of these third-party services. We encourage you to review
-  their privacy policies. ## 7. Data Retention We retain personal information
-  for as long as necessary to provide our services or comply with legal
-  obligations. Account data is retained until you request deletion, and course
-  progress data is stored to maintain your learning history. CVs and uploaded
-  content may be retained for instructor verification purposes. ## 8. Children’s
-  Privacy Engenetics is not intended for users under the age of 13. We do not
-  knowingly collect personal information from children under 13. If we become
-  aware of such data, we will take steps to delete it. ## 9. Changes to This
-  Privacy Policy We may update this Privacy Policy from time to time. Any
-  changes will be posted on this page with an updated effective date. Your
-  continued use of the website constitutes acceptance of the revised policy. ##
-  10. Contact Us If you have questions or concerns about this Privacy Policy or
-  our data practices, please contact us at: - **Email**:
-  support&#64;engenetics.com - **Website**: {{ link }}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">
+      Privacy Policy for Engenetics
+    </h1>
+    <p class="text-gray-600 mt-2">Effective Date: June 13, 2025</p>
+  </header>
 
-  --- This Privacy Policy ensures transparency in how Engenetics handles user
-  data, aligning with the platform’s commitment to privacy and security.
-</p>
+  <section class="bg-white p-6 rounded-lg shadow-md">
+    <p class="text-gray-700 mb-4">
+      Engenetics ("we," "us," or "our") is committed to protecting the privacy
+      and security of our users' personal information. This Privacy Policy
+      outlines how we collect, use, disclose, and safeguard your information
+      when you use our website, Engenetics, a free English learning platform. By
+      accessing or using our website, you agree to the terms of this Privacy
+      Policy.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      1. Information We Collect
+    </h2>
+
+    <h3 class="text-xl font-medium text-gray-700 mt-4 mb-2">
+      1.1 Personal Information
+    </h3>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Account Information</strong>: When you register as a student,
+        instructor, or unverified instructor, we collect your name, email
+        address, username, password, and, for instructor applicants, a CV.
+      </li>
+      <li>
+        <strong>Profile Information</strong>: Any updates to your username,
+        email address, or password provided through your profile page.
+      </li>
+      <li>
+        <strong>Course Interaction Data</strong>: Information about your
+        enrolled courses, completed quizzes, progress tracking, and course
+        reviews.
+      </li>
+      <li>
+        <strong>Authentication Data</strong>: If you use Google authentication,
+        we collect your Google account email and associated profile information
+        to facilitate login.
+      </li>
+    </ul>
+
+    <h3 class="text-xl font-medium text-gray-700 mt-4 mb-2">
+      1.2 Non-Personal Information
+    </h3>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Usage Data</strong>: Information about how you interact with the
+        website, such as pages visited, time spent on the site, and search
+        queries in the courses tab.
+      </li>
+      <li>
+        <strong>Device and Technical Information</strong>: IP address, browser
+        type, operating system, and device identifiers.
+      </li>
+      <li>
+        <strong>Cookies and Session Data</strong>: We use cookies to manage user
+        sessions, track preferences, and improve user experience.
+      </li>
+    </ul>
+
+    <h3 class="text-xl font-medium text-gray-700 mt-4 mb-2">
+      1.3 Uploaded Content
+    </h3>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Instructor CVs and Images</strong>: CVs and images uploaded by
+        users applying to become instructors are stored via Cloudinary.
+      </li>
+      <li>
+        <strong>Course Content</strong>: Videos and other materials uploaded by
+        instructors, hosted on third-party cloud services (e.g., Twitch,
+        Dropbox, Google Drive).
+      </li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      2. How We Use Your Information
+    </h2>
+    <p class="text-gray-700 mb-4">
+      We use the collected information for the following purposes:
+    </p>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Account Management</strong>: To create and manage user accounts,
+        verify instructor applications, and facilitate password resets via
+        email.
+      </li>
+      <li>
+        <strong>Service Delivery</strong>: To provide access to courses, track
+        progress, deliver quiz results, and display personalized course
+        recommendations.
+      </li>
+      <li>
+        <strong>Communication</strong>: To send email notifications for password
+        resets, email change confirmations, and other account-related activities
+        via Gmail API.
+      </li>
+      <li>
+        <strong>Website Functionality</strong>: To enable features such as
+        course searching, pagination, and responsive design.
+      </li>
+      <li>
+        <strong>Security</strong>: To authenticate users via JSON Web Tokens
+        (JWT) and refresh tokens, manage sessions with cookies, and protect
+        against unauthorized access.
+      </li>
+      <li>
+        <strong>Analytics and Improvement</strong>: To analyze usage patterns
+        and improve the website’s functionality and user experience.
+      </li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      3. How We Share Your Information
+    </h2>
+    <p class="text-gray-700 mb-4">
+      We do not sell, trade, or rent your personal information to third parties.
+      We may share your information in the following cases:
+    </p>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Third-Party Service Providers</strong>: With trusted providers
+        like Cloudinary (for CV and image storage), Gmail API (for email
+        communications), and Google Cloud Console (for authentication and
+        integration).
+      </li>
+      <li>
+        <strong>Legal Compliance</strong>: When required by law, regulation, or
+        legal process, or to protect the rights, property, or safety of
+        Engenetics, our users, or the public.
+      </li>
+      <li>
+        <strong>Instructor Verification</strong>: Admins may access CVs and
+        account details to review and approve instructor applications.
+      </li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      4. Data Storage and Security
+    </h2>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Storage</strong>: Personal information is stored in a PostgreSQL
+        17 database using a code-first approach with Entity Framework Core. CVs
+        and images are stored via Cloudinary, and course videos are hosted on
+        third-party cloud services.
+      </li>
+      <li>
+        <strong>Security Measures</strong>: We use JWT and refresh tokens to
+        secure API endpoints, ASP.NET Identity for user management, and
+        environment variables to protect sensitive data. The frontend is secured
+        with Angular guards, and the backend follows onion architecture for
+        modularity.
+      </li>
+      <li>
+        <strong>Cookies</strong>: We use cookies to manage user sessions and
+        ensure seamless navigation. You can manage cookie preferences through
+        your browser settings.
+      </li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      5. Your Rights and Choices
+    </h2>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Access and Update</strong>: You can view and edit your username,
+        email, or password in your profile. Email changes require confirmation
+        via a message sent to the new email address.
+      </li>
+      <li>
+        <strong>Account Deletion</strong>: Contact us to request deletion of
+        your account and associated data, subject to legal obligations.
+      </li>
+      <li>
+        <strong>Cookies</strong>: You may disable cookies in your browser, but
+        this may affect website functionality.
+      </li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      6. Third-Party Services
+    </h2>
+    <p class="text-gray-700 mb-4">
+      Engenetics integrates with the following third-party services:
+    </p>
+    <ul class="list-disc pl-6 text-gray-700">
+      <li>
+        <strong>Google Authentication</strong>: For student login, subject to
+        Google’s Privacy Policy.
+      </li>
+      <li>
+        <strong>Gmail API</strong>: For sending password reset and email
+        confirmation messages.
+      </li>
+      <li>
+        <strong>Cloudinary</strong>: For storing CVs and images uploaded by
+        users.
+      </li>
+      <li>
+        <strong>Cloud Services (Twitch, Dropbox, Google Drive)</strong>: For
+        hosting course videos, subject to their respective privacy policies.
+      </li>
+    </ul>
+    <p class="text-gray-700 mt-4">
+      We are not responsible for the privacy practices of these third-party
+      services. We encourage you to review their privacy policies.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      7. Data Retention
+    </h2>
+    <p class="text-gray-700 mb-4">
+      We retain personal information for as long as necessary to provide our
+      services or comply with legal obligations. Account data is retained until
+      you request deletion, and course progress data is stored to maintain your
+      learning history. CVs and uploaded content may be retained for instructor
+      verification purposes.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      8. Children’s Privacy
+    </h2>
+    <p class="text-gray-700 mb-4">
+      Engenetics is not intended for users under the age of 13. We do not
+      knowingly collect personal information from children under 13. If we
+      become aware of such data, we will take steps to delete it.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      9. Changes to This Privacy Policy
+    </h2>
+    <p class="text-gray-700 mb-4">
+      We may update this Privacy Policy from time to time. Any changes will be
+      posted on this page with an updated effective date. Your continued use of
+      the website constitutes acceptance of the revised policy.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-4">
+      10. Contact Us
+    </h2>
+    <p class="text-gray-700">
+      If you have questions or concerns about this Privacy Policy or our data
+      practices, please contact us at:
+    </p>
+    <ul class="list-disc pl-6 text-gray-700 mt-2">
+      <li><strong>Email</strong>: support&#64;{{ link }}.com</li>
+      <li><strong>Website</strong>: [Insert Website URL]</li>
+    </ul>
+
+    <hr class="my-6 border-gray-300" />
+
+    <p class="text-gray-600 text-center text-sm">
+      This Privacy Policy ensures transparency in how Engenetics handles user
+      data, aligning with the platform’s commitment to privacy and security.
+    </p>
+  </section>
+</div>

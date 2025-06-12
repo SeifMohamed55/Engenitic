@@ -178,7 +178,10 @@
   </div>
 </form>
 <!-- review-form.component.html -->
-<div class="container mx-auto p-6 rounded-lg">
+<div
+  class="container mx-auto p-6 rounded-lg"
+  *ngIf="!mainCourseResponse.reviewDTO"
+>
   <h2 class="text-2xl font-bold text-gray-800 mb-6">Leave a Review</h2>
 
   <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="space-y-6">
@@ -272,10 +275,17 @@
   </form>
 </div>
 
-<div class="container mx-auto p-6 rounded-lg">
+<div
+  class="container mx-auto p-6 rounded-lg"
+  *ngIf="mainCourseResponse.reviewDTO"
+>
   <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Your Review</h2>
 
-  <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="space-y-6">
+  <form
+    [formGroup]="currentReview"
+    (ngSubmit)="updateReview()"
+    class="space-y-6"
+  >
     <!-- Rating Input -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
@@ -284,7 +294,7 @@
           <button
             type="button"
             (title)="('review with ' + star)"
-            (click)="setRating(star)"
+            (click)="setEditRating(star)"
             (mouseenter)="hoveredRating = star"
             (mouseleave)="hoveredRating = 0"
             class="focus:outline-none"
@@ -295,13 +305,13 @@
                 star <=
                 (hoveredRating ||
                   selectedRating ||
-                  reviewForm.get('rating')?.value)
+                  currentReview.get('rating')?.value)
               "
               [class.text-gray-300]="
                 star >
                 (hoveredRating ||
                   selectedRating ||
-                  reviewForm.get('rating')?.value)
+                  currentReview.get('rating')?.value)
               "
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -315,8 +325,9 @@
       </div>
       <div
         *ngIf="
-          reviewForm.get('rating')?.invalid &&
-          (reviewForm.get('rating')?.dirty || reviewForm.get('rating')?.touched)
+          currentReview.get('rating')?.invalid &&
+          (currentReview.get('rating')?.dirty ||
+            currentReview.get('rating')?.touched)
         "
         class="mt-1 text-sm text-red-600"
       >
@@ -338,27 +349,34 @@
       ></textarea>
       <div
         *ngIf="
-          reviewForm.get('content')?.invalid &&
-          (reviewForm.get('content')?.dirty ||
-            reviewForm.get('content')?.touched)
+          currentReview.get('content')?.invalid &&
+          (currentReview.get('content')?.dirty ||
+            currentReview.get('content')?.touched)
         "
         class="mt-1 text-sm text-red-600"
       >
-        <span *ngIf="reviewForm.get('content')?.errors?.['required']"
+        <span *ngIf="currentReview.get('content')?.errors?.['required']"
           >Review content is required</span
         >
-        <span *ngIf="reviewForm.get('content')?.errors?.['minlength']"
+        <span *ngIf="currentReview.get('content')?.errors?.['minlength']"
           >Review must be at least 10 characters</span
         >
       </div>
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex justify-end space-x-4">
+    <div class="flex justify-between space-x-4">
       <button
         type="submit"
-        [disabled]="!reviewForm.valid"
-        class="w-full engenitic-button px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
+        (click)="deleteReview(mainCourseResponse.reviewDTO.reviewId)"
+        class="engenitic-button px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
+      >
+        Delete Review
+      </button>
+      <button
+        type="submit"
+        [disabled]="!currentReview.valid"
+        class="engenitic-button px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
       >
         Save Changes
       </button>

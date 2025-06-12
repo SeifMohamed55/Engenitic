@@ -233,7 +233,13 @@ export const routes: Routes = [
         (m) => m.UnothorizedComponent
       ),
   },
-
+  {
+    path: 'confirm-password',
+    loadComponent: () =>
+      import('./pages/confirm-password/confirm-password.component').then(
+        (m) => m.ConfirmPasswordComponent
+      ),
+  },
   {
     path: '**',
     loadComponent: () =>
