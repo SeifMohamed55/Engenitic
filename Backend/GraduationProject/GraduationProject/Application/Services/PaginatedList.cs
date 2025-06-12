@@ -67,5 +67,11 @@ namespace GraduationProject.Application.Services
 
             return new PaginatedList<T>(items, pageIndex, pageSize, totalCount);
         }
+
+
+        public static PaginatedList<T> Create(IEnumerable<T> source, int pageIndex, int totalCount, int pageSize = 10)
+        {
+            return new PaginatedList<T>(source, pageIndex, pageSize, totalCount);
+        }
     }
 }

@@ -33,10 +33,17 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
         private async Task<PaginatedList<AppUserDTO>> GetUsersDTOPageAsync(int index)
         {
-            var query =  DefaultQuery()
+            var query = DefaultQuery()
                 .DTOProjection();
 
-            return await PaginatedList<AppUserDTO>.CreateAsync(query, index);
+            var paginatedList = await PaginatedList<AppUserDTO>.CreateAsync(query, index);
+
+            return PaginatedList<AppUserDTO>
+                .Create(
+                    paginatedList.OrderBy(x => x.Roles.First().ToLower()),
+                    paginatedList.PageIndex,
+                    paginatedList.TotalCount
+                );
         }
 
         public async Task<PaginatedList<AppUserDTO>> GetUsersInRolePage(int index, Role? role)
@@ -48,7 +55,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
                 .Where(x => x.Roles.Any(r => r.Id == role.Id))
                 .DTOProjection();
 
-            return await PaginatedList<AppUserDTO>.CreateAsync(query, index);
+            return  await PaginatedList<AppUserDTO>.CreateAsync(query, index);
 
         }
 
