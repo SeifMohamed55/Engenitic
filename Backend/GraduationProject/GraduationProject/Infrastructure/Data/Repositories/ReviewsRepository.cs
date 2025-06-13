@@ -115,7 +115,7 @@ namespace GraduationProject.Infrastructure.Data.Repositories
             {
                 throw new UnauthorizedAccessException("You are not authorized to edit this review");
             }
-            reviewDb.UpdateFromRequest(reviewDb.Content, review.Rating);
+            reviewDb.UpdateFromRequest(review.Content, review.Rating);
             return reviewDb.CourseId;
         }
 

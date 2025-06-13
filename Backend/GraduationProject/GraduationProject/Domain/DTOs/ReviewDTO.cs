@@ -12,6 +12,6 @@ namespace GraduationProject.Domain.DTOs
         public byte Rating { get; set; }
         public string FullName { get; set; } = null!;
         public FileMetadata ImageMetadata { get; set; } = null!;
-
+       
     }
 }

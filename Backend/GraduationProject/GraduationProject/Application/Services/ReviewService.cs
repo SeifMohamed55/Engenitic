@@ -31,29 +31,31 @@ namespace GraduationProject.Application.Services
             return true;
         }
 
-        public async Task<ServiceResult<bool>> AddReviewAsync(int userId, AddReviewRequestModel review)
+        public async Task<ServiceResult<ReviewDTO>> AddReviewAsync(int userId, AddReviewRequestModel review)
         {
             try
             {
                 if (await _unitOfWork.ReviewRepository.ReviewExist(userId, review.CourseId))
                 {
-                    return ServiceResult<bool>.Failure("You have already reviewed this course.");
+                    return ServiceResult<ReviewDTO>.Failure("You have already reviewed this course.");
                 }
 
                 _unitOfWork.ReviewRepository.AddReview(userId, review);
                 await _unitOfWork.SaveChangesAsync();
 
                 var success = await UpdateCourseAvg(review.CourseId);
-                if (success)
+                var reviewDtoRes = await _unitOfWork.ReviewRepository.GetStudentCourseReview(review.CourseId, userId);
+
+                if (success && reviewDtoRes.TryGetData(out var reviewDTO))
                 {
-                    return ServiceResult<bool>.Success(success, "Review Added successfully");
+                    return ServiceResult<ReviewDTO>.Success(reviewDTO, "Review Added successfully");
                 }
 
-                return ServiceResult<bool>.Failure("Something wrong happened");
+                return ServiceResult<ReviewDTO>.Failure("Something wrong happened");
             }
             catch
             {
-                return ServiceResult<bool>.Failure("Something wrong happened");
+                return ServiceResult<ReviewDTO>.Failure("Something wrong happened");
             }
 
         }
