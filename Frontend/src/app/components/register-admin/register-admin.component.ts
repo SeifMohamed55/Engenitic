@@ -49,11 +49,12 @@ export class RegisterAdminComponent {
       userName: new FormControl('', [Validators.required]),
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{6,}$/
+        ),
       ]),
       repassword: new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
       ]),
     },
     {
