@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   catchError,
   forkJoin,
+  map,
   of,
   Subject,
   switchMap,
@@ -59,6 +60,8 @@ export class MainCourseComponent implements OnInit, OnDestroy {
   hoveredRating = 0;
   selectedRating = 0;
 
+  currentReview: FormGroup = new FormGroup({});
+
   constructor(
     private _ActivatedRoute: ActivatedRoute,
     private _CoursesService: CoursesService,
@@ -87,7 +90,19 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: ({ stage, quizTitles }) => {
+          console.log(stage);
           this.mainCourseResponse = stage.data;
+          this.currentReview = new FormGroup({
+            content: new FormControl(
+              this.mainCourseResponse.reviewDTO?.content,
+              [Validators.required, Validators.minLength(10)]
+            ),
+            rating: new FormControl(this.mainCourseResponse.reviewDTO?.rating, [
+              Validators.required,
+              Validators.min(1),
+              Validators.max(5),
+            ]),
+          });
           this.creatingAnswers(this.mainCourseResponse);
           this.levelsTitles = quizTitles.data;
         },
@@ -374,19 +389,57 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       this.reviewForm.markAllAsTouched();
     }
   }
-  // parent.component.ts
-  currentReview = {
-    content: 'This is the best course ever!',
-    rating: 3,
-  };
 
-  updateReview(updatedReview: any) {
-    console.log('Updated review:', updatedReview);
-    // Send to your API or handle as needed
+  setEditRating(rating: number): void {
+    this.selectedRating = rating;
+    this.currentReview.patchValue({ rating });
   }
 
-  cancelEditing() {
-    // Handle cancel action
+  updateReview(): void {
+    if (this.currentReview.valid) {
+      this._CoursesService
+        .editReview({
+          reviewId: this.mainCourseResponse.reviewDTO?.reviewId,
+          ...this.currentReview.value,
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            console.log({
+              reviewId: this.mainCourseResponse.reviewDTO?.reviewId,
+              ...this.currentReview.value,
+            });
+            this._ToastrService.success(
+              res.message || 'review is saved successfully'
+            );
+          },
+          error: (err) => {
+            this._ToastrService.error(
+              err.error.message || 'an error has occured'
+            );
+          },
+        });
+    } else {
+      this.currentReview.markAllAsTouched();
+    }
   }
-  onCancel(): void {}
+
+  deleteReview(reviewId: number): void {
+    this._CoursesService
+      .deleteReview(reviewId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this._ToastrService.success(
+            res.message || 'review is deleted successfully'
+          );
+          this.mainCourseResponse.reviewDTO = null;
+        },
+        error: (err) => {
+          this._ToastrService.error(
+            err.error.message || 'an error has occured'
+          );
+        },
+      });
+  }
 }

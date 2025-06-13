@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({
@@ -55,6 +55,18 @@ export class UserService {
   forgetPassword(value: { email: string }): Observable<any> {
     return this._HttpClient.post(
       `https://localhost/api/Authentication/forget-password`,
+      value
+    );
+  }
+
+  ResetPassword(value: {
+    email: string;
+    newPassword: string;
+    confirmPassword: string;
+    token: string;
+  }): Observable<any> {
+    return this._HttpClient.post(
+      `https://localhost/api/Authentication/reset-password`,
       value
     );
   }
