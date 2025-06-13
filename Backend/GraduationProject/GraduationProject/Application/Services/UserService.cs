@@ -84,29 +84,44 @@ namespace GraduationProject.Application.Services
 
         }
 
-        public async Task<ServiceResult<bool>>ConfirmEmailChange(ConfirmEmailRequest req)
+        public async Task<ServiceResult<bool>> ConfirmEmailChange(ConfirmEmailRequest req)
         {
-            var user = await _userManager.FindByIdAsync(req.UserId.ToString());
-            if (user == null)
+            try
             {
-               return ServiceResult<bool>.Failure("User not found");
+                var user = await _userManager.FindByIdAsync(req.UserId.ToString());
+                if (user == null)
+                {
+                    return ServiceResult<bool>.Failure("User not found");
+                }
+
+                var emailExists = await _userManager.FindByEmailAsync(req.NewEmail) != null;
+
+                if (emailExists)
+                    return ServiceResult<bool>.Failure("Email Already exist");
+
+                await _unitOfWork.BeginTransactionAsync();
+
+                var result = await _userManager.ChangeEmailAsync(user, req.NewEmail, req.Token);
+                var res2 = await _userManager.SetUserNameAsync(user, req.NewEmail);
+
+                if (!result.Succeeded || !res2.Succeeded)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return ServiceResult<bool>.Failure("Failed to change email");
+                }
+                else
+                {
+                    await _unitOfWork.CommitTransactionAsync();
+                    return ServiceResult<bool>.Success(true, "Email Verified Successfully");
+                }
             }
-
-            var emailExists = await _userManager.FindByEmailAsync(req.NewEmail) != null;
-
-            if (emailExists)
-                return ServiceResult<bool>.Failure("Email Already exist");
-
-            var result = await _userManager.ChangeEmailAsync(user, req.NewEmail, req.Token);
-            if (result.Succeeded)
+            catch
             {
-                return ServiceResult<bool>.Success(true, "Email Verified Successfully");
-            }
-            else
-            {
-                return ServiceResult<bool>.Failure("Failed to change email");
+                await _unitOfWork.RollbackTransactionAsync();
+                return ServiceResult<bool>.Failure("An error occurred while confirming email change");
             }
         }
+
 
         public async Task<ServiceResult<bool>> UpdatePassword(UpdatePasswordRequest req, string claimId)
         {

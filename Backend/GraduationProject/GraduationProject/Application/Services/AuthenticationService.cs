@@ -490,7 +490,7 @@ namespace GraduationProject.Application.Services
             if (user == null)
                 return ServiceResult<bool>.Failure("User not found", HttpStatusCode.BadRequest);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = $"{_jwtOptions.Audience}/reset-password?token={token}&email={model.Email}";
+            var callbackUrl = $"{_jwtOptions.Audience}/reset-password?token={Uri.EscapeDataString(token)}&email={model.Email}";
             try
             {
                 await _emailSender.SendEmailAsync(model.Email,
