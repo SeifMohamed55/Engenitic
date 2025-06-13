@@ -92,9 +92,12 @@
       </p>
       <p
         class="text-normal font-regular text-red-500"
-        *ngIf="registerForm.get('password')?.getError('minlength')"
+        *ngIf="registerForm.get('password')?.getError('pattern')"
       >
-        password field must be more than 5
+        Password must contain at least:
+        <br />- One digit (0-9) <br />- One lowercase letter (a-z) <br />- One
+        uppercase letter (A-Z) <br />- One special character <br />- Minimum 6
+        characters
       </p>
     </div>
     <input

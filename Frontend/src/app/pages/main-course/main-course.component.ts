@@ -377,6 +377,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.destroy$),
           tap((res) => this._ToastrService.success(res.message)),
+          tap((res) => (this.mainCourseResponse.reviewDTO = res.data)),
           catchError((err) => {
             this._ToastrService.error(
               err.error.message || 'something went wrong try again'

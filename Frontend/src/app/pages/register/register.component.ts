@@ -62,12 +62,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       userName: new FormControl('', [Validators.required]),
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{6,}$/
+        ),
       ]),
-      repassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(5),
-      ]),
+      repassword: new FormControl('', [Validators.required]),
       role: new FormControl('student'),
     },
     {

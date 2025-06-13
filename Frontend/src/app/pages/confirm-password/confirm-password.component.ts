@@ -26,12 +26,11 @@ export class ConfirmPasswordComponent implements OnInit, OnDestroy {
     {
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{6,}$/
+        ),
       ]),
-      repassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(5),
-      ]),
+      repassword: new FormControl('', [Validators.required]),
     },
     {
       validators: [this.confirmPassword],
@@ -78,21 +77,23 @@ export class ConfirmPasswordComponent implements OnInit, OnDestroy {
   }
 
   handleNewPassword(): void {
+    console.log({
+      email: this.email,
+      token: this.token,
+      newPassword: this.registerForm.get('password')?.value,
+      confirmPassword: this.registerForm.get('repassword')?.value,
+    });
     if (this.registerForm.valid) {
       this._UserService
         .ResetPassword({
           email: this.email,
           token: this.token,
-          ...this.registerForm.value,
+          newPassword: this.registerForm.get('password')?.value,
+          confirmPassword: this.registerForm.get('repassword')?.value,
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (res) => {
-            console.log({
-              email: this.email,
-              token: this.token,
-              ...this.registerForm.value,
-            });
             this._ToastrService.success(
               res.message || 'password is reseted successfully'
             );
