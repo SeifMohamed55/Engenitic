@@ -5,6 +5,7 @@ using GraduationProject.Application.Services.HttpClientServices;
 using GraduationProject.Application.Services.Interfaces;
 using GraduationProject.Common.Middlewares;
 using GraduationProject.Domain.Models;
+using GraduationProject.Infrastructure.Data;
 using GraduationProject.StartupConfigurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +25,6 @@ builder.Services.AddDbContextPool<AppDbContext>(options =>
 builder.Services
     .AddIdentity<AppUser, Role>(options =>
     {
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequiredLength = 5;
-
         options.User.RequireUniqueEmail = true;
 
         // Working
@@ -126,6 +121,7 @@ builder.Services.AddRateLimiting();
 
 var app = builder.Build();
 
+await AppDbSeeder.SeedAsync(app.Services);
 
 app.UseMiddleware<TokenBlacklistMiddleware>();
 

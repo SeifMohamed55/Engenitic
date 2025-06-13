@@ -29,7 +29,6 @@ namespace GraduationProject.API.Controllers
             _cloudinaryService = cloudinaryService;
         }
 
-
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers([FromQuery] string? role, [FromQuery] int index = 1)
         {

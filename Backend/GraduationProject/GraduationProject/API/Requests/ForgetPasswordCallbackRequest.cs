@@ -18,7 +18,7 @@ namespace GraduationProject.API.Requests
         [Required]
         [DataType(DataType.Password)]
         [MinLength(5)]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("NewPassword", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
     }
 }

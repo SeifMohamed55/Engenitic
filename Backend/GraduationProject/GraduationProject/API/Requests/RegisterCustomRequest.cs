@@ -16,12 +16,12 @@ namespace GraduationProject.API.Requests
 
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(5)]
+        [MinLength(6)]
         public string Password { get; set; } = null!;
 
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(5)]
+        [MinLength(6)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
 
