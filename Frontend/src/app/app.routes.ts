@@ -234,7 +234,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'confirm-password',
+    path: 'reset-password',
     loadComponent: () =>
       import('./pages/confirm-password/confirm-password.component').then(
         (m) => m.ConfirmPasswordComponent
