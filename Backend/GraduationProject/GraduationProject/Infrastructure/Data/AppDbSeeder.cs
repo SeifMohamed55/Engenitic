@@ -15,69 +15,70 @@ public static class AppDbSeeder
 
     public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
-
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        // Apply any pending migrations
-        await context.Database.MigrateAsync();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
         if (!context.Roles.Any())
         {
-            context.Roles.AddRange(
-                new Role()
-                {
-                    Name = Roles.Admin
-                },
-                new Role()
-                {
-                    Name = Roles.Student
-                },
-                new Role()
-                {
-                    Name = Roles.Instructor
-                },
-                new Role()
-                {
-                    Name = Roles.UnverifiedInstructor
-                }
-            );
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Roles.Admin
+            });
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Roles.Student
+            });
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Roles.Instructor
+            });
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Roles.UnverifiedInstructor
+            });
+
             await context.SaveChangesAsync();
         }
-
-        var _authService = scope.ServiceProvider.GetRequiredService<IAuthenticationService>();
 
         if (!context.Users.Any())
         {
             // Seed Admin
-            await _authService.Register(new RegisterCustomRequest
+            var user1 = new AppUser
             {
-                Username = "admin",
+                UserName = "itproject656@gmail.com",
                 Email = "itproject656@gmail.com",
-                Password = "P@ssw0rd",
-                ConfirmPassword = "P@ssw0rd",
-                Role = "admin"
-            }, false);
+                CreatedAt = DateTime.UtcNow,
+                FullName = "Dr.Ahmed Hesham",
+            };
+            var res1 = await userManager.CreateAsync(user1, "P@ssw0rd");
+
+            await userManager.AddToRoleAsync(user1, Roles.Admin);
 
             // Seed Student
-            await _authService.Register(new RegisterCustomRequest
+            var user2 = new AppUser
             {
-                Username = "student",
+                UserName = "student@example.com",
                 Email = "student@example.com",
-                Password = "P@ssw0rd",
-                ConfirmPassword = "P@ssw0rd",
-                Role = "student"
-            }, false);
+                CreatedAt = DateTime.UtcNow,
+                FullName = "Seif-Elden Mohamed",
+            };
+            var res2 = await userManager.CreateAsync(user2, "P@ssw0rd");
+            await userManager.AddToRoleAsync(user2, Roles.Student);
 
             // Seed Instructor
-            await _authService.Register(new RegisterCustomRequest
+
+            var user3 = new AppUser
             {
-                Username = "instructor",
-                Email = "instructor@example.com",
-                Password = "P@ssw0rd",
-                ConfirmPassword = "P@ssw0rd",
-                Role = "instructor"
-            }, false);
+                UserName = "instructor@example.com",
+                Email = "P@ssw0rd",
+                CreatedAt = DateTime.UtcNow,
+                FullName = "Abdo Khaled",
+            };
+            var res3 = await userManager.CreateAsync(user3, "P@ssw0rd");
+            await userManager.AddToRoleAsync(user3, Roles.Instructor);
+
         }
     }
 }
