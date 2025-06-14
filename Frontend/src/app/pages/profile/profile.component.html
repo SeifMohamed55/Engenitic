@@ -1,7 +1,5 @@
 <main class="container pt-10">
-  <div
-    class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-20 "
-  >
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-20">
     <!-- Email Form -->
     <form
       [formGroup]="emailForm"
@@ -104,8 +102,8 @@
           (change)="onFileChange($event)"
           class="custom-file-input w-full text-center"
           id="fileInput"
-        title="update image button"
-          />
+          title="update image button"
+        />
       </div>
       <p
         class="text-sm text-center font-regular text-red-500 mt-2"
@@ -156,10 +154,13 @@
                 Current password is required
               </p>
               <p
-                class="text-sm font-regular text-red-500 mt-2"
-                *ngIf="passwordForm.get('oldPassword')?.getError('minlength')"
+                class="text-normal font-regular text-red-500"
+                *ngIf="passwordForm.get('oldPassword')?.getError('pattern')"
               >
-                Password must be at least 6 characters
+                Password must contain at least:
+                <br />- One digit (0-9) <br />- One lowercase letter (a-z)
+                <br />- One uppercase letter (A-Z) <br />- One special character
+                <br />- Minimum 6 characters
               </p>
             </div>
           </div>
@@ -186,12 +187,6 @@
                 *ngIf="passwordForm.get('newPassword')?.getError('required')"
               >
                 New password is required
-              </p>
-              <p
-                class="text-sm font-regular text-red-500 mt-2"
-                *ngIf="passwordForm.get('newPassword')?.getError('minlength')"
-              >
-                Password must be at least 6 characters
               </p>
             </div>
           </div>
