@@ -9,19 +9,19 @@ export class ModelsService {
   constructor(private _HttpClient: HttpClient) {}
 
   VqaModel(value: any): Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Vqa/predict`, value);
+    return this._HttpClient.post(`/api/Vqa/predict`, value);
   }
 
   grammarCorrection(sentence: string): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/GrammarCorrection/correct`,
+      `/api/GrammarCorrection/correct`,
       { sentence }
     );
   }
 
   textToSpeech(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/text-to-speech`,
+      `/api/text-to-speech`,
       value,
       {
         responseType: 'blob',

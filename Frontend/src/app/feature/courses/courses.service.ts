@@ -30,7 +30,7 @@ export class CoursesService {
     index: number = 1
   ): Observable<any> {
     this.currentSearchQuery = courseTitle;
-    return this._HttpClient.get(`https://localhost/api/Courses/search`, {
+    return this._HttpClient.get(`/api/Courses/search`, {
       params: {
         search: courseTitle,
         index: index.toString(),
@@ -44,7 +44,7 @@ export class CoursesService {
   }
 
   getEnrolledCourses(index: number, userId: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Student/courses`, {
+    return this._HttpClient.get(`/api/Student/courses`, {
       params: {
         index,
         id: userId,
@@ -53,7 +53,7 @@ export class CoursesService {
   }
 
   enrollCourseHandler(courseId: number, studentId: number): Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/student/enroll`, {
+    return this._HttpClient.post(`/api/student/enroll`, {
       courseId,
       studentId,
     });
@@ -63,7 +63,7 @@ export class CoursesService {
     collectionId: number,
     instructorId: number
   ): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Instructor/courses`, {
+    return this._HttpClient.get(`/api/Instructor/courses`, {
       params: {
         index: collectionId,
         instructorId,
@@ -73,17 +73,17 @@ export class CoursesService {
 
   coursesOffered(collectionNumber: number): Observable<any> {
     return this._HttpClient.get(
-      `https://localhost/api/Courses/${collectionNumber}`
+      `/api/Courses/${collectionNumber}`
     );
   }
 
   getCourseDetails(courseId: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Courses/id/${courseId}`);
+    return this._HttpClient.get(`/api/Courses/id/${courseId}`);
   }
 
   deleteCourse(courseId: number, instructorId: number): Observable<any> {
     return this._HttpClient.delete(
-      `https://localhost/api/Instructor/deleteCourse`,
+      `/api/Instructor/deleteCourse`,
       {
         body: {
           instructorId,
@@ -95,21 +95,21 @@ export class CoursesService {
 
   editCourse(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Instructor/editCourse`,
+      `/api/Instructor/editCourse`,
       value
     );
   }
 
   editCourseImage(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Instructor/editCourseImage`,
+      `/api/Instructor/editCourseImage`,
       value
     );
   }
 
   getCourseWithQuizzes(courseId: number): Observable<any> {
     return this._HttpClient.get(
-      `https://localhost/api/Instructor/course-with-quizes`,
+      `/api/Instructor/course-with-quizes`,
       {
         params: {
           courseId,
@@ -120,14 +120,14 @@ export class CoursesService {
 
   addCourse(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Instructor/addCourse`,
+      `/api/Instructor/addCourse`,
       value
     );
   }
 
   getCurrentStage(studentId: number, enrollmentId: number): Observable<any> {
     return this._HttpClient.get(
-      `https://localhost/api/Student/enrollment/current-stage`,
+      `/api/Student/enrollment/current-stage`,
       {
         params: {
           studentId,
@@ -142,7 +142,7 @@ export class CoursesService {
     enrollmentId: number,
     stage: number
   ): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Student/enrollment`, {
+    return this._HttpClient.get(`/api/Student/enrollment`, {
       params: {
         studentId,
         enrollmentId,
@@ -152,7 +152,7 @@ export class CoursesService {
   }
 
   getQuizTitles(courseId: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/courses/quizzes-title`, {
+    return this._HttpClient.get(`/api/courses/quizzes-title`, {
       params: {
         courseId,
       },
@@ -161,17 +161,17 @@ export class CoursesService {
 
   submitQuiz(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/student/enrollment/attempt-quiz`,
+      `/api/student/enrollment/attempt-quiz`,
       value
     );
   }
 
   GetRandomCourses(): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/courses/random4`);
+    return this._HttpClient.get(`/api/courses/random4`);
   }
 
   getCourseReviews(courseId: number, index: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/reviews`, {
+    return this._HttpClient.get(`/api/reviews`, {
       params: {
         courseId,
         index,
@@ -186,7 +186,7 @@ export class CoursesService {
   ): Observable<any> {
     console.log({ userId, newEmail, token });
     return this._HttpClient.post(
-      `https://localhost/api/Users/confirm-email-change`,
+      `/api/Users/confirm-email-change`,
       {
         userId,
         newEmail,
@@ -200,7 +200,7 @@ export class CoursesService {
     content: string;
     rating: number;
   }): Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/reviews/add`, value);
+    return this._HttpClient.post(`/api/reviews/add`, value);
   }
 
   editReview(value: {
@@ -208,12 +208,12 @@ export class CoursesService {
     content: string;
     rating: number;
   }): Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/reviews/edit`, value);
+    return this._HttpClient.post(`/api/reviews/edit`, value);
   }
 
   deleteReview(reviewId: number): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/reviews/delete/${reviewId}`,
+      `/api/reviews/delete/${reviewId}`,
       {}
     );
   }
