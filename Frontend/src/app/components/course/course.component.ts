@@ -124,7 +124,6 @@ export class CourseComponent implements OnInit, OnDestroy {
       .coursesOffered(page)
       .pipe(
         takeUntil(this.destroy$),
-        tap((res) => console.log(res))
       )
       .subscribe({
         next: (res) => {
