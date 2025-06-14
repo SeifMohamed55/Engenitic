@@ -56,11 +56,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     {
       oldPassword: new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
+        Validators.pattern(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{6,}$/
+        ),
       ]),
       newPassword: new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
       ]),
     },
     {
