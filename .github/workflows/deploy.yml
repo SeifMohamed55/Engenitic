@@ -3,8 +3,7 @@ name: Build and Deploy ASP.NET Core + Angular
 on:
   push:
     branches:
-      - azure-deployment  # Or the branch you want to deploy
-
+      - azure-deployment
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -51,9 +50,15 @@ jobs:
       working-directory: ./Backend/GraduationProject/GraduationProject
       run: dotnet publish -c Release -o ../../publish
 
-    - name: 🚀 Deploy to Azure Web App
-      uses: azure/webapps-deploy@v3
+    - name: Login to Azure
+      uses: azure/login@v1
       with:
-        app-name: YOUR_AZURE_APP_NAME           # <--- Replace with your actual Azure App Service name
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}  # <-- Make sure this secret is set in your GitHub repo
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: engenitic
         package: ./Backend/publish
+      env:
+        DOTNET_ROOT: /usr/share/dotnet
