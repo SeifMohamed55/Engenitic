@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  webapp:
+    build:
+      context: ./GraduationProject/GraduationProject
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # HTTP
+      - "8081:8081"  # HTTPS
+    environment:
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__POSTGRES_GRAD_ONLINE=Host=postgres;Port=5432;Database=grad_db;Username=grad_user;Password=grad_pass
+    depends_on:
+      - postgres
+      - vqa_service
+      - grammar_service
+      - tts_service
+
+  vqa_service:
+    build:
+      context: ./Python Fast API
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    command: ["python", "VQA-blip-base.py"]
+
+  grammar_service:
+    build:
+      context: ./Python Fast API
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    command: ["python", "GrammarCorrection.py"]
+
+  tts_service:
+    build:
+      context: ./Python Fast API
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    command: ["python", "text-to-speech.py"]
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: grad_db
+      POSTGRES_USER: grad_user
+      POSTGRES_PASSWORD: grad_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

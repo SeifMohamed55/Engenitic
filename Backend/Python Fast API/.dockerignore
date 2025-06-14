@@ -1,0 +1,54 @@
+# Byte-compiled / cache files
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebooks
+*.ipynb
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Logs and debugging artifacts
+*.log
+*.tmp
+
+# OS and editor folders
+.DS_Store
+.vscode/
+.idea/
+
+# Git and version control
+.git/
+.gitignore
+
+# Python virtual environments
+venv/
+.env
+.env.*
+
+# Model files, datasets, or large binaries
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.npz
+*.npy
+*.pkl
+*.tar
+*.tar.gz
+*.zip
+
+# Dataset or cache folders
+datasets/
+cache/
+checkpoints/
+outputs/
+wandb/
+runs/
+
+# Static files (if not needed)
+wwwroot/
