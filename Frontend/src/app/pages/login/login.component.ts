@@ -102,10 +102,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     const response = event.data;
     if (response.code === 200) {
       this.handleData(response);
-    } else if (response.code === 400) {
-      this.toastr.error(response.message);
-    } else {
-      this.toastr.error('an error occured to the server try again later !');
     }
   }
 
