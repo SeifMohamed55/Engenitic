@@ -33,6 +33,7 @@ jobs:
 
     - name: Copy Angular output to wwwroot
       run: |
+        touch ./Backend/GraduationProject/GraduationProject/.env
         mkdir -p ./Backend/GraduationProject/GraduationProject/wwwroot/
         rm -rf ./Backend/GraduationProject/GraduationProject/wwwroot/*
         cp -r ./Frontend/dist/engenitics/browser/* ./Backend/GraduationProject/GraduationProject/wwwroot/
@@ -48,17 +49,11 @@ jobs:
 
     - name: Publish .NET app
       working-directory: ./Backend/GraduationProject/GraduationProject
-      run: dotnet publish -c Release -o ../publish
+      run: dotnet publish -c Release -o ../../publish
 
-    - name: Zip published output
-      run: |
-        cd publish
-        zip -r ../app.zip .
-        cd ..
-
-    - name: Deploy to Azure Web App
+    - name: 🚀 Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
-        app-name: YOUR_APP_NAME              # Replace with your Azure Web App name
+        app-name: YOUR_AZURE_APP_NAME           # <--- Replace with your actual Azure App Service name
         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        package: app.zip
+        package: ./Backend/publish
