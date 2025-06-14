@@ -1,11 +1,14 @@
 import subprocess
 import time
+import os
 
-# Define the commands to run each app
+# Set the path to your FastAPI scripts
+BASE_DIR = os.path.join(os.getcwd(), "Backend", "Python Fast API")
+
 services = [
-    {"name": "VQA", "file": "Backend/Python Fast API/VQA-blib-base.py", "port": 8000},
-    {"name": "Grammar Correction", "file": "Backend/Python Fast API/GrammarCorrection.py", "port": 8001},
-    {"name": "Text-to-Speech", "file": "Backend/Python Fast API/text-to-speech.py", "port": 8002},
+    {"name": "VQA", "file": "VQA-blib-base.py", "port": 8000},
+    {"name": "Grammar Correction", "file": "GrammarCorrection.py", "port": 8001},
+    {"name": "Text-to-Speech", "file": "text-to-speech.py", "port": 8002},
 ]
 
 processes = []
@@ -13,7 +16,8 @@ processes = []
 try:
     for service in services:
         print(f"Starting {service['name']} on port {service['port']}...")
-        p = subprocess.Popen(["python", service["file"]])
+        script_path = os.path.join(BASE_DIR, service["file"])
+        p = subprocess.Popen(["python", script_path], cwd=BASE_DIR)
         processes.append(p)
         time.sleep(2)  # slight delay to stagger startup
 
