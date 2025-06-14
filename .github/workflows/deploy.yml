@@ -3,7 +3,7 @@ name: Build and Deploy ASP.NET Core + Angular
 on:
   push:
     branches:
-      - Deployment  # Or the branch you want to deploy
+      - azure-deployment  # Or the branch you want to deploy
 
 jobs:
   build-and-deploy:
