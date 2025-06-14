@@ -22,6 +22,7 @@ import {
 import { MainCourse } from '../../interfaces/courses/main-course';
 import { Levels } from '../../interfaces/courses/levels';
 import { ToastrService } from 'ngx-toastr';
+import { YoutubeEmbedPipe } from '../../pipes/youtube-embed.pipe';
 
 export interface QuizSubmit {
   questionId: number;
@@ -30,7 +31,7 @@ export interface QuizSubmit {
 
 @Component({
   selector: 'app-main-course',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, YoutubeEmbedPipe],
   templateUrl: './main-course.component.html',
   styleUrl: './main-course.component.scss',
 })
