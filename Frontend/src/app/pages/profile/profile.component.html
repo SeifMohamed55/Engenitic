@@ -155,7 +155,7 @@
               </p>
               <p
                 class="text-normal font-regular text-red-500"
-                *ngIf="registerForm.get('oldPassword')?.getError('pattern')"
+                *ngIf="passwordForm.get('oldPassword')?.getError('pattern')"
               >
                 Password must contain at least:
                 <br />- One digit (0-9) <br />- One lowercase letter (a-z)
