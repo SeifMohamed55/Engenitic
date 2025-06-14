@@ -6,8 +6,6 @@ using GraduationProject.Domain.Models;
 using GraduationProject.Infrastructure.Data.Repositories.Base;
 using GraduationProject.Infrastructure.Data.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Frozen;
-using System.Linq;
 
 namespace GraduationProject.Infrastructure.Data.Repositories
 {
