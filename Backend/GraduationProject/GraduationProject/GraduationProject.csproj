@@ -27,6 +27,7 @@
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.68.0.3427" />
     <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.53" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.11" />
@@ -47,9 +48,9 @@
 	<PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
 	<PackageReference Include="MailKit" Version="4.10.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.11" />
+	<PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
-	<PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
@@ -64,7 +65,15 @@
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Helpers\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Update="wwwroot/_content/Microsoft.AspNetCore.Components.QuickGrid/**">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
 
 
 </Project>

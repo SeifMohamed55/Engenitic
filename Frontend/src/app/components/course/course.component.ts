@@ -124,7 +124,6 @@ export class CourseComponent implements OnInit, OnDestroy {
       .coursesOffered(page)
       .pipe(
         takeUntil(this.destroy$),
-        tap((res) => console.log(res))
       )
       .subscribe({
         next: (res) => {
@@ -163,7 +162,6 @@ export class CourseComponent implements OnInit, OnDestroy {
 
   private handleError(err: any): void {
     this.isLoading = false;
-    console.error('Error:', err);
     this._ToastrService.error(err.error?.message || 'An error occurred');
     this._Router.navigate(['/home']);
   }

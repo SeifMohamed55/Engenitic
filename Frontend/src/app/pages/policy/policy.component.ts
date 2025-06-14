@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './policy.component.scss',
 })
 export class PolicyComponent {
-  link: string = 'http://localhost:4200/';
+  link: string = 'https://localhost';
 }

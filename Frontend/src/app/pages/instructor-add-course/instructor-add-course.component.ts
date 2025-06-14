@@ -284,7 +284,6 @@ export class InstructorAddCourseComponent implements OnInit, OnDestroy {
         });
     } else {
       this.addingCourseForm.markAllAsTouched();
-      console.warn('Form is invalid', this.addingCourseForm.value);
     }
   }
 }

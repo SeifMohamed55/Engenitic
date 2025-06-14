@@ -32,7 +32,8 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
   constructor(
     private _ActivatedRouter: ActivatedRoute,
     private _CoursesService: CoursesService,
-    private _Router: Router
+    private _Router: Router,
+    private _ToastrService: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +72,9 @@ export class StudentEnrolledCoursesComponent implements OnInit, OnDestroy {
           this.totalItems = this.userCourses.totalItems;
         },
         error: (err) => {
-          console.log(err);
+          this._ToastrService.error(
+            err.error.message || 'something wrong happened, try again later'
+          );
           this.userCourses = {
             totalPages: 0,
             totalItems: 0,

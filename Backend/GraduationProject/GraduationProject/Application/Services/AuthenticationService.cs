@@ -147,7 +147,6 @@ namespace GraduationProject.Application.Services
 
                 user.FileHashes.Add(fileHash);
 
-
                 if (userRole.Name.Equals(Roles.UnverifiedInstructor, StringComparison.OrdinalIgnoreCase))
                 {
                     if (!UploadingService.IsValidCv(model.Cv))

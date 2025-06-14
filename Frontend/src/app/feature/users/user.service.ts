@@ -21,28 +21,28 @@ export class UserService {
 
   registerData(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Authentication/register`,
+      `/api/Authentication/register`,
       value
     );
   }
 
   loginData(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Authentication/login`,
+      `/api/Authentication/login`,
       value
     );
   }
 
   logoutConfirmation(): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Authentication/logout`,
+      `/api/Authentication/logout`,
       {}
     );
   }
 
   refreshToken(): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Token/refresh`,
+      `/api/Token/refresh`,
       {},
       {
         headers: {
@@ -54,7 +54,7 @@ export class UserService {
 
   forgetPassword(value: { email: string }): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Authentication/forget-password`,
+      `/api/Authentication/forget-password`,
       value
     );
   }
@@ -66,7 +66,7 @@ export class UserService {
     token: string;
   }): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Authentication/reset-password`,
+      `/api/Authentication/reset-password`,
       value
     );
   }
@@ -74,20 +74,20 @@ export class UserService {
   // profile data and update
 
   getProfileData(userId: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Users/profile`, {
+    return this._HttpClient.get(`/api/Users/profile`, {
       params: { id: userId },
     });
   }
 
   getUserImage(userId: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Users/image`, {
+    return this._HttpClient.get(`/api/Users/image`, {
       params: { id: userId },
       responseType: 'blob',
     });
   }
 
   updateEmail(userId: number, newEmail: string): Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/Users/update-email`, {
+    return this._HttpClient.post(`/api/Users/update-email`, {
       id: userId,
       newEmail,
     });
@@ -95,7 +95,7 @@ export class UserService {
 
   updateUserName(userId: number, newUserName: string): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Users/update-username`,
+      `/api/Users/update-username`,
       {
         id: userId,
         newUserName,
@@ -105,7 +105,7 @@ export class UserService {
 
   updateImage(value: any): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/users/update-image`,
+      `/api/users/update-image`,
       value
     );
   }
@@ -116,7 +116,7 @@ export class UserService {
     newPassword: string
   ): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/users/update-password`,
+      `/api/users/update-password`,
       {
         id: userId,
         oldPassword,
@@ -128,7 +128,7 @@ export class UserService {
   // Admin apis
 
   getAllUsers(index: number): Observable<any> {
-    return this._HttpClient.get(`https://localhost/api/Admin/users`, {
+    return this._HttpClient.get(`/api/Admin/users`, {
       params: {
         index,
       },
@@ -137,24 +137,24 @@ export class UserService {
 
   banUser(userId: number): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Admin/ban/${userId}`,
+      `/api/Admin/ban/${userId}`,
       {}
     );
   }
   unbanUser(userId: number): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Admin/unban/${userId}`,
+      `/api/Admin/unban/${userId}`,
       {}
     );
   }
 
   registerAdmin(value: any): Observable<any> {
-    return this._HttpClient.post(`https://localhost/api/admin/register`, value);
+    return this._HttpClient.post(`/api/admin/register`, value);
   }
 
   verifyInstructor(instructorId: number): Observable<any> {
     return this._HttpClient.post(
-      `https://localhost/api/Admin/verify-instructor/${instructorId}`,
+      `/api/Admin/verify-instructor/${instructorId}`,
       {}
     );
   }

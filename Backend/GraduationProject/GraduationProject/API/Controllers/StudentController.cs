@@ -199,7 +199,7 @@ namespace GraduationProject.API.Controllers
 
                 var msg = data.IsPassed ? 
                     "Congratulations, you have passed the exam." :
-                    "YOU HAVE FAILED!";
+                    "So close! A few more tries and you'll nail it. Don’t give up!";
 
                 return Ok(new SuccessResponse()
                 {

@@ -48,7 +48,6 @@ export class RedirectionPageComponent implements OnInit, OnDestroy {
             .confirmEmailChange(userId, newEmail, token)
             .pipe(
               catchError((error) => {
-                console.error('Email confirmation failed:', error);
                 return throwError(() => error);
               })
             );
@@ -56,12 +55,13 @@ export class RedirectionPageComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
           this._ToastrService.success('Email Changed Successfully !');
           this._Router.navigate(['/home']);
         },
         error: (error) => {
-          console.error('Failed to change email', error);
+          this._ToastrService.error(
+            error.error.message || 'an error has occured, try again later'
+          );
         },
       });
 

@@ -110,14 +110,21 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:4200")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
+                .WithOrigins("https://localhost:4200")
+                .WithOrigins("https://localhost:443")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
 
 builder.Services.AddRateLimiting();
+
+builder.Services.AddSpaStaticFiles(configuration =>
+{
+    configuration.RootPath = "wwwroot";
+});
 
 var app = builder.Build();
 
@@ -132,26 +139,23 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseDefaultFiles();     // Serve index.html by default
+app.UseStaticFiles();      // Serve static files from wwwroot
+app.UseRouting();
+
 app.UseCors("AllowSpecificOrigin");
-
 app.UseRateLimiter();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("index.html"); // Required for Angular routing
 
-// works fine
-/*using (var scope = app.Services.CreateScope())
+
+app.UseSpa(spa =>
 {
-    var uow = scope.ServiceProvider.GetRequiredService<IDictionaryUnitOfWork>();
-    var tokenRepo = uow.GetRepository<ITokenRepository>();
-    var allTokens = await tokenRepo.GetAllAsync();
-
-    var coursesRepo = uow.GetRepository<ICourseRepository>();
-    var courses = await coursesRepo.GetAllAsync();
-
-}*/
+    spa.Options.SourcePath = "wwwroot";
+});
 
 app.Run();
 

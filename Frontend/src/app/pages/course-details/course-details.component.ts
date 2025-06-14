@@ -103,7 +103,6 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
           if (!courseId) return of(null);
           return this._CoursesService.getCourseDetails(courseId).pipe(
             tap((res) => {
-              console.log(res);
               this.courseDetailsResopnse = res.data;
               this.isEnrolled = res.data.isEnrolled || false;
             }),
@@ -138,7 +137,6 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   }
 
   private handleError(err: any): void {
-    console.error(err);
     const errorMessage =
       err.error?.message || 'An error occurred on the server, try again later';
     this._ToastrService.error(errorMessage);
@@ -166,7 +164,6 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
   }
 
   handleSubmit(): void {
-    console.log(this.userId);
     if (!this.userId) {
       this._ToastrService.warning('you must be user to enroll a course');
       this._Router.navigate(['/login']);
@@ -176,7 +173,6 @@ export class CourseDetailsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this._ToastrService.success(res.message);
           this._Router.navigate([
             '/main-course',

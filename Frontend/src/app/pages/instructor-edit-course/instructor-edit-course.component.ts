@@ -352,18 +352,15 @@ export class InstructorEditCourseComponent implements OnInit, OnDestroy {
       code: this.courseData?.code || '',
     };
 
-    console.log(courseData);
 
     this.coursesService
       .editCourse(courseData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.toastr.success(res.message);
         },
         error: (err) => {
-          console.warn(err);
           err.error
             ? this.toastr.error(err.error.message)
             : this.toastr.error(err);
@@ -405,11 +402,9 @@ export class InstructorEditCourseComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (res) => {
-            console.log(res);
             this.toastr.success(res.message);
           },
           error: (err) => {
-            console.warn(err);
             err.error
               ? this.toastr.error(err.error.message)
               : this.toastr.error(err);

@@ -48,12 +48,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         tap((res) => {
-          console.log(res);
           this.users = res.data.paginatedList;
           this.totalItems = res.data.totalItems;
         }),
-        tap(() => this.filterUsers()),
-        tap((res) => console.log(res))
+        tap(() => this.filterUsers())
       )
       .subscribe();
 
@@ -82,7 +80,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
           this.filterUsers();
         }),
         catchError((err) => {
-          console.log(err);
           this.toaster.error('Something went wrong, try again');
           return of(null);
         })
@@ -104,8 +101,9 @@ export class UserManagementComponent implements OnInit, OnDestroy {
           this.filterUsers();
         }),
         catchError((err) => {
-          console.log(err);
-          this.toaster.error('Something went wrong, try again');
+          this.toaster.error(
+            err.error.message || 'Something went wrong, try again'
+          );
           return of(null);
         })
       )
