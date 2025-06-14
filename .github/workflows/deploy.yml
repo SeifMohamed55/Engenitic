@@ -1,0 +1,63 @@
+name: Build and Deploy ASP.NET Core + Angular
+
+on:
+  push:
+    branches:
+      - Deployment  # Or the branch you want to deploy
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install Angular dependencies
+      working-directory: ./Frontend
+      run: npm ci
+
+    - name: Build Angular app
+      working-directory: ./Frontend
+      run: npm run build:prod
+
+    - name: Copy Angular output to wwwroot
+      run: |
+        rm -rf ./Backend/GraduationProject/GraduationProject/wwwroot/*
+        cp -r ./Frontend/dist/engenitics/browser/* ./Backend/GraduationProject/GraduationProject/wwwroot/
+      # Replace YOUR_PROJECT_NAME with your Angular project name (see below)
+
+    - name: Restore .NET dependencies
+      working-directory: ./Backend/GraduationProject/GraduationProject
+      run: dotnet restore
+
+    - name: Build .NET app
+      working-directory: ./Backend/GraduationProject/GraduationProject
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish .NET app
+      working-directory: ./Backend/GraduationProject/GraduationProject
+      run: dotnet publish -c Release -o ../publish
+
+    - name: Zip published output
+      run: |
+        cd publish
+        zip -r ../app.zip .
+        cd ..
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: YOUR_APP_NAME              # Replace with your Azure Web App name
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+        package: app.zip
