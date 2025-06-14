@@ -33,6 +33,7 @@ jobs:
 
     - name: Copy Angular output to wwwroot
       run: |
+        mkdir -p ./Backend/GraduationProject/GraduationProject/wwwroot/
         rm -rf ./Backend/GraduationProject/GraduationProject/wwwroot/*
         cp -r ./Frontend/dist/engenitics/browser/* ./Backend/GraduationProject/GraduationProject/wwwroot/
       # Replace YOUR_PROJECT_NAME with your Angular project name (see below)
