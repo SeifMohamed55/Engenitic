@@ -27,23 +27,9 @@ namespace GraduationProject.Infrastructure.Data.Repositories
 
             var query = _dbSet
                 .DTOProjection();
-
-            PaginatedList<ReviewDTO> finalList;
-
-            if (userReview != null && index == 1)
-            {
-                finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index, 9);
-                finalList.Prepend(userReview);
-            }
-            else
-            {
-                finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index);
-            }
-/*            finalList.ForEach(x =>
-            {
-                var date = (DateTime)x.UpdatedAt;
-                x.UpdatedAt = date.ToTimeAgo();
-            });*/
+            
+            var finalList = await PaginatedList<ReviewDTO>.CreateAsync(query, index);
+            
 
             return finalList;
         }
