@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserService } from '../feature/users/user.service';
-import { catchError, switchMap, tap, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -9,78 +9,76 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
   const _UserService = inject(UserService);
   const _Router = inject(Router);
   const _ToastrService = inject(ToastrService);
-  let token!: string;
 
-  if (typeof localStorage !== 'undefined') {
-    token = localStorage.getItem('Token') || '';
-  }
+  const token =
+    typeof localStorage !== 'undefined'
+      ? localStorage.getItem('Token') || ''
+      : '';
 
+  // Clone request with token (if exists) and credentials
   req = req.clone({
-    withCredentials: true, // Always include credentials
-    setHeaders: token ? { Authorization: `Bearer ${token}` } : {}, // Add token only if it exists
+    withCredentials: true,
+    setHeaders: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
-  let retryCount = 0;
-  const maxRetries = 1;
+  const forceLogout = () => {
+    localStorage.clear();
+    _UserService.registered.next('');
+    _UserService.role.next('');
+    _ToastrService.error('Session expired!');
+    if (_Router.url !== '/login') {
+      _Router.navigate(['/login']);
+    }
+  };
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
+        // Don't retry if already on login page
         if (_Router.url === '/login') {
           return throwError(() => error);
         }
 
+        // Attempt to refresh token
         return _UserService.refreshToken().pipe(
           switchMap((res: any) => {
-            const newToken = res.data?.accessToken;
+            const newToken = res?.data?.accessToken;
             if (!newToken) {
-              console.error('Failed to get new access token');
-              _ToastrService.error('Session expired!');
-              _UserService.registered.next('');
-              localStorage.clear();
-              if (_Router.url !== '/login') {
-                _Router.navigate(['/login']);
-              }
+              forceLogout();
               return throwError(() => new Error('Failed to refresh token'));
             }
 
-            // Store new token and retry request
+            // Save new token and retry the original request
             localStorage.setItem('Token', newToken);
             const newReq = req.clone({
               setHeaders: { Authorization: `Bearer ${newToken}` },
             });
 
-            return retryCount < maxRetries
-              ? (retryCount++, next(newReq))
-              : throwError(() => new Error('Max retries reached'));
+            return next(newReq);
           }),
-          catchError((error: HttpErrorResponse) => {
+          catchError(() => {
+            // If refresh failed, ask user for logout confirmation
             return _UserService.logoutConfirmation().pipe(
-              tap(() => {
-                localStorage.clear();
-                _UserService.registered.next('');
-                _UserService.role.next('');
-                _ToastrService.error('Session expired!');
-                if (_Router.url !== '/login') {
-                  _Router.navigate(['/login']);
-                }
-                return throwError(() => error);
+              switchMap(() => {
+                forceLogout();
+                return throwError(
+                  () => new Error('Session expired after refresh attempt')
+                );
               }),
-              catchError((error: HttpErrorResponse) => {
-                localStorage.clear();
-                _UserService.registered.next('');
-                _UserService.role.next('');
-                if (_Router.url !== '/login') {
-                  _Router.navigate(['/login']);
-                }
-                return throwError(() => error);
+              catchError(() => {
+                forceLogout();
+                return throwError(
+                  () => new Error('Session expired and logout failed')
+                );
               })
             );
           })
         );
       } else if (error.status === 403) {
+        // Forbidden - likely invalid permissions
         return throwError(() => error);
       } else {
+        // Other errors - forward them
         return throwError(() => error);
       }
     })
