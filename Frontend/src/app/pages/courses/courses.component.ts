@@ -1,9 +1,15 @@
-import { CommonModule } from "@angular/common";
-import { Component, OnDestroy } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { RouterModule } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
-import { CoursesService } from "../../feature/courses/courses.service";
+import { CommonModule } from '@angular/common';
+import { Component, OnDestroy } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { CoursesService } from '../../feature/courses/courses.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-courses',
@@ -16,11 +22,12 @@ export class CoursesComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
   searchForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
-
-
   });
 
-  constructor(private _CoursesService: CoursesService) {}
+  constructor(
+    private _CoursesService: CoursesService,
+    private _ToastrService: ToastrService
+  ) {}
 
   onSearchCourses(): void {
     const searchTerm = this.searchForm.get('title')?.value?.trim() || '';
@@ -37,7 +44,9 @@ export class CoursesComponent implements OnDestroy {
           this._CoursesService.updateSearchResults(res);
         },
         error: (err) => {
-          console.error(err);
+          this._ToastrService.error(
+            err.error.message || 'something went wrong , try again later'
+          );
           this._CoursesService.clearSearchResults();
         },
       });

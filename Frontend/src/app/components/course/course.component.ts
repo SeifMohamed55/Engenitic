@@ -163,7 +163,6 @@ export class CourseComponent implements OnInit, OnDestroy {
 
   private handleError(err: any): void {
     this.isLoading = false;
-    console.error('Error:', err);
     this._ToastrService.error(err.error?.message || 'An error occurred');
     this._Router.navigate(['/home']);
   }

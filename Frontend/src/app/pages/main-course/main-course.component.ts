@@ -90,7 +90,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: ({ stage, quizTitles }) => {
-          console.log(stage);
           this.mainCourseResponse = stage.data;
           this.currentReview = new FormGroup({
             content: new FormControl(
@@ -127,7 +126,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.mainCourseResponse = res.data;
         },
         error: (err) => {
@@ -259,7 +257,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (res) => {
-            console.log(res);
             this.mainCourseResponse = res.data;
           },
           error: (err) => {
@@ -406,10 +403,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (res) => {
-            console.log({
-              reviewId: this.mainCourseResponse.reviewDTO?.reviewId,
-              ...this.currentReview.value,
-            });
             this._ToastrService.success(
               res.message || 'review is saved successfully'
             );

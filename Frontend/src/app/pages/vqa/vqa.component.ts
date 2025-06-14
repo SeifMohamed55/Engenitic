@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ModelsService } from '../../feature/models/models.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -14,8 +19,8 @@ import { ToastrService } from 'ngx-toastr';
 export class VqaComponent implements OnDestroy {
   constructor(
     private _ModelsService: ModelsService,
-    private _ToastrService:ToastrService
-  ){};
+    private _ToastrService: ToastrService
+  ) {}
 
   private destroy$ = new Subject<void>();
 
@@ -73,24 +78,24 @@ export class VqaComponent implements OnDestroy {
         formData.append('image', this.selectedFile);
       }
       formData.append('question', this.vqaForm.get('question')?.value);
-      this._ModelsService.VqaModel(formData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next : res => {
-          console.log(res);
-          this.response = res.data.answer
-        },
-        error : err => {
-          console.log(err);
-          if(err.error.message) {
-            this._ToastrService.error(err.error.message);
-          }else {
-            this._ToastrService.error("something wrong with the server try again later !");
-          }
-        }
-      })
+      this._ModelsService
+        .VqaModel(formData)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this.response = res.data.answer;
+          },
+          error: (err) => {
+            if (err.error.message) {
+              this._ToastrService.error(err.error.message);
+            } else {
+              this._ToastrService.error(
+                'something wrong with the server try again later !'
+              );
+            }
+          },
+        });
     } else {
-      console.error(`an error has occured : ${this.vqaForm.value}`);
       this.vqaForm.markAllAsTouched();
     }
     this.isDisabled = false;

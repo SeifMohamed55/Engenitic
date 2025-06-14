@@ -54,7 +54,9 @@ export class ConfirmPasswordComponent implements OnInit, OnDestroy {
           this.token = res.get('token') as string;
         },
         error: (err) => {
-          console.error(err);
+          this._ToastrService.error(
+            err.error.message || 'something went wrong try again later'
+          );
         },
       });
   }
@@ -77,12 +79,6 @@ export class ConfirmPasswordComponent implements OnInit, OnDestroy {
   }
 
   handleNewPassword(): void {
-    console.log({
-      email: this.email,
-      token: this.token,
-      newPassword: this.registerForm.get('password')?.value,
-      confirmPassword: this.registerForm.get('repassword')?.value,
-    });
     if (this.registerForm.valid) {
       this._UserService
         .ResetPassword({
@@ -99,7 +95,6 @@ export class ConfirmPasswordComponent implements OnInit, OnDestroy {
             );
           },
           error: (err) => {
-            console.error(err);
             this._ToastrService.error(
               err.error.message || 'an error has occured'
             );

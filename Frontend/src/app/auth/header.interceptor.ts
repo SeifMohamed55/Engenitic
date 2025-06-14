@@ -32,7 +32,6 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
         return _UserService.refreshToken().pipe(
           switchMap((res: any) => {
-            console.log(res);
             const newToken = res.data?.accessToken;
             if (!newToken) {
               console.error('Failed to get new access token');
@@ -56,7 +55,6 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
               : throwError(() => new Error('Max retries reached'));
           }),
           catchError((error: HttpErrorResponse) => {
-            console.error('Token refresh failed:', error);
             return _UserService.logoutConfirmation().pipe(
               tap(() => {
                 localStorage.clear();
@@ -69,10 +67,6 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
                 return throwError(() => error);
               }),
               catchError((error: HttpErrorResponse) => {
-                console.log(
-                  "couldn't logout from the server due to error",
-                  error
-                );
                 localStorage.clear();
                 _UserService.registered.next('');
                 _UserService.role.next('');
@@ -85,7 +79,6 @@ export const headerInterceptor: HttpInterceptorFn = (req, next) => {
           })
         );
       } else if (error.status === 403) {
-        console.warn('Forbidden error:', error);
         return throwError(() => error);
       } else {
         return throwError(() => error);

@@ -19,7 +19,7 @@ import { Subject, takeUntil, tap } from 'rxjs';
 })
 export class GrammarHelpComponent {
   response: string = '';
-  score !: number;
+  score!: number;
   buttonDisabled = false;
   destroy$ = new Subject<void>();
 
@@ -44,7 +44,6 @@ export class GrammarHelpComponent {
             this.score = Number(res.data.score);
           },
           error: (err) => {
-            console.warn(err);
             err.error
               ? this._ToastrService.warning(err.error.message)
               : this._ToastrService.error(

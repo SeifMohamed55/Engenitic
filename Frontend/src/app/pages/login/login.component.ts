@@ -121,7 +121,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           if (!res?.data) {
             this.toastr.error('Invalid response from server');
             this.buttonDisabled = false;
