@@ -61,7 +61,7 @@ namespace GraduationProject.API.Controllers
                 },
                 Scopes = [GmailService.Scope.GmailSend],
                 Prompt = "consent",
-            }).CreateAuthorizationCodeRequest("https://localhost:443/api/google/GetGmailRefreshTokenCallback")
+            }).CreateAuthorizationCodeRequest($"{_jwtOptions.Audience}/api/google/GetGmailRefreshTokenCallback")
             .Build();
 
             return Ok(new SuccessResponse()
@@ -88,7 +88,7 @@ namespace GraduationProject.API.Controllers
             }).ExchangeCodeForTokenAsync(
                 _options.Email,
                 code,
-                "https://localhost:443/api/google/GetGmailRefreshTokenCallback",
+                $"{_jwtOptions.Audience}/api/google/GetGmailRefreshTokenCallback",
                 CancellationToken.None
             );
 
@@ -133,7 +133,7 @@ namespace GraduationProject.API.Controllers
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action(nameof(Callback)),
+                RedirectUri = Url.Action(nameof(Callback), "Google", null, Request.Scheme, Request.Host.ToString())
             };
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
