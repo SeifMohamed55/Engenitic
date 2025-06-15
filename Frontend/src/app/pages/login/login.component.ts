@@ -88,14 +88,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   googleLogin(): void {
     window.open(
-      'https://localhost/api/google/login',
+      'https://engenitic.azurewebsites.net/api/google/login',
       'PopupWindow',
       'width=800,height=600'
     );
   }
 
   receiveMessage(event: MessageEvent): void {
-    if (event.origin !== 'https://localhost') {
+    if (event.origin !== 'https://engenitic.azurewebsites.net') {
       return;
     }
 
