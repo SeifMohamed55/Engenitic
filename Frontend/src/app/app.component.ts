@@ -9,7 +9,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   selector: 'app-root',
   imports: [NavbarComponent, FooterComponent, RouterOutlet, NgxSpinnerModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  standalone: true
 })
 export class AppComponent {
   isVisible: boolean = false;

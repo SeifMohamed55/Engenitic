@@ -8,7 +8,8 @@ import { Subject, takeUntil } from 'rxjs';
   selector: 'app-footer',
   imports: [RouterModule, CommonModule],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss'
+  styleUrl: './footer.component.scss',
+  standalone: true
 })
 export class FooterComponent implements OnInit, OnDestroy {
 
