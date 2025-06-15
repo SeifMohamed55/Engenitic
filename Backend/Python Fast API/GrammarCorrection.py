@@ -5,6 +5,16 @@ import difflib
 from pydantic import BaseModel
 import requests
 from dotenv import load_dotenv
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import difflib
+import re
+
+model_name = "grammarly/coedit-large"
+
+# Load the tokenizer and model from the local path
+tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir="./models")
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir="./models")
+
 
 load_dotenv()
 
@@ -12,37 +22,23 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 API_KEY = os.environ.get("VQA__ApiKey")
-ACCESS_TOKEN = os.environ.get("GrammarCorrection__AccessToken")
+
 
 app = FastAPI()
-
-if not API_KEY:
-    raise RuntimeError("VQA__ApiKey environment variable not set")
-
-API_URL = "https://api-inference.huggingface.co/models/grammarly/coedit-large"
-headers = {
-    "Authorization": f"Bearer {ACCESS_TOKEN}"
-}
 
 def verify_api_key(api_key: str = Header(...)):
     """Verify the API key"""
     if api_key != API_KEY:
         raise HTTPException(status_code=403, detail="Invalid API key")
 
-# Query the API
-def query(input_text):
-    payload = {
-        "inputs": f"Fix grammatical errors in this sentence: {input_text}"
-    }
-    response = requests.post(API_URL, headers=headers, json=payload)
-    result = response.json()
-    # Handle errors
-    if isinstance(result, dict) and result.get("error"):
-        raise Exception(f"API error: {result['error']}")
-    # If response is a list of dicts with 'generated_text'
-    if isinstance(result, list) and 'generated_text' in result[0]:
-        return result[0]['generated_text']
-    return result
+# Query
+def query(input_text: str) -> str:
+    prompt = f"Fix grammatical errors: {input_text}"
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True)
+    outputs = model.generate(**inputs, max_length=256)
+    corrected_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return corrected_text
+
 
 # Highlight inserted words
 def highlight_changes(original, corrected):
@@ -63,12 +59,21 @@ def highlight_changes(original, corrected):
             highlighted_text += content + " "
     return highlighted_text.strip()
 
-# Rate grammar
+def normalize_word(word):
+    """Lowercase and remove simple punctuation."""
+    return re.sub(r'[^\w\s]', '', word).lower()
+
 def rate_grammar(original, corrected):
-    original_words = original.split()
-    corrected_words = corrected.split()
+    original_words = [normalize_word(w) for w in original.split()]
+    corrected_words = [normalize_word(w) for w in corrected.split()]
+
     diff = difflib.ndiff(original_words, corrected_words)
-    insertions = sum(1 for word in diff if word.startswith('+'))
+    insertions = sum(1 for word in diff if word.startswith('+ '))
+
+    # Prevent division by zero
+    if not original_words:
+        return 100.0 if not corrected_words else 0.0
+
     grammar_score = 100 - (insertions / len(original_words)) * 100
     return round(grammar_score, 2)
 

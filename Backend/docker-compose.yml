@@ -14,33 +14,43 @@ services:
       - ConnectionStrings__POSTGRES_GRAD_ONLINE=Host=postgres;Port=5432;Database=grad_db;Username=grad_user;Password=grad_pass
     depends_on:
       - postgres
-      - vqa_service
-      - grammar_service
-      - tts_service
-
-  vqa_service:
+      - fastapi_services
+    
+  fastapi_services:
     build:
       context: ./Python Fast API
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    command: ["python", "VQA-blip-base.py"]
-
-  grammar_service:
-    build:
-      context: ./Python Fast API
-      dockerfile: Dockerfile
-    ports:
       - "8001:8001"
-    command: ["python", "GrammarCorrection.py"]
-
-  tts_service:
-    build:
-      context: ./Python Fast API
-      dockerfile: Dockerfile
-    ports:
       - "8002:8002"
-    command: ["python", "text-to-speech.py"]
+    command: ["python", "run_all_services.py"]
+    depends_on:
+      - postgres
+
+  # vqa_service:
+  #   build:
+  #     context: ./Python Fast API
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8000:8000"
+  #   command: ["python", "VQA-blip-base.py"]
+
+  # grammar_service:
+  #   build:
+  #     context: ./Python Fast API
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8001:8001"
+  #   command: ["python", "GrammarCorrection.py"]
+
+  # tts_service:
+  #   build:
+  #     context: ./Python Fast API
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8002:8002"
+  #   command: ["python", "text-to-speech.py"]
 
   postgres:
     image: postgres:17
