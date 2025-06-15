@@ -70,7 +70,6 @@ export class MainCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // getting params
     this._ActivatedRoute.paramMap
       .pipe(
         takeUntil(this.destroy$),
@@ -92,19 +91,10 @@ export class MainCourseComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ({ stage, quizTitles }) => {
           this.mainCourseResponse = stage.data;
-          this.currentReview = new FormGroup({
-            content: new FormControl(
-              this.mainCourseResponse.reviewDTO?.content,
-              [Validators.required, Validators.minLength(10)]
-            ),
-            rating: new FormControl(this.mainCourseResponse.reviewDTO?.rating, [
-              Validators.required,
-              Validators.min(1),
-              Validators.max(5),
-            ]),
-          });
-          this.creatingAnswers(this.mainCourseResponse);
           this.levelsTitles = quizTitles.data;
+
+          // Initialize review form with existing data if available
+          this.initReviewForm();
         },
         error: (err) => {
           const msg =
@@ -113,6 +103,25 @@ export class MainCourseComponent implements OnInit, OnDestroy {
           this._ToastrService.error(msg);
         },
       });
+  }
+
+  initReviewForm(): void {
+    this.currentReview = new FormGroup({
+      content: new FormControl(
+        this.mainCourseResponse.reviewDTO?.content || '',
+        [Validators.required, Validators.minLength(10)]
+      ),
+      rating: new FormControl(this.mainCourseResponse.reviewDTO?.rating || 3, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(5),
+      ]),
+    });
+
+    // Set initial rating for display
+    if (this.mainCourseResponse.reviewDTO?.rating) {
+      this.selectedRating = this.mainCourseResponse.reviewDTO.rating;
+    }
   }
 
   ngOnDestroy(): void {
@@ -374,8 +383,30 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         })
         .pipe(
           takeUntil(this.destroy$),
-          tap((res) => this._ToastrService.success(res.message)),
-          tap((res) => (this.mainCourseResponse.reviewDTO = res.data)),
+          tap((res) => {
+            this._ToastrService.success(res.message);
+
+            // 1. Update the review data in your component
+            this.mainCourseResponse.reviewDTO = res.data;
+
+            // 2. Create a NEW FormGroup instance with the response data
+            this.currentReview = new FormGroup({
+              content: new FormControl(
+                res.data.content, // Use the newly added content
+                [Validators.required, Validators.minLength(10)]
+              ),
+              rating: new FormControl(
+                res.data.rating, // Use the newly added rating
+                [Validators.required, Validators.min(1), Validators.max(5)]
+              ),
+            });
+
+            // 3. Update the selected rating for the UI
+            this.selectedRating = res.data.rating;
+
+            // 4. Reset the add review form
+            this.reviewForm.reset({ content: '', rating: 3 });
+          }),
           catchError((err) => {
             this._ToastrService.error(
               err.error.message || 'something went wrong try again'
@@ -405,18 +436,30 @@ export class MainCourseComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (res) => {
             this._ToastrService.success(
-              res.message || 'review is saved successfully'
+              res.message || 'Review updated successfully'
             );
+            // Update local review data
+            if (res.data) {
+              this.mainCourseResponse.reviewDTO = res.data;
+            }
           },
           error: (err) => {
             this._ToastrService.error(
-              err.error.message || 'an error has occured'
+              err.error.message || 'An error occurred while updating the review'
             );
           },
         });
     } else {
       this.currentReview.markAllAsTouched();
     }
+  }
+
+  private resetReviewForms(): void {
+    this.mainCourseResponse.reviewDTO = null;
+    this.reviewForm.reset({ content: '', rating: 3 });
+    this.currentReview.reset({ content: '', rating: 3 });
+    this.selectedRating = 0;
+    this.hoveredRating = 0;
   }
 
   deleteReview(reviewId: number): void {
@@ -428,7 +471,7 @@ export class MainCourseComponent implements OnInit, OnDestroy {
           this._ToastrService.success(
             res.message || 'review is deleted successfully'
           );
-          this.mainCourseResponse.reviewDTO = null;
+          this.resetReviewForms();
         },
         error: (err) => {
           this._ToastrService.error(
