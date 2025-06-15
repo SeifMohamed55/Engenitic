@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   receiveMessage(event: MessageEvent): void {
-    if (event.origin !== 'https://localhost') {
+    if (event.origin !== 'https://engenitic.azurewebsites.net') {
       return;
     }
 
