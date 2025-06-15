@@ -228,12 +228,6 @@ namespace GraduationProject.API.Controllers
                     };
 
                     HttpContext.Response.Cookies.Append("refreshToken", data.RefreshToken.Token.ToString(), cookieOptions);
-                    Response.Cookies.Append("isAuthenticated", "true", new CookieOptions
-                    {
-                        HttpOnly = false,
-                        Secure = true,
-                        SameSite = SameSiteMode.None,
-                    });
 
                     cookieOptions.Expires = DateTime.UtcNow.AddDays(30);
                     HttpContext.Response.Cookies.Append("device_id", data.RefreshToken.DeviceId.ToString(), cookieOptions);
