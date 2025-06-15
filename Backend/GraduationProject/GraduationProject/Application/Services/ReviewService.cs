@@ -107,7 +107,7 @@ namespace GraduationProject.Application.Services
             }
         }
 
-        public async Task<ServiceResult<bool>> EditReviewAsync(int userId, EditReviewRequestModel review)
+        public async Task<ServiceResult<ReviewDTO>> EditReviewAsync(int userId, EditReviewRequestModel review)
         {
             try
             {
@@ -115,23 +115,26 @@ namespace GraduationProject.Application.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 var success = await UpdateCourseAvg(courseId);
-                if (!success)
+                var newReviewRes = await _unitOfWork.ReviewRepository.GetStudentCourseReview(courseId, userId);
+
+                if (success && newReviewRes.TryGetData(out var newReview))
                 {
-                    return ServiceResult<bool>.Failure("Something wrong happened");
+                    return ServiceResult<ReviewDTO>.Success(newReview, "Review was edited successfully");
                 }
-                return ServiceResult<bool>.Success(success, "Review was edited successfully");
+                return ServiceResult<ReviewDTO>.Failure("Something wrong happened");
+
             }
             catch(ArgumentException ex)
             {
-                return ServiceResult<bool>.Failure(ex.Message);
+                return ServiceResult<ReviewDTO>.Failure(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                return ServiceResult<bool>.Failure(ex.Message);
+                return ServiceResult<ReviewDTO>.Failure(ex.Message);
             }
             catch
             {
-                return ServiceResult<bool>.Failure("Something wrong happened");
+                return ServiceResult<ReviewDTO>.Failure("Something wrong happened");
             }
         }
     }

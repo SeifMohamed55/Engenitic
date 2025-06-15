@@ -95,16 +95,28 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   receiveMessage(event: MessageEvent): void {
+    // First verify the origin is correct
     if (event.origin !== 'https://localhost') {
-      return;
+      return; // Silently ignore messages from untrusted origins
+    }
+
+    // Then verify the data structure
+    if (!event.data || typeof event.data !== 'object') {
+      return; // Silently ignore malformed messages
     }
 
     const response = event.data;
+
+    // Only proceed if we have a valid response code
     if (response.code === 200) {
       this.handleData(response);
-    } else {
-      this.toastr.error('something went wrong try again later');
+    } else if (response.error) {
+      // Only show error if there's actually an error message
+      this.toastr.error(
+        response.error.message || 'Login failed. Please try again.'
+      );
     }
+    // Otherwise do nothing
   }
 
   handleLogin() {
