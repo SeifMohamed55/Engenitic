@@ -17,6 +17,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class LoginComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private destroyImage$ = new Subject<void>();
+  private messageHandler = this.receiveMessage.bind(this); // ✅ bound handler
   loginResponse!: LoginData;
   buttonDisabled: boolean = false;
 
@@ -36,20 +37,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Listen for the message event from the popup window
     if (typeof window !== 'undefined') {
-      window.addEventListener('message', this.receiveMessage.bind(this), false);
+      window.addEventListener('message', this.messageHandler, false); // ✅ proper event setup
     }
   }
 
   ngOnDestroy(): void {
-    // Cleanup event listener
     if (typeof window !== 'undefined') {
-      window.removeEventListener(
-        'message',
-        this.receiveMessage.bind(this),
-        false
-      );
+      window.removeEventListener('message', this.messageHandler, false); // ✅ proper cleanup
     }
 
     this.destroy$.next();
@@ -103,15 +98,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (response.code === 200) {
       this.handleData(response);
     } else {
-      this.toastr.error('something went wrong try again later');
+      this.toastr.error('Something went wrong. Try again later.');
     }
   }
 
-  handleLogin() {
+  handleLogin(): void {
     if (!this.loginForm.valid) {
       this.loginForm.markAllAsTouched();
       return;
     }
+
     this.buttonDisabled = true;
 
     this._UserService
